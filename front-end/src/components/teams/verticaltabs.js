@@ -4,10 +4,22 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-import { Box, styled, OutlinedInput, TextField, Autocomplete } from '@mui/material';
+import { Box, Paper, styled, OutlinedInput, TextField, Autocomplete } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import Main from './Main';
 import { UserContext } from '../../contexts/UserContext';
 import { ClientsContext } from '../../contexts/ClientsContext';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '700px',
+    width: '100%',
+    margin: 'auto',
+    display: 'grid',
+    gridTemplateColumns: '30% 70%',
+    backgroundColor: '#fdfdff'
+  }
+}));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,6 +55,7 @@ function a11yProps(index) {
 }
 
 export default function VerticalTabs() {
+  const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
@@ -63,19 +76,24 @@ export default function VerticalTabs() {
     User.map((User) => UsersList.push(User.name));
   });
   return (
-    <Box
-      sx={{
-        maxHeight: '70vh',
-        height: '70vh',
-        width: '100%',
-        // margin: 'auto',
-        display: 'grid',
-        gridTemplateColumns: '20% 80%',
-        backgroundColor: '#fdfdff'
-      }}
-    >
-      <Box>
-        <div>
+    <div className={classes.root}>
+      <Box
+        component="div"
+        sx={{
+          margin: '10px',
+          maxHeight: '70vh',
+          height: '70vh'
+        }}
+      >
+        <Paper
+          component="div"
+          elevation={3}
+          sx={{
+            overflow: 'hidden',
+            height: '100%',
+            position: 'relative'
+          }}
+        >
           <Autocomplete
             onChange={handleSearch}
             disablePortal
@@ -83,36 +101,53 @@ export default function VerticalTabs() {
             options={UsersList}
             renderInput={(params) => <TextField {...params} fullWidth label="Search members" />}
           />
-        </div>
-        <Tabs
-          orientation="vertical"
-          variant="scrollable"
-          value={value}
-          onChange={handleChange}
-          aria-label="Vertical tabs"
-          sx={{ borderRight: 1, borderColor: 'divider', display: 'block', width: '100%' }}
+          <Tabs
+            orientation="vertical"
+            variant="scrollable"
+            value={value}
+            onChange={handleChange}
+            aria-label="Vertical tabs"
+            sx={{ borderRight: 1, borderColor: 'divider' }}
+          >
+            {User.map((user) => (
+              <Tab
+                selectionFollowsFocus="true"
+                label={
+                  <Typography
+                    sx={{ textAlign: 'left', width: '100%', fontWeight: 'Bold' }}
+                    variant="h6"
+                  >
+                    {user.name}{' '}
+                  </Typography>
+                }
+                {...a11yProps(`${User.indexOf(user) + 1}`)}
+              />
+            ))}
+          </Tabs>
+        </Paper>
+      </Box>
+
+      {/* HEADER */}
+      <Box component="div" sx={{ margin: '10px 10px 10px 0', overflow: 'auto' }}>
+        {/* grid container 40 60 */}
+        <Paper
+          component="div"
+          elevation={3}
+          sx={{
+            overflow: 'visible',
+
+            position: 'relative'
+            // display: 'grid',
+            // gridTemplateRows: '30% 70%'
+          }}
         >
-          {User.map((user) => (
-            <Tab
-              selectionFollowsFocus="true"
-              label={
-                <Typography
-                  sx={{ textAlign: 'left', width: '100%', fontWeight: 'Bold' }}
-                  variant="h6"
-                >
-                  {user.name}{' '}
-                </Typography>
-              }
-              {...a11yProps(`${User.indexOf(user) + 1}`)}
-            />
-          ))}
-        </Tabs>
+          <Box>
+            {User.map((user) => (
+              <Main value={value} index={User.indexOf(user)} sx={{ overflow: 'hidden' }} />
+            ))}
+          </Box>
+        </Paper>
       </Box>
-      <Box>
-        {User.map((user) => (
-          <Main value={value} index={User.indexOf(user)} sx={{ overflow: 'hidden' }} />
-        ))}
-      </Box>
-    </Box>
+    </div>
   );
 }
