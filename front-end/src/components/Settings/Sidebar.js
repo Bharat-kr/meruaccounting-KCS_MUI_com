@@ -118,7 +118,18 @@ export default function Sidebar() {
             sx={{ borderRight: 1, borderColor: 'divider' }}
           >
             {Object.keys(effectiveArr).map((keyName, keyIndex) => (
-              <Tab sx={{}} label={convertString(keyName)} {...a11yProps(keyIndex)} />
+              <Tab
+                sx={{}}
+                label={
+                  <Typography
+                    sx={{ textAlign: 'left', width: '100%', fontWeight: 'Bold' }}
+                    variant="h6"
+                  >
+                    {convertString(keyName)}
+                  </Typography>
+                }
+                {...a11yProps(keyIndex)}
+              />
               // console.log(effectiveArr[keyName], keyIndex)
             ))}
             {/* <Tab label={effectiveArr[3].key} {...a11yProps(2)} />; //{' '}
@@ -126,15 +137,15 @@ export default function Sidebar() {
           </Tabs>
         </Paper>
       </Box>
+
       {/* HEADER */}
-      <Box component="div" sx={{ margin: '10px 10px 10px 0' }}>
+      <Box component="div" sx={{ margin: '10px 10px 10px 0', overflow: 'auto' }}>
         {/* grid container 40 60 */}
         <Paper
           component="div"
           elevation={3}
           sx={{
             overflow: 'visible',
-            height: '100%',
             position: 'relative'
             // display: 'grid',
             // gridTemplateRows: '30% 70%'
