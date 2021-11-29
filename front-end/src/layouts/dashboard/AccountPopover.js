@@ -18,7 +18,7 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: homeFill,
-    linkTo: '/'
+    linkTo: '/dashboard'
   },
   {
     label: 'Profile',
@@ -28,7 +28,7 @@ const MENU_OPTIONS = [
   {
     label: 'Settings',
     icon: settings2Fill,
-    linkTo: '#'
+    linkTo: '/dashboard/usersettings'
   }
 ];
 
@@ -108,18 +108,6 @@ export default function AccountPopover() {
             {option.label}
           </MenuItem>
         ))}
-
-        <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button
-            fullWidth
-            // onClick={(navigate('/login'), { repalce: true })}
-            color="inherit"
-            variant="outlined"
-          >
-            {/* <RouterLink to="/login">Logout</RouterLink> */}
-            logout
-          </Button>
-        </Box>
       </MenuPopover>
     </>
   );

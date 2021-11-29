@@ -24,8 +24,8 @@ export default function SimpleContainer() {
   return (
     <>
       <CssBaseline />
-      <Container maxWidth="lg">
-        <Box sx={{ bgcolor: '#f3e5f5', height: '100vh', width: 'xl' }}>
+      <Container sx={{ width: '100%' }}>
+        <Box sx={{ height: '100vh', width: '100%' }}>
           <Grid item xs={3} sm={6} md={12}>
             <Container
               style={{
@@ -33,7 +33,8 @@ export default function SimpleContainer() {
                 fontSize: '1.5rem',
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
+                width: '100%'
               }}
             >
               <Typography varinat="h3" sx={{ fontWeight: 'bold', fontSize: '23px' }}>
@@ -41,20 +42,6 @@ export default function SimpleContainer() {
                 Manager Dashboard
               </Typography>
               {/* <RouterLink to="/dashboard/usersettings"> */}
-
-              <Button onClick={handleToggle}>
-                <SettingsIcon />
-              </Button>
-              <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={open}
-                onClick={handleClose}
-              >
-                <Box sx={{ bgcolor: 'lightgreen', height: '100vh', width: '80%', m: 5 }}>
-                  <Typography>Profile Settings</Typography>
-                </Box>
-              </Backdrop>
-              {/* </RouterLink> */}
             </Container>
             <ApiRefRowsGrid />
           </Grid>

@@ -153,17 +153,7 @@ function checkheading(index) {
     );
   }
   if (index === 8) {
-    return (
-      <>
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={days}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label={days[0]} />}
-        />
-      </>
-    );
+    return <></>;
   }
 }
 

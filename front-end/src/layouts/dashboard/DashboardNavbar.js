@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Button } from '@mui/material';
+// import { Link as RouterLink } from 'react-router-dom';
+// import { } from 'react-router-dom';
+
 // components
 import { MHidden } from '../../components/@material-extend';
 //
@@ -43,6 +47,12 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  const True = true;
+  const navigate = useNavigate();
+  const ClickHandler = () => {
+    navigate('/', { replace: true });
+    localStorage.clear();
+  };
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -52,11 +62,15 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           </IconButton>
         </MHidden>
 
-        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
-
+        {/* <RouterLink to="/login" replace={True}> */}
+        <Box sx={{ p: 2, pt: 1.5, color: 'black' }}>
+          <Button fullWidth onClick={ClickHandler} color="inherit" variant="outlined">
+            logout
+          </Button>
+        </Box>
+        {/* </RouterLink> */}
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
           <NotificationsPopover />
           <AccountPopover />
         </Stack>

@@ -33,13 +33,6 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary
 }));
 
-// const handleSwitchChange = (e, project, user) => {
-//   if (project.Projectmembers.includes(user)) {
-//     project.Projectmembers.splice(project.Projectmembers.indexOf(user), 1);
-//     console.log(project.Projectmembers);
-//     // changeProjectmembers(user);
-//   }
-// };
 export default function Main(props) {
   const { value, index, ...other } = props;
   const { User } = useContext(UserContext);
@@ -145,22 +138,24 @@ export default function Main(props) {
                 </RadioGroup>
               </FormControl>
             </Box>
-            <Box>
-              <Typography variant="h5">Manage for</Typography>
-              <Typography varinat="body2">
-                If enabled, {User[index].name} will be able to see selected user's Timeline and
-                Reports, but not rates.
-              </Typography>
-              <Typography varinat="h6">
-                {User.map((user) => (
-                  <FormControlLabel
-                    sx={{ pt: 1, fontWeight: 10 }}
-                    control={<Switch />}
-                    label={user.name}
-                  />
-                ))}
-              </Typography>
-            </Box>
+            {(User[index].role === 'Manager' || User[index].role === 'Admin') && (
+              <Box>
+                <Typography variant="h5">Manage for</Typography>
+                <Typography varinat="body2">
+                  If enabled, {User[index].name} will be able to see selected user's Timeline and
+                  Reports, but not rates.
+                </Typography>
+                <Typography varinat="h6">
+                  {User.map((user) => (
+                    <FormControlLabel
+                      sx={{ pt: 1, fontWeight: 10 }}
+                      control={<Switch />}
+                      label={user.name}
+                    />
+                  ))}
+                </Typography>
+              </Box>
+            )}
             <Box sx={{ pt: 2 }}>
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>

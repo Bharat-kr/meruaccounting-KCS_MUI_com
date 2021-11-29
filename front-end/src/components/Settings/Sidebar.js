@@ -47,7 +47,7 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '700px',
+    height: '750px',
     width: '100%',
     margin: 'auto',
     display: 'grid',
@@ -96,8 +96,8 @@ export default function Sidebar() {
         component="div"
         sx={{
           margin: '10px',
-          maxHeight: '70vh',
-          height: '70vh'
+          maxHeight: '75vh',
+          height: '75vh'
         }}
       >
         <Paper

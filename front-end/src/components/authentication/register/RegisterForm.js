@@ -17,6 +17,8 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
+  const [resstatus, setRestatus] = useState(null);
+
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, 'Too Short!')
@@ -57,12 +59,16 @@ export default function RegisterForm() {
           password: { ...getFieldProps('password') }.value
         }
       });
+      setMessage('');
       console.log(res);
     } catch (error) {
-      if (error.response.status === 400) {
+      if (error.response) {
         setMessage(error.response.data.message);
+        setRestatus(error.response.status);
+        // console.log(error.response.headers);
       }
-      console.log(error.message);
+
+      // console.log(error.response);
     }
   };
 
@@ -76,7 +82,7 @@ export default function RegisterForm() {
               fullWidth
               label="First name"
               {...getFieldProps('firstName')}
-              error={message}
+              error={resstatus}
               helperText={message}
             />
 
@@ -97,7 +103,7 @@ export default function RegisterForm() {
             type="email"
             label="Email address"
             {...getFieldProps('email')}
-            error={message}
+            error={resstatus}
             helperText={message}
           />
 
@@ -107,7 +113,7 @@ export default function RegisterForm() {
             autoComplete="current-password"
             type={showPassword ? 'text' : 'password'}
             label="Password"
-            error={message}
+            error={resstatus}
             helperText={message}
             {...getFieldProps('password')}
             InputProps={{
