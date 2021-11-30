@@ -221,7 +221,9 @@ export default function SettingsMain(props) {
                   <FormControlLabel
                     control={<Switch />}
                     label={user.name}
-                    onChange={userChange(user.name)}
+                    onChange={() => {
+                      userChange(user.name);
+                    }}
                   />
                   {/* {userChange()} */}
                   {test && <div>hello</div>}

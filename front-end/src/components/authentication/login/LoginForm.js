@@ -70,6 +70,7 @@ export default function LoginForm() {
       }
       setMessage('');
       console.log(res.status);
+      console.log(res);
     } catch (error) {
       if (error.response) {
         setMessage(error.response.data.message);
