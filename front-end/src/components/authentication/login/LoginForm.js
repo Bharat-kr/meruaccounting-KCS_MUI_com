@@ -24,21 +24,21 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [resstatus, setRestatus] = useState(null);
-  // const LoginSchema = Yup.object().shape({
-  //   email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-  //   password: Yup.string().required('Password is required')
-  // });
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    password: Yup.string().required('Password is required')
+  });
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
       remember: true
+    },
+    validationSchema: LoginSchema,
+    onSubmit: () => {
+      navigate('/dashboard', { replace: true });
     }
-    // validationSchema: LoginSchema,
-    // onSubmit: () => {
-    //   navigate('/dashboard', { replace: true });
-    // }
   });
 
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
