@@ -16,7 +16,10 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+
 import axios from 'axios';
+import { loginApi } from '../../../api/login';
+import { LoginContext } from '../../../contexts/LoginContext';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -24,21 +27,23 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [resstatus, setRestatus] = useState(null);
-  // const LoginSchema = Yup.object().shape({
-  //   email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-  //   password: Yup.string().required('Password is required')
-  // });
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    password: Yup.string().required('Password is required')
+  });
+
+  const { loginC, dispatchLogin } = LoginContext();
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
       remember: true
+    },
+    validationSchema: LoginSchema,
+    onSubmit: () => {
+      navigate('/dashboard', { replace: true });
     }
-    // validationSchema: LoginSchema,
-    // onSubmit: () => {
-    //   navigate('/dashboard', { replace: true });
-    // }
   });
 
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
@@ -46,41 +51,63 @@ export default function LoginForm() {
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
+  // const handleSubmitAxios = async (e) => {
+  //   e.preventDefault();
+  //   /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
+  //   try {
+  //     const res = await axios({
+  //       method: 'post',
+  //       url: 'http://localhost:8000/login',
+  //       data: {
+  //         role: 'manager',
+  //         firstName: { ...getFieldProps('firstName') }.value,
+  //         lastName: { ...getFieldProps('lastName') }.value,
+  //         email: { ...getFieldProps('email') }.value,
+  //         password: { ...getFieldProps('password') }.value
+  //         // email: 'rohit12345@gmail.com',
+  //         // password: 'rohit'
+  //       }
+  //     });
+  //     localStorage.setItem('userInfo', JSON.stringify(res.data));
+  //     setRestatus(res.status !== 200 && true);
+  //     if (res.status === 200) {
+  //       navigate('/dashboard', { replace: true });
+  //     }
+  //     setMessage('');
+  //     console.log(res.status);
+  //     console.log(res);
+  //   } catch (error) {
+  //     if (error.response) {
+  //       setMessage(error.response.data.message);
+  //       setRestatus(error.response.status);
+  //       // console.log(error.response.headers);
+  //     }
+
+  //     // console.log(error.response);
+  //   }
+  // };
+
   const handleSubmitAxios = async (e) => {
     e.preventDefault();
-    /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
-    try {
-      const res = await axios({
-        method: 'post',
-        url: 'http://localhost:8000/login',
-        data: {
-          role: 'manager',
-          firstName: { ...getFieldProps('firstName') }.value,
-          lastName: { ...getFieldProps('lastName') }.value,
-          email: { ...getFieldProps('email') }.value,
-          password: { ...getFieldProps('password') }.value
-          // email: 'rohit12345@gmail.com',
-          // password: 'rohit'
-        }
-      });
-      localStorage.setItem('userInfo', JSON.stringify(res.data));
-      setRestatus(res.status !== 200 && true);
-      if (res.status === 200) {
-        navigate('/dashboard', { replace: true });
-      }
-      setMessage('');
-      console.log(res.status);
-      console.log(res);
-    } catch (error) {
-      if (error.response) {
-        setMessage(error.response.data.message);
-        setRestatus(error.response.status);
-        // console.log(error.response.headers);
-      }
 
-      // console.log(error.response);
+    /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
+
+    const data = {
+      role: 'manager',
+      // firstName: { ...getFieldProps('firstName') }.value,
+      // lastName: { ...getFieldProps('lastName') }.value,
+      email: { ...getFieldProps('email') }.value,
+      password: { ...getFieldProps('password') }.value
+    };
+
+    loginApi(data, dispatchLogin);
+    if (loginC.isLogin) {
+      navigate('/dashboard', { replace: true });
+      // setMessage('');
     }
   };
+
+  console.log(loginC);
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmitAxios}>

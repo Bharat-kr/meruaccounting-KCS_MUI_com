@@ -32,9 +32,9 @@ export default function DashboardApp() {
           <Grid item xs={12} sm={6} md={3}>
             <AppBugReports />
           </Grid>
-          <Grid item xs={12} sm={6} lg={12}>
-            <SimpleContainer />
-          </Grid>
+
+          <SimpleContainer sx={{ width: '100%' }} />
+
           {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits />
           </Grid> */}

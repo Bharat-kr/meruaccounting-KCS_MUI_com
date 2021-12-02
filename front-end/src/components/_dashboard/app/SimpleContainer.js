@@ -9,7 +9,7 @@ import { Link as RouterLink } from 'react-router-dom';
 // import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Typography, Backdrop, Button } from '@mui/material';
+import { Typography, Backdrop, Button, Paper } from '@mui/material';
 import ApiRefRowsGrid from '../muicomponents/ThrottledRowsGrid';
 // import PageHeader from '../../PageHeader';
 
@@ -24,7 +24,7 @@ export default function SimpleContainer() {
   return (
     <>
       <CssBaseline />
-      <Container sx={{ width: '100%' }}>
+      <Paper elevation="3" sx={{ width: '100%' }}>
         <Box sx={{ height: '100vh', width: '100%' }}>
           <Grid item xs={3} sm={6} md={12}>
             <Container
@@ -46,7 +46,7 @@ export default function SimpleContainer() {
             <ApiRefRowsGrid />
           </Grid>
         </Box>
-      </Container>
+      </Paper>
     </>
   );
 }
