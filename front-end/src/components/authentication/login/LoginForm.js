@@ -91,6 +91,7 @@ export default function LoginForm() {
     e.preventDefault();
 
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
+
     const data = {
       role: 'manager',
       // firstName: { ...getFieldProps('firstName') }.value,

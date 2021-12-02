@@ -66,6 +66,11 @@ const sidebarConfig = [
     title: 'register',
     path: '/register',
     icon: getIcon(personAddFill)
+  },
+  {
+    title: 'User Page',
+    path: '/dashboard/userpage',
+    icon: getIcon(personAddFill)
   }
   // {
   //   title: 'Not found',
