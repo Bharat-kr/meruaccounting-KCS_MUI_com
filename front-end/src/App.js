@@ -6,6 +6,7 @@ import GlobalStyles from './theme/globalStyles';
 // components
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
+import { LoginProvider } from './contexts/LoginContext';
 
 // ----------------------------------------------------------------------
 
@@ -15,7 +16,9 @@ export default function App() {
       <ScrollToTop />
       <GlobalStyles />
       <BaseOptionChartStyle />
-      <Router />
+      <LoginProvider>
+        <Router />
+      </LoginProvider>
     </ThemeConfig>
   );
 }
