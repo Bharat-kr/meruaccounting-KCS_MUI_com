@@ -30,7 +30,7 @@ router.patch("/add/:id", async (req, res) => {
       return res.status(404).send("Employee Not Found");
     }
 
-    const screenShot = {
+    var screenShot = {
       activityLevel: activityLevel,
       url: url,
       time: moment(time, "hh:mm:ss"),
@@ -39,8 +39,8 @@ router.patch("/add/:id", async (req, res) => {
     const timeRange = {
       startTime: moment(startTime, "hh:mm:ss"),
       endTime: moment(endTime, "hh:mm:ss"),
-      activityLevelTotal,
-      screenShot,
+      activityLevelTotal: activityLevelTotal,
+      screenShots: screenShot,
     };
     employee.day.forEach(async (day, index) => {
       console.log(moment(day.date).format("DD/MM/YYYY"));
@@ -142,6 +142,23 @@ router.delete("/:id", async (req, res) => {
   } catch (error) {
     res.json({
       status: "Error",
+      data: error,
+    });
+  }
+});
+
+router.post("/changeSetting", authPass, async (req, res) => {
+  const user = req.user;
+  user.settings = req.body;
+  try {
+    user.save();
+    res.json({
+      message: "Settings Updated",
+      data: user,
+    });
+  } catch (error) {
+    res.json({
+      message: "Error Occured",
       data: error,
     });
   }

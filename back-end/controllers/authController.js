@@ -52,6 +52,12 @@ const login = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  if (!email || !password) {
+    return res.status(401).json({
+      message: "Pls Provide Credentials",
+    });
+  }
+
   User.findOne({ email: email }).then(async (user) => {
     console.log(user);
     bcrypt.compare(password, user.password, (err, result) => {
@@ -69,7 +75,6 @@ const login = async (req, res) => {
           status: "success",
           message: "Logged In successfully",
           token,
-          user,
         });
       } else {
         res.status(400).json({

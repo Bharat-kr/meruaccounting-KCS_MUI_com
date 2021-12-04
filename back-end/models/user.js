@@ -7,6 +7,8 @@ const userSchema = new Schema({
     type: String,
     // default: "admin",
   },
+  isAdmin:Boolean,
+  isManager:Boolean,
   company: String,
   fistName: {
     type: String,
@@ -23,9 +25,13 @@ const userSchema = new Schema({
   },
   team: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Team,
+    ref: "Team",
   },
-  Settings: {
+  employees: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  settings: {
     ScreenShotPerHour: Number,
     AllowBlur: Boolean,
     AppsAndUrlTracking: Boolean,
@@ -39,13 +45,13 @@ const userSchema = new Schema({
   pay: Number,
   day: [
     {
-      date: Date,
+      time : { type : Date, default: Date.now },
       hours: Number,
       timeRange: [
         {
           startTime: Date,
           endTime: Date,
-          activityLevel: Number,
+          activityLevelTotal: Number,
           screenShots: [
             {
               activityLevel: Number,
