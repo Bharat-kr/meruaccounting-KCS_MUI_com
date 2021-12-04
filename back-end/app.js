@@ -21,19 +21,6 @@ app.get("/getMe", (req, res) => {
   res.send("Ok");
 });
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
-  );
-  res.header("Access-Control-Allow-Credentials", true);
-  next(); // dont forget this
-});
 app.use("/employee", require("./routers/employee"));
 app.use("/", require("./routers/auth"));
 app.use("/team", require("./routers/team"));
