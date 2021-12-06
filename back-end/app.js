@@ -3,12 +3,16 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const path = require("path");
 const morgan = require("morgan");
+var cors = require("cors");
+
 const connectDB = require("./config/db");
 
 const app = express();
 
 dotenv.config({ path: "./config/config.env" });
 connectDB();
+
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
