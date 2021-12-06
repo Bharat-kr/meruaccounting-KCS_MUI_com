@@ -164,4 +164,23 @@ router.post("/changeSetting", authPass, async (req, res) => {
   }
 });
 
+router.get("/employeeList", authPass, (req, res) => {
+  const user = req.user;
+
+  if (!user.isManager == true) {
+    res.status(201).json({
+      messsage: "UnAuthorized Manager",
+    });
+  }
+
+  const employees = user.employees;
+  const team = user.team.populate();
+
+  res.status(200).json({
+    messsage: "Success",
+    employees,
+    team,
+  });
+});
+
 module.exports = router;
