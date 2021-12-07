@@ -9,6 +9,7 @@ export const loginApi = (data, dispatch) => {
       if (res.data.status === 'success') {
         localStorage.setItem('Bearer Token', res.data.token);
         dispatch({ type: 'SET_USER_DATA', data: res.data.user });
+        window.location.href = '/dashboard/app';
       } else {
         dispatch({ type: 'LOGIN_ERR' });
       }
