@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import PageHeader from '../components/UserPage/PageHeader';
 import Overview from '../components/UserPage/Overview';
 import Timeline from '../components/UserPage/Timeline';
-import ScreenShots from '../components/UserPage/Screenshots';
+import ScreenShots from '../components/UserPage/ScreenShots';
 
 // eslint-disable-next-line import/no-named-as-default
 import CurrentUserContextProvider from '../contexts/CurrentUserContext';
