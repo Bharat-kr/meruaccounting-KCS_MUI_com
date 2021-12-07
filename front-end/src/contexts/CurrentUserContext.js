@@ -11,15 +11,16 @@ export const CurrentUserContextProvider = (props) => {
     lastName: 'Singh',
     email: 'kamal021099@gmail.com',
     password: '12345678',
-    day: [
-      {
+    day: {
+      1638729000: {
         date: `${new Date()}`,
         hours: 50,
         timeRange: [
           {
-            startTime: new Date(),
-            endTime: new Date(),
+            startTime: '6:04pm',
+            endTime: '6:32pm',
             activityLevel: 50,
+            taskName: 'Development',
             screenShots: [
               {
                 activityLevel: 70,
@@ -31,8 +32,10 @@ export const CurrentUserContextProvider = (props) => {
           }
         ]
       }
-    ]
+    }
   });
+  // save days as unix timestamps gmt/utc to access as keys by clicking on the calendar.
+  // task name for the timerange as well.
 
   return (
     <div>

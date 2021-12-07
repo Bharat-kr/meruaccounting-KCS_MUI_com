@@ -6,7 +6,7 @@ export const loginApi = (data, dispatch) => {
     .post('http://localhost:8000/login', data)
     .then((res) => {
       console.log('login data', res);
-      if (res.data.status !== 'success') {
+      if (res.data.status === 'success') {
         localStorage.setItem('Bearer Token', res.data.token);
         dispatch({ type: 'SET_USER_DATA', data: res.data.user });
       } else {
