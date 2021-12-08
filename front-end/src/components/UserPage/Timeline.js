@@ -56,7 +56,8 @@ export default function Timeline(props) {
   // callback fn to make array of divs to pass.
   const renderCalendar = () => {
     const row = [];
-    for (let i = 1; i <= days; i += i) {
+    // eslint-disable-next-line no-plusplus
+    for (let i = 1; i <= days; i++) {
       row.push(<div className={classes.inner}>{i}</div>);
     }
     return row;

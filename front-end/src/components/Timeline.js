@@ -56,7 +56,7 @@ export default function Timeline(props) {
   // callback fn to make array of divs to pass.
   const renderCalendar = () => {
     const row = [];
-    for (let i = 1; i <= days; i += i) {
+    for (let i = 1; i <= days; i += 1) {
       row.push(<div className={classes.inner}>{i}</div>);
     }
     return row;

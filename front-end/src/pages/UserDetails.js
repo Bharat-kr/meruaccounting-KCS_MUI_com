@@ -36,8 +36,8 @@ export default function UserDetails() {
             </Grid>
           </Grid>
         </Container>
-        <Sidebar />
-        <ScreenShots />
+        {/* <Sidebar /> */}
+        {/* <ScreenShots /> */}
         <Box sx={{ bgcolor: '#f3e5f5', height: '100vh', width: 'xl' }}>
           <Timeline />
         </Box>
