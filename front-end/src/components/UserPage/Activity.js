@@ -1,17 +1,8 @@
 import React, { useContext } from 'react';
-import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  Tooltip,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia
-} from '@mui/material';
+import { Box, Backdrop, Typography, Tooltip, Card, CardActionArea, CardMedia } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import HourglassFullIcon from '@mui/icons-material/HourglassFull';
+import Preview from './Preview';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 const useStyles = makeStyles((theme) => ({}));
@@ -26,6 +17,14 @@ export default function Activity(props) {
   const { currentUser } = useContext(CurrentUserContext);
   const classes = useStyles();
   console.log(currentUser.day[1638729000].timeRange[0]);
+
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   return (
     <Box component="div" sx={{}}>
@@ -42,13 +41,9 @@ export default function Activity(props) {
 
       <Box component="div" sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
         {previews.map((preview) => (
-          <Tooltip title="6:53pm" placement="top" followCursor>
-            <Card sx={{ maxWidth: 345, m: 1 }}>
-              <CardActionArea>
-                <CardMedia component="img" height="140" image={preview} alt="green iguana" />
-              </CardActionArea>
-            </Card>
-          </Tooltip>
+          <>
+            <Preview preview={preview} />
+          </>
         ))}
 
         {/* screenshots here flex wrap rowwise justify center */}
