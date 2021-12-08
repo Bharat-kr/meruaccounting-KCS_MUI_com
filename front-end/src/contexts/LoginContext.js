@@ -13,8 +13,6 @@ const initialValue = {
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_USER_DATA':
-      console.log('resres', action.data);
-
       if (action.data) {
         localStorage.setItem('ud', JSON.stringify(action.data));
 
