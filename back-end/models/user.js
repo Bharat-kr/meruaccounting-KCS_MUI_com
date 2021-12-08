@@ -7,8 +7,8 @@ const userSchema = new Schema({
     type: String,
     // default: "admin",
   },
-  isAdmin:Boolean,
-  isManager:Boolean,
+  isAdmin: Boolean,
+  isManager: Boolean,
   company: String,
   fistName: {
     type: String,
@@ -27,10 +27,10 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Team",
   },
-  employees: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
+  // employees: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "User",
+  // }],
   settings: {
     ScreenShotPerHour: Number,
     AllowBlur: Boolean,
@@ -45,7 +45,7 @@ const userSchema = new Schema({
   pay: Number,
   day: [
     {
-      time : { type : Date, default: Date.now },
+      time: { type: Date, default: Date.now },
       hours: Number,
       timeRange: [
         {

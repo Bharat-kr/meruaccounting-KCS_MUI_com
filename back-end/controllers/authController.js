@@ -100,7 +100,7 @@ const authPass = async (req, res, next) => {
     console.log(req.headers.authorization.startsWith("Bearer"));
 
     token = req.headers.authorization.split(" ")[1];
-    console.log(token);
+    // console.log(token);
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
@@ -113,7 +113,7 @@ const authPass = async (req, res, next) => {
 
   // 2) Verification token
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  console.log("This is decoded", decoded);
+  // console.log("This is decoded", decoded);
 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
@@ -123,7 +123,7 @@ const authPass = async (req, res, next) => {
       message: "You aren't Logged In",
     });
   }
-  console.log(currentUser);
+  // console.log(currentUser);
 
   // 4) Check if user changed password after the token was issued
 

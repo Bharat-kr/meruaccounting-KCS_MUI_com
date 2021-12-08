@@ -13,6 +13,9 @@ router.post("/create", authPass, async (req, res) => {
     const team = new Team({ name });
     await team.save();
     team.manager = manager._id;
+    manager.team = team;
+    console.log(manager.team);
+    await manager.save();
     await team.save();
     res.status(201).json({
       status: "Created Team",
@@ -61,7 +64,7 @@ router.patch("/updateMember", authPass, async (req, res) => {
   const teamId = req.body.teamId;
   var alreadyMember = false;
   try {
-    const team = await Team.findOne({ manger: manager._id });
+    const team = await Team.findOne({ manager: manager._id });
     console.log(team);
     team.employees.forEach((employee) => {
       console.log(employee);
@@ -133,5 +136,33 @@ router.delete("/removeMember", async (req, res) => {
       data: error,
     });
   }
+});
+
+router.get("/getTeam", authPass, async (req, res) => {
+  const user = req.user;
+  const manager = await User.populate(user, { path: "team" });
+  const team = manager.team;
+
+  console.log(team);
+  // const team = await user.populate("team").execPopulate();
+  const TeamMembers = await Team.populate(team, {
+    path: "employees",
+  });
+  const teamMembers = TeamMembers.employees;
+
+  const TeamProject = await Team.populate(team, {
+    path: "projects",
+  });
+  const teamProject = TeamProject.projects;
+  // const teamProject = team.populate("projects");
+  // t.populate("my-path").execPopulate();
+  res.json({
+    msg: "Success",
+    data: {
+      team,
+      teamMembers,
+      teamProject,
+    },
+  });
 });
 module.exports = router;
