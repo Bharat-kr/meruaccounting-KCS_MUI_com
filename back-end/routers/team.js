@@ -149,6 +149,12 @@ router.get("/getTeam", authPass, async (req, res) => {
   const manager = await User.populate(user, { path: "team" });
   const team = manager.team;
 
+  if (!team) {
+    return res.status(404).json({
+      msg: "No Teams Found!!",
+    });
+  }
+
   console.log(team);
   // const team = await user.populate("team").execPopulate();
   const TeamMembers = await Team.populate(team, {
