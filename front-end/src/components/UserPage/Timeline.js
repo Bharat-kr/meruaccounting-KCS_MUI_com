@@ -48,7 +48,7 @@ function getDaysInMonth(month, year) {
   return new Date(year, month, 0).getDate();
 }
 let days = getDaysInMonth(thisMonth.getMonth(), thisMonth.getFullYear());
-console.log(days);
+// console.log(days);
 
 export default function Timeline(props) {
   const classes = useStyles();

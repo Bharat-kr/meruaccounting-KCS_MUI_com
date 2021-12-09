@@ -101,10 +101,11 @@ export default function LoginForm() {
     };
 
     loginApi(data, dispatchLogin);
-    if (loginC.isLogin) {
-      navigate('/dashboard', { replace: true });
-      // setMessage('');
-    }
+    console.log(loginC);
+    // if (loginC.isLogin) {
+    //   navigate('/dashboard', { replace: true });
+    //   // setMessage('');
+    // }
   };
 
   console.log(loginC);

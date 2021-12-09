@@ -4,8 +4,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-import { Box, Paper, styled, OutlinedInput, TextField, Autocomplete } from '@mui/material';
+import { Box, Paper, styled, OutlinedInput, TextField, Autocomplete, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { RestaurantRounded } from '@material-ui/icons';
 import Main from './Main';
 import { UserContext } from '../../contexts/UserContext';
 import { ClientsContext } from '../../contexts/ClientsContext';
@@ -59,6 +60,7 @@ export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
   const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -69,6 +71,10 @@ export default function VerticalTabs() {
       return;
     }
     return changeClient(client[0]);
+  };
+
+  const handleSubmit = () => {
+    RestaurantRounded(console.log('hello'));
   };
   const UsersList = [];
   clients.forEach((client) => {
@@ -81,8 +87,8 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: '10px',
-          maxHeight: '70vh',
-          height: '70vh'
+          // maxHeight: '70vh',
+          height: 'auto'
         }}
       >
         <Paper
@@ -124,6 +130,20 @@ export default function VerticalTabs() {
               />
             ))}
           </Tabs>
+          <form onSubmit={handleSubmit} noValidate autoComplete="off">
+            <TextField
+              // onChange={(e) => setnewClientValue(e.target.value)}
+              required
+              fullWidth
+              label="Add new client"
+              // error={newClientError}
+              sx={{ mb: 1 }}
+            />
+
+            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
+              Submit
+            </Button>
+          </form>
         </Paper>
       </Box>
 
