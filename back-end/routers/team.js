@@ -140,6 +140,12 @@ router.delete("/removeMember", async (req, res) => {
 
 router.get("/getTeam", authPass, async (req, res) => {
   const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({
+      msg: "UnAuthorized",
+    });
+  }
   const manager = await User.populate(user, { path: "team" });
   const team = manager.team;
 
