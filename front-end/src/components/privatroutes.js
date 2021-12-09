@@ -8,5 +8,5 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
   const { loginC } = LoginContext();
   const ud = JSON.parse(localStorage.getItem('ud'));
   console.log(loginC);
-  return loginC ? ud.role === roles && <Component /> : <Navigate to="/" />;
+  return loginC && ud.role === roles ? <Component /> : <Navigate to="/404" replace />;
 };

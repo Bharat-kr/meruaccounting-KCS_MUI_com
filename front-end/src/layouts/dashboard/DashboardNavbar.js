@@ -50,8 +50,8 @@ export default function DashboardNavbar({ onOpenSidebar }) {
   const True = true;
   const navigate = useNavigate();
   const ClickHandler = () => {
-    navigate('/', { replace: true });
     localStorage.clear();
+    navigate('/', { replace: true });
   };
   return (
     <RootStyle>

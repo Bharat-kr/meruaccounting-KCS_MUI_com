@@ -1,7 +1,7 @@
 export const Role = {
   SuperAdmin: 'superadmin',
-  Admin: 'Admin',
-  Manage: 'Manager',
+  Admin: 'admin',
+  Manage: 'manager',
   Teamleader: 'teamleader',
   Employee: 'employee'
 };
