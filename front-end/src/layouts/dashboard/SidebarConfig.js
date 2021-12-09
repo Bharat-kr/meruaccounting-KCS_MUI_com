@@ -13,9 +13,29 @@ import Description from '@mui/icons-material/Description';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
+import { Role } from '../../_helpers/role';
 // ----------------------------------------------------------------------
 
 const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
+
+export const sidebarConfigfn = function (currentRole) {
+  // console.log(currentRole);
+  // console.log(Role.Employee);
+  if (currentRole === Role.Employee)
+    return [
+      {
+        title: 'Home',
+        path: '/dashboard/userpage',
+        icon: <HomeIcon />
+      },
+      {
+        title: 'dashboard',
+        path: '/dashboard/app',
+        icon: getIcon(pieChart2Fill)
+      }
+    ];
+  return sidebarConfig;
+};
 
 const sidebarConfig = [
   {
@@ -76,4 +96,4 @@ const sidebarConfig = [
   // }
 ];
 
-export default sidebarConfig;
+// export default sidebarConfig;
