@@ -16,7 +16,6 @@ const previews = [
 export default function Activity(props) {
   const { currentUser } = useContext(CurrentUserContext);
   const classes = useStyles();
-  console.log(currentUser.day[1638729000].timeRange[0]);
 
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {

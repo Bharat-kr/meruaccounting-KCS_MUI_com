@@ -93,22 +93,25 @@ export default function LoginForm() {
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
 
     const data = {
-      role: 'manager',
+      // role: 'manager',
       // firstName: { ...getFieldProps('firstName') }.value,
       // lastName: { ...getFieldProps('lastName') }.value,
       email: { ...getFieldProps('email') }.value,
       password: { ...getFieldProps('password') }.value
     };
 
+    // const dataS = JSON.stringify(data);
+    // console.log(typeof dataS);
+
     loginApi(data, dispatchLogin);
     console.log(loginC);
-    // if (loginC.isLogin) {
-    //   navigate('/dashboard', { replace: true });
-    //   // setMessage('');
-    // }
+    if (localStorage['Bearer Token']) {
+      navigate('/dashboard/app', { replace: true });
+      // setMessage('');
+    }
   };
 
-  console.log(loginC);
+  // console.log(loginC);
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmitAxios}>

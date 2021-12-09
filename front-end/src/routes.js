@@ -23,10 +23,13 @@ import { Role } from './_helpers/role';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const token = localStorage['Bearer Token'];
+
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: token ? <DashboardLayout /> : <Navigate to="/login" />,
+
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
         { path: 'app', element: <PrivateRoute component={DashboardApp} roles={Role.Employee} /> },
@@ -37,11 +40,11 @@ export default function Router() {
         { path: 'teams', element: <PrivateRoute component={Teams} roles={Role.Employee} /> },
         {
           path: 'userdetails',
-          element: <PrivateRoute component={UserDetails} roles={Role.Employee} />
+          element: <PrivateRoute component={UserDetails} roles={Role.Manage} />
         },
         {
           path: 'clients',
-          element: <PrivateRoute component={Clients} roles={Role.Employee} />
+          element: <PrivateRoute component={Clients} roles={Role.Manage} />
         },
         {
           path: 'projects',
@@ -70,12 +73,13 @@ export default function Router() {
         // { path: 'userpage', element: <UserPage /> }
       ]
     },
+
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: 'login', element: !token ? <Login /> : <Navigate to="/dashboard" /> },
+        { path: 'register', element: !token ? <Register /> : <Navigate to="/dashboard" /> },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/login" /> },
         { path: '*', element: <Navigate to="/404" /> }
