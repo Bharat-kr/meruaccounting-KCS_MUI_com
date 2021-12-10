@@ -16,12 +16,12 @@ import HomeIcon from '@mui/icons-material/Home';
 import { Role } from '../../_helpers/role';
 // ----------------------------------------------------------------------
 
-const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
+const getIcon = function (name) {
+  return <Icon icon={name} width={22} height={22} />;
+};
 
-export const sidebarConfigfn = function (currentRole) {
-  // console.log(currentRole);
-  // console.log(Role.Employee);
-  if (currentRole === Role.Employee)
+export const sidebarConfigfn = function (currentRoleIndex) {
+  if (currentRoleIndex === 4)
     return [
       {
         title: 'Home',
