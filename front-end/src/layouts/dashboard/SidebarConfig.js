@@ -96,4 +96,4 @@ const sidebarConfig = [
   // }
 ];
 
-// export default sidebarConfig;
+export { sidebarConfig as sidebarConfigDefault };

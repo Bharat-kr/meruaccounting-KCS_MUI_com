@@ -29,6 +29,7 @@ export default function Router() {
     {
       path: '/dashboard',
       element: token ? <DashboardLayout /> : <Navigate to="/login" />,
+      // element: <DashboardLayout />,
 
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
@@ -79,6 +80,8 @@ export default function Router() {
       element: <LogoOnlyLayout />,
       children: [
         { path: 'login', element: !token ? <Login /> : <Navigate to="/dashboard" /> },
+        // { path: 'login', element: <Login /> },
+        // { path: 'register', element: <Register /> },
         { path: 'register', element: !token ? <Register /> : <Navigate to="/dashboard" /> },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/login" /> },
