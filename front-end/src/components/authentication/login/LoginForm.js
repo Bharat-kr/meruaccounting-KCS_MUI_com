@@ -16,8 +16,6 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
-import axios from 'axios';
 import { loginApi } from '../../../api/login';
 import { LoginContext } from '../../../contexts/LoginContext';
 // ----------------------------------------------------------------------
