@@ -16,7 +16,7 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { loginApi } from '../../../api/login';
+import { loginApi } from '../../../api/auth api/login';
 import { LoginContext } from '../../../contexts/LoginContext';
 // ----------------------------------------------------------------------
 
