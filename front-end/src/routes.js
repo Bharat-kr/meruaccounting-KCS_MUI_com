@@ -37,7 +37,7 @@ export default function Router() {
         { path: 'user', element: <PrivateRoute component={User} roles={4} /> },
         // { path: 'products', element: <PrivateRoute component={Products} roles={} /> },
         // { path: 'blog', element: <PrivateRoute component={Blogs} roles={} /> },
-        { path: 'reports', element: <PrivateRoute component={Reports} roles={3} /> },
+        { path: 'reports', element: <PrivateRoute component={Reports} roles={4} /> },
         { path: 'teams', element: <PrivateRoute component={Teams} roles={2} /> },
         {
           path: 'userdetails',
