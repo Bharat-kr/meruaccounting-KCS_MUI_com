@@ -53,12 +53,12 @@ const reducer = (state, action) => {
 
 export function LoginProvider(props) {
   const [loginC, dispatchLogin] = useReducer(reducer, initialValue, () => {
-    const localData = localStorage.getItem('login');
+    const localData = localStorage.getItem('loginC');
     return localData ? JSON.parse(localData) : initialValue;
   });
 
   useEffect(() => {
-    localStorage.setItem('login', JSON.stringify(loginC));
+    localStorage.setItem('loginC', JSON.stringify(loginC));
   }, [loginC]);
 
   return <loginContext.Provider value={{ loginC, dispatchLogin }} {...props} />;
