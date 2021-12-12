@@ -20,8 +20,20 @@ export default function AuthSocial() {
     <>
       <Stack direction="row" spacing={2}>
         <GoogleLogin
+          render={(renderProps) => (
+            <Button
+              fullWidth
+              size="large"
+              color="inherit"
+              variant="outlined"
+              onClick={renderProps.onClick}
+              disabled={renderProps.disabled}
+            >
+              <Icon icon={googleFill} color="#1877F2" height={24} />
+            </Button>
+          )}
           clientId="804569198279-3gituh1pndp1n8l37ag4p23fpa8mcrmd.apps.googleusercontent.com"
-          buttonText="Login"
+          buttonText=""
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
           cookiePolicy="single_host_origin"
