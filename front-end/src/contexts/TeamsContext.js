@@ -38,7 +38,14 @@ const reducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [teamCreate, dispatchTeamCreate] = useReducer(reducer, initialValue);
+  const [teamCreate, dispatchTeamCreate] = useReducer(reducer, initialValue, () => {
+    const localData = localStorage.getItem('teamCreate');
+    return localData ? JSON.parse(localData) : initialValue;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
+  }, [teamCreate]);
 
   return <teamContext.Provider value={{ teamCreate, dispatchTeamCreate }} {...props} />;
 }

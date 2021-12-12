@@ -32,6 +32,11 @@ export const sidebarConfigfn = function (currentRoleIndex) {
         title: 'dashboard',
         path: '/dashboard/app',
         icon: getIcon(pieChart2Fill)
+      },
+      {
+        title: 'Reports',
+        path: '/dashboard/reports',
+        icon: <NoteIcon />
       }
     ];
   return sidebarConfig;
