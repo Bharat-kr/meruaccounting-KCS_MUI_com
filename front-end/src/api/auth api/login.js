@@ -11,7 +11,6 @@ export const loginApi = (data, dispatch) => {
         localStorage.setItem('Bearer Token', res.data.token);
         localStorage.setItem('ud', res.data.user);
         console.log(res.data);
-        dispatch({ type: 'USER_TOKEN_SAVED', data: res.data.token });
         dispatch({ type: 'SET_USER_DATA', data: res.data.user });
         window.location.href = '/dashboard/userpage';
         // return <Navigate to="/dashboard/homepage" />;
