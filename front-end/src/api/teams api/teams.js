@@ -5,15 +5,16 @@ import {
   TEAM_CREATE_REQUEST,
   TEAM_CREATE_RESET,
   TEAM_CREATE_SUCCESS
-} from 'src/constants/TeamConstants';
+} from '../../constants/TeamConstants';
 
-export const AddMember = (data, ud, dispatch) => {
+export const AddMember = (data, dispatch) => {
   dispatch({ type: TEAM_CREATE_REQUEST });
 
-  //get token and put in this constant
+  // get token and put in this constant
+  const token = localStorage['Bearer Token'];
   const config = {
     headers: {
-      Authorization: `Bearer ${ud.token}`
+      Authorization: `Bearer ${token}`
     }
   };
 

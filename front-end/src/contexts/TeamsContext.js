@@ -5,9 +5,9 @@ import {
   TEAM_CREATE_REQUEST,
   TEAM_CREATE_RESET,
   TEAM_CREATE_SUCCESS
-} from 'src/constants/TeamConstants';
+} from '../constants/TeamConstants';
 
-const teamContext = React.createContext();
+export const teamContext = React.createContext();
 
 const initialValue = {
   teamCreate: {},
@@ -38,22 +38,15 @@ const reducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [teamCreate, dispatchTeamCreate] = useReducer(reducer, initialValue, () => {
-    const localData = localStorage.getItem('teamCreate');
-    return localData ? JSON.parse(localData) : initialValue;
-  });
+  const [teamCreate, dispatchTeamCreate] = useReducer(reducer, initialValue);
 
   useEffect(() => {
     localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
   }, [teamCreate]);
 
-  return <teamContext.Provider value={{ teamCreate, dispatchTeamCreate }} {...props} />;
-}
-
-export function TeamContext() {
-  const context = useContext(teamContext);
-  if (!context) {
-    throw new Error('Please use the context inside the parent scope');
-  }
-  return context;
+  return (
+    <teamContext.Provider value={{ teamCreate, dispatchTeamCreate }}>
+      {props.children}
+    </teamContext.Provider>
+  );
 }
