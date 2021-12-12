@@ -10,7 +10,10 @@ import {
 export const AddMember = (data, dispatch) => {
   dispatch({ type: TEAM_CREATE_REQUEST });
 
+<<<<<<< HEAD
   // get token and put in this constant
+=======
+>>>>>>> f8515a1000c300f8ab32145c2f0f3551bac3458e
   const token = localStorage['Bearer Token'];
   const config = {
     headers: {

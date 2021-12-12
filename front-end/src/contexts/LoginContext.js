@@ -12,14 +12,6 @@ const initialValue = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'USER_TOKEN_SAVED':
-      if (action.data) {
-        return {
-          ...state,
-          token: action.data
-        };
-      }
-      break;
     case 'SET_USER_DATA':
       if (action.data) {
         localStorage.setItem('ud', JSON.stringify(action.data));
@@ -48,8 +40,6 @@ const reducer = (state, action) => {
       return state;
   }
 };
-
-// TODO: get token from local storage
 
 export function LoginProvider(props) {
   const [loginC, dispatchLogin] = useReducer(reducer, initialValue, () => {
