@@ -1,19 +1,19 @@
 import axios from 'axios';
+import { addYears } from 'date-fns';
 
 import {
   TEAM_CREATE_FAILED,
   TEAM_CREATE_REQUEST,
   TEAM_CREATE_RESET,
-  TEAM_CREATE_SUCCESS
+  TEAM_CREATE_SUCCESS,
+  EMPLOYEE_LIST_FAILED,
+  EMPLOYEE_LIST_SUCCESS,
+  EMPLOYEE_LIST_REQUEST
 } from '../../constants/TeamConstants';
 
 export const AddMember = (data, dispatch) => {
   dispatch({ type: TEAM_CREATE_REQUEST });
 
-<<<<<<< HEAD
-  // get token and put in this constant
-=======
->>>>>>> f8515a1000c300f8ab32145c2f0f3551bac3458e
   const token = localStorage['Bearer Token'];
   const config = {
     headers: {
@@ -34,4 +34,21 @@ export const AddMember = (data, dispatch) => {
       console.log(err);
       dispatch({ type: TEAM_CREATE_FAILED, payload: err });
     });
+};
+export const getEmployeeList = async (dispatch) => {
+  dispatch({ type: EMPLOYEE_LIST_REQUEST });
+  try {
+    const res = await axios.get('http://localhost:8000/team/getTeam', {
+      headers: {
+        Authorization: `Bearer ${localStorage['Bearer Token']}`
+      }
+    });
+    console.log(res);
+    if (res.data.status === 'success') {
+      dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: res.data.data });
+    }
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+  }
 };
