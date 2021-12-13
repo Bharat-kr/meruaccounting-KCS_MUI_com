@@ -9,6 +9,11 @@ router.post("/create", authPass, async (req, res) => {
   const manager = req.user;
   console.log(manager);
   const { name } = req.body;
+  if (!manager.role === "manager") {
+    return res.status(201).json({
+      status: "UnAuthorized",
+    });
+  }
   try {
     const team = new Team({ name });
     await team.save();
@@ -34,7 +39,6 @@ router.post("/add/:id", authPass, async (req, res) => {
   const employee = req.user;
   if (employee.role === "manager") {
     try {
-      co;
       console.log(team);
       await team.save();
       team.employees.push(id);
