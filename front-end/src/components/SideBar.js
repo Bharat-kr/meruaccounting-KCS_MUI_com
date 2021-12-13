@@ -1,7 +1,6 @@
 import React from 'react';
 import Paper from '@mui/material/Paper';
 import { makeStyles } from '@mui/styles';
-import Box from '@mui/material/Box';
 
 const useStyles = makeStyles((theme) => ({
   root: {
