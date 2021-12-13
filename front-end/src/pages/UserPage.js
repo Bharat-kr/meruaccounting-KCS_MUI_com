@@ -7,15 +7,18 @@ import ScreenShots from '../components/UserPage/ScreenShots';
 
 // eslint-disable-next-line import/no-named-as-default
 import CurrentUserContextProvider from '../contexts/CurrentUserContext';
+import { LoginProvider } from '../contexts/LoginContext';
 
 export default function UserPage(props) {
   return (
-    <CurrentUserContextProvider>
-      <PageHeader>HEllo</PageHeader>
-      {/* <Timeline /> */}
-      <Overview />
-      <ScreenShots />
-    </CurrentUserContextProvider>
+    <LoginProvider>
+      <CurrentUserContextProvider>
+        <PageHeader>HEllo</PageHeader>
+        {/* <Timeline /> */}
+        <Overview />
+        <ScreenShots />
+      </CurrentUserContextProvider>
+    </LoginProvider>
   );
 }
 

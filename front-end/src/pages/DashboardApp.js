@@ -1,5 +1,6 @@
 // material
 import { Box, Grid, Container, Typography } from '@mui/material';
+import { TeamsProvider } from '../contexts/TeamsContext';
 // components
 import Page from '../components/Page';
 import {

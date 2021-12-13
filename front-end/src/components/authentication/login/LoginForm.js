@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link as RouterLink, useNavigate, useHistory } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
@@ -16,10 +16,8 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-
-import axios from 'axios';
-import { loginApi } from '../../../api/login';
-import { LoginContext } from '../../../contexts/LoginContext';
+import { loginApi } from '../../../api/auth api/login';
+import { loginContext } from '../../../contexts/LoginContext';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -31,8 +29,7 @@ export default function LoginForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required')
   });
-
-  const { loginC, dispatchLogin } = LoginContext();
+  const { loginC, dispatchLogin } = useContext(loginContext);
 
   const formik = useFormik({
     initialValues: {
@@ -93,22 +90,25 @@ export default function LoginForm() {
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
 
     const data = {
-      role: 'manager',
+      // role: 'manager',
       // firstName: { ...getFieldProps('firstName') }.value,
       // lastName: { ...getFieldProps('lastName') }.value,
       email: { ...getFieldProps('email') }.value,
       password: { ...getFieldProps('password') }.value
     };
 
+    // const dataS = JSON.stringify(data);
+    // console.log(typeof dataS);
+
     loginApi(data, dispatchLogin);
     console.log(loginC);
-    // if (loginC.isLogin) {
-    //   navigate('/dashboard', { replace: true });
-    //   // setMessage('');
-    // }
+    if (localStorage['Bearer Token']) {
+      navigate('/dashboard/app', { replace: true });
+      // setMessage('');
+    }
   };
 
-  console.log(loginC);
+  // console.log(loginC);
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmitAxios}>

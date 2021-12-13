@@ -1,7 +1,7 @@
-import React, { useContext, useReducer } from 'react';
+import React, { useContext, useReducer, useEffect } from 'react';
 // import { setLocalStorage } from "../helper/localStorage";
 
-const loginContext = React.createContext();
+export const loginContext = React.createContext();
 
 const initialValue = {
   isLogin: false,
@@ -42,14 +42,14 @@ const reducer = (state, action) => {
 };
 
 export function LoginProvider(props) {
-  const [loginC, dispatchLogin] = useReducer(reducer, initialValue);
-  return <loginContext.Provider value={{ loginC, dispatchLogin }} {...props} />;
-}
+  const [loginC, dispatchLogin] = useReducer(reducer, initialValue, () => {
+    const localData = localStorage.getItem('loginC');
+    return localData ? JSON.parse(localData) : initialValue;
+  });
 
-export function LoginContext() {
-  const context = useContext(loginContext);
-  if (!context) {
-    throw new Error(' Please use the context inside parent scope');
-  }
-  return context;
+  useEffect(() => {
+    localStorage.setItem('loginC', JSON.stringify(loginC));
+  }, [loginC]);
+
+  return <loginContext.Provider value={{ loginC, dispatchLogin }} {...props} />;
 }

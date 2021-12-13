@@ -23,39 +23,44 @@ import { Role } from './_helpers/role';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const token = localStorage['Bearer Token'];
+
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: token ? <DashboardLayout /> : <Navigate to="/login" />,
+      // element: <DashboardLayout />,
+
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
-        { path: 'app', element: <PrivateRoute component={DashboardApp} roles={Role.Employee} /> },
-        { path: 'user', element: <PrivateRoute component={User} roles={Role.Employee} /> },
+        { path: 'app', element: <PrivateRoute component={DashboardApp} roles={4} /> },
+        { path: 'user', element: <PrivateRoute component={User} roles={4} /> },
         // { path: 'products', element: <PrivateRoute component={Products} roles={} /> },
         // { path: 'blog', element: <PrivateRoute component={Blogs} roles={} /> },
-        { path: 'reports', element: <PrivateRoute component={Reports} roles={Role.Employee} /> },
-        { path: 'teams', element: <PrivateRoute component={Teams} roles={Role.Employee} /> },
+        { path: 'reports', element: <PrivateRoute component={Reports} roles={4} /> },
+        { path: 'teams', element: <PrivateRoute component={Teams} roles={2} /> },
         {
           path: 'userdetails',
-          element: <PrivateRoute component={UserDetails} roles={Role.Employee} />
+          // eslint-disable-next-line jsx-a11y/aria-role
+          element: <PrivateRoute component={UserDetails} role={3} />
         },
         {
           path: 'clients',
-          element: <PrivateRoute component={Clients} roles={Role.Employee} />
+          element: <PrivateRoute component={Clients} roles={3} />
         },
         {
           path: 'projects',
-          element: <PrivateRoute component={Projects} roles={Role.Employee} />
+          element: <PrivateRoute component={Projects} roles={3} />
         },
         {
           path: 'settings',
-          element: <PrivateRoute component={Settings} roles={Role.Employee} />
+          element: <PrivateRoute component={Settings} roles={4} />
         },
         {
           path: 'usersettings',
-          element: <PrivateRoute component={UserSettings} roles={Role.Employee} />
+          element: <PrivateRoute component={UserSettings} roles={4} />
         },
-        { path: 'userpage', element: <PrivateRoute component={UserPage} roles={Role.Employee} /> }
+        { path: 'userpage', element: <PrivateRoute component={UserPage} roles={4} /> }
         // { path: 'app', element: <DashboardApp /> },
         // { path: 'user', element: <User /> },
         // { path: 'products', element: <Products /> },
@@ -70,12 +75,15 @@ export default function Router() {
         // { path: 'userpage', element: <UserPage /> }
       ]
     },
+
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: 'login', element: !token ? <Login /> : <Navigate to="/dashboard" /> },
+        // { path: 'login', element: <Login /> },
+        // { path: 'register', element: <Register /> },
+        { path: 'register', element: !token ? <Register /> : <Navigate to="/dashboard" /> },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/login" /> },
         { path: '*', element: <Navigate to="/404" /> }

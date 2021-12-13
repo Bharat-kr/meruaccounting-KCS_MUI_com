@@ -12,11 +12,42 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import Description from '@mui/icons-material/Description';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GroupIcon from '@mui/icons-material/Group';
+import HomeIcon from '@mui/icons-material/Home';
+import { Role } from '../../_helpers/role';
 // ----------------------------------------------------------------------
 
-const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
+const getIcon = function (name) {
+  return <Icon icon={name} width={22} height={22} />;
+};
+
+export const sidebarConfigfn = function (currentRoleIndex) {
+  if (currentRoleIndex === 4)
+    return [
+      {
+        title: 'Home',
+        path: '/dashboard/userpage',
+        icon: <HomeIcon />
+      },
+      {
+        title: 'dashboard',
+        path: '/dashboard/app',
+        icon: getIcon(pieChart2Fill)
+      },
+      {
+        title: 'Reports',
+        path: '/dashboard/reports',
+        icon: <NoteIcon />
+      }
+    ];
+  return sidebarConfig;
+};
 
 const sidebarConfig = [
+  {
+    title: 'Home',
+    path: '/dashboard/userpage',
+    icon: <HomeIcon />
+  },
   {
     title: 'dashboard',
     path: '/dashboard/app',
@@ -46,27 +77,23 @@ const sidebarConfig = [
     title: 'Settings',
     path: '/dashboard/settings',
     icon: <SettingsIcon />
-  },
+  }
   // {
   //   title: 'blog',
   //   path: '/dashboard/blog',
   //   icon: getIcon(fileTextFill)
   // },
-  {
-    title: 'login',
-    path: '/login',
-    icon: getIcon(lockFill)
-  },
-  {
-    title: 'register',
-    path: '/register',
-    icon: getIcon(personAddFill)
-  },
-  {
-    title: 'User Page',
-    path: '/dashboard/userpage',
-    icon: getIcon(personAddFill)
-  }
+  // {
+  //   title: 'login',
+  //   path: '/login',
+  //   icon: getIcon(lockFill)
+  // },
+  // {
+  //   title: 'register',
+  //   path: '/register',
+  //   icon: getIcon(personAddFill)
+  // },
+
   // {
   //   title: 'Not found',
   //   path: '/404',
@@ -74,4 +101,4 @@ const sidebarConfig = [
   // }
 ];
 
-export default sidebarConfig;
+export { sidebarConfig as sidebarConfigDefault };
