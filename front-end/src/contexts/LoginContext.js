@@ -1,7 +1,7 @@
 import React, { useContext, useReducer, useEffect } from 'react';
 // import { setLocalStorage } from "../helper/localStorage";
 
-const loginContext = React.createContext();
+export const loginContext = React.createContext();
 
 const initialValue = {
   isLogin: false,
@@ -52,12 +52,4 @@ export function LoginProvider(props) {
   }, [loginC]);
 
   return <loginContext.Provider value={{ loginC, dispatchLogin }} {...props} />;
-}
-
-export function LoginContext() {
-  const context = useContext(loginContext);
-  if (!context) {
-    throw new Error(' Please use the context inside parent scope');
-  }
-  return context;
 }

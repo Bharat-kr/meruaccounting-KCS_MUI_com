@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link as RouterLink, useNavigate, useHistory } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { loginApi } from '../../../api/auth api/login';
-import { LoginContext } from '../../../contexts/LoginContext';
+import { loginContext } from '../../../contexts/LoginContext';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -29,8 +29,7 @@ export default function LoginForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required')
   });
-
-  const { loginC, dispatchLogin } = LoginContext();
+  const { loginC, dispatchLogin } = useContext(loginContext);
 
   const formik = useFormik({
     initialValues: {

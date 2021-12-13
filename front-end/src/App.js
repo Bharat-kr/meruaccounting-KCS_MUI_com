@@ -7,6 +7,7 @@ import GlobalStyles from './theme/globalStyles';
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/charts/BaseOptionChart';
 import { LoginProvider } from './contexts/LoginContext';
+import { TeamsProvider } from './contexts/TeamsContext';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +18,9 @@ export default function App() {
       <GlobalStyles />
       <BaseOptionChartStyle />
       <LoginProvider>
-        <Router />
+        <TeamsProvider>
+          <Router />
+        </TeamsProvider>
       </LoginProvider>
     </ThemeConfig>
   );

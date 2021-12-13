@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Paper, Card, Typography, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import { LoginContext } from '../../contexts/LoginContext';
+import { loginContext } from '../../contexts/LoginContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PageHeader(props) {
-  const { loginC } = LoginContext();
+  const { loginC } = useContext(loginContext);
   const currentUser = loginC.userData;
   // const { currentUser } = useContext(CurrentUserContext);
   const classes = useStyles();
