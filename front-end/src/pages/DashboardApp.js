@@ -1,6 +1,8 @@
 // material
 import { Box, Grid, Container, Typography } from '@mui/material';
 import { TeamsProvider } from '../contexts/TeamsContext';
+import EmployeeContainer from '../components/_dashboard/employee/EmployeeContainer';
+
 // components
 import Page from '../components/Page';
 import {
@@ -37,6 +39,7 @@ export default function DashboardApp() {
           </Grid> */}
 
           <SimpleContainer sx={{ width: '100%' }} />
+          {/* <EmployeeContainer sx={{ width: '100%' }} /> */}
 
           {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits />

@@ -10,7 +10,9 @@
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended"
   ],
-  "plugins": ["typescript", "prettier", "react", "react-hooks"],
+
+  "plugins": ["prettier", "react", "react-hooks"],
+
   "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 8,

@@ -14,8 +14,8 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_USER_DATA':
       if (action.data) {
-        localStorage.setItem('ud', JSON.stringify(action.data));
-
+        console.log(action.data);
+        localStorage.setItem('ud', action.data);
         return {
           userData: action.data,
           isLogin: true,

@@ -9,14 +9,17 @@ import VerticalTabs from '../components/teams/verticaltabs';
 import { UserContextProvider } from '../contexts/UserContext';
 import { ClientsContextProvider } from '../contexts/ClientsContext';
 import { teamContext, TeamsProvider } from '../contexts/TeamsContext';
-import { AddMember } from '../api/teams api/teams';
+
+import { AddMember, getEmployeeList } from '../api/teams api/teams';
 import { TEAM_CREATE_REQUEST } from '../constants/TeamConstants';
+
 // _______________________________________________________________________________________________________________
 
 export default function SimpleContainer() {
-  const { dispatchTeamCreate } = useContext(teamContext);
+  const { dispatchTeam } = useContext(teamContext);
   const clickme = () => {
-    AddMember({ name: 'WebDev' }, dispatchTeamCreate);
+    AddMember({ name: 'WebDev' }, dispatchTeam);
+    getEmployeeList(dispatchTeam);
   };
   return (
     <ClientsContextProvider>
