@@ -18,7 +18,7 @@ import { TEAM_CREATE_REQUEST } from '../constants/TeamConstants';
 export default function SimpleContainer() {
   const { dispatchTeam } = useContext(teamContext);
   const clickme = () => {
-    // AddMember({ name: 'WebDev' }, dispatchTeamCreate);
+    AddMember({ name: 'WebDev' }, dispatchTeam);
     getEmployeeList(dispatchTeam);
   };
   return (

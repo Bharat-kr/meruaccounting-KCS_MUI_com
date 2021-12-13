@@ -37,6 +37,7 @@ export const AddMember = (data, dispatch) => {
 };
 export const getEmployeeList = async (dispatch) => {
   dispatch({ type: EMPLOYEE_LIST_REQUEST });
+  console.log(localStorage['Bearer Token']);
   try {
     const res = await axios.get('http://localhost:8000/team/getTeam', {
       headers: {
@@ -50,5 +51,17 @@ export const getEmployeeList = async (dispatch) => {
   } catch (error) {
     console.log(error);
     dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+  }
+};
+
+export const updateMember = async () => {
+  try {
+    const res = await axios.patch('http://localhost:8000/team/updateMember', {
+      headers: {
+        Authorization: `Bearer ${localStorage['Bearer Token']}`
+      }
+    });
+  } catch (err) {
+    console.log(err);
   }
 };
