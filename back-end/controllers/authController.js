@@ -90,48 +90,63 @@ const login = async (req, res) => {
 /* ----------------------- DashBoard Protection Route ----------------------- */
 
 const authPass = async (req, res, next) => {
+  try {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      console.log("Inside If of auth Pass");
+      console.log(req.headers.authorization);
+      console.log(req.headers.authorization.startsWith("Bearer"));
+
+      token = req.headers.authorization.split(" ")[1];
+      // console.log(token);
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    } else {
+      return res.status(400).json({
+        message: "No Bearer Token",
+      });
+    }
+
+    if (!token) {
+      return res.status(400).json({
+        message: "You aren't Logged In",
+      });
+    }
+
+    // 2) Verification token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      return res.status(400).json({
+        message: "Incorrect JWT",
+      });
+    }
+    // console.log("This is decoded", decoded);
+
+    // 3) Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) {
+      return res.status(404).json({
+        message: "You aren't Logged In",
+      });
+    }
+    // console.log(currentUser);
+
+    // 4) Check if user changed password after the token was issued
+
+    // GRANT ACCESS TO PROTECTED ROUTE
+    req.user = currentUser;
+    res.locals.user = currentUser;
+    next();
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
   // 1) Getting token and check of it's there
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    console.log("Inside If of auth Pass");
-    console.log(req.headers.authorization);
-    console.log(req.headers.authorization.startsWith("Bearer"));
-
-    token = req.headers.authorization.split(" ")[1];
-    // console.log(token);
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
-
-  if (!token) {
-    return res.status(400).json({
-      message: "You aren't Logged In",
-    });
-  }
-
-  // 2) Verification token
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  // console.log("This is decoded", decoded);
-
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-
-  if (!currentUser) {
-    return res.status(404).json({
-      message: "You aren't Logged In",
-    });
-  }
-  // console.log(currentUser);
-
-  // 4) Check if user changed password after the token was issued
-
-  // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = currentUser;
-  res.locals.user = currentUser;
-  next();
 };
 
 module.exports = {
