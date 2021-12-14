@@ -52,7 +52,7 @@ const employeeReducer = (state, action) => {
     case EMPLOYEE_LIST_SUCCESS:
       return {
         loader: false,
-        employeeList: action.payload
+        employee: action.payload
       };
 
     case EMPLOYEE_LIST_FAILED:
@@ -67,7 +67,7 @@ const employeeReducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [empolyeeList, dispatchEmployeeList] = useReducer(employeeReducer, { empolyeeList: {} });
+  const [employee, dispatchEmployeeList] = useReducer(employeeReducer, { employee: {} });
   const [teamCreate, dispatchTeam] = useReducer(reducer, { teamCreate: {} });
 
   // useEffect(() => {
@@ -75,7 +75,7 @@ export function TeamsProvider(props) {
   // }, [teamCreate]);
 
   return (
-    <teamContext.Provider value={{ teamCreate, empolyeeList, dispatchTeam, dispatchEmployeeList }}>
+    <teamContext.Provider value={{ teamCreate, employee, dispatchTeam, dispatchEmployeeList }}>
       {props.children}
     </teamContext.Provider>
   );
