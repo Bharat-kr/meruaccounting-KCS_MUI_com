@@ -12,10 +12,14 @@ import {
   Weeklyhours,
   SimpleContainer
 } from '../components/_dashboard/app';
+import { Role } from '../_helpers/role';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
+  const localUd = localStorage.getItem('ud');
+  const ud = JSON.parse(localUd);
+  console.log(Role.indexOf(ud.role));
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="lg">
@@ -38,8 +42,11 @@ export default function DashboardApp() {
             <AppBugReports />
           </Grid> */}
 
-          <SimpleContainer sx={{ width: '100%' }} />
-          {/* <EmployeeContainer sx={{ width: '100%' }} /> */}
+          {Role.indexOf(ud.role) === 2 ? (
+            <SimpleContainer sx={{ width: '100%' }} />
+          ) : (
+            <EmployeeContainer sx={{ width: '100%' }} />
+          )}
 
           {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits />
