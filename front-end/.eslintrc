@@ -11,7 +11,7 @@
     "plugin:react-hooks/recommended"
   ],
 
-  "plugins": ["prettier", "react", "react-hooks", "typescript"],
+  "plugins": ["prettier", "react", "react-hooks"],
 
   "parser": "@babel/eslint-parser",
   "parserOptions": {

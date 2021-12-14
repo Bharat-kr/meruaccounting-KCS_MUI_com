@@ -16,7 +16,10 @@ import { Role } from '../../_helpers/role';
 
 // ----------------------------------------------------------------------
 
-const currentRoleIndex = Role.indexOf(JSON.parse(localStorage.loginC).userData.role);
+const currentRoleIndex = 4;
+
+// localStorage.getItem("loginC") ? Role.indexOf(localStorage.getItem('loginC').userData.role) : ;
+
 console.log(currentRoleIndex);
 
 const sidebarConfig = localStorage.loginC
