@@ -17,7 +17,7 @@ const config = {
   }
 };
 
-export const AddMember = (data, dispatch) => {
+export const createTeam = (data, dispatch) => {
   dispatch({ type: TEAM_CREATE_REQUEST });
 
   axios
@@ -49,25 +49,33 @@ export const AddMember = (data, dispatch) => {
 //   }
 // };
 
-export const getEmployeeList = (dispatch) => {
+export const getEmployeeList = async (dispatch) => {
   dispatch({ type: EMPLOYEE_LIST_REQUEST });
-  axios
-    .get('http://localhost:8000/team/getTeam', config)
-    .then((res) => {
-      console.log(res.data.data);
+  // console.log(localStorage['Bearer Token']);
+  try {
+    const res = await axios.get('http://localhost:8000/team/getTeam', {
+      headers: {
+        Authorization: `Bearer ${localStorage['Bearer Token']}`
+      }
+    });
+    console.log(res);
+    if (res.data.status === 'success') {
       dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: res.data.data });
       console.log('passed');
-    })
-    .catch((error) => {
-      console.log(error);
-      dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
-    });
+    }
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+  }
 };
 
 export const updateMember = async () => {
   try {
-    const res = await axios.patch('http://localhost:8000/team/updateMember', config);
+    const res = await axios.patch('http://localhost:8000/team/updateMember', config, {
+      employeeId: '61b1c7ecbe409360fca47a90'
+    });
   } catch (err) {
     console.log(err);
   }
 };
+updateMember();
