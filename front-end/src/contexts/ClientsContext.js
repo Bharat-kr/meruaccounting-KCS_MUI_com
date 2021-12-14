@@ -1,9 +1,41 @@
 import { indexOf } from 'lodash-es';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useReducer } from 'react';
+
+import {
+  GET_CLIENT_REQUEST,
+  GET_CLIENT_SUCCESS,
+  GET_CLIENT_FAILED
+} from '../constants/ClientConstants';
 
 export const ClientsContext = createContext();
 
+const clientDetailsReducer = (state, action) => {
+  switch (action.type) {
+    case GET_CLIENT_REQUEST:
+      return {
+        loader: true
+      };
+
+    case GET_CLIENT_SUCCESS:
+      return {
+        loader: false,
+        client: action.payload
+      };
+
+    case GET_CLIENT_FAILED:
+      return {
+        loader: false,
+        err: action.payload
+      };
+
+    default:
+      return state;
+  }
+};
+
 export const ClientsContextProvider = (props) => {
+  const [clientDetails, dispatchClientDetails] = useReducer(clientDetailsReducer, { client: {} });
+
   const [clients, setClients] = useState([
     {
       id: 1,
@@ -73,6 +105,8 @@ export const ClientsContextProvider = (props) => {
       <ClientsContext.Provider
         value={{
           clients,
+          clientDetails,
+          dispatchClientDetails,
           currentClient,
           changeClient,
           addClient,

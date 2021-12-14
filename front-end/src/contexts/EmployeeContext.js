@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useEffect } from 'react';
+import React, { useReducer, createContext } from 'react';
 
 import {
   EMPLOYEE_DETAILS_REQUEST,
@@ -6,7 +6,7 @@ import {
   EMPLOYEE_DETAILS_FAILED
 } from '../constants/EmployeeConstants';
 
-export const teamContext = React.createContext();
+export const teamContext = createContext();
 
 const employeeDetailsReducer = (state, action) => {
   switch (action.type) {

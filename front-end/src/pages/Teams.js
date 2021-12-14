@@ -12,6 +12,8 @@ import { teamContext, TeamsProvider } from '../contexts/TeamsContext';
 
 import { AddMember, getEmployeeList } from '../api/teams api/teams';
 
+import { getClient } from '../api/clients api/clients';
+
 // _______________________________________________________________________________________________________________
 
 export default function SimpleContainer() {
