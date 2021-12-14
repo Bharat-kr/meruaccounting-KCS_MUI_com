@@ -1,8 +1,13 @@
 import React from 'react';
 import { CssBaseline, Box, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+
+// components
 import Header from '../components/Projects/Header';
 import Sidebar from '../components/Projects/Sidebar';
+import PageHeader from '../components/PageHeader';
+
+// contexts
 // eslint-disable-next-line import/no-named-as-default
 import ClientsContextProvider from '../contexts/ClientsContext';
 
@@ -24,10 +29,7 @@ export default function Projects() {
     <ClientsContextProvider>
       <Box component="div" sx={{ width: '95%', margin: 'auto' }}>
         <CssBaseline />
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h2">Projects</Typography>
-        </Box>
-        {/* <PageHeader title="Projects" subTitle="Clients and Projects" icon={<GroupWorkIcon />} /> */}
+        <PageHeader title="Projects" />
         <div className={classes.root}>
           <Sidebar />
           <Header />
