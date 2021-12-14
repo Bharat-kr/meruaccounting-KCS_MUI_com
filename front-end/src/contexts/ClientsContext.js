@@ -4,7 +4,10 @@ import React, { createContext, useState, useReducer } from 'react';
 import {
   GET_CLIENT_REQUEST,
   GET_CLIENT_SUCCESS,
-  GET_CLIENT_FAILED
+  GET_CLIENT_FAILED,
+  CLIENT_PROJECTS_REQUEST,
+  CLIENT_PROJECTS_SUCCESS,
+  CLIENT_PROJECTS_FAILED
 } from '../constants/ClientConstants';
 
 export const ClientsContext = createContext();
@@ -25,7 +28,31 @@ const clientDetailsReducer = (state, action) => {
     case GET_CLIENT_FAILED:
       return {
         loader: false,
-        err: action.payload
+        error: action.payload
+      };
+
+    default:
+      return state;
+  }
+};
+
+const clientProjectsReducer = (state, action) => {
+  switch (action.type) {
+    case CLIENT_PROJECTS_REQUEST:
+      return {
+        loader: true
+      };
+
+    case CLIENT_PROJECTS_SUCCESS:
+      return {
+        loader: false,
+        clientProjects: action.payload
+      };
+
+    case CLIENT_PROJECTS_FAILED:
+      return {
+        loader: false,
+        error: action.payload
       };
 
     default:
@@ -35,6 +62,9 @@ const clientDetailsReducer = (state, action) => {
 
 export const ClientsContextProvider = (props) => {
   const [clientDetails, dispatchClientDetails] = useReducer(clientDetailsReducer, { client: {} });
+  const [clientProjects, dispatchClientProjects] = useReducer(clientProjectsReducer, {
+    clientProjects: {}
+  });
 
   const [clients, setClients] = useState([
     {
@@ -105,6 +135,8 @@ export const ClientsContextProvider = (props) => {
       <ClientsContext.Provider
         value={{
           clients,
+          clientProjects,
+          dispatchClientProjects,
           clientDetails,
           dispatchClientDetails,
           currentClient,
