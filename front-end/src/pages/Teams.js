@@ -6,20 +6,23 @@ import { makeStyles } from '@mui/styles';
 import { useContext } from 'react';
 import { Container, Typography, Paper, Button } from '@mui/material';
 import VerticalTabs from '../components/teams/verticaltabs';
+import PageHeader from '../components/PageHeader';
 import { UserContextProvider } from '../contexts/UserContext';
 import { ClientsContextProvider } from '../contexts/ClientsContext';
 import { teamContext, TeamsProvider } from '../contexts/TeamsContext';
 
-import { AddMember, getEmployeeList } from '../api/teams api/teams';
-import { TEAM_CREATE_REQUEST } from '../constants/TeamConstants';
+import { createTeam, getEmployeeList, updateMember } from '../api/teams api/teams';
+
+import { getClient } from '../api/clients api/clients';
 
 // _______________________________________________________________________________________________________________
 
 export default function SimpleContainer() {
-  const { dispatchTeam } = useContext(teamContext);
+  const { dispatchTeam, dispatchEmployeeList } = useContext(teamContext);
   const clickme = () => {
-    AddMember({ name: 'WebDev' }, dispatchTeam);
-    getEmployeeList(dispatchTeam);
+    createTeam({ name: 'Flutter' }, dispatchTeam);
+    getEmployeeList(dispatchEmployeeList);
+    updateMember();
   };
   return (
     <ClientsContextProvider>
@@ -29,9 +32,7 @@ export default function SimpleContainer() {
           component="div"
           sx={{ width: '95%', margin: 'auto', maxHeight: '70vh', height: '70vh' }}
         >
-          <Box sx={{ pb: 5 }}>
-            <Typography variant="h2">Teams</Typography>
-          </Box>
+          <PageHeader title="Teams" />
           <Button onClick={clickme}>clickme</Button>
           <VerticalTabs />
         </Box>

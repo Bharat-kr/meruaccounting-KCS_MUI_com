@@ -23,17 +23,16 @@ const reducer = (state, action) => {
         };
       }
       return {
-        ...state,
         userData: {},
         isLogin: false,
         loader: false
       };
 
     case 'LOGIN_ERR': {
-      return { ...state, err: true, loader: false };
+      return { ...state, error: true, loader: false };
     }
     case 'LOGIN_LOADER': {
-      return { ...state, loader: true };
+      return { loader: true };
     }
 
     default:

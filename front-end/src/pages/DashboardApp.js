@@ -1,7 +1,11 @@
+import { useContext } from 'react';
+
 // material
 import { Box, Grid, Container, Typography } from '@mui/material';
+
+// contexts
 import { TeamsProvider } from '../contexts/TeamsContext';
-import EmployeeContainer from '../components/_dashboard/employee/EmployeeContainer';
+import { loginContext } from '../contexts/LoginContext';
 
 // components
 import Page from '../components/Page';
@@ -12,66 +16,26 @@ import {
   Weeklyhours,
   SimpleContainer
 } from '../components/_dashboard/app';
+import EmployeeContainer from '../components/_dashboard/employee/EmployeeContainer';
+import PageHeader from '../components/PageHeader';
+import { Role } from '../_helpers/role';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
+  const { loginC } = useContext(loginContext);
+  console.log(Role.indexOf(loginC.userData.role));
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="lg">
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h2" sx={{ opacity: 0.6 }}>
-            Hi, Welcome back
-          </Typography>
-        </Box>
+        <PageHeader title="Dashboard" />
+
         <Grid container spacing={2}>
-          {/* <Grid item xs={12} sm={6} md={3}>
-            <Monthlyhours />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Weeklyhours />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppItemOrders />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppBugReports />
-          </Grid> */}
-
-          <SimpleContainer sx={{ width: '100%' }} />
-          {/* <EmployeeContainer sx={{ width: '100%' }} /> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppNewsUpdate />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppOrderTimeline />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppTrafficBySite />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppTasks />
-          </Grid> */}
+          {Role.indexOf(loginC.userData.role) === 2 ? (
+            <SimpleContainer sx={{ width: '100%' }} />
+          ) : (
+            <EmployeeContainer sx={{ width: '100%' }} />
+          )}
         </Grid>
       </Container>
     </Page>

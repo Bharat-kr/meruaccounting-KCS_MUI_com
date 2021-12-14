@@ -12,58 +12,70 @@ import {
 
 export const teamContext = React.createContext();
 
-const initialValue = {
-  employeeList: {},
-  teamCreate: {},
-  loader: false
-};
-
-const reducer = (state, action) => {
+const teamCreateReducer = (state, action) => {
   switch (action.type) {
     case TEAM_CREATE_REQUEST:
       return {
         loader: true
       };
+
     case TEAM_CREATE_SUCCESS:
       return {
         loader: false,
         teamCreate: action.payload
       };
+
     case TEAM_CREATE_FAILED:
       return {
         loader: false,
-        err: action.payload
+        error: action.payload
       };
+
     case TEAM_CREATE_RESET:
-      return initialValue;
+      return {
+        teamCreate: {},
+        loader: false
+      };
+
+    default:
+      return state;
+  }
+};
+
+const employeeReducer = (state, action) => {
+  switch (action.type) {
     case EMPLOYEE_LIST_REQUEST:
       return {
         loader: true
       };
+
     case EMPLOYEE_LIST_SUCCESS:
       return {
         loader: false,
         employeeList: action.payload
       };
+
     case EMPLOYEE_LIST_FAILED:
       return {
         loader: false,
-        err: action.payload
+        error: action.payload
       };
+
     default:
       return state;
   }
 };
 
 export function TeamsProvider(props) {
-  const [teamCreate, dispatchTeam] = useReducer(reducer, initialValue);
+  const [employeeList, dispatchEmployeeList] = useReducer(employeeReducer, { employeeList: {} });
+  const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, { teamCreate: {} });
 
-  useEffect(() => {
-    localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-  }, [teamCreate]);
+  // useEffect(() => {
+  //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
+  // }, [teamCreate]);
 
   return (
-    <teamContext.Provider value={{ teamCreate, dispatchTeam }}>
+    <teamContext.Provider value={{ teamCreate, employeeList, dispatchTeam, dispatchEmployeeList }}>
       {props.children}
     </teamContext.Provider>
   );
