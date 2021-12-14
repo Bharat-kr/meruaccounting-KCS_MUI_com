@@ -52,7 +52,7 @@ export default function RegisterForm() {
         method: 'post',
         url: 'http://localhost:8000/register',
         data: {
-          role: 'employee',
+          role: 'manager',
           firstName: { ...getFieldProps('firstName') }.value,
           lastName: { ...getFieldProps('lastName') }.value,
           email: { ...getFieldProps('email') }.value,

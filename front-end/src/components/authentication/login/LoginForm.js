@@ -90,7 +90,7 @@ export default function LoginForm() {
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
 
     const data = {
-      role: 'manager',
+      // role: 'manager',
       // firstName: { ...getFieldProps('firstName') }.value,
       // lastName: { ...getFieldProps('lastName') }.value,
       email: { ...getFieldProps('email') }.value,
