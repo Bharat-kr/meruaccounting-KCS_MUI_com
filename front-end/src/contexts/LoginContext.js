@@ -29,7 +29,7 @@ const reducer = (state, action) => {
       };
 
     case 'LOGIN_ERR': {
-      return { ...state, err: true, loader: false };
+      return { ...state, error: true, loader: false };
     }
     case 'LOGIN_LOADER': {
       return { loader: true };

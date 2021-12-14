@@ -17,7 +17,7 @@ import { AddMember, getEmployeeList } from '../api/teams api/teams';
 export default function SimpleContainer() {
   const { dispatchTeam, dispatchEmployeeList } = useContext(teamContext);
   const clickme = () => {
-    AddMember({ name: 'WebDev' }, dispatchTeam);
+    // AddMember({ name: 'WebDev' }, dispatchTeam);
     getEmployeeList(dispatchEmployeeList);
   };
   return (
