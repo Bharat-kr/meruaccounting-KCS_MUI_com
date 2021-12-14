@@ -4,11 +4,10 @@ import { Grid, List, Paper, Autocomplete, Typography, Button, Divider } from '@m
 import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import TreeView from '@mui/lab/TreeView';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import TreeItem from '@mui/lab/TreeItem';
+import { TreeItem } from '@mui/lab';
 import { ClientsContext } from '../../contexts/ClientsContext';
+import Treeview from '../Treeview';
+import SearchBar from '../SearchBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {}
@@ -93,24 +92,7 @@ export default function Sidebar() {
         }}
       >
         {/* search box */}
-        <Box
-          sx={{
-            width: '95%',
-            '& .MuiTextField-root': { m: 1, mb: 2 }
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <div>
-            <Autocomplete
-              onChange={handleSearch}
-              disablePortal
-              id="combo-box-demo"
-              options={projectsList}
-              renderInput={(params) => <TextField {...params} fullWidth label="Search Project" />}
-            />
-          </div>
-        </Box>
+        <SearchBar handleSearch={handleSearch} label="Search Project" options={projectsList} />
 
         {/* clients and project tree view flex container */}
         <Box
@@ -122,32 +104,18 @@ export default function Sidebar() {
           }}
         >
           {clients.map((client) => (
-            <TreeView
-              multiSelect={false}
-              fullWidth
-              className={classes.root}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              sx={{ width: '100%', overflowY: 'auto' }}
-            >
-              <TreeItem
-                sx={{}}
-                nodeId={clients.indexOf(client) + 1}
-                className={classes.treeItem}
-                label={<Typography variant="h4">{client.name}</Typography>}
-              >
-                {client.projects.map((project) => (
-                  <TreeItem
-                    nodeId={clients.indexOf(client) + client.projects.indexOf(project) + 2}
-                    label={
-                      <Typography data-client={client.name} onClick={handleClick} variant="h5">
-                        {project.name}
-                      </Typography>
-                    }
-                  />
-                ))}
-              </TreeItem>
-            </TreeView>
+            <Treeview parentName={client.name}>
+              {client.projects.map((project) => (
+                <TreeItem
+                  nodeId={1 + client.projects.indexOf(project) + 1}
+                  label={
+                    <Typography data-client={client.name} onClick={handleClick} variant="h5">
+                      {project.name}
+                    </Typography>
+                  }
+                />
+              ))}
+            </Treeview>
           ))}
         </Box>
 

@@ -1,10 +1,13 @@
 import React from 'react';
 import { CssBaseline, Box, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+
+// components
 import Header from '../components/Clients/Header';
 import Sidebar from '../components/Clients/Sidebar';
 import PageHeader from '../components/PageHeader';
 
+// contexts
 // eslint-disable-next-line import/no-named-as-default
 import ClientsContextProvider from '../contexts/ClientsContext';
 
@@ -31,8 +34,7 @@ export default function Clients() {
 
         <div className={classes.root}>
           <Sidebar />
-
-          <Header> </Header>
+          <Header />
         </div>
       </ClientsContextProvider>
     </Box>
