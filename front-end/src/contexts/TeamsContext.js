@@ -24,32 +24,39 @@ const reducer = (state, action) => {
       return {
         loader: true
       };
+
     case TEAM_CREATE_SUCCESS:
       return {
         loader: false,
         teamCreate: action.payload
       };
+
     case TEAM_CREATE_FAILED:
       return {
         loader: false,
         err: action.payload
       };
+
     case TEAM_CREATE_RESET:
       return initialValue;
+
     case EMPLOYEE_LIST_REQUEST:
       return {
         loader: true
       };
+
     case EMPLOYEE_LIST_SUCCESS:
       return {
         loader: false,
         employeeList: action.payload
       };
+
     case EMPLOYEE_LIST_FAILED:
       return {
         loader: false,
         err: action.payload
       };
+
     default:
       return state;
   }
