@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import { TreeItem } from '@mui/lab';
 import { ClientsContext } from '../../contexts/ClientsContext';
 import Treeview from '../Treeview';
+import SearchBar from '../SearchBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {}
@@ -91,24 +92,7 @@ export default function Sidebar() {
         }}
       >
         {/* search box */}
-        <Box
-          sx={{
-            width: '95%',
-            '& .MuiTextField-root': { m: 1, mb: 2 }
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <div>
-            <Autocomplete
-              onChange={handleSearch}
-              disablePortal
-              id="combo-box-demo"
-              options={projectsList}
-              renderInput={(params) => <TextField {...params} fullWidth label="Search Project" />}
-            />
-          </div>
-        </Box>
+        <SearchBar handleSearch={handleSearch} label="Search Project" options={projectsList} />
 
         {/* clients and project tree view flex container */}
         <Box
@@ -120,24 +104,17 @@ export default function Sidebar() {
           }}
         >
           {clients.map((client) => (
-            <Treeview>
-              <TreeItem
-                sx={{}}
-                nodeId={clients.indexOf(client) + 1}
-                className={classes.treeItem}
-                label={<Typography variant="h4">{client.name}</Typography>}
-              >
-                {client.projects.map((project) => (
-                  <TreeItem
-                    nodeId={clients.indexOf(client) + client.projects.indexOf(project) + 2}
-                    label={
-                      <Typography data-client={client.name} onClick={handleClick} variant="h5">
-                        {project.name}
-                      </Typography>
-                    }
-                  />
-                ))}
-              </TreeItem>
+            <Treeview parentName={client.name}>
+              {client.projects.map((project) => (
+                <TreeItem
+                  nodeId={1 + client.projects.indexOf(project) + 1}
+                  label={
+                    <Typography data-client={client.name} onClick={handleClick} variant="h5">
+                      {project.name}
+                    </Typography>
+                  }
+                />
+              ))}
             </Treeview>
           ))}
         </Box>
