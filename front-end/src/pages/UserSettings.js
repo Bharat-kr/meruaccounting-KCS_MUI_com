@@ -13,6 +13,7 @@ import {
   Button
 } from '@mui/material';
 import Sidebar from '../components/Settings/Sidebar';
+import PageHeader from '../components/PageHeader';
 
 import Page from '../components/Page';
 
@@ -21,12 +22,10 @@ export default function UserDetails() {
     <>
       <CssBaseline />
       <Page title="usersettings">
-        <Paper elevation="3" maxWidth="lg">
-          {' '}
-          <Box component="div" sx={{ width: '95%', margin: 'auto' }}>
-            <CssBaseline />
-            {/* <PageHeader title="Settings" subTitle="Manager Name" icon={<GroupWorkIcon />} /> */}
-
+        {' '}
+        <Box component="div" sx={{ width: '95%', margin: 'auto' }}>
+          <PageHeader title="User Settings" />
+          <Paper elevation="3" maxWidth="lg" sx={{ p: 1 }}>
             <Typography variant="h4">Profile Settings</Typography>
             <Divider />
             <FormControl sx={{ m: 1 }}>
@@ -79,8 +78,8 @@ export default function UserDetails() {
                 Save
               </Button>
             </FormControl>
-          </Box>
-        </Paper>
+          </Paper>
+        </Box>
       </Page>
     </>
   );
