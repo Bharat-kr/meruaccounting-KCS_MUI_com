@@ -16,8 +16,11 @@ import { Role } from '../../_helpers/role';
 
 // ----------------------------------------------------------------------
 
-const sidebarConfig = localStorage.login
-  ? sidebarConfigfn(Role.indexOf(JSON.parse(localStorage.login).userData.role))
+const currentRoleIndex = Role.indexOf(JSON.parse(localStorage.loginC).userData.role);
+console.log(currentRoleIndex);
+
+const sidebarConfig = localStorage.loginC
+  ? sidebarConfigfn(currentRoleIndex)
   : sidebarConfigDefault;
 const DRAWER_WIDTH = 280;
 

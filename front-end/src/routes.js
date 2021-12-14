@@ -6,8 +6,6 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardApp from './pages/DashboardApp';
-import Products from './pages/Products';
-import Blog from './pages/Blog';
 import User from './pages/User';
 import NotFound from './pages/Page404';
 import Teams from './pages/Teams';
@@ -19,7 +17,6 @@ import Settings from './pages/Settings';
 import UserSettings from './pages/UserSettings';
 import UserPage from './pages/UserPage';
 import { PrivateRoute } from './components/privatroutes';
-import { Role } from './_helpers/role';
 // ----------------------------------------------------------------------
 
 export default function Router() {
