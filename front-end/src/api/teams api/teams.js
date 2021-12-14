@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { addYears } from 'date-fns';
 
 import {
   TEAM_CREATE_FAILED,
@@ -11,15 +10,15 @@ import {
   EMPLOYEE_LIST_REQUEST
 } from '../../constants/TeamConstants';
 
+const token = localStorage['Bearer Token'];
+const config = {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+};
+
 export const AddMember = (data, dispatch) => {
   dispatch({ type: TEAM_CREATE_REQUEST });
-
-  const token = localStorage['Bearer Token'];
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
 
   axios
     .post('http://localhost:8000/team/create', config, data)
@@ -35,32 +34,39 @@ export const AddMember = (data, dispatch) => {
       dispatch({ type: TEAM_CREATE_FAILED, payload: err });
     });
 };
-export const getEmployeeList = async (dispatch) => {
+
+// export const getEmployeeList = async (dispatch) => {
+//   try {
+//     dispatch({ type: EMPLOYEE_LIST_REQUEST });
+//     console.log(`Bearer ${localStorage['Bearer Token']}`);
+//     const { data } = await axios.get('http://localhost:8000/team/getTeam', config);
+//     console.log(data.data);
+//     dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: data.data });
+//     console.log('Passed');
+//   } catch (error) {
+//     console.log(error);
+//     dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+//   }
+// };
+
+export const getEmployeeList = (dispatch) => {
   dispatch({ type: EMPLOYEE_LIST_REQUEST });
-  console.log(localStorage['Bearer Token']);
-  try {
-    const res = await axios.get('http://localhost:8000/team/getTeam', {
-      headers: {
-        Authorization: `Bearer ${localStorage['Bearer Token']}`
-      }
-    });
-    console.log(res);
-    if (res.data.status === 'success') {
+  axios
+    .get('http://localhost:8000/team/getTeam', config)
+    .then((res) => {
+      console.log(res.data.data);
       dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: res.data.data });
-    }
-  } catch (error) {
-    console.log(error);
-    dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
-  }
+      console.log('passed');
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+    });
 };
 
 export const updateMember = async () => {
   try {
-    const res = await axios.patch('http://localhost:8000/team/updateMember', {
-      headers: {
-        Authorization: `Bearer ${localStorage['Bearer Token']}`
-      }
-    });
+    const res = await axios.patch('http://localhost:8000/team/updateMember', config);
   } catch (err) {
     console.log(err);
   }

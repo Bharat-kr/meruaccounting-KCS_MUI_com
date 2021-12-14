@@ -13,8 +13,8 @@ export const loginApi = (data, dispatch) => {
         localStorage.setItem('ud', res.data.user);
         console.log(res.data);
         dispatch({ type: 'SET_USER_DATA', data: res.data.user });
-        window.history.pushState('', 'Dashboard', '/dashboard/userpage');
-        // window.location.href = '/dashboard/userpage';
+        // window.history.pushState('', 'Dashboard', '/dashboard/userpage');
+        window.location.href = '/dashboard/userpage';
         // window.location.replace('/dashboard/userpage');
         // return <Navigate to="/dashboard/homepage" />;
         // eslint-disable-next-line no-else-return

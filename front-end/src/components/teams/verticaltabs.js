@@ -10,6 +10,7 @@ import { RestaurantRounded } from '@material-ui/icons';
 import Main from './Main';
 import { UserContext } from '../../contexts/UserContext';
 import { ClientsContext } from '../../contexts/ClientsContext';
+import { teamContext } from '../../contexts/TeamsContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  const { employeeList } = useContext(teamContext);
 
   return (
     <div

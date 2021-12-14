@@ -11,15 +11,16 @@ import { ClientsContextProvider } from '../contexts/ClientsContext';
 import { teamContext, TeamsProvider } from '../contexts/TeamsContext';
 
 import { AddMember, getEmployeeList } from '../api/teams api/teams';
-import { TEAM_CREATE_REQUEST } from '../constants/TeamConstants';
+
+import { getClient } from '../api/clients api/clients';
 
 // _______________________________________________________________________________________________________________
 
 export default function SimpleContainer() {
-  const { dispatchTeam } = useContext(teamContext);
+  const { dispatchTeam, dispatchEmployeeList } = useContext(teamContext);
   const clickme = () => {
-    AddMember({ name: 'WebDev' }, dispatchTeam);
-    getEmployeeList(dispatchTeam);
+    // AddMember({ name: 'WebDev' }, dispatchTeam);
+    getEmployeeList(dispatchEmployeeList);
   };
   return (
     <ClientsContextProvider>
