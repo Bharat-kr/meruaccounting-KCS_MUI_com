@@ -1,8 +1,11 @@
+import { useContext } from 'react';
+
 // material
 import { Box, Grid, Container, Typography } from '@mui/material';
 
 // contexts
 import { TeamsProvider } from '../contexts/TeamsContext';
+import { loginContext } from '../contexts/LoginContext';
 
 // components
 import Page from '../components/Page';
@@ -20,16 +23,15 @@ import { Role } from '../_helpers/role';
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
-  const localUd = localStorage.getItem('ud');
-  const ud = JSON.parse(localUd);
-  console.log(Role.indexOf(ud.role));
+  const { loginC } = useContext(loginContext);
+  console.log(Role.indexOf(loginC.userData.role));
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="lg">
         <PageHeader title="Dashboard" />
 
         <Grid container spacing={2}>
-          {Role.indexOf(ud.role) === 2 ? (
+          {Role.indexOf(loginC.userData.role) === 2 ? (
             <SimpleContainer sx={{ width: '100%' }} />
           ) : (
             <EmployeeContainer sx={{ width: '100%' }} />

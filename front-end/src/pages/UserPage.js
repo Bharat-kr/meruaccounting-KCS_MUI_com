@@ -11,7 +11,7 @@ import PageHeader from '../components/PageHeader';
 import CurrentUserContextProvider from '../contexts/CurrentUserContext';
 import { LoginProvider } from '../contexts/LoginContext';
 
-export default function UserPage(props) {
+export default function UserPage() {
   return (
     <CssBaseline>
       <Box component="div" sx={{ width: '95%', margin: 'auto' }}>

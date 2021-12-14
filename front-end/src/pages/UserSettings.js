@@ -2,9 +2,7 @@
 import {
   CssBaseline,
   Box,
-  Container,
   Typography,
-  Grid,
   Divider,
   Paper,
   TextField,
@@ -12,7 +10,6 @@ import {
   Autocomplete,
   Button
 } from '@mui/material';
-import Sidebar from '../components/Settings/Sidebar';
 import PageHeader from '../components/PageHeader';
 
 import Page from '../components/Page';
