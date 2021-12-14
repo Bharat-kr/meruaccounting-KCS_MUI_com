@@ -63,6 +63,11 @@ router.post("/add/:id", authPass, async (req, res) => {
 
 router.patch("/updateMember", authPass, async (req, res) => {
   const manager = req.user;
+  if (manager.role == "manager") {
+    return res.json({
+      message: "UnAuthorized",
+    });
+  }
 
   const employeeId = req.body.employeeId;
   const teamId = req.body.teamId;
