@@ -62,7 +62,7 @@ export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
   const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
-
+  const { teamCreate } = useContext(teamContext);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
