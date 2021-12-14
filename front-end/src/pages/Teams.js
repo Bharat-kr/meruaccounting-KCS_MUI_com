@@ -20,8 +20,8 @@ import { getClient } from '../api/clients api/clients';
 export default function SimpleContainer() {
   const { dispatchTeam, dispatchEmployeeList } = useContext(teamContext);
   const clickme = () => {
-    createTeam({ name: 'Amazon' }, dispatchTeam);
-    getEmployeeList(dispatchTeam);
+    createTeam({ name: 'Flutter' }, dispatchTeam);
+    getEmployeeList(dispatchEmployeeList);
     updateMember();
   };
   return (
