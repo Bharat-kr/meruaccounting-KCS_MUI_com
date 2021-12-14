@@ -30,7 +30,6 @@ export default function Sidebar() {
     // eslint-disable-next-line prefer-template
     client.projects.map((project) => projectsList.push(client.name + ':' + project.name));
   });
-  // console.log(projectsList);
 
   // change currentclient on search
   const handleSearch = (e, value) => {
@@ -52,7 +51,6 @@ export default function Sidebar() {
       project.name === e.target.textContent ? project : ''
     );
 
-    // const client = clients.filter((client) => (client.name === e.target.textContent ? client : ''));
     changeProject(project[0]);
   };
 
