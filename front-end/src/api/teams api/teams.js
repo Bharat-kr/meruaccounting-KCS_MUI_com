@@ -35,18 +35,33 @@ export const AddMember = (data, dispatch) => {
     });
 };
 
-export const getEmployeeList = async (dispatch) => {
-  try {
-    dispatch({ type: EMPLOYEE_LIST_REQUEST });
-    console.log(`Bearer ${localStorage['Bearer Token']}`);
-    const { data } = await axios.get('http://localhost:8000/team/getTeam', config);
-    console.log(data.data);
-    dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: data.data });
-    console.log('Passed');
-  } catch (error) {
-    console.log(error);
-    dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
-  }
+// export const getEmployeeList = async (dispatch) => {
+//   try {
+//     dispatch({ type: EMPLOYEE_LIST_REQUEST });
+//     console.log(`Bearer ${localStorage['Bearer Token']}`);
+//     const { data } = await axios.get('http://localhost:8000/team/getTeam', config);
+//     console.log(data.data);
+//     dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: data.data });
+//     console.log('Passed');
+//   } catch (error) {
+//     console.log(error);
+//     dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+//   }
+// };
+
+export const getEmployeeList = (dispatch) => {
+  dispatch({ type: EMPLOYEE_LIST_REQUEST });
+  axios
+    .get('http://localhost:8000/team/getTeam', config)
+    .then((res) => {
+      console.log(res.data.data);
+      dispatch({ type: EMPLOYEE_LIST_SUCCESS, payload: res.data.data });
+      console.log('passed');
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch({ type: EMPLOYEE_LIST_FAILED, payload: error });
+    });
 };
 
 export const updateMember = async () => {

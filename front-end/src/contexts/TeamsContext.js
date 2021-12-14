@@ -12,12 +12,6 @@ import {
 
 export const teamContext = React.createContext();
 
-const initialValue = {
-  employeeList: {},
-  teamCreate: {},
-  loader: false
-};
-
 const reducer = (state, action) => {
   switch (action.type) {
     case TEAM_CREATE_REQUEST:
@@ -38,8 +32,18 @@ const reducer = (state, action) => {
       };
 
     case TEAM_CREATE_RESET:
-      return initialValue;
+      return {
+        teamCreate: {},
+        loader: false
+      };
 
+    default:
+      return state;
+  }
+};
+
+const employeeReducer = (state, action) => {
+  switch (action.type) {
     case EMPLOYEE_LIST_REQUEST:
       return {
         loader: true
@@ -63,14 +67,15 @@ const reducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [teamCreate, dispatchTeam] = useReducer(reducer, initialValue);
+  const [empolyeeList, dispatchEmployeeList] = useReducer(employeeReducer, { empolyeeList: {} });
+  const [teamCreate, dispatchTeam] = useReducer(reducer, { teamCreate: {} });
 
-  useEffect(() => {
-    localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-  }, [teamCreate]);
+  // useEffect(() => {
+  //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
+  // }, [teamCreate]);
 
   return (
-    <teamContext.Provider value={{ teamCreate, dispatchTeam }}>
+    <teamContext.Provider value={{ teamCreate, empolyeeList, dispatchTeam, dispatchEmployeeList }}>
       {props.children}
     </teamContext.Provider>
   );
