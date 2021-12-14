@@ -4,11 +4,9 @@ import { Grid, List, Paper, Autocomplete, Typography, Button, Divider } from '@m
 import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import TreeView from '@mui/lab/TreeView';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import TreeItem from '@mui/lab/TreeItem';
+import { TreeItem } from '@mui/lab';
 import { ClientsContext } from '../../contexts/ClientsContext';
+import Treeview from '../Treeview';
 
 const useStyles = makeStyles((theme) => ({
   root: {}
@@ -122,14 +120,7 @@ export default function Sidebar() {
           }}
         >
           {clients.map((client) => (
-            <TreeView
-              multiSelect={false}
-              fullWidth
-              className={classes.root}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              sx={{ width: '100%', overflowY: 'auto' }}
-            >
+            <Treeview>
               <TreeItem
                 sx={{}}
                 nodeId={clients.indexOf(client) + 1}
@@ -147,7 +138,7 @@ export default function Sidebar() {
                   />
                 ))}
               </TreeItem>
-            </TreeView>
+            </Treeview>
           ))}
         </Box>
 
