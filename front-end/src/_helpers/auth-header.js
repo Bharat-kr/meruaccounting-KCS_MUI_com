@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { authenticationService } from '@/_services';
 
 export function authHeader() {
@@ -5,7 +6,6 @@ export function authHeader() {
   const currentUser = authenticationService.currentUserValue;
   if (currentUser && currentUser.token) {
     return { Authorization: `Bearer ${currentUser.token}` };
-  } else {
-    return {};
   }
+  return {};
 }

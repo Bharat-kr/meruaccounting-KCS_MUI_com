@@ -6,12 +6,12 @@ import { loginContext } from '../contexts/LoginContext';
 
 export const PrivateRoute = ({ component: Component, roles, ...rest }) => {
   const { loginC } = useContext(loginContext);
-  const localUd = loginC.isLogin && localStorage.getItem('ud');
-  const ud = localUd;
-  // JSON.parse();
 
-  console.log(loginC);
-  console.log(Role.indexOf(ud.role));
+  console.log(loginC.userData.role);
 
-  return loginC && Role.indexOf(ud.role) <= roles ? <Component /> : <Navigate to="/404" replace />;
+  return loginC && Role.indexOf(loginC.userData.role) <= roles ? (
+    <Component />
+  ) : (
+    <Navigate to="/404" replace />
+  );
 };
