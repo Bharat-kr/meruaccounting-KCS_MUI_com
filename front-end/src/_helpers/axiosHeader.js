@@ -1,3 +1,1 @@
-export const ReqHeader = (header) => {
-  return `http://localhost:8000/${header}`;
-};
+export const ReqHeader = (header) => `http://localhost:8000/${header}`;
