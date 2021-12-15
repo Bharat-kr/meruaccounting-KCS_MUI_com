@@ -22,6 +22,7 @@ export const createTeam = async (name, dispatch) => {
     dispatch({ type: TEAM_CREATE_REQUEST });
     const { data } = await axios.post('http://localhost:8000/team/create', name, config);
     dispatch({ type: TEAM_CREATE_SUCCESS, payload: data.data });
+    console.log(data.data);
   } catch (error) {
     dispatch({
       type: TEAM_CREATE_FAILED,
@@ -69,6 +70,7 @@ export const updateMember = async () => {
       },
       config
     );
+    console.log(res);
   } catch (err) {
     console.log(err);
     console.log(err.message);

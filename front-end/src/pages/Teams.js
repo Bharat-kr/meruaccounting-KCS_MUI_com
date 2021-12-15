@@ -20,9 +20,9 @@ import { getClient } from '../api/clients api/clients';
 export default function SimpleContainer() {
   const { dispatchTeam, dispatchEmployeeList } = useContext(teamContext);
   const clickme = () => {
-    createTeam({ name: 'Flutter' }, dispatchTeam);
+    // createTeam({ name: 'Devops' }, dispatchTeam);
     getEmployeeList(dispatchEmployeeList);
-    updateMember();
+    // updateMember();
   };
   return (
     <ClientsContextProvider>
