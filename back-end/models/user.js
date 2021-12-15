@@ -10,7 +10,7 @@ const userSchema = new Schema({
   isAdmin: Boolean,
   isManager: Boolean,
   company: String,
-  fistName: {
+  firstName: {
     type: String,
   },
   lastName: {
