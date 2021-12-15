@@ -67,12 +67,23 @@ const employeeReducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [employeeList, dispatchEmployeeList] = useReducer(employeeReducer, { employeeList: {} });
-  const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, { teamCreate: {} });
+  const [employeeList, dispatchEmployeeList] = useReducer(
+    employeeReducer,
+    { employeeList: {} },
+    () => {
+      const localData = localStorage.getItem('employeeList');
+      return localData ? JSON.parse(localData) : { teamCreate: {} };
+    }
+  );
+  const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, { teamCreate: {} }, () => {
+    const localData = localStorage.getItem('teamCreate');
+    return localData ? JSON.parse(localData) : { teamCreate: {} };
+  });
 
-  // useEffect(() => {
-  //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-  // }, [teamCreate]);
+  useEffect(() => {
+    localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
+    localStorage.setItem('employee', JSON.stringify(employeeList));
+  }, [teamCreate, employeeList]);
 
   return (
     <teamContext.Provider value={{ teamCreate, employeeList, dispatchTeam, dispatchEmployeeList }}>
