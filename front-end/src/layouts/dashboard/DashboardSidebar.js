@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -13,15 +13,10 @@ import { MHidden } from '../../components/@material-extend';
 import { sidebarConfigfn, sidebarConfigDefault } from './SidebarConfig';
 import account from '../../_mocks_/account';
 import { Role } from '../../_helpers/role';
+import { loginContext } from '../../contexts/LoginContext';
 
 // ----------------------------------------------------------------------
 
-const currentRoleIndex = Role.indexOf(JSON.parse(localStorage.loginC).userData.role);
-console.log(currentRoleIndex);
-
-const sidebarConfig = localStorage.loginC
-  ? sidebarConfigfn(currentRoleIndex)
-  : sidebarConfigDefault;
 const DRAWER_WIDTH = 280;
 
 const RootStyle = styled('div')(({ theme }) => ({
@@ -48,6 +43,15 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
+  const { loginC } = useContext(loginContext);
+
+  const currentRoleIndex = Role.indexOf(loginC.userData.role);
+
+  const sidebarConfig = localStorage.loginC
+    ? sidebarConfigfn(currentRoleIndex)
+    : sidebarConfigDefault;
+
+  console.log(loginC.userData.role);
 
   useEffect(() => {
     if (isOpenSidebar) {
