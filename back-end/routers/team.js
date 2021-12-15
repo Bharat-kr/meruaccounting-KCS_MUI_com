@@ -18,7 +18,7 @@ router.post("/create", authPass, async (req, res) => {
     const team = new Team({ name });
     await team.save();
     team.manager = manager._id;
-    manager.team = team;
+    manager.team.push(team._id);
     console.log(manager.team);
     await manager.save();
     await team.save();
@@ -73,7 +73,7 @@ router.patch("/updateMember", authPass, async (req, res) => {
   const teamId = req.body.teamId;
   var alreadyMember = false;
   try {
-    const team = await Team.findOne({ manager: manager._id });
+    const team = await Team.findOne(teamId);
     console.log(team);
     team.employees.forEach((employee) => {
       console.log(employee);
