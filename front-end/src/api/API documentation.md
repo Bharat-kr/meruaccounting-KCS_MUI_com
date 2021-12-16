@@ -1,25 +1,38 @@
 ### TEAM API
 
 @desc Creating Team
+@name createTeam
 @route POST /team/create
 @data sent object {name : "team name"}
 
 @desc Get Team List / Employee List
+@name getTeam
 @route GET /team/getTeam
 @data sent
 
+_Error in documentation in Postman Link - to be checked_
 @desc Update Memeber / Add Employee to Team
+@name updateMember
 @route PATCH /team/updateTeam
-@data sent
+@data sent object {employeId : "employee id" , teamId , "team id"}
 
 ### EMPLOYEE API
 
 @desc Get Employee Details
+@name getEmployeeDetails
 @route GET /employee/${\_id}
 @data sent string "\_id"
 
 ### CLIENT API
 
 @desc Get Client Details
-@route GET /getClient
+@name getClient
+@route GET /client/getClient
+@data sent
+
+### PROJECTS API
+
+@desc Get Project Details
+@name getClientProjects
+@route GET /client/getClientProjects
 @data sent
