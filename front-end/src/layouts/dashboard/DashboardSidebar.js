@@ -45,8 +45,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const { loginC } = useContext(loginContext);
 
+  console.log(loginC.userData);
   const currentRoleIndex = Role.indexOf(loginC.userData.role);
-
   const sidebarConfig = localStorage.loginC
     ? sidebarConfigfn(currentRoleIndex)
     : sidebarConfigDefault;
