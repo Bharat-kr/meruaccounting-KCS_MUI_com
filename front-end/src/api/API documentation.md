@@ -10,10 +10,14 @@
 @route GET /team/getTeam
 @data sent
 
-_Error in documentation in Postman Link - to be checked_
 @desc Update Memeber / Add Employee to Team
 @name updateMember
 @route PATCH /team/updateTeam
+@data sent object {employeId : "employee id" , teamId , "team id"}
+
+@desc Remove/ Delete Memeber
+@name removeMember
+@route DELETE team/removeMember
 @data sent object {employeId : "employee id" , teamId , "team id"}
 
 ### EMPLOYEE API

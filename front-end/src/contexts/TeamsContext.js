@@ -11,6 +11,10 @@ import {
   UPDATE_MEMBER_SUCCESS,
   UPDATE_MEMBER_FAILED,
   UPDATE_MEMBER_RESET,
+  REMOVE_MEMBER_REQUEST,
+  REMOVE_MEMBER_SUCCESS,
+  REMOVE_MEMBER_FAILED,
+  REMOVE_MEMBER_RESET,
 } from '../constants/TeamConstants';
 
 export const teamContext = React.createContext();
@@ -85,6 +89,29 @@ const updateMemberReducer = (state, action) => {
   }
 };
 
+const removeMemberReducer = (state, action) => {
+  switch (action.type) {
+    case REMOVE_MEMBER_REQUEST:
+      return {
+        loader: true,
+      };
+    case REMOVE_MEMBER_SUCCESS:
+      return {
+        loader: false,
+        removeMember: action.payload,
+      };
+    case REMOVE_MEMBER_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case REMOVE_MEMBER_RESET:
+      return { removeMember: {} };
+    default:
+      return state;
+  }
+};
+
 export function TeamsProvider(props) {
   const [getTeam, dispatchgetTeam] = useReducer(
     getTeamReducer,
@@ -106,6 +133,9 @@ export function TeamsProvider(props) {
     updateMemberReducer,
     { updatedMember: {} }
   );
+  const [removeMember, dispatchRemoveMember] = useReducer(removeMemberReducer, {
+    removeMember: {},
+  });
 
   useEffect(() => {
     localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
@@ -114,7 +144,16 @@ export function TeamsProvider(props) {
 
   return (
     <teamContext.Provider
-      value={{ teamCreate, getTeam, dispatchTeam, dispatchgetTeam }}
+      value={{
+        teamCreate,
+        dispatchTeam,
+        getTeam,
+        dispatchgetTeam,
+        updatedMember,
+        dispatchUpdateMember,
+        removeMember,
+        dispatchRemoveMember,
+      }}
     >
       {props.children}
     </teamContext.Provider>

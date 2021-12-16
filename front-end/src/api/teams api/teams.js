@@ -10,6 +10,10 @@ import {
   UPDATE_MEMBER_SUCCESS,
   UPDATE_MEMBER_RESET,
   UPDATE_MEMBER_FAILED,
+  REMOVE_MEMBER_REQUEST,
+  REMOVE_MEMBER_RESET,
+  REMOVE_MEMBER_FAILED,
+  REMOVE_MEMBER_SUCCESS,
 } from '../../constants/TeamConstants';
 
 const token = localStorage['Bearer Token'];
@@ -83,6 +87,32 @@ export const updateMember = async (dispatch, incomingData) => {
     console.log(error);
     dispatch({
       type: UPDATE_MEMBER_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const removeMember = async (dispatch, incomingData) => {
+  try {
+    dispatch({ type: REMOVE_MEMBER_REQUEST });
+
+    const { data } = await axios.delete(
+      'http://localhost:8000/team/removeMember',
+      incomingData
+    );
+
+    dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
+
+    console.log('removed Member', data);
+
+    dispatch({ type: REMOVE_MEMBER_RESET });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: REMOVE_MEMBER_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
