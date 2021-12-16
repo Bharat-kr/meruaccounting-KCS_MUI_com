@@ -13,15 +13,15 @@ import { TeamsProvider } from './contexts/TeamsContext';
 
 export default function App() {
   return (
-    <ThemeConfig>
-      <ScrollToTop />
-      <GlobalStyles />
-      <BaseOptionChartStyle />
-      <LoginProvider>
+    <LoginProvider>
+      <ThemeConfig>
+        <ScrollToTop />
+        <GlobalStyles />
+        <BaseOptionChartStyle />
         <TeamsProvider>
           <Router />
         </TeamsProvider>
-      </LoginProvider>
-    </ThemeConfig>
+      </ThemeConfig>
+    </LoginProvider>
   );
 }

@@ -11,7 +11,10 @@ import Main from './Main';
 import { UserContext } from '../../contexts/UserContext';
 import { ClientsContext } from '../../contexts/ClientsContext';
 import { teamContext } from '../../contexts/TeamsContext';
+import { loginContext } from '../../contexts/LoginContext';
+import { getTeam, createTeam, updateMember } from '../../api/teams api/teams';
 
+// ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '700px',
@@ -25,8 +28,6 @@ const useStyles = makeStyles((theme) => ({
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-  const { employeeList } = useContext(teamContext);
-
   return (
     <div
       role="tabpanel"
@@ -63,6 +64,9 @@ export default function VerticalTabs() {
   const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
   const { teamCreate } = useContext(teamContext);
+  const { loginC } = useContext(loginContext);
+  console.log(loginC.userData);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

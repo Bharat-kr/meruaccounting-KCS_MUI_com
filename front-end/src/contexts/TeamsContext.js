@@ -1,13 +1,12 @@
 import React, { useContext, useReducer, useEffect } from 'react';
-
 import {
   TEAM_CREATE_FAILED,
   TEAM_CREATE_REQUEST,
   TEAM_CREATE_RESET,
   TEAM_CREATE_SUCCESS,
-  EMPLOYEE_LIST_SUCCESS,
-  EMPLOYEE_LIST_REQUEST,
-  EMPLOYEE_LIST_FAILED
+  GET_TEAM_REQUEST,
+  GET_TEAM_SUCCESS,
+  GET_TEAM_FAILURE
 } from '../constants/TeamConstants';
 
 export const teamContext = React.createContext();
@@ -42,20 +41,20 @@ const teamCreateReducer = (state, action) => {
   }
 };
 
-const employeeReducer = (state, action) => {
+const getTeamReducer = (state, action) => {
   switch (action.type) {
-    case EMPLOYEE_LIST_REQUEST:
+    case GET_TEAM_REQUEST:
       return {
         loader: true
       };
 
-    case EMPLOYEE_LIST_SUCCESS:
+    case GET_TEAM_SUCCESS:
       return {
         loader: false,
-        employeeList: action.payload
+        getTeam: action.payload
       };
 
-    case EMPLOYEE_LIST_FAILED:
+    case GET_TEAM_FAILURE:
       return {
         loader: false,
         error: action.payload
@@ -67,14 +66,10 @@ const employeeReducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [employeeList, dispatchEmployeeList] = useReducer(
-    employeeReducer,
-    { employeeList: {} },
-    () => {
-      const localData = localStorage.getItem('employeeList');
-      return localData ? JSON.parse(localData) : { teamCreate: {} };
-    }
-  );
+  const [getTeam, dispatchgetTeam] = useReducer(getTeamReducer, { getTeam: {} }, () => {
+    const localData = localStorage.getItem('getTeam');
+    return localData ? JSON.parse(localData) : { teamCreate: {} };
+  });
   const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, { teamCreate: {} }, () => {
     const localData = localStorage.getItem('teamCreate');
     return localData ? JSON.parse(localData) : { teamCreate: {} };
@@ -82,11 +77,11 @@ export function TeamsProvider(props) {
 
   useEffect(() => {
     localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-    localStorage.setItem('employee', JSON.stringify(employeeList));
-  }, [teamCreate, employeeList]);
+    localStorage.setItem('employee', JSON.stringify(getTeam));
+  }, [teamCreate, getTeam]);
 
   return (
-    <teamContext.Provider value={{ teamCreate, employeeList, dispatchTeam, dispatchEmployeeList }}>
+    <teamContext.Provider value={{ teamCreate, getTeam, dispatchTeam, dispatchgetTeam }}>
       {props.children}
     </teamContext.Provider>
   );
