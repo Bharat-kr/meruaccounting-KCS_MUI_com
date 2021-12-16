@@ -45,3 +45,8 @@
 @name createProject
 @route POST /project
 @data sent object {name : "project name" , clientId:"client id"}
+
+@desc Add an existing Team to Project
+@name addTeamToProject
+@route PATCH /project
+@data sent object {projectId : "project id" , teamId:"team id"}

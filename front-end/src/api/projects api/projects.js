@@ -1,6 +1,11 @@
 import {
+  ADD_TEAM_PROJECTS_FAILED,
+  ADD_TEAM_PROJECTS_REQUEST,
+  ADD_TEAM_PROJECTS_RESET,
+  ADD_TEAM_PROJECTS_SUCCESS,
   CREATE_PROJECTS_FAILED,
   CREATE_PROJECTS_REQUEST,
+  CREATE_PROJECTS_RESET,
   CREATE_PROJECTS_SUCCESS,
   GET_PROJECTS_FAILED,
   GET_PROJECTS_REQUEST,
@@ -29,7 +34,7 @@ export const getClientProjects = async (dispatch) => {
       type: GET_PROJECTS_SUCCESS,
       payload: data,
     });
-    console.log(`Employee details ${data}`);
+    console.log(`Project details ${data}`);
   } catch (error) {
     dispatch({
       type: GET_PROJECTS_FAILED,
@@ -57,10 +62,46 @@ export const createProject = async (incomingData, dispatch) => {
       type: CREATE_PROJECTS_SUCCESS,
       payload: data,
     });
-    console.log(`Employee details ${data}`);
+    console.log(`Create project success ${data}`);
+
+    dispatch({
+      type: CREATE_PROJECTS_RESET,
+    });
   } catch (error) {
     dispatch({
       type: CREATE_PROJECTS_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const addTeamToProject = async (incomingData, dispatch) => {
+  try {
+    dispatch({
+      type: ADD_TEAM_PROJECTS_REQUEST,
+    });
+
+    const { data } = await axios.patch(
+      `http://localhost:8000/project`,
+      incomingData,
+      config
+    );
+
+    dispatch({
+      type: ADD_TEAM_PROJECTS_SUCCESS,
+      payload: data,
+    });
+    console.log('Add team to project', data);
+
+    dispatch({
+      type: ADD_TEAM_PROJECTS_RESET,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADD_TEAM_PROJECTS_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

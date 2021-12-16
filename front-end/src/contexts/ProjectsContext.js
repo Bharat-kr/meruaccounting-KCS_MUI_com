@@ -8,6 +8,10 @@ import {
   CREATE_PROJECTS_SUCCESS,
   CREATE_PROJECTS_FAILED,
   CREATE_PROJECTS_RESET,
+  ADD_TEAM_PROJECTS_REQUEST,
+  ADD_TEAM_PROJECTS_SUCCESS,
+  ADD_TEAM_PROJECTS_FAILED,
+  ADD_TEAM_PROJECTS_RESET,
 } from '../constants/ProjectConstants';
 
 export const projectContext = React.createContext();
@@ -56,6 +60,29 @@ const createProjectsReducer = (state, action) => {
   }
 };
 
+const addTeamToProjectsReducer = (state, action) => {
+  switch (action.type) {
+    case ADD_TEAM_PROJECTS_REQUEST:
+      return {
+        loader: true,
+      };
+    case ADD_TEAM_PROJECTS_SUCCESS:
+      return {
+        loader: false,
+        addTeamProject: action.payload,
+      };
+    case ADD_TEAM_PROJECTS_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case ADD_TEAM_PROJECTS_RESET:
+      return { addTeamProject: {} };
+    default:
+      return state;
+  }
+};
+
 export const ProjectsContextProvider = (props) => {
   const [projectDetails, dispatchProjectDetails] = useReducer(
     getProjectsReducer,
@@ -67,11 +94,21 @@ export const ProjectsContextProvider = (props) => {
     createProjectsReducer,
     { createProject: {} }
   );
+  const [addTeamProject, dispatchAddTeamProject] = useReducer(
+    addTeamToProjectsReducer,
+    { addTeamProject: {} }
+  );
 
   return (
     <projectContext.Provider
-      value={{ projectDetails, dispatchProjectDetails, createProject }}
-      value={{ projectDetails, dispatchProjectDetails, createProject }}
+      value={{
+        projectDetails,
+        dispatchProjectDetails,
+        createProject,
+        dispatchCreateProject,
+        addTeamProject,
+        dispatchAddTeamProject,
+      }}
     >
       {props.children}
     </projectContext.Provider>
