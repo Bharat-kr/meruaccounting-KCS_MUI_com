@@ -8,9 +8,12 @@ exports.createProject = async (req, res) => {
     const { name, clientId } = req.body;
     try {
       const project = new Project({ name });
+      const client = await Client.findById(clientId);
 
       await project.save();
       console.log("THis is project", project);
+      client.projects.push(project._id.toHexString());
+      await client.save();
       project.client = clientId;
       await project.save();
       res.status(201).json({
