@@ -40,3 +40,8 @@
 @name getClientProjects
 @route GET /client/getClientProjects
 @data sent
+
+@desc Create a Project
+@name createProject
+@route POST /project
+@data sent object {name : "project name" , clientId:"client id"}
