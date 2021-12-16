@@ -77,7 +77,7 @@ router.patch('/updateMember', authPass, async (req, res) => {
   const teamId = req.body.teamId;
   var alreadyMember = false;
   try {
-    const team = await Team.findOne(teamId);
+    const team = await Team.findById(teamId);
     console.log(team);
     team.employees.forEach((employee) => {
       console.log(employee);
@@ -102,8 +102,12 @@ router.patch('/updateMember', authPass, async (req, res) => {
       data: team,
     });
   } catch (error) {
+
     res.json({
       status: 'Error',
+
+      status: "Error",
+
       data: error,
     });
   }
