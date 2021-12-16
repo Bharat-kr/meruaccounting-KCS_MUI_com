@@ -23,10 +23,12 @@ const userSchema = new Schema({
   password: {
     type: String,
   },
-  team: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Team",
-  },
+  team: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
+  ],
   // employees: [{
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: "User",
