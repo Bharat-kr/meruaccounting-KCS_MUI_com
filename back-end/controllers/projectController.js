@@ -29,6 +29,63 @@ exports.createProject = async (req, res) => {
     });
   }
 };
+exports.editProject = async (req, res) => {
+  const employee = req.user;
+  if (employee.role === "manager") {
+    const projectId = req.params.id;
+
+    try {
+      //   const team = await Team.findOne({ manager: employee._id });
+
+      const project = await Project.findByIdAndUpdate(projectId, req.body);
+      if (!project) {
+        return res.status(404).send("OOps, no project found");
+      }
+
+      res.status(201).json({
+        messsage: "Successfully Deleted Project",
+        data: project,
+      });
+    } catch (error) {
+      res.status(500).json({
+        messsage: "Bad Request ",
+        data: error,
+      });
+    }
+  } else {
+    res.status(201).json({
+      messsage: "UnAuthorized Manager",
+    });
+  }
+};
+exports.deleteProject = async (req, res) => {
+  const employee = req.user;
+  if (employee.role === "manager") {
+    const { projectId } = req.body;
+    try {
+      //   const team = await Team.findOne({ manager: employee._id });
+
+      const project = await Project.findByIdAndRemove(projectId);
+      if (!project) {
+        return res.status(404).send("OOps, no project found");
+      }
+
+      res.status(201).json({
+        messsage: "Successfully Deleted Project",
+        data: project,
+      });
+    } catch (error) {
+      res.status(500).json({
+        messsage: "Bad Request ",
+        data: error,
+      });
+    }
+  } else {
+    res.status(201).json({
+      messsage: "UnAuthorized Manager",
+    });
+  }
+};
 exports.projectTeam = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {

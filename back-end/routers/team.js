@@ -10,16 +10,19 @@ router.post('/create', authPass, async (req, res) => {
   console.log(manager);
   const { name } = req.body;
   if (!manager.role === 'manager') {
-    return res.status(201).json({
+    return res.status(401).json({
       status: 'UnAuthorized',
     });
   }
   try {
     const team = new Team({ name });
     await team.save();
+    console.log(manager._id.toHexString());
     team.manager = manager._id;
-    manager.team = team;
+    manager.team.push(team._id.toHexString());
+    console.log(team);
     console.log(manager.team);
+
     await manager.save();
     await team.save();
     res.status(201).json({
@@ -27,6 +30,7 @@ router.post('/create', authPass, async (req, res) => {
       data: team,
     });
   } catch (error) {
+    console.log(error);
     res.json({
       status: 'Error',
       data: error,
@@ -63,9 +67,9 @@ router.post('/add/:id', authPass, async (req, res) => {
 
 router.patch('/updateMember', authPass, async (req, res) => {
   const manager = req.user;
-  if (manager.role == "manager") {
+  if (!manager.role == 'manager') {
     return res.json({
-      message: "UnAuthorized",
+      message: 'UnAuthorized',
     });
   }
 
@@ -73,7 +77,7 @@ router.patch('/updateMember', authPass, async (req, res) => {
   const teamId = req.body.teamId;
   var alreadyMember = false;
   try {
-    const team = await Team.findOne({ manager: manager._id });
+    const team = await Team.findOne(teamId);
     console.log(team);
     team.employees.forEach((employee) => {
       console.log(employee);
@@ -147,20 +151,21 @@ router.delete('/removeMember', async (req, res) => {
   }
 });
 
-router.get('/getTeam', authPass, async (req, res) => {
+router.get('/getTeam/:id', authPass, async (req, res) => {
   const user = req.user;
+  const teamId = req.params.id;
 
   if (!user) {
     return res.status(401).json({
       msg: 'UnAuthorized',
     });
   }
-  const manager = await User.populate(user, { path: 'team' });
-  const team = manager.team;
+  // const manager = await User.populate(user, { path: "team" });
+  const team = await Team.findById(teamId);
 
   if (!team) {
     return res.status(404).json({
-      msg: 'No Teams Found!!',
+      msg: 'No Team Found!!',
     });
   }
 
