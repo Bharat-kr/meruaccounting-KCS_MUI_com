@@ -34,6 +34,11 @@
 @route GET /client/getClient
 @data sent
 
+@desc Add new Client
+@name addClient
+@route POST /client
+@data sent object {name : "client name"}
+
 ### PROJECTS API
 
 @desc Get Project Details

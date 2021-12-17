@@ -1,10 +1,14 @@
 import { indexOf } from 'lodash-es';
 import React, { createContext, useState, useReducer } from 'react';
+import { ADD_TEAM_PROJECTS_RESET } from 'src/constants/ProjectConstants';
 
 import {
   GET_CLIENT_REQUEST,
   GET_CLIENT_SUCCESS,
   GET_CLIENT_FAILED,
+  ADD_CLIENT_REQUEST,
+  ADD_CLIENT_SUCCESS,
+  ADD_CLIENT_FAILED,
 } from '../constants/ClientConstants';
 
 export const ClientsContext = createContext();
@@ -15,19 +19,39 @@ const clientDetailsReducer = (state, action) => {
       return {
         loader: true,
       };
-
     case GET_CLIENT_SUCCESS:
       return {
         loader: false,
         client: action.payload,
       };
-
     case GET_CLIENT_FAILED:
       return {
         loader: false,
         error: action.payload,
       };
+    default:
+      return state;
+  }
+};
 
+const addClientReducer = (state, action) => {
+  switch (action.type) {
+    case ADD_CLIENT_REQUEST:
+      return {
+        loader: true,
+      };
+    case ADD_CLIENT_SUCCESS:
+      return {
+        loader: false,
+        newClient: action.payload,
+      };
+    case ADD_CLIENT_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case ADD_TEAM_PROJECTS_RESET:
+      return { newClient: {} };
     default:
       return state;
   }
@@ -38,6 +62,9 @@ export const ClientsContextProvider = (props) => {
     clientDetailsReducer,
     { client: {} }
   );
+  const [newClient, dispatchAddClient] = useReducer(addClientReducer, {
+    newClient: {},
+  });
 
   const [clients, setClients] = useState([
     {
@@ -130,6 +157,8 @@ export const ClientsContextProvider = (props) => {
           clients,
           clientDetails,
           dispatchClientDetails,
+          newClient,
+          dispatchAddClient,
           currentClient,
           changeClient,
           addClient,
