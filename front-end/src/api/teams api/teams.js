@@ -26,11 +26,7 @@ const config = {
 export const createTeam = async (dispatch, name) => {
   try {
     dispatch({ type: TEAM_CREATE_REQUEST });
-    const { data } = await axios.post(
-      'http://localhost:8000/team/create',
-      name,
-      config
-    );
+    const { data } = await axios.post('/team/create', name, config);
     dispatch({ type: TEAM_CREATE_SUCCESS, payload: data.data });
     console.log(data.data);
   } catch (error) {
@@ -48,10 +44,7 @@ export const getTeam = async (dispatch, id) => {
   dispatch({ type: GET_TEAM_REQUEST });
 
   try {
-    const res = await axios.get(
-      `http://localhost:8000/team/getTeam/${id}`,
-      config
-    );
+    const res = await axios.get(`/team/getTeam/${id}`, config);
 
     console.log(res);
 
@@ -73,7 +66,7 @@ export const updateMember = async (dispatch, incomingData) => {
     dispatch({ type: UPDATE_MEMBER_REQUEST });
 
     const { data } = await axios.patch(
-      'http://localhost:8000/team/updateMember',
+      '/team/updateMember',
       incomingData,
       config
     );
@@ -99,10 +92,7 @@ export const removeMember = async (dispatch, incomingData) => {
   try {
     dispatch({ type: REMOVE_MEMBER_REQUEST });
 
-    const { data } = await axios.delete(
-      'http://localhost:8000/team/removeMember',
-      incomingData
-    );
+    const { data } = await axios.delete('/team/removeMember', incomingData);
 
     dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
 
