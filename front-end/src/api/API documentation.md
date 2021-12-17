@@ -24,8 +24,8 @@
 
 @desc Get Employee Details
 @name getEmployeeDetails
-@route GET /employee/${\_id}
-@data sent string "\_id"
+@route GET /employee/${id}
+@data sent string "id"
 
 ### CLIENT API
 
@@ -50,3 +50,8 @@
 @name addTeamToProject
 @route PATCH /project
 @data sent object {projectId : "project id" , teamId:"team id"}
+
+@desc Edit an existing project
+@name addTeamToProject
+@route PATCH /project/${id}
+@data sent string "id" , object {name:"new project name"}

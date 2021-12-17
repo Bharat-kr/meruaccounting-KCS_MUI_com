@@ -12,6 +12,10 @@ import {
   ADD_TEAM_PROJECTS_SUCCESS,
   ADD_TEAM_PROJECTS_FAILED,
   ADD_TEAM_PROJECTS_RESET,
+  EDIT_PROJECTS_REQUEST,
+  EDIT_PROJECTS_SUCCESS,
+  EDIT_PROJECTS_FAILED,
+  EDIT_PROJECTS_RESET,
 } from '../constants/ProjectConstants';
 
 export const projectContext = React.createContext();
@@ -83,6 +87,29 @@ const addTeamToProjectsReducer = (state, action) => {
   }
 };
 
+const editProjectsReducer = (state, action) => {
+  switch (action.type) {
+    case EDIT_PROJECTS_REQUEST:
+      return {
+        loader: true,
+      };
+    case EDIT_PROJECTS_SUCCESS:
+      return {
+        loader: false,
+        editProject: action.payload,
+      };
+    case EDIT_PROJECTS_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case EDIT_PROJECTS_RESET:
+      return { editProject: {} };
+    default:
+      return state;
+  }
+};
+
 export const ProjectsContextProvider = (props) => {
   const [projectDetails, dispatchProjectDetails] = useReducer(
     getProjectsReducer,
@@ -98,6 +125,9 @@ export const ProjectsContextProvider = (props) => {
     addTeamToProjectsReducer,
     { addTeamProject: {} }
   );
+  const [editProject, dispatchEditProject] = useReducer(editProjectsReducer, {
+    editProject: {},
+  });
 
   return (
     <projectContext.Provider
@@ -108,6 +138,8 @@ export const ProjectsContextProvider = (props) => {
         dispatchCreateProject,
         addTeamProject,
         dispatchAddTeamProject,
+        editProject,
+        dispatchEditProject,
       }}
     >
       {props.children}

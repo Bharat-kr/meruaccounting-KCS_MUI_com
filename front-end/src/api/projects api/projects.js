@@ -7,15 +7,18 @@ import {
   CREATE_PROJECTS_REQUEST,
   CREATE_PROJECTS_RESET,
   CREATE_PROJECTS_SUCCESS,
+  EDIT_PROJECTS_FAILED,
+  EDIT_PROJECTS_REQUEST,
+  EDIT_PROJECTS_RESET,
+  EDIT_PROJECTS_SUCCESS,
   GET_PROJECTS_FAILED,
   GET_PROJECTS_REQUEST,
   GET_PROJECTS_SUCCESS,
 } from 'src/constants/ProjectConstants';
 
-const token = localStorage['Bearer Token'];
 const config = {
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${localStorage['Bearer Token']}`,
   },
 };
 
@@ -102,6 +105,38 @@ export const addTeamToProject = async (incomingData, dispatch) => {
   } catch (error) {
     dispatch({
       type: ADD_TEAM_PROJECTS_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const editProject = async (_id, incomingData, dispatch) => {
+  try {
+    dispatch({
+      type: EDIT_PROJECTS_REQUEST,
+    });
+
+    const { data } = await axios.patch(
+      `http://localhost:8000/project/${_id}`,
+      incomingData,
+      config
+    );
+
+    dispatch({
+      type: EDIT_PROJECTS_SUCCESS,
+      payload: data,
+    });
+    console.log('Edit existing project', data);
+
+    dispatch({
+      type: EDIT_PROJECTS_RESET,
+    });
+  } catch (error) {
+    dispatch({
+      type: EDIT_PROJECTS_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
