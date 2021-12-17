@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 import {
   GET_CLIENT_REQUEST,
@@ -8,11 +8,11 @@ import {
   ADD_CLIENT_SUCCESS,
   ADD_CLIENT_FAILED,
   ADD_CLIENT_RESET,
-} from '../../constants/ClientConstants';
+} from "../../constants/ClientConstants";
 
 const config = {
   headers: {
-    Authorization: `Bearer ${localStorage['Bearer Token']}`,
+    Authorization: `Bearer ${localStorage["Bearer Token"]}`,
   },
 };
 
@@ -22,13 +22,17 @@ export const getClient = async (dispatch) => {
       type: GET_CLIENT_REQUEST,
     });
 
-    const { data } = await axios.get(`http://localhost:8000/client/getClient`);
+    const { data } = await axios.get(
+      `http://localhost:8000/client/getClient`,
+      config
+    );
 
     dispatch({
       type: GET_CLIENT_SUCCESS,
       payload: data,
     });
-    console.log(`Client details ${data}`);
+    console.log(`Client details ${JSON.stringify(data)}`);
+    localStorage.setItem("clientdata", JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: GET_CLIENT_FAILED,
