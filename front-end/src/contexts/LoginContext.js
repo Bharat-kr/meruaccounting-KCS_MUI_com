@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect } from 'react';
 // import { setLocalStorage } from "../helper/localStorage";
 
 export const loginContext = React.createContext();
@@ -7,7 +7,7 @@ const initialValue = {
   isLogin: false,
   userData: {},
   loader: false,
-  err: false
+  err: false,
 };
 
 const reducer = (state, action) => {
@@ -19,13 +19,13 @@ const reducer = (state, action) => {
         return {
           userData: action.data,
           isLogin: true,
-          loader: false
+          loader: false,
         };
       }
       return {
         userData: {},
         isLogin: false,
-        loader: false
+        loader: false,
       };
 
     case 'LOGIN_ERR': {
