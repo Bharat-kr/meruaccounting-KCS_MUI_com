@@ -1,25 +1,16 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useRef, useEffect, useState } from "react";
-import {
-  Grid,
-  List,
-  Paper,
-  Autocomplete,
-  Typography,
-  Button,
-  Divider,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import { TreeItem } from "@mui/lab";
-import { ClientsContext } from "../../contexts/ClientsContext";
-import Treeview from "../Treeview";
-import SearchBar from "../SearchBar";
+import React, { useContext, useRef, useEffect, useState } from 'react';
+import { Grid, List, Paper, Autocomplete, Typography, Button, Divider } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import { TreeItem } from '@mui/lab';
+import { ClientsContext } from '../../contexts/ClientsContext';
+import Treeview from '../Treeview';
+import SearchBar from '../SearchBar';
 
-//-------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {}
 }));
 
 export default function Sidebar() {
@@ -30,29 +21,19 @@ export default function Sidebar() {
   const [newClientError, setnewClientError] = useState(false);
 
   // contexts
-  const {
-    clients,
-    currentClient,
-    changeClient,
-    addClient,
-    currentProject,
-    changeProject,
-  } = useContext(ClientsContext);
+  const { clients, currentClient, changeClient, addClient, currentProject, changeProject } =
+    useContext(ClientsContext);
 
   // labels for search box(autocomplete)
   const projectsList = [];
   clients.forEach((client) => {
     // eslint-disable-next-line prefer-template
-    client.projects.map((project) =>
-      projectsList.push(client.name + ":" + project.name)
-    );
+    client.projects.map((project) => projectsList.push(client.name + ':' + project.name));
   });
 
   // change currentclient on search
   const handleSearch = (e, value) => {
-    const client = clients.filter((client) =>
-      client.name === value ? client : ""
-    );
+    const client = clients.filter((client) => (client.name === value ? client : ''));
     if (client.length === 0) {
       // eslint-disable-next-line no-useless-return
       return;
@@ -63,11 +44,11 @@ export default function Sidebar() {
   // change currenclient on projects name click
   const handleClick = (e) => {
     const client = clients.filter((client) =>
-      client.name === e.target.dataset.client ? client : ""
+      client.name === e.target.dataset.client ? client : ''
     );
     changeClient(client[0]);
     const project = client[0].projects.filter((project) =>
-      project.name === e.target.textContent ? project : ""
+      project.name === e.target.textContent ? project : ''
     );
 
     changeProject(project[0]);
@@ -77,51 +58,47 @@ export default function Sidebar() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setnewClientError(false);
-    if (newClientValue === "") {
+    if (newClientValue === '') {
       setnewClientError(true);
     }
     const newClient = {
       name: newClientValue,
       members: [],
       id: clients.length + 1,
-      projects: [],
+      projects: []
     };
     addClient(newClient);
-    setnewClientValue("");
+    setnewClientValue('');
   };
 
   return (
     <Box
       component="div"
       sx={{
-        margin: "10px",
-        maxHeight: "70vh",
-        height: "70vh",
+        margin: '10px',
+        maxHeight: '70vh',
+        height: '70vh'
       }}
     >
       <Paper
         component="div"
         elevation={3}
         sx={{
-          overflow: "hidden",
-          height: "100%",
-          position: "relative",
+          overflow: 'hidden',
+          height: '100%',
+          position: 'relative'
         }}
       >
         {/* search box */}
-        <SearchBar
-          handleSearch={handleSearch}
-          label="Search Project"
-          options={projectsList}
-        />
+        <SearchBar handleSearch={handleSearch} label="Search Project" options={projectsList} />
 
         {/* clients and project tree view flex container */}
         <Box
           component="div"
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start'
           }}
         >
           {clients.map((client) => (
@@ -130,11 +107,7 @@ export default function Sidebar() {
                 <TreeItem
                   nodeId={1 + client.projects.indexOf(project) + 1}
                   label={
-                    <Typography
-                      data-client={client.name}
-                      onClick={handleClick}
-                      variant="h5"
-                    >
+                    <Typography data-client={client.name} onClick={handleClick} variant="h5">
                       {project.name}
                     </Typography>
                   }
@@ -147,12 +120,12 @@ export default function Sidebar() {
         {/* INPUT BOX, add validations, connect to context */}
         <Box
           sx={{
-            boxSizing: "border-box",
-            width: "95%",
-            position: "absolute",
-            bottom: "0",
+            boxSizing: 'border-box',
+            width: '95%',
+            position: 'absolute',
+            bottom: '0',
 
-            "& > :not(style)": { m: 1 },
+            '& > :not(style)': { m: 1 }
           }}
         >
           <form onSubmit={handleSubmit} noValidate autoComplete="off">

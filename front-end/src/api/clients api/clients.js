@@ -22,7 +22,10 @@ export const getClient = async (dispatch) => {
       type: GET_CLIENT_REQUEST,
     });
 
-    const { data } = await axios.get(`/client/getClient`, config);
+    const { data } = await axios.get(
+      `http://localhost:8000/client/getClient`,
+      config
+    );
 
     dispatch({
       type: GET_CLIENT_SUCCESS,
@@ -47,7 +50,11 @@ export const addClient = async (incomingData, dispatch) => {
       type: ADD_CLIENT_REQUEST,
     });
 
-    const { data } = await axios.post(`/client`, incomingData, config);
+    const { data } = await axios.post(
+      `http://localhost:8000/client`,
+      incomingData,
+      config
+    );
 
     dispatch({
       type: ADD_CLIENT_SUCCESS,
