@@ -52,6 +52,11 @@
 @data sent object {projectId : "project id" , teamId:"team id"}
 
 @desc Edit an existing project
-@name addTeamToProject
+@name editProject
 @route PATCH /project/${id}
 @data sent string "id" , object {name:"new project name"}
+
+@desc Delete an existing project
+@name deleteProject
+@route DELETE /project
+@data sent object {projectId:"project id"}

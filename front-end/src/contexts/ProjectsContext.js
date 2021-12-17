@@ -16,6 +16,10 @@ import {
   EDIT_PROJECTS_SUCCESS,
   EDIT_PROJECTS_FAILED,
   EDIT_PROJECTS_RESET,
+  DELETE_PROJECTS_REQUEST,
+  DELETE_PROJECTS_SUCCESS,
+  DELETE_PROJECTS_FAILED,
+  DELETE_PROJECTS_RESET,
 } from '../constants/ProjectConstants';
 
 export const projectContext = React.createContext();
@@ -110,6 +114,29 @@ const editProjectsReducer = (state, action) => {
   }
 };
 
+const deleteProjectsReducer = (state, action) => {
+  switch (action.type) {
+    case DELETE_PROJECTS_REQUEST:
+      return {
+        loader: true,
+      };
+    case DELETE_PROJECTS_SUCCESS:
+      return {
+        loader: false,
+        deleteProject: action.payload,
+      };
+    case DELETE_PROJECTS_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case DELETE_PROJECTS_RESET:
+      return { deleteProject: {} };
+    default:
+      return state;
+  }
+};
+
 export const ProjectsContextProvider = (props) => {
   const [projectDetails, dispatchProjectDetails] = useReducer(
     getProjectsReducer,
@@ -128,6 +155,12 @@ export const ProjectsContextProvider = (props) => {
   const [editProject, dispatchEditProject] = useReducer(editProjectsReducer, {
     editProject: {},
   });
+  const [deleteProject, dispatchDeleteProject] = useReducer(
+    deleteProjectsReducer,
+    {
+      deleteProject: {},
+    }
+  );
 
   return (
     <projectContext.Provider
@@ -140,6 +173,8 @@ export const ProjectsContextProvider = (props) => {
         dispatchAddTeamProject,
         editProject,
         dispatchEditProject,
+        deleteProject,
+        dispatchDeleteProject,
       }}
     >
       {props.children}

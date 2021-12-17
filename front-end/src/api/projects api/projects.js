@@ -7,6 +7,10 @@ import {
   CREATE_PROJECTS_REQUEST,
   CREATE_PROJECTS_RESET,
   CREATE_PROJECTS_SUCCESS,
+  DELETE_PROJECTS_FAILED,
+  DELETE_PROJECTS_REQUEST,
+  DELETE_PROJECTS_RESET,
+  DELETE_PROJECTS_SUCCESS,
   EDIT_PROJECTS_FAILED,
   EDIT_PROJECTS_REQUEST,
   EDIT_PROJECTS_RESET,
@@ -137,6 +141,38 @@ export const editProject = async (_id, incomingData, dispatch) => {
   } catch (error) {
     dispatch({
       type: EDIT_PROJECTS_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteProject = async (incomingData, dispatch) => {
+  try {
+    dispatch({
+      type: DELETE_PROJECTS_REQUEST,
+    });
+
+    const { data } = await axios.delete(
+      `http://localhost:8000/project`,
+      incomingData
+    );
+
+    dispatch({
+      type: DELETE_PROJECTS_SUCCESS,
+      payload: data,
+    });
+
+    console.log('DELETE existing project', data);
+
+    dispatch({
+      type: DELETE_PROJECTS_RESET,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_PROJECTS_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
