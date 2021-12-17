@@ -32,7 +32,10 @@ export const getClientProjects = async (dispatch) => {
       type: GET_PROJECTS_REQUEST,
     });
 
-    const { data } = await axios.get(`/client/getClientProjects`, config);
+    const { data } = await axios.get(
+      `http://localhost:8000/client/getClientProjects`,
+      config
+    );
 
     dispatch({
       type: GET_PROJECTS_SUCCESS,
@@ -56,7 +59,11 @@ export const createProject = async (incomingData, dispatch) => {
       type: CREATE_PROJECTS_REQUEST,
     });
 
-    const { data } = await axios.post(`/project`, incomingData, config);
+    const { data } = await axios.post(
+      `http://localhost:8000/project`,
+      incomingData,
+      config
+    );
 
     dispatch({
       type: CREATE_PROJECTS_SUCCESS,
@@ -84,7 +91,11 @@ export const addTeamToProject = async (incomingData, dispatch) => {
       type: ADD_TEAM_PROJECTS_REQUEST,
     });
 
-    const { data } = await axios.patch(`/project`, incomingData, config);
+    const { data } = await axios.patch(
+      `http://localhost:8000/project`,
+      incomingData,
+      config
+    );
 
     dispatch({
       type: ADD_TEAM_PROJECTS_SUCCESS,
@@ -112,7 +123,11 @@ export const editProject = async (_id, incomingData, dispatch) => {
       type: EDIT_PROJECTS_REQUEST,
     });
 
-    const { data } = await axios.patch(`/project/${_id}`, incomingData, config);
+    const { data } = await axios.patch(
+      `http://localhost:8000/project/${_id}`,
+      incomingData,
+      config
+    );
 
     dispatch({
       type: EDIT_PROJECTS_SUCCESS,
@@ -140,7 +155,10 @@ export const deleteProject = async (incomingData, dispatch) => {
       type: DELETE_PROJECTS_REQUEST,
     });
 
-    const { data } = await axios.delete(`/project`, incomingData);
+    const { data } = await axios.delete(
+      `http://localhost:8000/project`,
+      incomingData
+    );
 
     dispatch({
       type: DELETE_PROJECTS_SUCCESS,

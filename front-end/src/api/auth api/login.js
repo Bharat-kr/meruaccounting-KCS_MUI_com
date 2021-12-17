@@ -5,7 +5,7 @@ import { Navigate, useHistory } from 'react-router-dom';
 export const loginApi = (data, dispatch) => {
   dispatch({ type: 'LOGIN_LOADER' });
   axios
-    .post('/login', data)
+    .post('http://localhost:8000/login', data)
     .then((res) => {
       console.log('login data', res);
       if (res.data.status === 'success') {
