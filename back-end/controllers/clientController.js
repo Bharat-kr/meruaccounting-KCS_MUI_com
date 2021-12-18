@@ -38,7 +38,7 @@ exports.getClient = async (req, res) => {
       // console.log("This is employee id" < employee._id);
       // console.log(id);
 
-      const client = await Client.findOne({ manager: employee._id });
+      const client = await Client.find({ manager: employee._id });
 
       if (!client) {
         return res.status(404).json({
