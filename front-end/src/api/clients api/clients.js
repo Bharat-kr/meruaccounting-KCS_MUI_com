@@ -8,6 +8,10 @@ import {
   ADD_CLIENT_SUCCESS,
   ADD_CLIENT_FAILED,
   ADD_CLIENT_RESET,
+  DELETE_CLIENT_REQUEST,
+  DELETE_CLIENT_SUCCESS,
+  DELETE_CLIENT_RESET,
+  DELETE_CLIENT_FAILED,
 } from '../../constants/ClientConstants';
 
 const config = {
@@ -53,15 +57,35 @@ export const addClient = async (incomingData, dispatch) => {
       type: ADD_CLIENT_SUCCESS,
       payload: data,
     });
-
     console.log(`Client details ${data}`);
-
-    dispatch({
-      type: ADD_CLIENT_RESET,
-    });
   } catch (error) {
     dispatch({
       type: ADD_CLIENT_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteClient = async (dispatch) => {
+  try {
+    dispatch({
+      type: DELETE_CLIENT_REQUEST,
+    });
+
+    const { data } = await axios.delete(`/client`, config);
+
+    dispatch({
+      type: DELETE_CLIENT_SUCCESS,
+      payload: data,
+    });
+
+    console.log(`Client details ${data}`);
+  } catch (error) {
+    dispatch({
+      type: DELETE_CLIENT_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

@@ -18,7 +18,7 @@ export const getEmployeeDetails = async (_id, dispatch) => {
       type: EMPLOYEE_DETAILS_SUCCESS,
       payload: data,
     });
-    console.log(`Employee details ${data}`);
+    console.log(`Employee details `, data);
   } catch {
     dispatch({
       type: EMPLOYEE_DETAILS_FAILED,
