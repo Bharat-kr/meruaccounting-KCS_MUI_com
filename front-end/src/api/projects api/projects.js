@@ -1,19 +1,15 @@
 import {
   ADD_TEAM_PROJECTS_FAILED,
   ADD_TEAM_PROJECTS_REQUEST,
-  ADD_TEAM_PROJECTS_RESET,
   ADD_TEAM_PROJECTS_SUCCESS,
   CREATE_PROJECTS_FAILED,
   CREATE_PROJECTS_REQUEST,
-  CREATE_PROJECTS_RESET,
   CREATE_PROJECTS_SUCCESS,
   DELETE_PROJECTS_FAILED,
   DELETE_PROJECTS_REQUEST,
-  DELETE_PROJECTS_RESET,
   DELETE_PROJECTS_SUCCESS,
   EDIT_PROJECTS_FAILED,
   EDIT_PROJECTS_REQUEST,
-  EDIT_PROJECTS_RESET,
   EDIT_PROJECTS_SUCCESS,
   GET_PROJECTS_FAILED,
   GET_PROJECTS_REQUEST,
@@ -63,10 +59,6 @@ export const createProject = async (incomingData, dispatch) => {
       payload: data,
     });
     console.log(`Create project success ${data}`);
-
-    dispatch({
-      type: CREATE_PROJECTS_RESET,
-    });
   } catch (error) {
     dispatch({
       type: CREATE_PROJECTS_FAILED,
@@ -91,10 +83,6 @@ export const addTeamToProject = async (incomingData, dispatch) => {
       payload: data,
     });
     console.log('Add team to project', data);
-
-    dispatch({
-      type: ADD_TEAM_PROJECTS_RESET,
-    });
   } catch (error) {
     dispatch({
       type: ADD_TEAM_PROJECTS_FAILED,
@@ -119,10 +107,6 @@ export const editProject = async (_id, incomingData, dispatch) => {
       payload: data,
     });
     console.log('Edit existing project', data);
-
-    dispatch({
-      type: EDIT_PROJECTS_RESET,
-    });
   } catch (error) {
     dispatch({
       type: EDIT_PROJECTS_FAILED,
@@ -148,10 +132,6 @@ export const deleteProject = async (incomingData, dispatch) => {
     });
 
     console.log('DELETE existing project', data);
-
-    dispatch({
-      type: DELETE_PROJECTS_RESET,
-    });
   } catch (error) {
     dispatch({
       type: DELETE_PROJECTS_FAILED,

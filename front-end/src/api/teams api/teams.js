@@ -8,10 +8,8 @@ import {
   GET_TEAM_FAILED,
   UPDATE_MEMBER_REQUEST,
   UPDATE_MEMBER_SUCCESS,
-  UPDATE_MEMBER_RESET,
   UPDATE_MEMBER_FAILED,
   REMOVE_MEMBER_REQUEST,
-  REMOVE_MEMBER_RESET,
   REMOVE_MEMBER_FAILED,
   REMOVE_MEMBER_SUCCESS,
 } from '../../constants/TeamConstants';
@@ -74,8 +72,6 @@ export const updateMember = async (dispatch, incomingData) => {
     dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
 
     console.log('Updated Member', data);
-
-    dispatch({ type: UPDATE_MEMBER_RESET });
   } catch (error) {
     console.log(error);
     dispatch({
@@ -97,8 +93,6 @@ export const removeMember = async (dispatch, incomingData) => {
     dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
 
     console.log('removed Member', data);
-
-    dispatch({ type: REMOVE_MEMBER_RESET });
   } catch (error) {
     console.log(error);
     dispatch({
