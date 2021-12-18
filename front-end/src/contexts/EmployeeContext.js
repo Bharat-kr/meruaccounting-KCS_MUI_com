@@ -6,7 +6,7 @@ import {
   EMPLOYEE_DETAILS_FAILED
 } from '../constants/EmployeeConstants';
 
-export const teamContext = createContext();
+export const employeeContext = createContext();
 
 const employeeDetailsReducer = (state, action) => {
   switch (action.type) {

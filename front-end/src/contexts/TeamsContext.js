@@ -113,11 +113,11 @@ const removeMemberReducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [getTeam, dispatchgetTeam] = useReducer(
+  const [getTeams, dispatchgetTeam] = useReducer(
     getTeamReducer,
     { getTeam: {} },
     () => {
-      const localData = localStorage.getItem('getTeam');
+      const localData = localStorage.getItem('getTeams');
       return localData ? JSON.parse(localData) : { teamCreate: {} };
     }
   );
@@ -139,7 +139,7 @@ export function TeamsProvider(props) {
 
   useEffect(() => {
     localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-    localStorage.setItem('employee', JSON.stringify(getTeam));
+    localStorage.setItem('employee', JSON.stringify(getTeams));
   }, [teamCreate, getTeam]);
 
   return (
@@ -147,7 +147,7 @@ export function TeamsProvider(props) {
       value={{
         teamCreate,
         dispatchTeam,
-        getTeam,
+        getTeams,
         dispatchgetTeam,
         updatedMember,
         dispatchUpdateMember,

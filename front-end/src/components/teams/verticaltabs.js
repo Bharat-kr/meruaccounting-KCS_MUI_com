@@ -21,6 +21,9 @@ import { ClientsContext } from "../../contexts/ClientsContext";
 import { teamContext } from "../../contexts/TeamsContext";
 import { loginContext } from "../../contexts/LoginContext";
 import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
+import Treeview from "../Treeview";
+import { TreeItem } from "@mui/lab";
+import SearchBar from "../SearchBar";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -69,11 +72,15 @@ function a11yProps(index) {
 export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [teams, setTeams] = React.useState([]);
   const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
-  const { teamCreate } = useContext(teamContext);
+  const { dispatchgetTeam } = useContext(teamContext);
   const { loginC } = useContext(loginContext);
-  console.log(loginC.userData);
+
+  React.useEffect(() => {
+    getTeam(dispatchgetTeam);
+  }, []);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -103,8 +110,8 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: "10px",
-          // maxHeight: '70vh',
-          height: "auto",
+          maxHeight: "70vh",
+          height: "70vh",
         }}
       >
         <Paper
@@ -116,56 +123,65 @@ export default function VerticalTabs() {
             position: "relative",
           }}
         >
-          <Autocomplete
-            onChange={handleSearch}
-            disablePortal
-            id="combo-box-demo"
-            options={UsersList}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth label="Search members" />
-            )}
-          />
-          <Tabs
-            orientation="vertical"
-            variant="scrollable"
-            value={value}
-            onChange={handleChange}
-            aria-label="Vertical tabs"
-            sx={{ borderRight: 1, borderColor: "divider" }}
-          >
-            {User.map((user) => (
-              <Tab
-                selectionFollowsFocus="true"
-                label={
-                  <Typography
-                    sx={{
-                      textAlign: "left",
-                      width: "100%",
-                      fontWeight: "Bold",
-                    }}
-                    variant="h6"
-                  >
-                    {user.name}{" "}
-                  </Typography>
-                }
-                {...a11yProps(`${User.indexOf(user) + 1}`)}
-              />
-            ))}
-          </Tabs>
-          <form onSubmit={handleSubmit} noValidate autoComplete="off">
-            <TextField
-              // onChange={(e) => setnewClientValue(e.target.value)}
-              required
-              fullWidth
-              label="Add new member"
-              // error={newClientError}
-              sx={{ mb: 1 }}
-            />
+          {/* search box */}
+          <SearchBar handleSearch={handleSearch} label="Search Project" />
 
-            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
-              Add
-            </Button>
-          </form>
+          {/* teams and members tree view flex container */}
+          <Box
+            component="div"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+            }}
+          >
+            {clients.map((client) => (
+              <Treeview parentName={client.name}>
+                {client.projects.map((project) => (
+                  <TreeItem
+                    nodeId={1 + client.projects.indexOf(project) + 1}
+                    label={
+                      <Typography data-client={client.name} variant="h5">
+                        {project.name}
+                      </Typography>
+                    }
+                  />
+                ))}
+              </Treeview>
+            ))}
+          </Box>
+
+          {/* INPUT BOX, add validations, connect to context */}
+          <Box
+            sx={{
+              boxSizing: "border-box",
+              width: "95%",
+              position: "absolute",
+              bottom: "0",
+
+              "& > :not(style)": { m: 1 },
+            }}
+          >
+            <form onSubmit={handleSubmit} noValidate autoComplete="off">
+              <TextField
+                // onChange={(e) => setnewClientValue(e.target.value)}
+                required
+                fullWidth
+                label="Add new client"
+                // error={newClientError}
+                sx={{}}
+              />
+
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Submit
+              </Button>
+            </form>
+          </Box>
         </Paper>
       </Box>
 

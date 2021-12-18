@@ -49,11 +49,11 @@ export const getTeam = async (dispatch, id) => {
 
   try {
     const res = await axios.get(
-      `http://localhost:8000/team/getTeam/${id}`,
+      `http://localhost:8000/team/getTeam`,
       config
     );
 
-    console.log(res);
+    // console.log(res);
 
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
   } catch (error) {
