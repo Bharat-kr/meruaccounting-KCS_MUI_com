@@ -1,14 +1,21 @@
-import React, { useContext, useReducer, useEffect } from 'react';
-
+import React, { useContext, useReducer, useEffect } from "react";
 import {
   TEAM_CREATE_FAILED,
   TEAM_CREATE_REQUEST,
   TEAM_CREATE_RESET,
   TEAM_CREATE_SUCCESS,
-  EMPLOYEE_LIST_SUCCESS,
-  EMPLOYEE_LIST_REQUEST,
-  EMPLOYEE_LIST_FAILED
-} from '../constants/TeamConstants';
+  GET_TEAM_REQUEST,
+  GET_TEAM_SUCCESS,
+  GET_TEAM_FAILED,
+  UPDATE_MEMBER_REQUEST,
+  UPDATE_MEMBER_SUCCESS,
+  UPDATE_MEMBER_FAILED,
+  UPDATE_MEMBER_RESET,
+  REMOVE_MEMBER_REQUEST,
+  REMOVE_MEMBER_SUCCESS,
+  REMOVE_MEMBER_FAILED,
+  REMOVE_MEMBER_RESET,
+} from "../constants/TeamConstants";
 
 export const teamContext = React.createContext();
 
@@ -16,77 +23,123 @@ const teamCreateReducer = (state, action) => {
   switch (action.type) {
     case TEAM_CREATE_REQUEST:
       return {
-        loader: true
+        loader: true,
       };
-
     case TEAM_CREATE_SUCCESS:
       return {
         loader: false,
-        teamCreate: action.payload
+        teamCreate: action.payload,
       };
-
     case TEAM_CREATE_FAILED:
       return {
         loader: false,
-        error: action.payload
+        error: action.payload,
       };
-
     case TEAM_CREATE_RESET:
       return {
         teamCreate: {},
-        loader: false
+        loader: false,
       };
-
     default:
       return state;
   }
 };
 
-const employeeReducer = (state, action) => {
+const getTeamReducer = (state, action) => {
   switch (action.type) {
-    case EMPLOYEE_LIST_REQUEST:
+    case GET_TEAM_REQUEST:
       return {
-        loader: true
+        loader: true,
       };
-
-    case EMPLOYEE_LIST_SUCCESS:
-      return {
-        loader: false,
-        employeeList: action.payload
-      };
-
-    case EMPLOYEE_LIST_FAILED:
+    case GET_TEAM_SUCCESS:
       return {
         loader: false,
-        error: action.payload
+        getTeam: action.payload,
       };
+    case GET_TEAM_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
+const updateMemberReducer = (state, action) => {
+  switch (action.type) {
+    case UPDATE_MEMBER_REQUEST:
+      return {
+        loader: true,
+      };
+    case UPDATE_MEMBER_SUCCESS:
+      return {
+        loader: false,
+        updatedMember: action.payload,
+      };
+    case UPDATE_MEMBER_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case UPDATE_MEMBER_RESET:
+      return { updatedMember: {} };
+    default:
+      return state;
+  }
+};
+
+const removeMemberReducer = (state, action) => {
+  switch (action.type) {
+    case REMOVE_MEMBER_REQUEST:
+      return {
+        loader: true,
+      };
+    case REMOVE_MEMBER_SUCCESS:
+      return {
+        loader: false,
+        removeMember: action.payload,
+      };
+    case REMOVE_MEMBER_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case REMOVE_MEMBER_RESET:
+      return { removeMember: {} };
     default:
       return state;
   }
 };
 
 export function TeamsProvider(props) {
-  const [employeeList, dispatchEmployeeList] = useReducer(
-    employeeReducer,
-    { employeeList: {} },
-    () => {
-      const localData = localStorage.getItem('employeeList');
-      return localData ? JSON.parse(localData) : { teamCreate: {} };
-    }
+  const [getTeam, dispatchgetTeam] = useReducer(getTeamReducer, {
+    getTeam: {},
+  });
+  const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, {
+    teamCreate: {},
+  });
+  const [updatedMember, dispatchUpdateMember] = useReducer(
+    updateMemberReducer,
+    { updatedMember: {} }
   );
-  const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, { teamCreate: {} }, () => {
-    const localData = localStorage.getItem('teamCreate');
-    return localData ? JSON.parse(localData) : { teamCreate: {} };
+  const [removeMember, dispatchRemoveMember] = useReducer(removeMemberReducer, {
+    removeMember: {},
   });
 
-  useEffect(() => {
-    localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-    localStorage.setItem('employee', JSON.stringify(employeeList));
-  }, [teamCreate, employeeList]);
-
   return (
-    <teamContext.Provider value={{ teamCreate, employeeList, dispatchTeam, dispatchEmployeeList }}>
+    <teamContext.Provider
+      value={{
+        teamCreate,
+        dispatchTeam,
+        getTeam,
+        dispatchgetTeam,
+        updatedMember,
+        dispatchUpdateMember,
+        removeMember,
+        dispatchRemoveMember,
+      }}
+    >
       {props.children}
     </teamContext.Provider>
   );
