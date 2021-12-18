@@ -20,6 +20,84 @@ To use ScreenShot Monitoring Service, you need to provide credentials to authent
 
 ## Schema
 
+We have used different schemas to store different object
+
+### Client Schema
+```
+const clientSchema = new Schema({
+  name: { type: String },
+  manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+});
+```
+
+### Project Schema
+```
+const projectSchema = new Schema({
+  name: { type: String },
+  client: { type: mongoose.Schema.Types.ObjectId, ref: Client },
+  team: [{ type: mongoose.Schema.Types.ObjectId, ref: Team }],
+});
+```
+
+### Team Schema
+```
+const teamSchema = new Schema({
+  name: { type: String },
+  manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  employees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+});
+```
+
+### User Schema
+```
+const userSchema = new Schema({
+  role: { type: String },
+  isAdmin: Boolean,
+  isManager: Boolean,
+  company: String,
+  firstName: { type: String },
+  lastName: { type: String },
+  email: { type: String },
+  password: { type: String },
+  team: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
+  settings: {
+    ScreenShotPerHour: Number,
+    AllowBlur: Boolean,
+    AppsAndUrlTracking: Boolean,
+    WeeklyTimeLimit: Number,
+    AutoPause: Number,
+    OfflineTime: Boolean,
+    NotifyUser: Boolean,
+    WeekStart: String,
+    CurrencySymbol: String,
+  },
+  pay: Number,
+  day: {
+    date: {
+      hours: Number,
+      timeRange: [
+        {
+          startTime: Date,
+          endTime: Date,
+          activityLevelTotal: Number,
+          screenShots: [
+            {
+              activityLevel: Number,
+              url: String,
+              time: Date,
+              taskName: String,
+            },
+          ],
+        },
+      ],
+    },
+  },
+});
+```
+
+
 ## Installation
 
 ScreenShot Monitoring requires [Node.js](https://nodejs.org/) v14+ and [npm](https://www.npmjs.com/) v6+ to run
@@ -61,4 +139,4 @@ npm run start
 
 ## License
 
-MIT
+[MIT](/LICENSE.md)
