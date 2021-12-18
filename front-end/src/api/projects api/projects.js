@@ -24,17 +24,13 @@ const config = {
 
 export const getClientProjects = async (dispatch) => {
   try {
-    dispatch({
-      type: GET_PROJECTS_REQUEST,
-    });
+    dispatch({ type: GET_PROJECTS_REQUEST });
 
     const { data } = await axios.get(`/client/getClientProjects`, config);
 
-    dispatch({
-      type: GET_PROJECTS_SUCCESS,
-      payload: data,
-    });
-    console.log(`Project details ${data}`);
+    dispatch({ type: GET_PROJECTS_SUCCESS, payload: data });
+    console.log(`Project details`);
+    console.log(data);
   } catch (error) {
     dispatch({
       type: GET_PROJECTS_FAILED,
@@ -48,9 +44,7 @@ export const getClientProjects = async (dispatch) => {
 
 export const createProject = async (incomingData, dispatch) => {
   try {
-    dispatch({
-      type: CREATE_PROJECTS_REQUEST,
-    });
+    dispatch({ type: CREATE_PROJECTS_REQUEST });
 
     const { data } = await axios.post(`/project`, incomingData, config);
 
@@ -58,7 +52,8 @@ export const createProject = async (incomingData, dispatch) => {
       type: CREATE_PROJECTS_SUCCESS,
       payload: data,
     });
-    console.log(`Create project success ${data}`);
+    console.log(`Create project success`);
+    console.log(data);
   } catch (error) {
     dispatch({
       type: CREATE_PROJECTS_FAILED,
@@ -72,17 +67,13 @@ export const createProject = async (incomingData, dispatch) => {
 
 export const addTeamToProject = async (incomingData, dispatch) => {
   try {
-    dispatch({
-      type: ADD_TEAM_PROJECTS_REQUEST,
-    });
+    dispatch({ type: ADD_TEAM_PROJECTS_REQUEST });
 
     const { data } = await axios.patch(`/project`, incomingData, config);
 
-    dispatch({
-      type: ADD_TEAM_PROJECTS_SUCCESS,
-      payload: data,
-    });
-    console.log('Add team to project', data);
+    dispatch({ type: ADD_TEAM_PROJECTS_SUCCESS, payload: data });
+    console.log('Add team to project');
+    console.log(data);
   } catch (error) {
     dispatch({
       type: ADD_TEAM_PROJECTS_FAILED,
@@ -96,17 +87,13 @@ export const addTeamToProject = async (incomingData, dispatch) => {
 
 export const editProject = async (_id, incomingData, dispatch) => {
   try {
-    dispatch({
-      type: EDIT_PROJECTS_REQUEST,
-    });
+    dispatch({ type: EDIT_PROJECTS_REQUEST });
 
     const { data } = await axios.patch(`/project/${_id}`, incomingData, config);
 
-    dispatch({
-      type: EDIT_PROJECTS_SUCCESS,
-      payload: data,
-    });
-    console.log('Edit existing project', data);
+    dispatch({ type: EDIT_PROJECTS_SUCCESS, payload: data });
+    console.log('Edit existing project');
+    console.log(data);
   } catch (error) {
     dispatch({
       type: EDIT_PROJECTS_FAILED,
@@ -120,18 +107,14 @@ export const editProject = async (_id, incomingData, dispatch) => {
 
 export const deleteProject = async (incomingData, dispatch) => {
   try {
-    dispatch({
-      type: DELETE_PROJECTS_REQUEST,
-    });
+    dispatch({ type: DELETE_PROJECTS_REQUEST });
 
     const { data } = await axios.delete(`/project`, incomingData);
 
-    dispatch({
-      type: DELETE_PROJECTS_SUCCESS,
-      payload: data,
-    });
+    dispatch({ type: DELETE_PROJECTS_SUCCESS, payload: data });
 
-    console.log('DELETE existing project', data);
+    console.log('DELETE existing project');
+    console.log(data);
   } catch (error) {
     dispatch({
       type: DELETE_PROJECTS_FAILED,

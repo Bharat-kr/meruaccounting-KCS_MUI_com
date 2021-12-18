@@ -30,7 +30,8 @@ export const getClient = async (dispatch) => {
       type: GET_CLIENT_SUCCESS,
       payload: data,
     });
-    console.log(`Client details ${JSON.stringify(data)}`);
+    console.log(`Client details`);
+    console.log(data);
     localStorage.setItem('clientdata', JSON.stringify(data));
   } catch (error) {
     dispatch({
@@ -45,17 +46,13 @@ export const getClient = async (dispatch) => {
 
 export const addClient = async (incomingData, dispatch) => {
   try {
-    dispatch({
-      type: ADD_CLIENT_REQUEST,
-    });
+    dispatch({ type: ADD_CLIENT_REQUEST });
 
     const { data } = await axios.post(`/client`, incomingData, config);
 
-    dispatch({
-      type: ADD_CLIENT_SUCCESS,
-      payload: data,
-    });
-    console.log(`Client details ${data}`);
+    dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
+    console.log(`add client`);
+    console.log(data);
   } catch (error) {
     dispatch({
       type: ADD_CLIENT_FAILED,
@@ -69,18 +66,14 @@ export const addClient = async (incomingData, dispatch) => {
 
 export const deleteClient = async (dispatch) => {
   try {
-    dispatch({
-      type: DELETE_CLIENT_REQUEST,
-    });
+    dispatch({ type: DELETE_CLIENT_REQUEST });
 
     const { data } = await axios.delete(`/client`, config);
 
-    dispatch({
-      type: DELETE_CLIENT_SUCCESS,
-      payload: data,
-    });
+    dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });
 
-    console.log(`Client details ${data}`);
+    console.log(`delete client`);
+    console.log(data);
   } catch (error) {
     dispatch({
       type: DELETE_CLIENT_FAILED,
