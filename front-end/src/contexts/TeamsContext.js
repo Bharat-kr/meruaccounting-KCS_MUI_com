@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useEffect } from "react";
+import React, { useContext, useReducer, useEffect, useState } from "react";
 import {
   TEAM_CREATE_FAILED,
   TEAM_CREATE_REQUEST,
@@ -113,8 +113,8 @@ const removeMemberReducer = (state, action) => {
 };
 
 export function TeamsProvider(props) {
-  const [getTeam, dispatchgetTeam] = useReducer(getTeamReducer, {
-    getTeam: {},
+  const [getTeams, dispatchgetTeam] = useReducer(getTeamReducer, {
+    getTeam: [],
   });
   const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, {
     teamCreate: {},
@@ -132,7 +132,7 @@ export function TeamsProvider(props) {
       value={{
         teamCreate,
         dispatchTeam,
-        getTeam,
+        getTeams,
         dispatchgetTeam,
         updatedMember,
         dispatchUpdateMember,

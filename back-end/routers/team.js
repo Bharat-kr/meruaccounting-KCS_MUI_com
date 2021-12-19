@@ -210,4 +210,45 @@ router.get("/getTeam/:id", authPass, async (req, res) => {
     },
   });
 });
+
+router.get("/getTeam", authPass, async (req, res) => {
+  const responseArray = [];
+  const user = req.user;
+  // const teamId = req.params.id;
+
+  if (!user) {
+    return res.status(401).json({
+      msg: "UnAuthorized",
+    });
+  }
+
+  for (var i = 0; i < user.team.length; i++) {
+    const team = await Team.findById(user.team[i]);
+    if (!team) {
+      return res.status(404).json({
+        msg: "No Team Found!!",
+      });
+    }
+
+    console.log(team);
+    // const team = await user.populate("team").execPopulate();
+    await Team.populate(team, {
+      path: "employees",
+    });
+    // const teamMembers = TeamMembers.employees;
+
+    await Team.populate(team, {
+      path: "projects",
+    });
+    // const teamProject = TeamProject.projects;
+    responseArray.push(team);
+  }
+
+  // const teamProject = team.populate("projects");
+  // t.populate("my-path").execPopulate();
+  res.json({
+    msg: "Success",
+    data: responseArray,
+  });
+});
 module.exports = router;
