@@ -8,10 +8,8 @@ import {
   GET_TEAM_FAILED,
   UPDATE_MEMBER_REQUEST,
   UPDATE_MEMBER_SUCCESS,
-  UPDATE_MEMBER_RESET,
   UPDATE_MEMBER_FAILED,
   REMOVE_MEMBER_REQUEST,
-  REMOVE_MEMBER_RESET,
   REMOVE_MEMBER_FAILED,
   REMOVE_MEMBER_SUCCESS,
 } from '../../constants/TeamConstants';
@@ -26,12 +24,11 @@ const config = {
 export const createTeam = async (dispatch, name) => {
   try {
     dispatch({ type: TEAM_CREATE_REQUEST });
-    const { data } = await axios.post(
-      'http://localhost:8000/team/create',
-      name,
-      config
-    );
+
+    const { data } = await axios.post('/team/create', name, config);
+
     dispatch({ type: TEAM_CREATE_SUCCESS, payload: data.data });
+    console.log('team create');
     console.log(data.data);
   } catch (error) {
     dispatch({
@@ -45,8 +42,6 @@ export const createTeam = async (dispatch, name) => {
 };
 
 export const getTeam = async (dispatch, id) => {
-  dispatch({ type: GET_TEAM_REQUEST });
-
   try {
     const res = await axios.get(
       `http://localhost:8000/team/getTeam`,
@@ -74,16 +69,15 @@ export const updateMember = async (dispatch, incomingData) => {
     dispatch({ type: UPDATE_MEMBER_REQUEST });
 
     const { data } = await axios.patch(
-      'http://localhost:8000/team/updateMember',
+      '/team/updateMember',
       incomingData,
       config
     );
 
     dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
 
-    console.log('Updated Member', data);
-
-    dispatch({ type: UPDATE_MEMBER_RESET });
+    console.log('Updated Member');
+    console.log(data);
   } catch (error) {
     console.log(error);
     dispatch({
@@ -100,16 +94,11 @@ export const removeMember = async (dispatch, incomingData) => {
   try {
     dispatch({ type: REMOVE_MEMBER_REQUEST });
 
-    const { data } = await axios.delete(
-      'http://localhost:8000/team/removeMember',
-      incomingData
-    );
+    const { data } = await axios.delete('/team/removeMember', incomingData);
 
     dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
-
-    console.log('removed Member', data);
-
-    dispatch({ type: REMOVE_MEMBER_RESET });
+    console.log('removed Member');
+    console.log(data);
   } catch (error) {
     console.log(error);
     dispatch({

@@ -1,11 +1,9 @@
 import axios from 'axios';
-// import { Navigate } from 'react-router';
-import { Navigate, useHistory } from 'react-router-dom';
 
 export const loginApi = (data, dispatch) => {
   dispatch({ type: 'LOGIN_LOADER' });
   axios
-    .post('http://localhost:8000/login', data)
+    .post('/login', data)
     .then((res) => {
       console.log('login data', res);
       if (res.data.status === 'success') {
@@ -16,8 +14,6 @@ export const loginApi = (data, dispatch) => {
         // window.history.pushState('', 'Dashboard', '/dashboard/userpage');
         window.location.href = '/dashboard/userpage';
         // window.location.replace('/dashboard/userpage');
-        // return <Navigate to="/dashboard/homepage" />;
-        // eslint-disable-next-line no-else-return
       } else {
         dispatch({ type: 'LOGIN_ERR' });
       }

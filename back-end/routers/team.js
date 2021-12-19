@@ -177,7 +177,23 @@ router.get("/getTeam/:id", authPass, async (req, res) => {
   const TeamMembers = await Team.populate(team, {
     path: "employees",
   });
-  const teamMembers = TeamMembers.employees;
+
+  var teamMember = [];
+
+  for (var i = 0; i < TeamMembers.employees.length; i++) {
+    const emp = TeamMembers.employees[i];
+    const member = await User.populate(emp, {
+      path: "projects",
+    });
+    teamMember.push(member);
+  }
+  // TeamMembers.employees.forEach(async(emp)=>{
+  //   const member=await User.populate(emp,{
+  //     path:"projects"
+  //   })
+  // })
+  // const teamMembers = TeamMembers.employees.populate("projects");
+  // const teamMembers
 
   const TeamProject = await Team.populate(team, {
     path: "projects",
@@ -189,7 +205,7 @@ router.get("/getTeam/:id", authPass, async (req, res) => {
     msg: "Success",
     data: {
       team,
-      teamMembers,
+      teamMember,
       teamProject,
     },
   });
