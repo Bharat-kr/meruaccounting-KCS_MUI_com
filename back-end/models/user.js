@@ -51,9 +51,10 @@ const userSchema = new Schema({
     CurrencySymbol: String,
   },
   pay: Number,
-  day: {
-    date: {
-      // time: { type: Date, default: Date.now },
+
+  days: [
+    {
+      date: Date,
       hours: Number,
       timeRange: [
         {
@@ -71,7 +72,7 @@ const userSchema = new Schema({
         },
       ],
     },
-  },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
