@@ -72,38 +72,88 @@ function a11yProps(index) {
 export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [teams, setTeams] = React.useState([]);
-  const { clients, changeClient } = useContext(ClientsContext);
+  // const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
-  const { dispatchgetTeam } = useContext(teamContext);
-  const { loginC } = useContext(loginContext);
-
+  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  const [currMember, setCurrMember] = React.useState(null);
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
 
+  const getFullName = (firstName, lastName) => {
+    let name = "";
+    if (firstName && lastName) {
+      name = firstName + " " + lastName;
+    } else if (!firstName) {
+      name = lastName;
+    } else if (!lastName) {
+      name = firstName;
+    }
+    return name;
+  };
+
+  console.log(getTeams.getTeam);
+  // console.log(currMember);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  // labels for search box(autocomplete)
+  const teamsList = [];
+  React.useEffect(() => {
+    getTeams?.getTeam?.forEach((team) => {
+      // eslint-disable-next-line prefer-template
+      team.employees?.map((member) =>
+        teamsList.push(
+          team.name + ":" + getFullName(member.firstName, member.lastName)
+        )
+      );
+    });
+  }, [getTeams, teamsList]);
+ 
+  React.useEffect(() => {
+    if (getTeams?.getTeam?.length > 0) {
+      //setting the current member
+      setCurrMember(getTeams?.getTeam[0].employees[0]);
+    }
+  }, [getTeams, setCurrMember]);
+
+  // change currentclient on search
   const handleSearch = (e, value) => {
-    const client = clients.filter((client) =>
-      client.name === value ? client : ""
+    const teams = getTeams.getTeam.filter((team) =>
+      team.name === value ? team : ""
     );
-    if (client.length === 0) {
+    if (teams.length === 0) {
       // eslint-disable-next-line no-useless-return
       return;
     }
-    return changeClient(client[0]);
+
+    return setCurrMember(teams[0].employees[0]);
+  };
+
+  const handleClick = (e) => {
+    // console.log(e.target.id);
+    const team = getTeams.getTeam.filter((team) =>
+      team.name === e.target.dataset.client ? team : ""
+    );
+
+    const member = team[0].employees.filter(
+      (member) => member._id === e.target.id
+    );
+
+    setCurrMember(member[0]);
+    // console.log("member", member[0]);
   };
 
   const handleSubmit = () => {
     RestaurantRounded(console.log("hello"));
   };
-  const UsersList = [];
-  clients.forEach((client) => {
-    // eslint-disable-next-line prefer-template
-    User.map((User) => UsersList.push(User.name));
-  });
+  // const UsersList = [];
+  // clients.forEach((client) => {
+  //   // eslint-disable-next-line prefer-template
+  //   User.map((User) => UsersList.push(User.name));
+  // });
   return (
     <div className={classes.root}>
       <Box
@@ -111,7 +161,7 @@ export default function VerticalTabs() {
         sx={{
           margin: "10px",
           maxHeight: "70vh",
-          height: "70vh",
+          height: "auto",
         }}
       >
         <Paper
@@ -124,7 +174,11 @@ export default function VerticalTabs() {
           }}
         >
           {/* search box */}
-          <SearchBar handleSearch={handleSearch} label="Search Project" />
+          <SearchBar
+            handleSearch={handleSearch}
+            label="Search Member"
+            options={teamsList}
+          />
 
           {/* teams and members tree view flex container */}
           <Box
@@ -135,14 +189,19 @@ export default function VerticalTabs() {
               alignItems: "flex-start",
             }}
           >
-            {clients.map((client) => (
-              <Treeview parentName={client.name}>
-                {client.projects.map((project) => (
+            {getTeams?.getTeam?.map((el) => (
+              <Treeview parentName={el.name}>
+                {el.employees.map((member) => (
                   <TreeItem
-                    nodeId={1 + client.projects.indexOf(project) + 1}
+                    nodeId={1 + el.employees.indexOf(member) + 1}
                     label={
-                      <Typography data-client={client.name} variant="h5">
-                        {project.name}
+                      <Typography
+                        data-client={el.name}
+                        onClick={handleClick}
+                        id={member._id}
+                        variant="h5"
+                      >
+                        {getFullName(member.firstName, member.lastName)}
                       </Typography>
                     }
                   />
@@ -203,13 +262,14 @@ export default function VerticalTabs() {
           }}
         >
           <Box>
-            {User.map((user) => (
-              <Main
-                value={value}
-                index={User.indexOf(user)}
-                sx={{ overflow: "hidden" }}
-              />
-            ))}
+            {/* {User.map((user) => ( */}
+            <Main
+              value={value}
+              // index={User.indexOf(user)}
+              currMember={currMember}
+              sx={{ overflow: "hidden" }}
+            />
+            {/* ))} */}
           </Box>
         </Paper>
       </Box>

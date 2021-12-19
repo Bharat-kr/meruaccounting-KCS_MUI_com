@@ -216,16 +216,16 @@ router.get("/getTeam", authPass, async (req, res) => {
 
     console.log(team);
     // const team = await user.populate("team").execPopulate();
-    const TeamMembers = await Team.populate(team, {
+    await Team.populate(team, {
       path: "employees",
     });
-    const teamMembers = TeamMembers.employees;
+    // const teamMembers = TeamMembers.employees;
 
-    const TeamProject = await Team.populate(team, {
+    await Team.populate(team, {
       path: "projects",
     });
-    const teamProject = TeamProject.projects;
-    responseArray.push({ team, teamMembers, teamProject });
+    // const teamProject = TeamProject.projects;
+    responseArray.push(team);
   }
 
   // const teamProject = team.populate("projects");

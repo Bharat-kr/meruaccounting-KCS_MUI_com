@@ -34,7 +34,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Main(props) {
-  const { value, index, ...other } = props;
+  const { value, index, currMember, ...other } = props;
   const { User } = useContext(UserContext);
   const { clients, changeProjectmembers } = useContext(ClientsContext);
   const [Checked, setChecked] = useState();
@@ -42,7 +42,7 @@ export default function Main(props) {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-
+  console.log(currMember);
   const Labelconfig = function () {
     return (
       <>
@@ -69,7 +69,7 @@ export default function Main(props) {
 
   return (
     <>
-      {value === index && (
+      {currMember && (
         <Container
           component="div"
           sx={{ border: 1, height: "100%", overflow: "scroll" }}
@@ -87,10 +87,10 @@ export default function Main(props) {
               >
                 <Grid xs={4}>
                   <Typography sx={{ fontSize: 40 }}>
-                    {User[index].name}
+                    {currMember?.firstName} {currMember?.lastName}
                   </Typography>
                   <Divider />
-                  <Typography variant="body1">{User[index].email}</Typography>
+                  <Typography variant="body1">{currMember?.email}</Typography>
                   <Grid xs={8} sx={{ mt: 2 }}>
                     <Typography variant="h4">payrate</Typography>
                     <EdiText
@@ -122,10 +122,10 @@ export default function Main(props) {
             </Box>
             <Box sx={{ mt: 2 }}>
               <FormControl component="fieldset" sx={{ pt: 2 }}>
-                <Typography variant="h4">Role({User[index].role})</Typography>
+                <Typography variant="h4">Role({currMember.role})</Typography>
                 <RadioGroup
                   aria-label="Role"
-                  defaultValue={User[index].role}
+                  defaultValue={currMember.role}
                   name="radio-buttons-group"
                 >
                   <FormControlLabel
@@ -146,13 +146,13 @@ export default function Main(props) {
                 </RadioGroup>
               </FormControl>
             </Box>
-            {(User[index].role === "Manager" ||
-              User[index].role === "Admin") && (
+            {(currMember.role === "Manager" || currMember.role === "Admin") && (
               <Box>
                 <Typography variant="h5">Manage for</Typography>
                 <Typography varinat="body2">
-                  If enabled, {User[index].name} will be able to see selected
-                  user's Timeline and Reports, but not rates.
+                  If enabled, {currMember.firstName} {currMember.lastName} will
+                  be able to see selected user's Timeline and Reports, but not
+                  rates.
                 </Typography>
                 <Typography varinat="h6">
                   {User.map((user) => (
@@ -169,9 +169,9 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
+              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
             </Box>
-            <Box sx={{ pt: 2, fontSize: "20px" }}>
+            {/* <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
               {Object.keys(User[index].Settings).map((keyName, keyIndex) => (
                 <>
@@ -180,9 +180,9 @@ export default function Main(props) {
                       varihant="h6"
                       sx={{ pr: 2, fontSize: "20px", color: "success" }}
                     >
-                      {convertString(keyName)}
-                      {/* {console.log(index)} */}
-                    </Typography>
+                      {convertString(keyName)} */}
+            {/* {console.log(index)} */}
+            {/* </Typography>
                     <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
                       {User[index].Settings[keyName] === true
                         ? "On"
@@ -191,7 +191,7 @@ export default function Main(props) {
                   </Box>
                 </>
               ))}
-            </Box>
+            </Box> */}
           </Typography>
         </Container>
       )}

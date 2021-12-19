@@ -56,6 +56,7 @@ export const getTeam = async (dispatch, id) => {
     // console.log(res);
 
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
+    
   } catch (error) {
     console.log(error);
     dispatch({
