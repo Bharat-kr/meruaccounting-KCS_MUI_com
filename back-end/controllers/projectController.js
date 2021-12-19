@@ -100,11 +100,22 @@ exports.projectTeam = async (req, res) => {
       if (!project) {
         return res.status(404).send("OOps, no project found");
       }
-      const team = await Team.findById(teamId);
+      const team = await Team.findById(teamId).populate("employees");
       if (!team) {
         return res.status(404).send("OOps, no team found");
       }
       console.log(team);
+      // team.employees.forEach((employee) => {});
+      for (var i = 0; i < team.employees.length; i++) {
+        console.log("Inside For Team Employees ");
+        var emp = team.employees[i];
+
+        console.log("This is a EMployee", emp);
+
+        emp.projects.push(projectId);
+        await emp.save();
+        console.log(emp);
+      }
 
       console.log("THis is project", project);
       project.team.push(teamId);
@@ -116,6 +127,7 @@ exports.projectTeam = async (req, res) => {
         data: project,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).json({
         messsage: "Bad Request ",
         data: error,

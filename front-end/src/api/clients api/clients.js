@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 import {
   GET_CLIENT_REQUEST,
@@ -7,12 +7,14 @@ import {
   ADD_CLIENT_REQUEST,
   ADD_CLIENT_SUCCESS,
   ADD_CLIENT_FAILED,
-  ADD_CLIENT_RESET,
-} from "../../constants/ClientConstants";
+  DELETE_CLIENT_REQUEST,
+  DELETE_CLIENT_SUCCESS,
+  DELETE_CLIENT_FAILED,
+} from '../../constants/ClientConstants';
 
 const config = {
   headers: {
-    Authorization: `Bearer ${localStorage["Bearer Token"]}`,
+    Authorization: `Bearer ${localStorage['Bearer Token']}`,
   },
 };
 
@@ -22,17 +24,15 @@ export const getClient = async (dispatch) => {
       type: GET_CLIENT_REQUEST,
     });
 
-    const { data } = await axios.get(
-      `http://localhost:8000/client/getClient`,
-      config
-    );
+    const { data } = await axios.get(`/client/getClient`, config);
 
     dispatch({
       type: GET_CLIENT_SUCCESS,
       payload: data,
     });
-    console.log(`Client details ${JSON.stringify(data)}`);
-    localStorage.setItem("clientdata", JSON.stringify(data));
+    console.log(`Client details`);
+    console.log(data);
+    localStorage.setItem('clientdata', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: GET_CLIENT_FAILED,
@@ -46,29 +46,37 @@ export const getClient = async (dispatch) => {
 
 export const addClient = async (incomingData, dispatch) => {
   try {
-    dispatch({
-      type: ADD_CLIENT_REQUEST,
-    });
+    dispatch({ type: ADD_CLIENT_REQUEST });
 
-    const { data } = await axios.post(
-      `http://localhost:8000/client`,
-      incomingData,
-      config
-    );
+    const { data } = await axios.post(`/client`, incomingData, config);
 
-    dispatch({
-      type: ADD_CLIENT_SUCCESS,
-      payload: data,
-    });
-
-    console.log(`Client details ${data}`);
-
-    dispatch({
-      type: ADD_CLIENT_RESET,
-    });
+    dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
+    console.log(`add client`);
+    console.log(data);
   } catch (error) {
     dispatch({
       type: ADD_CLIENT_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteClient = async (dispatch) => {
+  try {
+    dispatch({ type: DELETE_CLIENT_REQUEST });
+
+    const { data } = await axios.delete(`/client`, config);
+
+    dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });
+
+    console.log(`delete client`);
+    console.log(data);
+  } catch (error) {
+    dispatch({
+      type: DELETE_CLIENT_FAILED,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

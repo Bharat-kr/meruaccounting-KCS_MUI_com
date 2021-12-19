@@ -14,13 +14,13 @@ _Get Team List / Employee List_
 > route - GET /team/getTeam
 > data sent
 
-_Update Memeber / Add Employee to Team_
+_Update Member / Add Employee to Team_
 
 > name - updateMember
 > route - PATCH /team/updateTeam
 > data sent - object {employeId : "employee id" , teamId , "team id"}
 
-_Remove/ Delete Memeber_
+_Remove/ Delete Member_
 
 > name - removeMember
 > route - DELETE team/removeMember
@@ -47,6 +47,12 @@ _Add new Client_
 > name - addClient
 > route - POST /client
 > data sent - object {name : "client name"}
+
+_Delete an existing Client_
+
+> name - deleteClient
+> route - DELETE /client
+> data sent
 
 ### PROJECTS API
 
