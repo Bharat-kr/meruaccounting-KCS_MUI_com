@@ -29,6 +29,7 @@ To use ScreenShot Monitoring Service, you need to provide credentials to authent
 We have used different schemas to store different object
 
 ### Client Schema
+
 ```
 const clientSchema = new Schema({
   name: { type: String },
@@ -38,6 +39,7 @@ const clientSchema = new Schema({
 ```
 
 ### Project Schema
+
 ```
 const projectSchema = new Schema({
   name: { type: String },
@@ -47,6 +49,7 @@ const projectSchema = new Schema({
 ```
 
 ### Team Schema
+
 ```
 const teamSchema = new Schema({
   name: { type: String },
@@ -57,6 +60,7 @@ const teamSchema = new Schema({
 ```
 
 ### User Schema
+
 ```
 const userSchema = new Schema({
   role: { type: String },
@@ -103,12 +107,11 @@ const userSchema = new Schema({
 });
 ```
 
-
 ## Installation
 
 ScreenShot Monitoring requires [Node.js](https://nodejs.org/) v14+ and [npm](https://www.npmjs.com/) v6+ to run
 
-**1. Install the dependencies and devDependencies and start the server.
+\*\*1. Install the dependencies and devDependencies and start the server.
 
 ```sh
 cd back-end
@@ -116,43 +119,27 @@ npm i
 npm run dev
 ```
 
-**2. Install the dependencies and devDependencies and start the client.
+\*\*2. Install the dependencies and devDependencies and start the client.
 
 ```sh
 cd front-end
 npm i
 npm run start
 ```
+
 **3. Create a `.env` file in the project root folder and copy the format of `.env.sample` file.**
 
-   - `.env.sample` file contains all the environment variables required for running the project.
-   
-   
- **4. Open your browser and go to  `https://localhost:3000`**
- 
+- `.env.sample` file contains all the environment variables required for running the project.
+
+**4. Open your browser and go to `https://localhost:3000`**
 
 ## Contributors
 
-<table>
-<tbody>
-<tr valign="top">
-<td width="20%" align="center">
-<a href = "https://github.com/ayushsnofi" target='blank'> <img src="https://avatars.githubusercontent.com/u/75434610?v=4" height='45' weight='45' /></a></td>
-<td width="20%" align="center">
-<a href = "https://github.com/kamal021099" target='blank'> <img src="https://avatars.githubusercontent.com/u/67367642?v=4" height='45' weight='45' /></a></td>
-<td width="20%" align="center">
-<a href = "https://github.com/Prakhar-tech" target='blank'> <img src="https://avatars.githubusercontent.com/u/83545428?v=4" height='45' weight='45' /></a></td>
-<td width="20%" align="center">
-<a href = "https://github.com/ayush181000" target='blank'> <img src="https://avatars.githubusercontent.com/u/88030372?v=4" height='45' weight='45' /></a></td>
-<td width="20%" align="center">
-<a href = "https://github.com/Bharat-kr" target='blank'> <img src="https://avatars.githubusercontent.com/u/73836790?v=4" height='45' weight='45' /></a></td>
-</tr>
-</tbody>
-</table>
-
 - [**Ayush Dwivedi**](https://github.com/ayushsnofi)
-- [**Ayush Garg**](https://github.com/ayush181000)  
-
+- [**Kamal**](https://github.com/kamal021099)
+- [**Ayush Garg**](https://github.com/ayush181000)
+- [**Bharat Kumar**](https://github.com/Bharat-kr)
+- [**Prakhar**](https://github.com/Prakhar-tech)
 
 ## License
 
