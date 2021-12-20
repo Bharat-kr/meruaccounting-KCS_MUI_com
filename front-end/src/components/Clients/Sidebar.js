@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useRef, useEffect, useState } from "react";
+import React, { useContext, useRef, useEffect, useState } from 'react';
 import {
   Grid,
   List,
@@ -8,16 +8,16 @@ import {
   Typography,
   Button,
   Divider,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import TreeView from "@mui/lab/TreeView";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import TreeItem from "@mui/lab/TreeItem";
-import { ClientsContext } from "../../contexts/ClientsContext";
-import { getClient } from "../../api/clients api/clients";
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import TreeView from '@mui/lab/TreeView';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import TreeItem from '@mui/lab/TreeItem';
+import { ClientsContext } from '../../contexts/ClientsContext';
+import { addClient, getClient } from '../../api/clients api/clients';
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -35,21 +35,31 @@ export default function Sidebar() {
     clients,
     currentClient,
     changeClient,
-    addClient,
+    dispatchAddClient,
+    // addClient,
     client,
+    clientDetails,
     dispatchClientDetails,
   } = useContext(ClientsContext);
+
   useEffect(() => {
     getClient(dispatchClientDetails);
   }, [dispatchClientDetails]);
 
   // labels for search box(autocomplete)
-  const clientsList = clients.map((client) => client.name);
+  // const clientsList = clients.map((client) => client.name);
+
+  let clientsList = [];
+  if (clientDetails.loader === false) {
+    console.log(clientDetails.client.data);
+    clientsList = clientDetails.client.data;
+    console.log(clientsList);
+  }
 
   // change currentclient on search
   const handleSearch = (e, value) => {
-    const client = clients.filter((client) =>
-      client.name === value ? client : ""
+    const client = clientsList.filter((client) =>
+      client.name === value ? client : ''
     );
     if (client.length === 0) {
       // eslint-disable-next-line no-useless-return
@@ -60,52 +70,50 @@ export default function Sidebar() {
 
   // change currenclient on clients name click
   const handleClick = (e) => {
-    const client = clients.filter((client) =>
-      client.name === e.target.textContent ? client : ""
+    const client = clientsList.filter((client) =>
+      client.name === e.target.textContent ? client : ''
     );
     changeClient(client[0]);
+    console.log(client);
   };
 
   // add client in submit
+  // not working properly , add proper validation Dr. Kamal Singh
   const handleSubmit = (e) => {
     e.preventDefault();
     setnewClientError(false);
-    if (newClientValue === "") {
+    if (newClientValue !== '') {
+      console.log(newClientValue);
+      // addClient({ name: newClientValue }, dispatchAddClient);
+      setnewClientValue('');
+    } else {
       setnewClientError(true);
     }
-    const newClient = {
-      name: newClientValue,
-      members: [],
-      id: clients.length + 1,
-      projects: [],
-    };
-    addClient(newClient);
-    setnewClientValue("");
   };
 
   return (
     <Box
       component="div"
       sx={{
-        margin: "10px",
-        maxHeight: "70vh",
-        height: "70vh",
+        margin: '10px',
+        maxHeight: '70vh',
+        height: '70vh',
       }}
     >
       <Paper
         component="div"
         elevation={3}
         sx={{
-          overflow: "hidden",
-          height: "100%",
-          position: "relative",
+          overflow: 'hidden',
+          height: '100%',
+          position: 'relative',
         }}
       >
         {/* search box */}
         <Box
           sx={{
-            width: "95%",
-            "& .MuiTextField-root": { m: 1, mb: 2 },
+            width: '95%',
+            '& .MuiTextField-root': { m: 1, mb: 2 },
           }}
           noValidate
           autoComplete="off"
@@ -115,7 +123,7 @@ export default function Sidebar() {
               onChange={handleSearch}
               disablePortal
               id="combo-box-demo"
-              options={clientsList}
+              options={clientsList.map((client) => client.name)}
               renderInput={(params) => (
                 <TextField {...params} fullWidth label="Search client" />
               )}
@@ -127,18 +135,18 @@ export default function Sidebar() {
         <Box
           component="div"
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            maxHeight: "72%",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            maxHeight: '72%',
           }}
         >
           <TreeView
             fullWidth
             className={classes.root}
-            sx={{ width: "100%", overflowY: "auto", overflowX: "visible" }}
+            sx={{ width: '100%', overflowY: 'auto', overflowX: 'visible' }}
           >
-            {clients.map((client) => (
+            {clientsList.map((client) => (
               <TreeItem
                 onClick={handleClick}
                 nodeId={clients.indexOf(client) + 1}
@@ -154,12 +162,12 @@ export default function Sidebar() {
         {/* INPUT BOX, add validations, connect to context */}
         <Box
           sx={{
-            boxSizing: "border-box",
-            width: "95%",
-            position: "absolute",
-            bottom: "0",
+            boxSizing: 'border-box',
+            width: '95%',
+            position: 'absolute',
+            bottom: '0',
 
-            "& > :not(style)": { m: 1 },
+            '& > :not(style)': { m: 1 },
           }}
         >
           <form onSubmit={handleSubmit} noValidate autoComplete="off">
