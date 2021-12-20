@@ -46,13 +46,15 @@ export const getClient = async (dispatch) => {
 
 export const addClient = async (incomingData, dispatch) => {
   try {
-    dispatch({ type: ADD_CLIENT_REQUEST });
+    if (incomingData.name !== '') {
+      dispatch({ type: ADD_CLIENT_REQUEST });
 
-    const { data } = await axios.post(`/client`, incomingData, config);
+      const { data } = await axios.post(`/client`, incomingData, config);
 
-    dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
-    console.log(`add client`);
-    console.log(data);
+      dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
+      console.log(`add client`);
+      console.log(data);
+    }
   } catch (error) {
     dispatch({
       type: ADD_CLIENT_FAILED,
