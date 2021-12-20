@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect } from "react";
 // import { setLocalStorage } from "../helper/localStorage";
 
 export const loginContext = React.createContext();
@@ -12,10 +12,10 @@ const initialValue = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'SET_USER_DATA':
+    case "SET_USER_DATA":
       if (action.data) {
         console.log(action.data);
-        localStorage.setItem('ud', action.data);
+        localStorage.setItem("ud", action.data);
         return {
           userData: action.data,
           isLogin: true,
@@ -28,10 +28,10 @@ const reducer = (state, action) => {
         loader: false,
       };
 
-    case 'LOGIN_ERR': {
+    case "LOGIN_ERR": {
       return { ...state, error: true, loader: false };
     }
-    case 'LOGIN_LOADER': {
+    case "LOGIN_LOADER": {
       return { loader: true };
     }
 
@@ -42,12 +42,12 @@ const reducer = (state, action) => {
 
 export function LoginProvider(props) {
   const [loginC, dispatchLogin] = useReducer(reducer, initialValue, () => {
-    const localData = localStorage.getItem('loginC');
+    const localData = localStorage.getItem("loginC");
     return localData ? JSON.parse(localData) : initialValue;
   });
 
   useEffect(() => {
-    localStorage.setItem('loginC', JSON.stringify(loginC));
+    localStorage.setItem("loginC", JSON.stringify(loginC));
   }, [loginC]);
 
   return <loginContext.Provider value={{ loginC, dispatchLogin }} {...props} />;

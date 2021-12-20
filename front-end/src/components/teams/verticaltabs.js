@@ -21,6 +21,9 @@ import { ClientsContext } from "../../contexts/ClientsContext";
 import { teamContext } from "../../contexts/TeamsContext";
 import { loginContext } from "../../contexts/LoginContext";
 import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
+import Treeview from "../Treeview";
+import { TreeItem } from "@mui/lab";
+import SearchBar from "../SearchBar";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -69,41 +72,95 @@ function a11yProps(index) {
 export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const { clients, changeClient } = useContext(ClientsContext);
+  // const { clients, changeClient } = useContext(ClientsContext);
   const { User } = useContext(UserContext);
-  const { teamCreate } = useContext(teamContext);
-  const { loginC } = useContext(loginContext);
-  console.log(loginC.userData);
+  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  const [currMember, setCurrMember] = React.useState(null);
+  React.useEffect(() => {
+    getTeam(dispatchgetTeam);
+  }, []);
+
+  const getFullName = (firstName, lastName) => {
+    let name = "";
+    if (firstName && lastName) {
+      name = firstName + " " + lastName;
+    } else if (!firstName) {
+      name = lastName;
+    } else if (!lastName) {
+      name = firstName;
+    }
+    return name;
+  };
+
+  console.log(getTeams.getTeam);
+  // console.log(currMember);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  // labels for search box(autocomplete)
+  const teamsList = [];
+  React.useEffect(() => {
+    getTeams?.getTeam?.forEach((team) => {
+      // eslint-disable-next-line prefer-template
+      team.employees?.map((member) =>
+        teamsList.push(
+          team.name + ":" + getFullName(member.firstName, member.lastName)
+        )
+      );
+    });
+  }, [getTeams, teamsList]);
+ 
+  React.useEffect(() => {
+    if (getTeams?.getTeam?.length > 0) {
+      //setting the current member
+      setCurrMember(getTeams?.getTeam[0].employees[0]);
+    }
+  }, [getTeams, setCurrMember]);
+
+  // change currentclient on search
   const handleSearch = (e, value) => {
-    const client = clients.filter((client) =>
-      client.name === value ? client : ""
+    const teams = getTeams.getTeam.filter((team) =>
+      team.name === value ? team : ""
     );
-    if (client.length === 0) {
+    if (teams.length === 0) {
       // eslint-disable-next-line no-useless-return
       return;
     }
-    return changeClient(client[0]);
+
+    return setCurrMember(teams[0].employees[0]);
+  };
+
+  const handleClick = (e) => {
+    // console.log(e.target.id);
+    const team = getTeams.getTeam.filter((team) =>
+      team.name === e.target.dataset.client ? team : ""
+    );
+
+    const member = team[0].employees.filter(
+      (member) => member._id === e.target.id
+    );
+
+    setCurrMember(member[0]);
+    // console.log("member", member[0]);
   };
 
   const handleSubmit = () => {
     RestaurantRounded(console.log("hello"));
   };
-  const UsersList = [];
-  clients.forEach((client) => {
-    // eslint-disable-next-line prefer-template
-    User.map((User) => UsersList.push(User.name));
-  });
+  // const UsersList = [];
+  // clients.forEach((client) => {
+  //   // eslint-disable-next-line prefer-template
+  //   User.map((User) => UsersList.push(User.name));
+  // });
   return (
     <div className={classes.root}>
       <Box
         component="div"
         sx={{
           margin: "10px",
-          // maxHeight: '70vh',
+          maxHeight: "70vh",
           height: "auto",
         }}
       >
@@ -116,56 +173,74 @@ export default function VerticalTabs() {
             position: "relative",
           }}
         >
-          <Autocomplete
-            onChange={handleSearch}
-            disablePortal
-            id="combo-box-demo"
-            options={UsersList}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth label="Search members" />
-            )}
+          {/* search box */}
+          <SearchBar
+            handleSearch={handleSearch}
+            label="Search Member"
+            options={teamsList}
           />
-          <Tabs
-            orientation="vertical"
-            variant="scrollable"
-            value={value}
-            onChange={handleChange}
-            aria-label="Vertical tabs"
-            sx={{ borderRight: 1, borderColor: "divider" }}
-          >
-            {User.map((user) => (
-              <Tab
-                selectionFollowsFocus="true"
-                label={
-                  <Typography
-                    sx={{
-                      textAlign: "left",
-                      width: "100%",
-                      fontWeight: "Bold",
-                    }}
-                    variant="h6"
-                  >
-                    {user.name}{" "}
-                  </Typography>
-                }
-                {...a11yProps(`${User.indexOf(user) + 1}`)}
-              />
-            ))}
-          </Tabs>
-          <form onSubmit={handleSubmit} noValidate autoComplete="off">
-            <TextField
-              // onChange={(e) => setnewClientValue(e.target.value)}
-              required
-              fullWidth
-              label="Add new member"
-              // error={newClientError}
-              sx={{ mb: 1 }}
-            />
 
-            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
-              Add
-            </Button>
-          </form>
+          {/* teams and members tree view flex container */}
+          <Box
+            component="div"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+            }}
+          >
+            {getTeams?.getTeam?.map((el) => (
+              <Treeview parentName={el.name}>
+                {el.employees.map((member) => (
+                  <TreeItem
+                    nodeId={1 + el.employees.indexOf(member) + 1}
+                    label={
+                      <Typography
+                        data-client={el.name}
+                        onClick={handleClick}
+                        id={member._id}
+                        variant="h5"
+                      >
+                        {getFullName(member.firstName, member.lastName)}
+                      </Typography>
+                    }
+                  />
+                ))}
+              </Treeview>
+            ))}
+          </Box>
+
+          {/* INPUT BOX, add validations, connect to context */}
+          <Box
+            sx={{
+              boxSizing: "border-box",
+              width: "95%",
+              position: "absolute",
+              bottom: "0",
+
+              "& > :not(style)": { m: 1 },
+            }}
+          >
+            <form onSubmit={handleSubmit} noValidate autoComplete="off">
+              <TextField
+                // onChange={(e) => setnewClientValue(e.target.value)}
+                required
+                fullWidth
+                label="Add new client"
+                // error={newClientError}
+                sx={{}}
+              />
+
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Submit
+              </Button>
+            </form>
+          </Box>
         </Paper>
       </Box>
 
@@ -187,13 +262,14 @@ export default function VerticalTabs() {
           }}
         >
           <Box>
-            {User.map((user) => (
-              <Main
-                value={value}
-                index={User.indexOf(user)}
-                sx={{ overflow: "hidden" }}
-              />
-            ))}
+            {/* {User.map((user) => ( */}
+            <Main
+              value={value}
+              // index={User.indexOf(user)}
+              currMember={currMember}
+              sx={{ overflow: "hidden" }}
+            />
+            {/* ))} */}
           </Box>
         </Paper>
       </Box>
