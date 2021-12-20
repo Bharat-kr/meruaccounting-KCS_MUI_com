@@ -32,6 +32,23 @@ exports.createProject = async (req, res) => {
     });
   }
 };
+exports.getProject = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const project = await Project.findById(id);
+    if (!project) {
+      return res.status(404).send("No project Found");
+    }
+    res.status(200).json({
+      project,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(200).json({
+      error,
+    });
+  }
+};
 exports.editProject = async (req, res) => {
   const employee = req.user;
   if (employee.role === "manager") {
