@@ -73,9 +73,10 @@ export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   // const { clients, changeClient } = useContext(ClientsContext);
-  const { User } = useContext(UserContext);
-  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  // const { User } = useContext(UserContext);
+  const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
+  const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
@@ -148,8 +149,11 @@ export default function VerticalTabs() {
     // console.log("member", member[0]);
   };
 
-  const handleSubmit = () => {
-    RestaurantRounded(console.log("hello"));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(newTeam);
+    createTeam({ name: newTeam }, dispatchTeam);
+    // RestaurantRounded(console.log("hello", e));
   };
   // const UsersList = [];
   // clients.forEach((client) => {
@@ -225,7 +229,7 @@ export default function VerticalTabs() {
           >
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
               <TextField
-                // onChange={(e) => setnewClientValue(e.target.value)}
+                onChange={(e) => setNewTeam(e.target.value)}
                 required
                 fullWidth
                 label="Add new Team"

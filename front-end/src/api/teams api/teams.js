@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   TEAM_CREATE_FAILED,
   TEAM_CREATE_REQUEST,
@@ -12,23 +12,23 @@ import {
   REMOVE_MEMBER_REQUEST,
   REMOVE_MEMBER_FAILED,
   REMOVE_MEMBER_SUCCESS,
-} from '../../constants/TeamConstants';
+} from "../../constants/TeamConstants";
 
-const token = localStorage['Bearer Token'];
+const token = localStorage["Bearer Token"];
 const config = {
   headers: {
     Authorization: `Bearer ${token}`,
   },
 };
 
-export const createTeam = async (dispatch, name) => {
+export const createTeam = async (name, dispatch) => {
   try {
     dispatch({ type: TEAM_CREATE_REQUEST });
 
-    const { data } = await axios.post('/team/create', name, config);
+    const { data } = await axios.post("/team/create", name, config);
 
     dispatch({ type: TEAM_CREATE_SUCCESS, payload: data.data });
-    console.log('team create');
+    console.log("team create");
     console.log(data.data);
   } catch (error) {
     dispatch({
@@ -43,15 +43,11 @@ export const createTeam = async (dispatch, name) => {
 
 export const getTeam = async (dispatch, id) => {
   try {
-    const res = await axios.get(
-      `http://localhost:8000/team/getTeam`,
-      config
-    );
+    const res = await axios.get(`http://localhost:8000/team/getTeam`, config);
 
     // console.log(res);
 
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
-    
   } catch (error) {
     console.log(error);
     dispatch({
@@ -69,14 +65,14 @@ export const updateMember = async (dispatch, incomingData) => {
     dispatch({ type: UPDATE_MEMBER_REQUEST });
 
     const { data } = await axios.patch(
-      '/team/updateMember',
+      "/team/updateMember",
       incomingData,
       config
     );
 
     dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
 
-    console.log('Updated Member');
+    console.log("Updated Member");
     console.log(data);
   } catch (error) {
     console.log(error);
@@ -94,10 +90,10 @@ export const removeMember = async (dispatch, incomingData) => {
   try {
     dispatch({ type: REMOVE_MEMBER_REQUEST });
 
-    const { data } = await axios.delete('/team/removeMember', incomingData);
+    const { data } = await axios.delete("/team/removeMember", incomingData);
 
     dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
-    console.log('removed Member');
+    console.log("removed Member");
     console.log(data);
   } catch (error) {
     console.log(error);
