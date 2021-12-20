@@ -88,9 +88,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                {localStorage.login
-                  ? JSON.parse(localStorage.login).userData.lastName
-                  : account.displayName}
+                {loginC.userData.firstName} {loginC.userData.lastName}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {account.role}

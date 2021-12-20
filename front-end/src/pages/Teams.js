@@ -21,7 +21,7 @@ export default function SimpleContainer() {
   const { dispatchTeam, dispatchgetTeam } = useContext(teamContext);
   const clickme = () => {
     // createTeam({ name: 'Devops' }, dispatchTeam);
-    getTeam(dispatchgetTeam, '61bace1d424fc17806f3c2df');
+    getTeam(dispatchgetTeam);
     // updateMember();
   };
   // const

@@ -1,5 +1,5 @@
 import { indexOf } from 'lodash-es';
-import React, { createContext, useState, useReducer } from 'react';
+import React, { createContext, useState, useReducer, useEffect } from 'react';
 import { ADD_TEAM_PROJECTS_RESET } from 'src/constants/ProjectConstants';
 
 import {
@@ -9,6 +9,11 @@ import {
   ADD_CLIENT_REQUEST,
   ADD_CLIENT_SUCCESS,
   ADD_CLIENT_FAILED,
+  ADD_CLIENT_RESET,
+  DELETE_CLIENT_REQUEST,
+  DELETE_CLIENT_SUCCESS,
+  DELETE_CLIENT_FAILED,
+  DELETE_CLIENT_RESET,
 } from '../constants/ClientConstants';
 
 export const ClientsContext = createContext();
@@ -50,8 +55,31 @@ const addClientReducer = (state, action) => {
         loader: false,
         error: action.payload,
       };
-    case ADD_TEAM_PROJECTS_RESET:
+    case ADD_CLIENT_RESET:
       return { newClient: {} };
+    default:
+      return state;
+  }
+};
+
+const deleteClientReducer = (state, action) => {
+  switch (action.type) {
+    case DELETE_CLIENT_REQUEST:
+      return {
+        loader: true,
+      };
+    case DELETE_CLIENT_SUCCESS:
+      return {
+        loader: false,
+        deleteClient: action.payload,
+      };
+    case DELETE_CLIENT_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case DELETE_CLIENT_RESET:
+      return { deleteClient: {} };
     default:
       return state;
   }
@@ -64,6 +92,9 @@ export const ClientsContextProvider = (props) => {
   );
   const [newClient, dispatchAddClient] = useReducer(addClientReducer, {
     newClient: {},
+  });
+  const [deleteClient, dispatchDeleteClient] = useReducer(deleteClientReducer, {
+    deleteClient: {},
   });
 
   const [clients, setClients] = useState([
@@ -126,7 +157,7 @@ export const ClientsContextProvider = (props) => {
   );
 
   // const [currentProjectmembers, setcurrentProjectmembers] = useState(
-  //   clients.projects(0).Projectmembers
+  //   clients.projects[0].Projectmembers
   // );
 
   // const changeProjectmember = (member) => {
@@ -159,6 +190,8 @@ export const ClientsContextProvider = (props) => {
           dispatchClientDetails,
           newClient,
           dispatchAddClient,
+          deleteClient,
+          dispatchDeleteClient,
           currentClient,
           changeClient,
           addClient,

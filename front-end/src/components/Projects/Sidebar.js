@@ -43,13 +43,14 @@ export default function Sidebar() {
 
   // change currenclient on projects name click
   const handleClick = (e) => {
+    console.log(e)
     const client = clients.filter((client) =>
       client.name === e.target.dataset.client ? client : ''
     );
     changeClient(client[0]);
     const project = client[0].projects.filter((project) =>
       project.name === e.target.textContent ? project : ''
-    );
+    ); 
 
     changeProject(project[0]);
   };

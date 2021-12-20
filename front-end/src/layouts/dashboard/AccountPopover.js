@@ -1,35 +1,44 @@
-import { Icon } from '@iconify/react';
-import { useRef, useState } from 'react';
-import homeFill from '@iconify/icons-eva/home-fill';
-import personFill from '@iconify/icons-eva/person-fill';
-import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Icon } from "@iconify/react";
+import { useContext, useRef, useState } from "react";
+import homeFill from "@iconify/icons-eva/home-fill";
+import personFill from "@iconify/icons-eva/person-fill";
+import settings2Fill from "@iconify/icons-eva/settings-2-fill";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // material
-import { alpha } from '@mui/material/styles';
-import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '@mui/material';
+import { alpha } from "@mui/material/styles";
+import {
+  Button,
+  Box,
+  Divider,
+  MenuItem,
+  Typography,
+  Avatar,
+  IconButton,
+} from "@mui/material";
+import { loginContext } from "src/contexts/LoginContext";
 // components
-import MenuPopover from '../../components/MenuPopover';
+import MenuPopover from "../../components/MenuPopover";
 //
-import account from '../../_mocks_/account';
+import account from "../../_mocks_/account";
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
   {
-    label: 'Home',
+    label: "Home",
     icon: homeFill,
-    linkTo: '/dashboard/userpage'
+    linkTo: "/dashboard/userpage",
   },
   {
-    label: 'Profile',
+    label: "Profile",
     icon: personFill,
-    linkTo: '#'
+    linkTo: "#",
   },
   {
-    label: 'Settings',
+    label: "Settings",
     icon: settings2Fill,
-    linkTo: '/dashboard/usersettings'
-  }
+    linkTo: "/dashboard/usersettings",
+  },
 ];
 
 // ----------------------------------------------------------------------
@@ -38,6 +47,7 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { loginC } = useContext(loginContext);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -55,16 +65,16 @@ export default function AccountPopover() {
           width: 44,
           height: 44,
           ...(open && {
-            '&:before': {
+            "&:before": {
               zIndex: 1,
               content: "''",
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              position: 'absolute',
-              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72)
-            }
-          })
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+              position: "absolute",
+              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+            },
+          }),
         }}
       >
         <Avatar src={account.photoURL} alt="photoURL" />
@@ -78,10 +88,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {account.displayName}
+            {loginC.userData.firstName} {loginC.userData.lastName}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
+            {loginC.userData.email}
           </Typography>
         </Box>
 
@@ -93,7 +103,7 @@ export default function AccountPopover() {
             to={option.linkTo}
             component={RouterLink}
             onClick={handleClose}
-            sx={{ typography: 'body2', py: 1, px: 2.5 }}
+            sx={{ typography: "body2", py: 1, px: 2.5 }}
           >
             <Box
               component={Icon}
@@ -101,7 +111,7 @@ export default function AccountPopover() {
               sx={{
                 mr: 2,
                 width: 24,
-                height: 24
+                height: 24,
               }}
             />
 
