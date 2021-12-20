@@ -251,4 +251,29 @@ router.get("/getTeam", authPass, async (req, res) => {
     data: responseArray,
   });
 });
+
+router.delete("/", authPass, async (req, res) => {
+  const manager = req.user;
+  if (!manager.role == "manager") {
+    return res.json({
+      message: "UnAuthorized",
+    });
+  }
+
+  const teamId = req.body.teamId;
+
+  try {
+    const team = await Team.findByIdAndRemove(teamId);
+    res.json({
+      status: "Deleted Team",
+      data: team,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      status: "Error",
+      data: error,
+    });
+  }
+});
 module.exports = router;
