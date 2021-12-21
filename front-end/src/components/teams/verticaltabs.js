@@ -74,10 +74,13 @@ export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
   // const { clients, changeClient } = useContext(ClientsContext);
   // const { User } = useContext(UserContext);
-  const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
+  const { dispatchgetTeam, getTeams, dispatchTeam, dispatchUpdateMember } =
+    useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
+  const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
+  const [newMemberMail, setNewMemberMail] = React.useState("");
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
@@ -155,11 +158,26 @@ export default function VerticalTabs() {
     createTeam({ name: newTeam }, dispatchTeam);
     // RestaurantRounded(console.log("hello", e));
   };
-  // const UsersList = [];
-  // clients.forEach((client) => {
-  //   // eslint-disable-next-line prefer-template
-  //   User.map((User) => UsersList.push(User.name));
-  // });
+  const changeCurrTeam =async (e) => {
+    console.log(e.target.textContent);
+    const team =await getTeams.getTeam.filter((team) =>
+      team.name === e.target.textContent ? team : ""
+    );
+    setCurrTeamToUpdate(team[0]);
+    
+  };
+
+  const AddMember = (e) => {
+    e.preventDefault();
+    console.log(newMemberMail);
+    console.log(currTeamToUpdate);
+    updateMember(
+      { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
+      dispatchUpdateMember
+    );
+    getTeam(dispatchgetTeam);
+  };
+
   return (
     <div className={classes.root}>
       <Box
@@ -196,7 +214,7 @@ export default function VerticalTabs() {
             }}
           >
             {getTeams?.getTeam?.map((el) => (
-              <Treeview parentName={el.name}>
+              <Treeview parentName={el.name} onClick={changeCurrTeam}>
                 {el.employees.map((member) => (
                   <TreeItem
                     nodeId={1 + el.employees.indexOf(member) + 1}
@@ -233,6 +251,25 @@ export default function VerticalTabs() {
                 required
                 fullWidth
                 label="Add new Team"
+                // error={newClientError}
+                sx={{}}
+              />
+
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Submit
+              </Button>
+            </form>
+            <form onSubmit={AddMember} noValidate autoComplete="off">
+              <TextField
+                onChange={(e) => setNewMemberMail(e.target.value)}
+                required
+                fullWidth
+                label="Add new Member"
                 // error={newClientError}
                 sx={{}}
               />

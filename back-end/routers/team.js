@@ -73,15 +73,18 @@ router.patch("/updateMember", authPass, async (req, res) => {
     });
   }
 
-  const employeeId = req.body.employeeId;
+  const employeeMail = req.body.employeeMail;
   const teamId = req.body.teamId;
   var alreadyMember = false;
   try {
     const team = await Team.findById(teamId);
+    const newEmployee = await User.findOne({email :employeeMail });
+    const employeeId =newEmployee._id;
     console.log(team);
+    console.log(employeeId);
     team.employees.forEach((employee) => {
       console.log(employee);
-      console.log(employeeId);
+      // console.log(employeeMail);
 
       if (employee.equals(employeeId)) {
         console.log("Inside IF");
@@ -224,24 +227,22 @@ router.get("/getTeam", authPass, async (req, res) => {
 
   for (var i = 0; i < user.team.length; i++) {
     const team = await Team.findById(user.team[i]);
-    if (!team) {
-      return res.status(404).json({
-        msg: "No Team Found!!",
+    if (team) {
+      console.log(team);
+      // const team = await user.populate("team").execPopulate();
+      await Team.populate(team, {
+        path: "employees",
       });
+      // const teamMembers = TeamMembers.employees;
+
+      await Team.populate(team, {
+        path: "projects",
+      });
+      // const teamProject = TeamProject.projects;
+      responseArray.push(team);
+    } else {
+      continue;
     }
-
-    console.log(team);
-    // const team = await user.populate("team").execPopulate();
-    await Team.populate(team, {
-      path: "employees",
-    });
-    // const teamMembers = TeamMembers.employees;
-
-    await Team.populate(team, {
-      path: "projects",
-    });
-    // const teamProject = TeamProject.projects;
-    responseArray.push(team);
   }
 
   // const teamProject = team.populate("projects");
