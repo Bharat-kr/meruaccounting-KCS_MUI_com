@@ -60,7 +60,7 @@ export const getTeam = async (dispatch, id) => {
   }
 };
 
-export const updateMember = async (dispatch, incomingData) => {
+export const updateMember = async (incomingData, dispatch) => {
   try {
     dispatch({ type: UPDATE_MEMBER_REQUEST });
 
