@@ -9,6 +9,7 @@ export default function Treeview(props) {
     <TreeView
       multiSelect={false}
       fullWidth
+      onClick={props.onClick}
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
       sx={{ width: '100%', overflowY: 'auto' }}
