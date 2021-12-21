@@ -83,6 +83,7 @@ export default function VerticalTabs() {
 
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
   const [newMemberMail, setNewMemberMail] = React.useState('');
+
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
