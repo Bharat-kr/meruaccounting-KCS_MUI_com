@@ -1,7 +1,4 @@
 import * as React from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { Card } from '@material-ui/core';
-import { random } from 'lodash';
 import CircleIcon from '@mui/icons-material/Circle';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,7 +11,6 @@ import { styled } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { Link as RouterLink } from 'react-router-dom';
-import { loginC } from '../../../contexts/LoginContext';
 import { useContext, useEffect } from 'react';
 import { teamContext } from '../../../contexts/TeamsContext';
 import { getFullName } from 'src/_helpers/getFullName';
@@ -41,46 +37,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-
-function createData(
-  Employee,
-  LastActive,
-  Today,
-  Yesterday,
-  ThisWeek,
-  ThisMonth
-) {
-  return { Employee, LastActive, Today, Yesterday, ThisWeek, ThisMonth };
-}
-
-const rows = [
-  createData(
-    'Ayush Dwivedi',
-    '1m ago',
-    '3hr',
-    '8hr 23min',
-    '13hr 19min',
-    '34hr'
-  ),
-  createData(
-    'Kamal Singh',
-    '3hr ago',
-    '3hr',
-    '8hr 23min',
-    '13hr 19min',
-    '34hr'
-  ),
-  createData(
-    'Aman Rawat',
-    '23hr ago',
-    '3hr',
-    '8hr 23min',
-    '13hr 19min',
-    '34hr'
-  ),
-  createData('Kapil Sharma', '1min', '3hr', '8hr 23min', '13hr 19min', '34hr'),
-  createData('Rohan Bhagwat', '1min', '3hr', '8hr 23min', '13hr 19min', '34hr'),
-];
 
 function dispdata(data) {
   return (
