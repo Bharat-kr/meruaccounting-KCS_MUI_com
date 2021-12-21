@@ -26,13 +26,13 @@ export const CurrentUserContextProvider = (props) => {
                 activityLevel: 70,
                 url: 'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Docs.max-1100x1100.png',
                 time: new Date(),
-                taskName: 'VELLA'
-              }
-            ]
-          }
-        ]
-      }
-    }
+                taskName: 'VELLA',
+              },
+            ],
+          },
+        ],
+      },
+    },
   });
   // save days as unix timestamps gmt/utc to access as keys by clicking on the calendar.
   // task name for the timerange as well.

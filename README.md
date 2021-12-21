@@ -143,4 +143,5 @@ npm run start
 
 ## License
 
-[MIT](/LICENSE.md)
+Closed source application
+Copyright by Meru Accounting
