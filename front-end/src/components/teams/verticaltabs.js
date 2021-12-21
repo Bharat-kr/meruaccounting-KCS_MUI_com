@@ -73,9 +73,11 @@ export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   // const { clients, changeClient } = useContext(ClientsContext);
-  const { User } = useContext(UserContext);
-  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  // const { User } = useContext(UserContext);
+  const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
+  const [newTeam, setNewTeam] = React.useState("");
+  const [currTeam, setCurrTeam] = React.useState(null);
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
@@ -92,7 +94,7 @@ export default function VerticalTabs() {
     return name;
   };
 
-  console.log(getTeams.getTeam);
+  // console.log(getTeams.getTeam);
   // console.log(currMember);
 
   const handleChange = (event, newValue) => {
@@ -111,10 +113,11 @@ export default function VerticalTabs() {
       );
     });
   }, [getTeams, teamsList]);
- 
+
   React.useEffect(() => {
     if (getTeams?.getTeam?.length > 0) {
       //setting the current member
+      setCurrTeam(getTeams?.getTeam[0]);
       setCurrMember(getTeams?.getTeam[0].employees[0]);
     }
   }, [getTeams, setCurrMember]);
@@ -137,7 +140,7 @@ export default function VerticalTabs() {
     const team = getTeams.getTeam.filter((team) =>
       team.name === e.target.dataset.client ? team : ""
     );
-
+    setCurrTeam(team[0]);
     const member = team[0].employees.filter(
       (member) => member._id === e.target.id
     );
@@ -146,8 +149,11 @@ export default function VerticalTabs() {
     // console.log("member", member[0]);
   };
 
-  const handleSubmit = () => {
-    RestaurantRounded(console.log("hello"));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(newTeam);
+    createTeam({ name: newTeam }, dispatchTeam);
+    // RestaurantRounded(console.log("hello", e));
   };
   // const UsersList = [];
   // clients.forEach((client) => {
@@ -223,10 +229,10 @@ export default function VerticalTabs() {
           >
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
               <TextField
-                // onChange={(e) => setnewClientValue(e.target.value)}
+                onChange={(e) => setNewTeam(e.target.value)}
                 required
                 fullWidth
-                label="Add new client"
+                label="Add new Team"
                 // error={newClientError}
                 sx={{}}
               />
@@ -267,6 +273,7 @@ export default function VerticalTabs() {
               value={value}
               // index={User.indexOf(user)}
               currMember={currMember}
+              currTeam={currTeam}
               sx={{ overflow: "hidden" }}
             />
             {/* ))} */}

@@ -34,7 +34,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Main(props) {
-  const { value, index, currMember, ...other } = props;
+  const { index, value, currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
   const { clients, changeProjectmembers } = useContext(ClientsContext);
   const [Checked, setChecked] = useState();
@@ -42,11 +42,11 @@ export default function Main(props) {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-  console.log(currMember);
+  console.log(currTeam);
   const Labelconfig = function () {
     return (
       <>
-        {clients.map((client) =>
+        {/* {clients.map((client) =>
           client.projects.map((pro) => (
             <FormControlLabel
               sx={{ display: "block", pt: 1, fontWeight: 10 }}
@@ -62,7 +62,17 @@ export default function Main(props) {
               // }}
             />
           ))
-        )}
+        )} */}
+        {currTeam.projects.map((pro) => (
+          <FormControlLabel
+            sx={{ display: "block", pt: 1, fontWeight: 10 }}
+            control={<Switch checked={currMember.projects.includes(pro._id)} />}
+            label={`${currTeam.name}(${pro.name})`}
+            // onChange={(e) => {
+            //   handleSwitchChange(e, pro, User.name);
+            // }}
+          />
+        ))}
       </>
     );
   };
@@ -169,7 +179,7 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
+              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
             </Box>
             {/* <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
