@@ -64,13 +64,8 @@ export default function Main(props) {
         )} */}
         {currTeam.projects.map((pro) => (
           <FormControlLabel
-
-        
-            sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            control={
-              <Switch checked={currMember.projects.includes(pro._id)} />
-            }
-
+            sx={{ display: 'block', pt: 1, fontWeight: 10 }}
+            control={<Switch checked={currMember.projects.includes(pro._id)} />}
             label={`${currTeam.name}(${pro.name})`}
             // onChange={(e) => {
             //   handleSwitchChange(e, pro, User.name);

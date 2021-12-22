@@ -47,7 +47,10 @@ exports.getClient = async (req, res) => {
       }
 
       res.status(201).json({
-        messsage: "Successfully Created Client",
+
+       
+
+        messsage: "Get Client",
         data: client,
       });
     } catch (error) {
@@ -66,7 +69,6 @@ exports.getClientProjects = async (req, res) => {
   const employee = req.user;
 
   const { clientId } = req.body;
-  console.log(req.body);
   const client = await Client.findById(clientId).populate("projects");
 
   if (!client) {
@@ -75,7 +77,7 @@ exports.getClientProjects = async (req, res) => {
     });
   }
   res.status(201).json({
-    messsage: "Successfully Created Client",
+    messsage: "Client Projects",
     data: client,
   });
 };
