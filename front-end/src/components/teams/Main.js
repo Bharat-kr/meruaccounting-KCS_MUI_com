@@ -68,14 +68,10 @@ export default function Main(props) {
 
         
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-<<<<<<< HEAD
-            control={<Switch checked={currMember.projects.includes(pro._id)} />}
-=======
             control={
               <Switch checked={currMember.projects.includes(pro._id)} />
             }
 
->>>>>>> main
             label={`${currTeam.name}(${pro.name})`}
             // onChange={(e) => {
             //   handleSwitchChange(e, pro, User.name);
