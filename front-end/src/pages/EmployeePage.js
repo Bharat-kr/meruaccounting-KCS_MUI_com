@@ -37,7 +37,9 @@ export default function EmployeePage(props) {
         <LoginProvider>
           <CurrentUserContextProvider>
             <PageHeader
-              title={!employee.loader ? employee.employee.data._id : "Employee"}
+              title={
+                !employee.loader ? employee?.employee?.data?._id : "Employee"
+              }
             />
 
             <Overview employee={employee} />
