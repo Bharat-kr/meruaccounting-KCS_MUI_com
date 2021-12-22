@@ -158,13 +158,12 @@ export default function VerticalTabs() {
     createTeam({ name: newTeam }, dispatchTeam);
     // RestaurantRounded(console.log("hello", e));
   };
-  const changeCurrTeam =async (e) => {
+  const changeCurrTeam = async (e) => {
     console.log(e.target.textContent);
-    const team =await getTeams.getTeam.filter((team) =>
+    const team = await getTeams.getTeam.filter((team) =>
       team.name === e.target.textContent ? team : ""
     );
     setCurrTeamToUpdate(team[0]);
-    
   };
 
   const AddMember = (e) => {
@@ -214,10 +213,15 @@ export default function VerticalTabs() {
             }}
           >
             {getTeams?.getTeam?.map((el) => (
-              <Treeview parentName={el.name} onClick={changeCurrTeam}>
+              <Treeview
+                parentName={el.name}
+                key={el.name}
+                onClick={changeCurrTeam}
+              >
                 {el.employees.map((member) => (
                   <TreeItem
                     nodeId={1 + el.employees.indexOf(member) + 1}
+                    key={member._id}
                     label={
                       <Typography
                         data-client={el.name}

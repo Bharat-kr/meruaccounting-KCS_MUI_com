@@ -25,6 +25,7 @@ import EdiText from "react-editext";
 import Snackbar from "../Snakbar";
 import { UserContext, convertString } from "../../contexts/UserContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
+import { loginContext } from "src/contexts/LoginContext";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -36,13 +37,14 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Main(props) {
   const { index, value, currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
+  const { loginC } = useContext(loginContext);
   const { clients, changeProjectmembers } = useContext(ClientsContext);
   const [Checked, setChecked] = useState();
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-  // console.log(currTeam);
+  console.log(loginC);
   const Labelconfig = function () {
     return (
       <>
@@ -66,9 +68,7 @@ export default function Main(props) {
         {currTeam.projects.map((pro) => (
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            control={
-              <Switch checked={currMember.projects.includes(pro._id)} />
-            }
+            control={<Switch checked={currMember.projects.includes(pro._id)} />}
             label={`${currTeam.name}(${pro.name})`}
             // onChange={(e) => {
             //   handleSwitchChange(e, pro, User.name);
@@ -183,27 +183,29 @@ export default function Main(props) {
               <Link sx={{ pl: 1 }}>Remove all</Link>
               <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
             </Box>
-            {/* <Box sx={{ pt: 2, fontSize: "20px" }}>
+            <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {Object.keys(User[index].Settings).map((keyName, keyIndex) => (
-                <>
-                  <Box sx={{ display: "flex", flexDirection: "rows" }}>
-                    <Typography
-                      varihant="h6"
-                      sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                    >
-                      {convertString(keyName)} */}
-            {/* {console.log(index)} */}
-            {/* </Typography>
-                    <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                      {User[index].Settings[keyName] === true
-                        ? "On"
-                        : User[index].Settings[keyName]}
-                    </RouterLink>
-                  </Box>
-                </>
-              ))}
-            </Box> */}
+              {Object.keys(loginC.userData.settings).map(
+                (keyName, keyIndex) => (
+                  <>
+                    <Box key={keyName} sx={{ display: "flex", flexDirection: "rows" }}>
+                      <Typography
+                        varihant="h6"
+                        sx={{ pr: 2, fontSize: "20px", color: "success" }}
+                      >
+                        {convertString(keyName)}
+                        {/* {console.log(index)} */}
+                      </Typography>
+                      <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
+                        {typeof(loginC.userData.settings[keyName]) === Boolean && loginC.userData.settings[keyName] === true
+                          ? "On"
+                          : loginC.userData.settings[keyName]}
+                      </RouterLink>
+                    </Box>
+                  </>
+                )
+              )}
+            </Box>
           </Typography>
         </Container>
       )}

@@ -19,7 +19,6 @@ export default function UserDetails() {
     <>
       <CssBaseline />
       <Page title="usersettings">
-        {' '}
         <Box component="div" sx={{ width: '95%', margin: 'auto' }}>
           <PageHeader title="User Settings" />
           <Paper elevation="3" maxWidth="lg" sx={{ p: 1 }}>
