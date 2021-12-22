@@ -61,20 +61,25 @@ export default function ApiRefRowsGrid() {
 
   useEffect(() => {
     const data = [];
+    let test = -1;
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) =>
-        data.push({
-          Employee: getFullName(member.firstName, member.lastName),
-          id: member._id,
-          LastActive: "",
-          Today: "",
-          Yesterday: "",
-          ThisWeek: "",
-          ThisMonth: "",
-        })
-      );
+      team.employees?.map((member) => {
+        test = data.filter((mem) => member._id === mem.id);
+        console.log(test);
+        if (test.length === 0) {
+          data.push({
+            Employee: getFullName(member.firstName, member.lastName),
+            id: member._id,
+            LastActive: "",
+            Today: "",
+            Yesterday: "",
+            ThisWeek: "",
+            ThisMonth: "",
+          });
+        }
+      });
     });
     setTeamsList(data);
   }, [getTeams]);
