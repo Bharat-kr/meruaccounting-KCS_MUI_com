@@ -40,17 +40,46 @@ const userSchema = new Schema({
   //   ref: "User",
   // }],
   settings: {
-    ScreenShotPerHour: Number,
-    AllowBlur: Boolean,
-    AppsAndUrlTracking: Boolean,
-    WeeklyTimeLimit: Number,
-    AutoPause: Number,
-    OfflineTime: Boolean,
-    NotifyUser: Boolean,
-    WeekStart: String,
-    CurrencySymbol: String,
+    ScreenShotPerHour: {
+      type: Number,
+      default: 6,
+    },
+    AllowBlur: {
+      type: Boolean,
+      default: false,
+    },
+    AppsAndUrlTracking: {
+      type: Boolean,
+      default: true,
+    },
+    WeeklyTimeLimit: {
+      type: Number,
+      default: 120,
+    },
+    AutoPause: {
+      type: Number,
+      default: 4,
+    },
+    OfflineTime: {
+      type: Boolean,
+      default: false,
+    },
+    NotifyUser: {
+      type: Boolean,
+      default: true,
+    },
+    WeekStart: {
+      type: String,
+      default: "Monday",
+    },
+    CurrencySymbol: {
+      type: String,
+      default: "$",
+    },
   },
-  pay: Number,
+  payRate: Number,
+  lastActive: Date,
+  activityStatus: Boolean,
 
   days: [
     {

@@ -1,9 +1,8 @@
 import * as React from 'react';
-import CircleIcon from '@mui/icons-material/Circle';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import { TableContainer, Chip } from '@mui/material';
+import { TableContainer, Chip, CircularProgress } from '@mui/material';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
@@ -11,13 +10,12 @@ import { styled } from '@mui/material/styles';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { Link as RouterLink } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { teamContext } from '../../../contexts/TeamsContext';
 import { getFullName } from 'src/_helpers/getFullName';
 import { getTeam } from '../../../api/teams api/teams';
 
 // ----------------------------------------------------------------------------------------------------------------------
-const icons = CircleIcon;
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     // backgroundColor: theme.palette.common.black,
@@ -50,21 +48,24 @@ function dispdata(data) {
 }
 
 export default function ApiRefRowsGrid() {
-  const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
+  const { dispatchgetTeam, getTeams } = useContext(teamContext);
 
-  const teamsList = [];
+  const [teamsList, setTeamsList] = useState([]);
+  const getTeamsLoader = getTeams.loader;
 
   useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
 
-  // data is in variable but not showing on the screen
+  // useState hook for rerender component
 
   useEffect(() => {
+    const data = [];
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
+
       team.employees?.map((member) =>
-        teamsList.push({
+        data.push({
           Employee: getFullName(member.firstName, member.lastName),
           LastActive: '',
           Today: '',
@@ -74,12 +75,13 @@ export default function ApiRefRowsGrid() {
         })
       );
     });
-    console.log(teamsList);
-  }, [getTeams, teamsList]);
+    setTeamsList(data);
+  }, [getTeams]);
 
-  return (
+  return getTeamsLoader ? (
+    <CircularProgress />
+  ) : (
     <div style={{ maxWidth: 'lg', height: 400, width: '100%' }}>
-      {/* <DataGrid rows={rows} columns={columns} /> */}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>

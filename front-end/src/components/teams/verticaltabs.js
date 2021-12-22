@@ -85,7 +85,7 @@ export default function VerticalTabs() {
   const [currTeam, setCurrTeam] = React.useState(null);
 
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
-  const [newMemberMail, setNewMemberMail] = React.useState("");
+  const [newMemberMail, setNewMemberMail] = React.useState('');
 
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
@@ -153,7 +153,7 @@ export default function VerticalTabs() {
   const changeCurrTeam = async (e) => {
     console.log(e.target.textContent);
     const team = await getTeams.getTeam.filter((team) =>
-      team.name === e.target.textContent ? team : ""
+      team.name === e.target.textContent ? team : ''
     );
     setCurrTeamToUpdate(team[0]);
   };
