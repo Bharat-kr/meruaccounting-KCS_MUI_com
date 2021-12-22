@@ -19,7 +19,7 @@ import {
 import Calendar from "./Calendar";
 
 export default function Overview(props) {
-  console.log(props.employee);
+  // console.log(props.employee);
   return (
     <Box
       component="div"

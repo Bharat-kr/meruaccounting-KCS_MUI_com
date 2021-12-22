@@ -24,6 +24,7 @@ export default function EmployeePage(props) {
     getEmployeeDetails(id, dispatchEmployeeDetails);
   }, []);
 
+  console.log(employee);
   // extra currEmployee variable, of no use iguess.
   // const [currEmployee, setCurrEmployee] = useState({});
   // useEffect(() => {
@@ -36,10 +37,7 @@ export default function EmployeePage(props) {
         <LoginProvider>
           <CurrentUserContextProvider>
             <PageHeader
-              employee={employee}
-              title={
-                !employee.loader ? employee.employee.data["_id"] : "Employee"
-              }
+              title={!employee.loader ? employee.employee.data._id : "Employee"}
             />
 
             <Overview employee={employee} />
