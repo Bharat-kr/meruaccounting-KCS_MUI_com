@@ -72,6 +72,7 @@ router.patch("/updateMember", authPass, async (req, res) => {
       message: "UnAuthorized",
     });
   }
+  const settings = manager.settings;
 
   const employeeId = req.body.employeeId;
   const teamId = req.body.teamId;
@@ -94,6 +95,9 @@ router.patch("/updateMember", authPass, async (req, res) => {
         data: "Already A Member",
       });
     }
+    const employee = await User.findById(employeeId);
+    employee.settings = settings;
+    employee.save();
     team.employees.push(employeeId);
     await team.save();
 
@@ -264,6 +268,45 @@ router.delete("/", authPass, async (req, res) => {
 
   try {
     const team = await Team.findByIdAndRemove(teamId);
+
+    const teamMembers = team.employees;
+
+    const managerId = team.manager;
+    if (!managerId === manager._id) {
+      return res.json({
+        message: "You Can Only Delete Your Teams",
+      });
+    }
+
+    manager.team.forEach((team, index) => {
+      console.log(team);
+
+      if (team.equals(team._id)) {
+        console.log("Inside IF");
+        // alreadyMember = true;
+        manager.team.splice(index, 1);
+      }
+    });
+    await manager.save();
+
+    for (var i = 0; i < teamMembers.length; i++) {
+      const id = teamMembers[i].toHexString();
+      const employee = await User.findById(id);
+
+      console.log(employee);
+
+      employee.team.forEach((team, index) => {
+        console.log(team);
+
+        if (team.equals(team._id)) {
+          console.log("Inside IF");
+          // alreadyMember = true;
+          employee.team.splice(index, 1);
+        }
+      });
+      await employee.save();
+    }
+
     res.json({
       status: "Deleted Team",
       data: team,

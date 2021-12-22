@@ -167,16 +167,19 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.post("/changeSetting", authPass, async (req, res) => {
+router.patch("/edit/:id", authPass, async (req, res) => {
   const user = req.user;
-  user.settings = req.body;
+  const employeeId = req.params.id;
+
   try {
+    const user = await User.findByIdAndUpdate(employeeId, req.body);
     user.save();
     res.json({
-      message: "Settings Updated",
+      message: "User Settings Updated",
       data: user,
     });
   } catch (error) {
+    console.log(error);
     res.json({
       message: "Error Occured",
       data: error,
