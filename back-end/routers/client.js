@@ -12,7 +12,7 @@ const {
 router.post("/", authPass, createClient);
 router.patch("/", authPass, editClient);
 router.get("/getClient", authPass, getClient);
-router.get("/getClientProjects", authPass, getClientProjects);
+router.post("/getClientProjects", authPass, getClientProjects);
 router.delete("/", authPass, deleteClient);
 
 // router.post("/login", authController.login);
