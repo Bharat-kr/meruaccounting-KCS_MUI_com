@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import EdiText from 'react-editext';
 import { UserContext, convertString } from '../../contexts/UserContext';
 import { ClientsContext } from '../../contexts/ClientsContext';
+import { getFullName } from 'src/_helpers/getFullName';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -35,14 +36,13 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Main(props) {
   const { index, value, currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
-  const { loginC } = useContext(loginContext);
   const { clients, changeProjectmembers } = useContext(ClientsContext);
   const [Checked, setChecked] = useState();
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-  console.log(loginC);
+
   const Labelconfig = function () {
     return (
       <>
@@ -102,7 +102,7 @@ export default function Main(props) {
               >
                 <Grid xs={4}>
                   <Typography sx={{ fontSize: 40 }}>
-                    {currMember?.firstName} {currMember?.lastName}
+                    {getFullName(currMember?.firstName ,currMember?.lastName )}
                   </Typography>
                   <Divider />
                   <Typography variant="body1">{currMember?.email}</Typography>
@@ -188,7 +188,7 @@ export default function Main(props) {
             </Box>
             <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {Object.keys(loginC.userData.settings).map(
+              {currMember.settings && Object.keys(currMember.settings).map(
                 (keyName, keyIndex) => (
                   <>
                     <Box key={keyName} sx={{ display: "flex", flexDirection: "rows" }}>
@@ -200,9 +200,9 @@ export default function Main(props) {
                         {/* {console.log(index)} */}
                       </Typography>
                       <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                        {typeof(loginC.userData.settings[keyName]) === Boolean && loginC.userData.settings[keyName] === true
+                        {currMember.settings[keyName] === true
                           ? "On"
-                          : loginC.userData.settings[keyName]}
+                          : currMember.settings[keyName]}
                       </RouterLink>
                     </Box>
                   </>

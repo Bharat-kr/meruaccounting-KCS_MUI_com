@@ -23,6 +23,9 @@ import PropTypes from "prop-types";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { UserContext } from "../../contexts/UserContext";
 import { loginContext } from "src/contexts/LoginContext";
+import { teamContext } from "src/contexts/TeamsContext";
+import { getTeam } from "src/api/teams api/teams";
+import { getFullName } from "src/_helpers/getFullName";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,7 +54,15 @@ TabPanel.propTypes = {
 };
 
 function checkheading(index, loginC) {
-  const days = ["Sunday", "Monday" , "TuesDay" , "Wednesday", "Thusday", "Friday" , "Saturday" ];
+  const days = [
+    "Sunday",
+    "Monday",
+    "TuesDay",
+    "Wednesday",
+    "Thusday",
+    "Friday",
+    "Saturday",
+  ];
   const settings = loginC.userData.settings;
   console.log(loginC.userData.settings);
 
@@ -63,17 +74,15 @@ function checkheading(index, loginC) {
           control={<Radio checked={settings.ScreenShotPerHour} />}
           label="Take"
         />
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={days}
-          sx={{ width: 240, margin: "2px 10px 2px 10px" }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={`Screenshot per hour  :  ${settings.ScreenShotPerHour}`}
-            />
-          )}
+        <TextField
+          sx={{ m: 1.5 }}
+          id="outlined-number"
+          label="Hours per week"
+          type="number"
+          defaultValue={settings.ScreenShotPerHour}
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
         <Autocomplete
           disablePortal
@@ -114,7 +123,11 @@ function checkheading(index, loginC) {
   if (index === 3) {
     return (
       <>
-        <FormControlLabel value="Limit" control={<Radio checked={settings.WeeklyTimeLimit} />} label="Limit" />
+        <FormControlLabel
+          value="Limit"
+          control={<Radio checked={settings.WeeklyTimeLimit} />}
+          label="Limit"
+        />
 
         <TextField
           sx={{ m: 1.5 }}
@@ -167,7 +180,11 @@ function checkheading(index, loginC) {
   if (index === 5) {
     return (
       <>
-        <FormControlLabel value="Allow" control={<Radio checked={settings.OfflineTime} />} label="Allow" />
+        <FormControlLabel
+          value="Allow"
+          control={<Radio checked={settings.OfflineTime} />}
+          label="Allow"
+        />
         <FormControlLabel
           value="Disallow"
           control={<Radio checked={!settings.OfflineTime} />}
@@ -179,7 +196,11 @@ function checkheading(index, loginC) {
   if (index === 6) {
     return (
       <>
-        <FormControlLabel value="Notify" control={<Radio checked={settings.NotifyUser} />} label="Notify" />
+        <FormControlLabel
+          value="Notify"
+          control={<Radio checked={settings.NotifyUser} />}
+          label="Notify"
+        />
         <FormControlLabel
           value="Do not notify"
           control={<Radio checked={!settings.NotifyUser} />}
@@ -196,13 +217,28 @@ function checkheading(index, loginC) {
           id="combo-box-demo"
           options={days}
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label={settings.WeekStart} />}
+          renderInput={(params) => (
+            <TextField {...params} label={settings.WeekStart} />
+          )}
         />
       </>
     );
   }
   if (index === 8) {
-    return <></>;
+    return (
+      <>
+        <TextField
+          sx={{ m: 1.5 }}
+          id="outlined-number"
+          label="Currency"
+          type="text"
+          defaultValue={settings.CurrencySymbol}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      </>
+    );
   }
 }
 
@@ -215,6 +251,40 @@ export default function SettingsMain(props) {
   const { User } = useContext(UserContext);
   const { clients } = useContext(ClientsContext);
   const { loginC } = useContext(loginContext);
+
+  const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
+
+  let teamsList = [];
+  // const [teamList , setTeamList] = useState([])
+
+  useEffect(() => {
+    getTeam(dispatchgetTeam);
+  }, []);
+
+  // data is in variable but not showing on the screen
+
+  // useEffect(() => {
+  //   getTeams?.getTeam?.forEach((team) => {
+  //     // eslint-disable-next-line prefer-template
+  //     team.employees?.map((member) => {
+  //       if (
+  //         !teamsList.find((el) => {
+  //           return el.id === member._id;
+  //         })
+  //       ) {
+  //         let data = {
+  //           Name: getFullName(member.firstName, member.lastName),
+  //           id: member._id,
+  //           email: member.email,
+  //         }
+  //         setTeamList(prev => [...prev, data ])
+  //         teamsList.push(data);
+  //       }
+  //     });
+  //   });
+  //   console.log(teamsList);
+  // }, [getTeams, teamsList]);
+
   const effectiveArr = [
     "Screenshot,Activity Level tracking",
     "Apps & Urls tracking",
@@ -273,7 +343,7 @@ export default function SettingsMain(props) {
                 sx={{ width: 300, mt: 4 }}
                 renderInput={(params) => <TextField {...params} label="User" />}
               />
-              {User.map((user) => (
+              {teamsList.map((user) => (
                 <FormGroup>
                   <FormControlLabel
                     control={<Switch />}
