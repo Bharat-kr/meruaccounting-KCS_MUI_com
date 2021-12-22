@@ -1,19 +1,19 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import { TableContainer, Chip, CircularProgress } from '@mui/material';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-import { Link as RouterLink } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { teamContext } from '../../../contexts/TeamsContext';
-import { getFullName } from 'src/_helpers/getFullName';
-import { getTeam } from '../../../api/teams api/teams';
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import { TableContainer, Chip, CircularProgress } from "@mui/material";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import { Link as RouterLink } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { teamContext } from "../../../contexts/TeamsContext";
+import { getFullName } from "src/_helpers/getFullName";
+import { getTeam } from "../../../api/teams api/teams";
 
 // ----------------------------------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -27,11 +27,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
+  "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
   // hide last border
-  '&:last-child td, &:last-child th': {
+  "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
@@ -67,11 +67,12 @@ export default function ApiRefRowsGrid() {
       team.employees?.map((member) =>
         data.push({
           Employee: getFullName(member.firstName, member.lastName),
-          LastActive: '',
-          Today: '',
-          Yesterday: '',
-          ThisWeek: '',
-          ThisMonth: '',
+          id: member._id,
+          LastActive: "",
+          Today: "",
+          Yesterday: "",
+          ThisWeek: "",
+          ThisMonth: "",
         })
       );
     });
@@ -81,7 +82,7 @@ export default function ApiRefRowsGrid() {
   return getTeamsLoader ? (
     <CircularProgress />
   ) : (
-    <div style={{ maxWidth: 'lg', height: 400, width: '100%' }}>
+    <div style={{ maxWidth: "lg", height: 400, width: "100%" }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -104,10 +105,12 @@ export default function ApiRefRowsGrid() {
           </TableHead>
           <TableBody>
             {teamsList.map((member) => (
-              <StyledTableRow key={member.Employee}>
+              <StyledTableRow key={member.id}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to="/dashboard/userdetails">
-                    {member.Employee}
+                  <RouterLink to={`/dashboard/employeepage/${member.id}`}>
+                    <Typography vairant="subtitle3">
+                      {member.Employee}
+                    </Typography>
                   </RouterLink>
 
                   {/* <div>project placeholder</div> */}

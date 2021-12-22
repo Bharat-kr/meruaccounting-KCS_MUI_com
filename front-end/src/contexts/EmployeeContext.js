@@ -1,10 +1,10 @@
-import React, { useReducer, createContext } from 'react';
+import React, { useReducer, createContext } from "react";
 
 import {
   EMPLOYEE_DETAILS_REQUEST,
   EMPLOYEE_DETAILS_SUCCESS,
-  EMPLOYEE_DETAILS_FAILED
-} from '../constants/EmployeeConstants';
+  EMPLOYEE_DETAILS_FAILED,
+} from "../constants/EmployeeConstants";
 
 export const employeeContext = createContext();
 
@@ -12,19 +12,19 @@ const employeeDetailsReducer = (state, action) => {
   switch (action.type) {
     case EMPLOYEE_DETAILS_REQUEST:
       return {
-        loader: true
+        loader: true,
       };
 
     case EMPLOYEE_DETAILS_SUCCESS:
       return {
         loader: false,
-        employee: action.payload
+        employee: action.payload,
       };
 
     case EMPLOYEE_DETAILS_FAILED:
       return {
         loader: false,
-        err: action.payload
+        err: action.payload,
       };
 
     default:
@@ -33,7 +33,10 @@ const employeeDetailsReducer = (state, action) => {
 };
 
 export function EmployeeProvider(props) {
-  const [employee, dispatchEmployeeDetails] = useReducer(employeeDetailsReducer, { employee: {} });
+  const [employee, dispatchEmployeeDetails] = useReducer(
+    employeeDetailsReducer,
+    { employee: {} }
+  );
 
   // useEffect(() => {
   //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
