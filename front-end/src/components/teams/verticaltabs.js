@@ -1,9 +1,9 @@
-import * as React from "react";
-import { useContext } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
+import * as React from 'react';
+import { useContext } from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 import {
   Box,
   Paper,
@@ -12,28 +12,29 @@ import {
   TextField,
   Autocomplete,
   Button,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { RestaurantRounded } from "@material-ui/icons";
-import Main from "./Main";
-import { UserContext } from "../../contexts/UserContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
-import { teamContext } from "../../contexts/TeamsContext";
-import { loginContext } from "../../contexts/LoginContext";
-import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
-import Treeview from "../Treeview";
-import { TreeItem } from "@mui/lab";
-import SearchBar from "../SearchBar";
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { RestaurantRounded } from '@material-ui/icons';
+import Main from './Main';
+import { UserContext } from '../../contexts/UserContext';
+import { ClientsContext } from '../../contexts/ClientsContext';
+import { teamContext } from '../../contexts/TeamsContext';
+import { loginContext } from '../../contexts/LoginContext';
+import { getTeam, createTeam, updateMember } from '../../api/teams api/teams';
+import Treeview from '../Treeview';
+import { TreeItem } from '@mui/lab';
+import SearchBar from '../SearchBar';
+import { getFullName } from 'src/_helpers/getFullName';
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "700px",
-    width: "100%",
-    margin: "auto",
-    display: "grid",
-    gridTemplateColumns: "30% 70%",
-    backgroundColor: "#fdfdff",
+    height: '700px',
+    width: '100%',
+    margin: 'auto',
+    display: 'grid',
+    gridTemplateColumns: '30% 70%',
+    backgroundColor: '#fdfdff',
   },
 }));
 
@@ -65,7 +66,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
@@ -73,27 +74,19 @@ export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   // const { clients, changeClient } = useContext(ClientsContext);
-  const { User } = useContext(UserContext);
-  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  // const { User } = useContext(UserContext);
+  const { dispatchgetTeam, getTeams, dispatchTeam, dispatchUpdateMember } =
+    useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
+  const [newTeam, setNewTeam] = React.useState('');
+  const [currTeam, setCurrTeam] = React.useState(null);
+
+  const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
+  const [newMemberMail, setNewMemberMail] = React.useState('');
+
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
-
-  const getFullName = (firstName, lastName) => {
-    let name = "";
-    if (firstName && lastName) {
-      name = firstName + " " + lastName;
-    } else if (!firstName) {
-      name = lastName;
-    } else if (!lastName) {
-      name = firstName;
-    }
-    return name;
-  };
-
-  console.log(getTeams.getTeam);
-  // console.log(currMember);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -106,15 +99,17 @@ export default function VerticalTabs() {
       // eslint-disable-next-line prefer-template
       team.employees?.map((member) =>
         teamsList.push(
-          team.name + ":" + getFullName(member.firstName, member.lastName)
+          team.name + ':' + getFullName(member.firstName, member.lastName)
         )
       );
     });
+    console.log(teamsList);
   }, [getTeams, teamsList]);
- 
+
   React.useEffect(() => {
     if (getTeams?.getTeam?.length > 0) {
       //setting the current member
+      setCurrTeam(getTeams?.getTeam[0]);
       setCurrMember(getTeams?.getTeam[0].employees[0]);
     }
   }, [getTeams, setCurrMember]);
@@ -122,7 +117,7 @@ export default function VerticalTabs() {
   // change currentclient on search
   const handleSearch = (e, value) => {
     const teams = getTeams.getTeam.filter((team) =>
-      team.name === value ? team : ""
+      team.name === value ? team : ''
     );
     if (teams.length === 0) {
       // eslint-disable-next-line no-useless-return
@@ -135,9 +130,9 @@ export default function VerticalTabs() {
   const handleClick = (e) => {
     // console.log(e.target.id);
     const team = getTeams.getTeam.filter((team) =>
-      team.name === e.target.dataset.client ? team : ""
+      team.name === e.target.dataset.client ? team : ''
     );
-
+    setCurrTeam(team[0]);
     const member = team[0].employees.filter(
       (member) => member._id === e.target.id
     );
@@ -146,31 +141,48 @@ export default function VerticalTabs() {
     // console.log("member", member[0]);
   };
 
-  const handleSubmit = () => {
-    RestaurantRounded(console.log("hello"));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(newTeam);
+    createTeam({ name: newTeam }, dispatchTeam);
+    // RestaurantRounded(console.log("hello", e));
   };
-  // const UsersList = [];
-  // clients.forEach((client) => {
-  //   // eslint-disable-next-line prefer-template
-  //   User.map((User) => UsersList.push(User.name));
-  // });
+  const changeCurrTeam = async (e) => {
+    console.log(e.target.textContent);
+    const team = await getTeams.getTeam.filter((team) =>
+      team.name === e.target.textContent ? team : ''
+    );
+    setCurrTeamToUpdate(team[0]);
+  };
+
+  const AddMember = (e) => {
+    e.preventDefault();
+    console.log(newMemberMail);
+    console.log(currTeamToUpdate);
+    updateMember(
+      { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
+      dispatchUpdateMember
+    );
+    getTeam(dispatchgetTeam);
+  };
+
   return (
     <div className={classes.root}>
       <Box
         component="div"
         sx={{
-          margin: "10px",
-          maxHeight: "70vh",
-          height: "auto",
+          margin: '10px',
+          maxHeight: '70vh',
+          height: 'auto',
         }}
       >
         <Paper
           component="div"
           elevation={3}
           sx={{
-            overflow: "hidden",
-            height: "100%",
-            position: "relative",
+            overflow: 'hidden',
+            height: '100%',
+            position: 'relative',
           }}
         >
           {/* search box */}
@@ -184,13 +196,13 @@ export default function VerticalTabs() {
           <Box
             component="div"
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
             }}
           >
             {getTeams?.getTeam?.map((el) => (
-              <Treeview parentName={el.name}>
+              <Treeview parentName={el.name} onClick={changeCurrTeam}>
                 {el.employees.map((member) => (
                   <TreeItem
                     nodeId={1 + el.employees.indexOf(member) + 1}
@@ -213,20 +225,39 @@ export default function VerticalTabs() {
           {/* INPUT BOX, add validations, connect to context */}
           <Box
             sx={{
-              boxSizing: "border-box",
-              width: "95%",
-              position: "absolute",
-              bottom: "0",
+              boxSizing: 'border-box',
+              width: '95%',
+              position: 'absolute',
+              bottom: '0',
 
-              "& > :not(style)": { m: 1 },
+              '& > :not(style)': { m: 1 },
             }}
           >
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
               <TextField
-                // onChange={(e) => setnewClientValue(e.target.value)}
+                onChange={(e) => setNewTeam(e.target.value)}
                 required
                 fullWidth
-                label="Add new client"
+                label="Add new Team"
+                // error={newClientError}
+                sx={{}}
+              />
+
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Submit
+              </Button>
+            </form>
+            <form onSubmit={AddMember} noValidate autoComplete="off">
+              <TextField
+                onChange={(e) => setNewMemberMail(e.target.value)}
+                required
+                fullWidth
+                label="Add new Member"
                 // error={newClientError}
                 sx={{}}
               />
@@ -247,16 +278,16 @@ export default function VerticalTabs() {
       {/* HEADER */}
       <Box
         component="div"
-        sx={{ margin: "10px 10px 10px 0", overflow: "auto" }}
+        sx={{ margin: '10px 10px 10px 0', overflow: 'auto' }}
       >
         {/* grid container 40 60 */}
         <Paper
           component="div"
           elevation={3}
           sx={{
-            overflow: "visible",
+            overflow: 'visible',
 
-            position: "relative",
+            position: 'relative',
             // display: 'grid',
             // gridTemplateRows: '30% 70%'
           }}
@@ -267,7 +298,8 @@ export default function VerticalTabs() {
               value={value}
               // index={User.indexOf(user)}
               currMember={currMember}
-              sx={{ overflow: "hidden" }}
+              currTeam={currTeam}
+              sx={{ overflow: 'hidden' }}
             />
             {/* ))} */}
           </Box>

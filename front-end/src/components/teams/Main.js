@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useContext, useState } from "react";
+import * as React from 'react';
+import { useContext, useState } from 'react';
 import {
   Container,
   Typography,
@@ -15,26 +15,25 @@ import {
   FormControl,
   FormLabel,
   Switch,
-} from "@mui/material";
-import PauseIcon from "@mui/icons-material/Pause";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import { Link as RouterLink } from "react-router-dom";
-import PropTypes from "prop-types";
-import EdiText from "react-editext";
-import Snackbar from "../Snakbar";
-import { UserContext, convertString } from "../../contexts/UserContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
+} from '@mui/material';
+import PauseIcon from '@mui/icons-material/Pause';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import { Link as RouterLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import EdiText from 'react-editext';
+import { UserContext, convertString } from '../../contexts/UserContext';
+import { ClientsContext } from '../../contexts/ClientsContext';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: "center",
+  textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
 
 export default function Main(props) {
-  const { value, index, currMember, ...other } = props;
+  const { index, value, currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
   const { clients, changeProjectmembers } = useContext(ClientsContext);
   const [Checked, setChecked] = useState();
@@ -42,11 +41,11 @@ export default function Main(props) {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-  console.log(currMember);
+  // console.log(currTeam);
   const Labelconfig = function () {
     return (
       <>
-        {clients.map((client) =>
+        {/* {clients.map((client) =>
           client.projects.map((pro) => (
             <FormControlLabel
               sx={{ display: "block", pt: 1, fontWeight: 10 }}
@@ -62,7 +61,17 @@ export default function Main(props) {
               // }}
             />
           ))
-        )}
+        )} */}
+        {currTeam.projects.map((pro) => (
+          <FormControlLabel
+            sx={{ display: 'block', pt: 1, fontWeight: 10 }}
+            control={<Switch checked={currMember.projects.includes(pro._id)} />}
+            label={`${currTeam.name}(${pro.name})`}
+            // onChange={(e) => {
+            //   handleSwitchChange(e, pro, User.name);
+            // }}
+          />
+        ))}
       </>
     );
   };
@@ -72,17 +81,17 @@ export default function Main(props) {
       {currMember && (
         <Container
           component="div"
-          sx={{ border: 1, height: "100%", overflow: "scroll" }}
+          sx={{ border: 1, height: '100%', overflow: 'scroll' }}
           role="tabpanel"
           hidden={value !== index}
           id={`vertical-tabpanel-${index}`}
           aria-labelledby={`vertical-tab-${index}`}
           {...other}
         >
-          <Typography sx={{ overflow: "auto" }}>
+          <Typography sx={{ overflow: 'auto' }}>
             <Box sx={{ flexGrow: 1 }}>
               <Grid
-                sx={{ display: "flex", justifyContent: "space-between" }}
+                sx={{ display: 'flex', justifyContent: 'space-between' }}
                 spacing={0}
               >
                 <Grid xs={4}>
@@ -96,8 +105,8 @@ export default function Main(props) {
                     <EdiText
                       type="number"
                       value="15"
-                      onCancel={(v) => console.log("CANCELLED: ", v)}
-                      onSave={(v) => console.log("Save")}
+                      onCancel={(v) => console.log('CANCELLED: ', v)}
+                      onSave={(v) => console.log('Save')}
                     />
                   </Grid>
                 </Grid>
@@ -107,14 +116,14 @@ export default function Main(props) {
                     sx={{ padding: 1 }}
                     onClick={(e) => console.log(e.currentTarget.dataset.key)}
                   >
-                    <PauseIcon sx={{ fontSize: "small" }} />
-                    Pause{" "}
+                    <PauseIcon sx={{ fontSize: 'small' }} />
+                    Pause{' '}
                   </Link>
                   <Link sx={{ padding: 1 }}>
-                    <DeleteIcon sx={{ fontSize: "small" }} /> Delete
+                    <DeleteIcon sx={{ fontSize: 'small' }} /> Delete
                   </Link>
                   <Link sx={{ padding: 1 }}>
-                    <ArchiveIcon sx={{ fontSize: "small" }} />
+                    <ArchiveIcon sx={{ fontSize: 'small' }} />
                     Archive
                   </Link>
                 </Box>
@@ -146,7 +155,7 @@ export default function Main(props) {
                 </RadioGroup>
               </FormControl>
             </Box>
-            {(currMember.role === "Manager" || currMember.role === "Admin") && (
+            {(currMember.role === 'Manager' || currMember.role === 'Admin') && (
               <Box>
                 <Typography variant="h5">Manage for</Typography>
                 <Typography varinat="body2">
@@ -169,7 +178,7 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
+              <Container sx={{ display: 'block' }}>{Labelconfig()}</Container>
             </Box>
             {/* <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>

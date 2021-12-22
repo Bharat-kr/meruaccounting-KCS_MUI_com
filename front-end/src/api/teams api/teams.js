@@ -21,7 +21,7 @@ const config = {
   },
 };
 
-export const createTeam = async (dispatch, name) => {
+export const createTeam = async (name, dispatch) => {
   try {
     dispatch({ type: TEAM_CREATE_REQUEST });
 
@@ -43,15 +43,12 @@ export const createTeam = async (dispatch, name) => {
 
 export const getTeam = async (dispatch, id) => {
   try {
-    const res = await axios.get(
-      `http://localhost:8000/team/getTeam`,
-      config
-    );
+    dispatch({ type: GET_TEAM_REQUEST });
+    const res = await axios.get(`http://localhost:8000/team/getTeam`, config);
 
     // console.log(res);
 
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
-    
   } catch (error) {
     console.log(error);
     dispatch({
@@ -64,7 +61,7 @@ export const getTeam = async (dispatch, id) => {
   }
 };
 
-export const updateMember = async (dispatch, incomingData) => {
+export const updateMember = async (incomingData, dispatch) => {
   try {
     dispatch({ type: UPDATE_MEMBER_REQUEST });
 
