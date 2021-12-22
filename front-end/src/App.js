@@ -9,6 +9,7 @@ import { BaseOptionChartStyle } from "./components/charts/BaseOptionChart";
 import { LoginProvider } from "./contexts/LoginContext";
 import { TeamsProvider } from "./contexts/TeamsContext";
 import { ClientsContextProvider } from "./contexts/ClientsContext";
+import { EmployeeProvider } from "./contexts/EmployeeContext";
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -19,9 +20,11 @@ export default function App() {
         <GlobalStyles />
         <BaseOptionChartStyle />
         <ClientsContextProvider>
-          <TeamsProvider>
-            <Router />
-          </TeamsProvider>
+          <EmployeeProvider>
+            <TeamsProvider>
+              <Router />
+            </TeamsProvider>
+          </EmployeeProvider>
         </ClientsContextProvider>
       </ThemeConfig>
     </LoginProvider>

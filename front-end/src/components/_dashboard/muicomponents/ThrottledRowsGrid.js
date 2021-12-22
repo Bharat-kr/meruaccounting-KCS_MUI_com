@@ -107,7 +107,7 @@ export default function ApiRefRowsGrid() {
             {teamsList.map((member) => (
               <StyledTableRow key={member.id}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to="/dashboard/employeepage">
+                  <RouterLink to={`/dashboard/employeepage/${member.id}`}>
                     <Typography vairant="subtitle3">
                       {member.Employee}
                     </Typography>

@@ -63,7 +63,7 @@ export default function Router() {
           element: <PrivateRoute component={UserPage} roles={4} />,
         },
         {
-          path: "employeepage",
+          path: "employeepage/:id",
           element: <PrivateRoute component={EmployeePage} roles={3} />,
         },
         // { path: 'app', element: <DashboardApp /> },

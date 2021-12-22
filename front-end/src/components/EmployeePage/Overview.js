@@ -7,21 +7,27 @@ import {
   Card,
   CardActions,
   Button,
-  Grid
-} from '@mui/material';
-import React from 'react';
-import { Monthlyhours, Weeklyhours, AppItemOrders, AppBugReports } from '../_dashboard/app';
-import Calendar from './Calendar';
+  Grid,
+} from "@mui/material";
+import React from "react";
+import {
+  Monthlyhours,
+  Weeklyhours,
+  AppItemOrders,
+  AppBugReports,
+} from "../_dashboard/app";
+import Calendar from "./Calendar";
 
-export default function Overview() {
+export default function Overview(props) {
+  console.log(props.employee);
   return (
     <Box
       component="div"
       sx={{
         m: 2,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
       }}
     >
       {/* <Calendar /> */}
