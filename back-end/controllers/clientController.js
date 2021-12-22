@@ -1,9 +1,9 @@
-const Client = require('../models/client');
-const mongoose = require('mongoose');
+const Client = require("../models/client");
+const mongoose = require("mongoose");
 
 exports.createClient = async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     const { name } = req.body;
     try {
       const client = new Client({ name });
@@ -12,24 +12,24 @@ exports.createClient = async (req, res) => {
       client.manager = employee._id;
       await client.save();
       res.status(201).json({
-        messsage: 'Successfully Created Client',
+        messsage: "Successfully Created Client",
         data: client,
       });
     } catch (error) {
       res.status(500).json({
-        messsage: 'Bad Request ',
+        messsage: "Bad Request ",
         data: error,
       });
     }
   } else {
     res.status(201).json({
-      messsage: 'UnAuthorized Manager',
+      messsage: "UnAuthorized Manager",
     });
   }
 };
 exports.getClient = async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     const { name } = req.body;
 
     try {
@@ -42,23 +42,23 @@ exports.getClient = async (req, res) => {
 
       if (!client) {
         return res.status(404).json({
-          messsage: 'Client not found',
+          messsage: "Client not found",
         });
       }
 
       res.status(201).json({
-        messsage: 'Successfully Created Client',
+        messsage: "Successfully Created Client",
         data: client,
       });
     } catch (error) {
       res.status(500).json({
-        messsage: 'Bad Request ',
+        messsage: "Bad Request ",
         data: error,
       });
     }
   } else {
     res.status(201).json({
-      messsage: 'UnAuthorized Manager',
+      messsage: "UnAuthorized Manager",
     });
   }
 };
@@ -66,23 +66,23 @@ exports.getClientProjects = async (req, res) => {
   const employee = req.user;
 
   const { clientId } = req.body;
-
-  const client = await Client.findById(clientId).populate('projects');
+  console.log(req.body);
+  const client = await Client.findById(clientId).populate("projects");
 
   if (!client) {
     return res.status(404).json({
-      messsage: 'Client not found',
+      messsage: "Client not found",
     });
   }
   res.status(201).json({
-    messsage: 'Successfully Created Client',
+    messsage: "Successfully Created Client",
     data: client,
   });
 };
 
 exports.editClient = async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     const { name } = req.body;
 
     try {
@@ -98,29 +98,29 @@ exports.editClient = async (req, res) => {
 
       if (!client) {
         return res.status(404).json({
-          messsage: 'Client not found',
+          messsage: "Client not found",
         });
       }
 
       res.status(201).json({
-        messsage: 'Successfully Updated Client',
+        messsage: "Successfully Updated Client",
         data: client,
       });
     } catch (error) {
       res.status(500).json({
-        messsage: 'Bad Request ',
+        messsage: "Bad Request ",
         data: error,
       });
     }
   } else {
     res.status(201).json({
-      messsage: 'UnAuthorized Manager',
+      messsage: "UnAuthorized Manager",
     });
   }
 };
 exports.deleteClient = async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     const { name } = req.body;
 
     try {
@@ -133,23 +133,23 @@ exports.deleteClient = async (req, res) => {
 
       if (!client) {
         return res.status(404).json({
-          messsage: 'Client not found',
+          messsage: "Client not found",
         });
       }
 
       res.status(201).json({
-        messsage: 'Successfully Deleted Client',
+        messsage: "Successfully Deleted Client",
         data: client,
       });
     } catch (error) {
       res.status(500).json({
-        messsage: 'Bad Request ',
+        messsage: "Bad Request ",
         data: error,
       });
     }
   } else {
     res.status(201).json({
-      messsage: 'UnAuthorized Manager',
+      messsage: "UnAuthorized Manager",
     });
   }
 };
