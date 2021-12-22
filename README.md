@@ -2,16 +2,57 @@
 
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg?style=flat-square)&nbsp;![License](https://img.shields.io/badge/license-MIT-brightgreen)&nbsp;![Made with Love in India](https://madewithlove.org.in/badge.svg)
 
-ScreenShot Monitoring is a web application which can be used to monitor employee's screen.
+ScreenshotMonitor is a time tracking / screenshot monitoring tool used to get a clear picture of time and money spent on each project, client and task. Employees start monitoring using a lightweight desktop application. The tracked time, screenshots, activity level, active applications & URLs, selected projects and task notes – are all uploaded online for both manager and employee to see.
+
 We are using our own backend server for the handling the API requests.
 
 Our documentation includes a quickstart guide to help you get started with ScreenShot Monitoring Service, as well as guides on how to add and manage teams, projects, clients, user data into the application.
 
+## Table of Contents
+
+- [ScreenShot Monitoring Application](#screenshot-monitoring-application)
+  - [Table of Contents](#table-of-contents)
+  - [Quickstart](#quickstart)
+  - [App Functionality](#app-functionality)
+      - [Roles](#roles)
+  - [API Documentation](#api-documentation)
+  - [Screenshots](#screenshots)
+  - [Authentication](#authentication)
+  - [Schema](#schema)
+    - [Client Schema](#client-schema)
+    - [Project Schema](#project-schema)
+    - [Team Schema](#team-schema)
+    - [User Schema](#user-schema)
+  - [Installation](#installation)
+  - [Contributors](#contributors)
+  - [License](#license)
+
 ## Quickstart
 
 This quickstart walks you through:
+[ tutorials will be added here later ]
 
-## App Description
+## App Functionality
+
+#### Roles
+
+- **Super admin**
+  <br>
+  > _Add Employee to Company_
+  > _Appoint Admin_
+- **Admin**
+  <br>
+  > _Set Pay Rates_
+  > _Appoint Manager_
+  > _View Different Teams_
+  > _Set Budget for Different Team( to be added later )_
+- **Manager**
+  <br>
+  > _Edit Employee Settings_ 
+  > _Add Employee to Team_ 
+  > _Add Clients and Projects_ 
+  > _View Employee Details_
+- **Employee**
 
 ## API Documentation
 
@@ -111,7 +152,7 @@ const userSchema = new Schema({
 
 ScreenShot Monitoring requires [Node.js](https://nodejs.org/) v14+ and [npm](https://www.npmjs.com/) v6+ to run
 
-\*\*1. Install the dependencies and devDependencies and start the server.
+**1. Install the dependencies and devDependencies and start the server.**
 
 ```sh
 cd back-end
@@ -119,7 +160,7 @@ npm i
 npm run dev
 ```
 
-\*\*2. Install the dependencies and devDependencies and start the client.
+**2. Install the dependencies and devDependencies and start the client.**
 
 ```sh
 cd front-end
@@ -145,3 +186,5 @@ npm run start
 
 Closed source application
 Copyright by Meru Accounting
+<br>
+![Meru Accounting](./front-end/public/logo.png)
