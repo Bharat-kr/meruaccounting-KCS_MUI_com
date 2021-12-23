@@ -61,6 +61,7 @@ export default function ApiRefRowsGrid() {
 
   useEffect(() => {
     const data = [];
+    let test = -1;
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
@@ -111,10 +112,12 @@ export default function ApiRefRowsGrid() {
           </TableHead>
           <TableBody>
             {teamsList.map((member) => (
-              <StyledTableRow key={member.Employee}>
+              <StyledTableRow key={member.id}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to="/dashboard/userdetails">
-                    {member.Employee}
+                  <RouterLink to={`/dashboard/employeepage/${member.id}`}>
+                    <Typography vairant="subtitle3">
+                      {member.Employee}
+                    </Typography>
                   </RouterLink>
 
                   {/* <div>project placeholder</div> */}

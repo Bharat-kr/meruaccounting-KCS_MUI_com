@@ -47,6 +47,9 @@ exports.getClient = async (req, res) => {
       }
 
       res.status(201).json({
+
+       
+
         messsage: "Get Client",
         data: client,
       });
@@ -66,7 +69,6 @@ exports.getClientProjects = async (req, res) => {
   const employee = req.user;
 
   const { clientId } = req.body;
-
   const client = await Client.findById(clientId).populate("projects");
 
   if (!client) {

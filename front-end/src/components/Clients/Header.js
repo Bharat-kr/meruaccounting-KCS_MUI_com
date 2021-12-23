@@ -1,11 +1,11 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import { ClientsContext } from "../../contexts/ClientsContext";
-import { getClients } from "../../api/clients api/clients";
+import { getClientPro, getClientProjects } from "../../api/clients api/clients";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -32,7 +32,31 @@ export default function Header() {
   };
 
   const classes = useStyles();
-  const { currentClient } = useContext(ClientsContext);
+  const {
+    currentClient,
+    updateClient,
+    clientProjectDetails,
+    dispatchClientProjectDetails,
+  } = useContext(ClientsContext);
+  console.log(currentClient);
+  const id = { clientId: currentClient._id };
+  console.log(id);
+  let projectList = [];
+  useEffect(() => {
+    // getClientPro(JSON.stringify(id));
+    getClientProjects(id, dispatchClientProjectDetails);
+    console.log("hey");
+  }, [currentClient]);
+  if (
+    clientProjectDetails.clientProjectDetails &&
+    clientProjectDetails.loader === false
+  ) {
+    projectList = clientProjectDetails.clientProjectDetails.projects;
+  }
+  console.log(clientProjectDetails);
+  // Object.keys(clientProjectDetails).map((keyName, keyIndex) =>
+  //   console.log(keyName, keyIndex)
+  // );
 
   return (
     <>
@@ -91,7 +115,7 @@ export default function Header() {
                 m: 1,
               }}
             >
-              {currentClient.projects.map((project) => (
+              {projectList.map((project) => (
                 <Typography variant="subtitle1" sx={{ width: 1 }}>
                   {project.name}
                   <span style={{ float: "right" }}>{project.rate} rs/hr</span>
