@@ -26,6 +26,7 @@ import { loginContext } from "src/contexts/LoginContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { getTeam } from "src/api/teams api/teams";
 import { getFullName } from "src/_helpers/getFullName";
+import axios from "axios";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -53,7 +54,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function checkheading(index, loginC) {
+function checkheading(index, settings, setSettings, loginC) {
   const days = [
     "Sunday",
     "Monday",
@@ -63,20 +64,147 @@ function checkheading(index, loginC) {
     "Friday",
     "Saturday",
   ];
-  const settings = loginC.userData.settings;
-  console.log(loginC.userData.settings);
+  // const settings = loginC.userData.settings;
+
+  // console.log(loginC.userData.settings);
+
+  const UpdateSettings = async (data) => {
+    // console.log(settings);
+    await axios
+      .patch(`/employee/edit/${loginC.userData._id}`, data)
+      .then((res) => {
+        console.log(res);
+        setSettings(res.data.data.settings);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const changeScreenShotPerHour = async (e) => {
+    e.preventDefault();
+    const value = document.querySelector("#screenShotPerHour").value;
+    console.log(value);
+
+    const data = {
+      settings: {
+        ...settings,
+        ScreenShotPerHour: settings.ScreenShotPerHour !== 0 ? 0 : value,
+        AllowBlur: !settings.AllowBlur,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeAppsAndUrlTracking = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      settings: {
+        ...settings,
+        AppsAndUrlTracking: !settings.AppsAndUrlTracking,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeWeeklyTimeLimit = async (e) => {
+    e.preventDefault();
+    const value = document.querySelector("#weekLimit").value;
+    console.log(value);
+
+    const data = {
+      settings: {
+        ...settings,
+        WeeklyTimeLimit: settings.WeeklyTimeLimit !== 0 ? 0 : value,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeAutoPause = async (e) => {
+    e.preventDefault();
+    const value = document.querySelector("#autoPause").value;
+    console.log(value);
+
+    const data = {
+      settings: {
+        ...settings,
+        AutoPause: settings.AutoPause !== 0 ? 0 : value,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeOfflineTime = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      settings: {
+        ...settings,
+        OfflineTime: !settings.OfflineTime,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeNotifyUser = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      settings: {
+        ...settings,
+        NotifyUser: !settings.NotifyUser,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeWeekStart = async (e) => {
+    e.preventDefault();
+    // const value = document.querySelector("#WeekStart").value;
+    console.log(e);
+
+    const data = {
+      settings: {
+        ...settings,
+        WeekStart: e.target.value,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
+  const changeCurrencySymbol = async (e) => {
+    e.preventDefault();
+    const value = document.querySelector("#currencySymbol").value;
+    console.log(value);
+
+    const data = {
+      settings: {
+        ...settings,
+        CurrencySymbol: value,
+      },
+    };
+    // console.log(settings);
+    await UpdateSettings(data);
+  };
 
   if (index === 0) {
     return (
       <>
         <FormControlLabel
           value="Take"
-          control={<Radio checked={settings.ScreenShotPerHour} />}
+          control={
+            <Radio
+              onClick={changeScreenShotPerHour}
+              checked={settings.ScreenShotPerHour}
+            />
+          }
           label="Take"
         />
         <TextField
           sx={{ m: 1.5 }}
-          id="outlined-number"
+          id="screenShotPerHour"
           label="Hours per week"
           type="number"
           defaultValue={settings.ScreenShotPerHour}
@@ -97,8 +225,13 @@ function checkheading(index, loginC) {
           )}
         />
         <FormControlLabel
-          value="Do not Take"
-          control={<Radio checked={!settings.ScreenShotPerHour} />}
+          value="Do not take"
+          control={
+            <Radio
+              onClick={changeScreenShotPerHour}
+              checked={!settings.ScreenShotPerHour}
+            />
+          }
           label="Do not take"
         />
       </>
@@ -109,12 +242,22 @@ function checkheading(index, loginC) {
       <>
         <FormControlLabel
           value="Track"
-          control={<Radio checked={settings.AppsAndUrlTracking} />}
+          control={
+            <Radio
+              onClick={changeAppsAndUrlTracking}
+              checked={settings.AppsAndUrlTracking}
+            />
+          }
           label="Track"
         />
         <FormControlLabel
           value="Do not track"
-          control={<Radio />}
+          control={
+            <Radio
+              onClick={changeAppsAndUrlTracking}
+              checked={!settings.AppsAndUrlTracking}
+            />
+          }
           label="Do not track"
         />
       </>
@@ -125,13 +268,18 @@ function checkheading(index, loginC) {
       <>
         <FormControlLabel
           value="Limit"
-          control={<Radio checked={settings.WeeklyTimeLimit} />}
+          control={
+            <Radio
+              onClick={changeWeeklyTimeLimit}
+              checked={settings.WeeklyTimeLimit}
+            />
+          }
           label="Limit"
         />
 
         <TextField
           sx={{ m: 1.5 }}
-          id="outlined-number"
+          id="weekLimit"
           label="Hours per week"
           type="number"
           defaultValue={settings.WeeklyTimeLimit}
@@ -142,7 +290,12 @@ function checkheading(index, loginC) {
 
         <FormControlLabel
           value="Do not limit"
-          control={<Radio checked={!settings.WeeklyTimeLimit} />}
+          control={
+            <Radio
+              onClick={changeWeeklyTimeLimit}
+              checked={!settings.WeeklyTimeLimit}
+            />
+          }
           label="Do not limit"
         />
       </>
@@ -153,12 +306,14 @@ function checkheading(index, loginC) {
       <>
         <FormControlLabel
           value="Pause"
-          control={<Radio checked={settings.AutoPause} />}
+          control={
+            <Radio onClick={changeAutoPause} checked={settings.AutoPause} />
+          }
           label="Pause after"
         />
         <TextField
           sx={{ m: 1.5 }}
-          id="outlined-number"
+          id="autoPause"
           label="Time limit"
           type="number"
           defaultValue={settings.AutoPause}
@@ -171,7 +326,9 @@ function checkheading(index, loginC) {
         </Typography>
         <FormControlLabel
           value="Do not pause"
-          control={<Radio checked={!settings.AutoPause} />}
+          control={
+            <Radio onClick={changeAutoPause} checked={!settings.AutoPause} />
+          }
           label="Do not pause"
         />
       </>
@@ -182,12 +339,19 @@ function checkheading(index, loginC) {
       <>
         <FormControlLabel
           value="Allow"
-          control={<Radio checked={settings.OfflineTime} />}
+          control={
+            <Radio onClick={changeOfflineTime} checked={settings.OfflineTime} />
+          }
           label="Allow"
         />
         <FormControlLabel
           value="Disallow"
-          control={<Radio checked={!settings.OfflineTime} />}
+          control={
+            <Radio
+              onClick={changeOfflineTime}
+              checked={!settings.OfflineTime}
+            />
+          }
           label="Disallow"
         />
       </>
@@ -198,12 +362,16 @@ function checkheading(index, loginC) {
       <>
         <FormControlLabel
           value="Notify"
-          control={<Radio checked={settings.NotifyUser} />}
+          control={
+            <Radio onClick={changeNotifyUser} checked={settings.NotifyUser} />
+          }
           label="Notify"
         />
         <FormControlLabel
           value="Do not notify"
-          control={<Radio checked={!settings.NotifyUser} />}
+          control={
+            <Radio onClick={changeNotifyUser} checked={!settings.NotifyUser} />
+          }
           label="Do not notify"
         />
       </>
@@ -214,11 +382,19 @@ function checkheading(index, loginC) {
       <>
         <Autocomplete
           disablePortal
-          id="combo-box-demo"
+          id="WeekStartadd"
           options={days}
           sx={{ width: 300 }}
           renderInput={(params) => (
-            <TextField {...params} label={settings.WeekStart} />
+            <TextField
+              {...params}
+              id="WeekStart"
+              onChange={(e) => {
+                // console.log(e)
+                changeWeekStart(e);
+              }}
+              label={settings.WeekStart}
+            />
           )}
         />
       </>
@@ -229,9 +405,14 @@ function checkheading(index, loginC) {
       <>
         <TextField
           sx={{ m: 1.5 }}
-          id="outlined-number"
+          id="currencySymbol"
           label="Currency"
           type="text"
+          onKeyPress={(e) => {
+            if (e.charCode === 13) {
+              changeCurrencySymbol(e);
+            }
+          }}
           defaultValue={settings.CurrencySymbol}
           InputLabelProps={{
             shrink: true,
@@ -254,36 +435,35 @@ export default function SettingsMain(props) {
 
   const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
 
-  let teamsList = [];
-  // const [teamList , setTeamList] = useState([])
+  const [teamsList, setTeamsList] = useState([]);
 
   useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
-
+  const [settings, setSettings] = useState({});
   // data is in variable but not showing on the screen
 
-  // useEffect(() => {
-  //   getTeams?.getTeam?.forEach((team) => {
-  //     // eslint-disable-next-line prefer-template
-  //     team.employees?.map((member) => {
-  //       if (
-  //         !teamsList.find((el) => {
-  //           return el.id === member._id;
-  //         })
-  //       ) {
-  //         let data = {
-  //           Name: getFullName(member.firstName, member.lastName),
-  //           id: member._id,
-  //           email: member.email,
-  //         }
-  //         setTeamList(prev => [...prev, data ])
-  //         teamsList.push(data);
-  //       }
-  //     });
-  //   });
-  //   console.log(teamsList);
-  // }, [getTeams, teamsList]);
+  useEffect(() => {
+    setSettings(loginC.userData.settings);
+    const data = [];
+    getTeams?.getTeam?.forEach((team) => {
+      // eslint-disable-next-line prefer-template
+
+      team.employees?.map((member) => {
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
+          data.push({
+            name: getFullName(member.firstName, member.lastName),
+            id: member._id,
+          });
+        }
+      });
+    });
+    setTeamsList(data);
+  }, [getTeams]);
 
   const effectiveArr = [
     "Screenshot,Activity Level tracking",
@@ -323,7 +503,7 @@ export default function SettingsMain(props) {
                 aria-label="option"
                 name="row-radio-buttons-group"
               >
-                {checkheading(index, loginC)}
+                {checkheading(index, settings, setSettings, loginC)}
               </RadioGroup>
             </FormControl>
           </Box>
