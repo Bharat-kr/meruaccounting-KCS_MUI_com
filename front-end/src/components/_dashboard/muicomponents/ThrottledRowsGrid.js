@@ -66,9 +66,11 @@ export default function ApiRefRowsGrid() {
       // eslint-disable-next-line prefer-template
 
       team.employees?.map((member) => {
-        test = data.filter((mem) => member._id === mem.id);
-        console.log(test);
-        if (test.length === 0) {
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
           data.push({
             Employee: getFullName(member.firstName, member.lastName),
             id: member._id,

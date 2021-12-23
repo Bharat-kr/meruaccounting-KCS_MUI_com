@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import EdiText from 'react-editext';
 import { UserContext, convertString } from '../../contexts/UserContext';
 import { ClientsContext } from '../../contexts/ClientsContext';
+import { getFullName } from 'src/_helpers/getFullName';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -41,7 +42,7 @@ export default function Main(props) {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-  // console.log(currTeam);
+
   const Labelconfig = function () {
     return (
       <>
@@ -96,7 +97,7 @@ export default function Main(props) {
               >
                 <Grid xs={4}>
                   <Typography sx={{ fontSize: 40 }}>
-                    {currMember?.firstName} {currMember?.lastName}
+                    {getFullName(currMember?.firstName ,currMember?.lastName )}
                   </Typography>
                   <Divider />
                   <Typography variant="body1">{currMember?.email}</Typography>
@@ -180,27 +181,29 @@ export default function Main(props) {
               <Link sx={{ pl: 1 }}>Remove all</Link>
               <Container sx={{ display: 'block' }}>{Labelconfig()}</Container>
             </Box>
-            {/* <Box sx={{ pt: 2, fontSize: "20px" }}>
+            <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {Object.keys(User[index].Settings).map((keyName, keyIndex) => (
-                <>
-                  <Box sx={{ display: "flex", flexDirection: "rows" }}>
-                    <Typography
-                      varihant="h6"
-                      sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                    >
-                      {convertString(keyName)} */}
-            {/* {console.log(index)} */}
-            {/* </Typography>
-                    <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                      {User[index].Settings[keyName] === true
-                        ? "On"
-                        : User[index].Settings[keyName]}
-                    </RouterLink>
-                  </Box>
-                </>
-              ))}
-            </Box> */}
+              {currMember.settings && Object.keys(currMember.settings).map(
+                (keyName, keyIndex) => (
+                  <>
+                    <Box key={keyName} sx={{ display: "flex", flexDirection: "rows" }}>
+                      <Typography
+                        varihant="h6"
+                        sx={{ pr: 2, fontSize: "20px", color: "success" }}
+                      >
+                        {convertString(keyName)}
+                        {/* {console.log(index)} */}
+                      </Typography>
+                      <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
+                        {currMember.settings[keyName] === true
+                          ? "On"
+                          : currMember.settings[keyName]}
+                      </RouterLink>
+                    </Box>
+                  </>
+                )
+              )}
+            </Box>
           </Typography>
         </Container>
       )}
