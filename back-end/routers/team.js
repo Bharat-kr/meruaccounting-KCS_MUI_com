@@ -79,8 +79,8 @@ router.patch("/updateMember", authPass, async (req, res) => {
   var alreadyMember = false;
   try {
     const team = await Team.findById(teamId);
-    const newEmployee = await User.findOne({email :employeeMail });
-    const employeeId =newEmployee._id;
+    const newEmployee = await User.findOne({ email: employeeMail });
+    const employeeId = newEmployee._id;
     console.log(team);
     console.log(employeeId);
     team.employees.forEach((employee) => {
@@ -217,6 +217,10 @@ router.get("/getTeam/:id", authPass, async (req, res) => {
     },
   });
 });
+
+// router.post('/setTeamLead',async(req,res)=>{
+//   cons
+// })
 
 router.get("/getTeam", authPass, async (req, res) => {
   const responseArray = [];
