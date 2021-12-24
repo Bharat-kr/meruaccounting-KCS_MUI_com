@@ -4,15 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import {
-  Box,
-  Paper,
-  styled,
-  OutlinedInput,
-  TextField,
-  Autocomplete,
-  Button,
-} from "@mui/material";
+import { Box, Paper, TextField, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { RestaurantRounded } from "@material-ui/icons";
 import Main from "./Main";
