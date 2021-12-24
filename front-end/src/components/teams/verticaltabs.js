@@ -12,11 +12,9 @@ import {
   TextField,
   Autocomplete,
   Button,
-  ToggleButton,
-  Tooltip,
 } from "@mui/material";
-import AddBoxIcon from "@mui/icons-material/AddBox";
 import { makeStyles } from "@mui/styles";
+import { RestaurantRounded } from "@material-ui/icons";
 import Main from "./Main";
 import { UserContext } from "../../contexts/UserContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
@@ -27,7 +25,6 @@ import Treeview from "../Treeview";
 import { TreeItem } from "@mui/lab";
 import SearchBar from "../SearchBar";
 import { getFullName } from "src/_helpers/getFullName";
-// import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -85,7 +82,7 @@ export default function VerticalTabs() {
   const [currTeam, setCurrTeam] = React.useState(null);
 
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
-  const [newMemberMail, setNewMemberMail] = React.useState('');
+  const [newMemberMail, setNewMemberMail] = React.useState("");
 
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
@@ -151,9 +148,8 @@ export default function VerticalTabs() {
     // RestaurantRounded(console.log("hello", e));
   };
   const changeCurrTeam = async (e) => {
-    console.log(e.target.textContent);
     const team = await getTeams.getTeam.filter((team) =>
-      team.name === e.target.textContent ? team : ''
+      team.name === e.target.textContent ? team : ""
     );
     setCurrTeamToUpdate(team[0]);
   };
@@ -190,12 +186,12 @@ export default function VerticalTabs() {
         >
           {/* search box */}
           {/* <Box sx={{ display: "flex", flexDirection: "row" }}> */}
-            <SearchBar
-              handleSearch={handleSearch}
-              label="Search Member"
-              options={teamsList}
-            />
-            {/* <Tooltip title="Add New Team" placement="right">
+          <SearchBar
+            handleSearch={handleSearch}
+            label="Search Member"
+            options={teamsList}
+          />
+          {/* <Tooltip title="Add New Team" placement="right">
               <ToggleButton
                 value="check"
                 size="small"

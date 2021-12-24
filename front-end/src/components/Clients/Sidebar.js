@@ -140,7 +140,7 @@ export default function Sidebar() {
           <TreeView
             fullWidth
             className={classes.root}
-            sx={{ width: "100%", overflowY: "auto", overflowX: "visible" }}
+            sx={{ width: "100%", overflowY: "auto" }}
           >
             {clientsList.map((client) => (
               <TreeItem

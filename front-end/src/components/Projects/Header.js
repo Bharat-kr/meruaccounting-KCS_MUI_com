@@ -1,5 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { Paper, Typography, Divider } from "@mui/material";
+import { TreeItem } from "@mui/lab";
+import Treeview from "../Treeview";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -30,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Header() {
   const classes = useStyles();
-  console.log("heyy");
   // to focus edit name of client
   const inputRef = useRef();
   const handleEditClick = (e) => {
@@ -49,11 +50,11 @@ export default function Header() {
   } = useContext(ClientsContext);
 
   useEffect(() => {
-    getClientProjects(currentClient._id, dispatchClientProjectDetails);
-    console.log("hey");
+    // getClientProjects(currentClient._id, dispatchClientProjectDetails);
+    // console.log("hey");
   }, [currentClient]);
 
-  console.log(currentClient);
+  // console.log(currentClient);
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
 
@@ -71,7 +72,7 @@ export default function Header() {
     }
     console.log("hello");
   };
-
+  console.log(currentProject);
   return (
     <>
       <Box component="div" sx={{ margin: "10px 10px 10px 0" }}>
@@ -112,24 +113,38 @@ export default function Header() {
                 </button>
               </div>
             </h1>
-            <Typography sx={{}} variant="subtitle1">
-              {currentClient.name}
-            </Typography>
+            <div
+              style={{
+                float: "right",
+                paddingTop: "20px",
+              }}
+            >
+              {/* <input
+                type="text"
+                ref={inputRef}
+                className={classes.input}
+                value={currentProject.name}
+              /> */}
+              To be team laeder here
+              <button
+                type="button"
+                style={{ marginRight: "5px" }}
+                onClick={handleEditClick}
+              >
+                <EditIcon />
+              </button>
+              <button type="button" style={{}}>
+                <DeleteIcon />
+              </button>
+            </div>
           </Box>
 
           <Box sx={{ m: 1 }}>
-            <h2 style={{}}>Assignees</h2>
-            <Typography
-              sx={{ display: "inline", m: 2, ml: 0 }}
-              variant="subtitle2"
-            >
-              {" "}
-              Add all{" "}
-            </Typography>
-            <Typography sx={{ display: "inline", m: 2 }} variant="subtitle2">
-              {" "}
-              Remove all{" "}
-            </Typography>
+            <h2 style={{}}>Teams</h2>
+            <Treeview>
+              <TreeItem>hello</TreeItem>
+            </Treeview>
+
             <Divider />
             <Box
               component="div"
@@ -140,28 +155,7 @@ export default function Header() {
                 alignItems: "flex-start",
                 m: 1,
               }}
-            >
-              <FormControl component="fieldset" variant="standard">
-                {/* <FormLabel component="legend">Assignees</FormLabel> */}
-                <FormGroup>
-                  {currentClient.Clientmembers.map((member) => (
-                    <FormControlLabel
-                      checked={currentProject.Projectmembers.includes(member)}
-                      onChange={(e) => {
-                        handleSwitchChange(
-                          e,
-                          currentClient,
-                          currentProject,
-                          member
-                        );
-                      }}
-                      control={<Switch name={member} />}
-                      label={member}
-                    />
-                  ))}
-                </FormGroup>
-              </FormControl>
-            </Box>
+            ></Box>
           </Box>
         </Paper>
       </Box>
