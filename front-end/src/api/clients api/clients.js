@@ -20,19 +20,6 @@ const config = {
     Authorization: `Bearer ${localStorage["Bearer Token"]}`,
   },
 };
-export const getClientPro = async (id) => {
-  try {
-    const res = axios({
-      method: "get",
-      url: "/clients/getClientProjects",
-      body: { clientId: id },
-    });
-    console.log(res);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const getClientProjects = async (id, dispatch) => {
   try {
     dispatch({
@@ -70,7 +57,6 @@ export const getClient = async (dispatch) => {
     });
     console.log(`Client details`);
     console.log(data);
-    localStorage.setItem("clientdata", JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: GET_CLIENT_FAILED,

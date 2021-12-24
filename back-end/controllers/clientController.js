@@ -38,7 +38,9 @@ exports.getClient = async (req, res) => {
       // console.log("This is employee id" < employee._id);
       // console.log(id);
 
-      const client = await Client.find({ manager: employee._id });
+      const client = await Client.find({ manager: employee._id }).populate(
+        "projects"
+      );
 
       if (!client) {
         return res.status(404).json({
@@ -47,9 +49,6 @@ exports.getClient = async (req, res) => {
       }
 
       res.status(201).json({
-
-       
-
         messsage: "Get Client",
         data: client,
       });

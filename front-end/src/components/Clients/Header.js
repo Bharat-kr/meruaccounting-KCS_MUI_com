@@ -38,14 +38,12 @@ export default function Header() {
     clientProjectDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
-  console.log(currentClient);
   const id = { clientId: currentClient._id };
   console.log(id);
   let projectList = [];
   useEffect(() => {
     // getClientPro(JSON.stringify(id));
     getClientProjects(id, dispatchClientProjectDetails);
-    console.log("hey");
   }, [currentClient]);
   if (
     clientProjectDetails.clientProjectDetails &&
@@ -53,7 +51,6 @@ export default function Header() {
   ) {
     projectList = clientProjectDetails.clientProjectDetails.projects;
   }
-  console.log(clientProjectDetails);
   // Object.keys(clientProjectDetails).map((keyName, keyIndex) =>
   //   console.log(keyName, keyIndex)
   // );

@@ -15,7 +15,7 @@ import { teamContext } from "../../../contexts/TeamsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { getTeam } from "../../../api/teams api/teams";
 
-// ----------------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     // backgroundColor: theme.palette.common.black,
@@ -58,30 +58,23 @@ export default function ApiRefRowsGrid() {
   }, []);
 
   // useState hook for rerender component
-
+  console.log(getTeams);
   useEffect(() => {
     const data = [];
     let test = -1;
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) => {
-        if (
-          !data.find((el) => {
-            return el.id === member._id;
-          })
-        ) {
-          data.push({
-            Employee: getFullName(member.firstName, member.lastName),
-            id: member._id,
-            LastActive: "",
-            Today: "",
-            Yesterday: "",
-            ThisWeek: "",
-            ThisMonth: "",
-          });
-        }
-      });
+      team.employees?.map((member) =>
+        data.push({
+          Employee: getFullName(member.firstName, member.lastName),
+          LastActive: "",
+          Today: "",
+          Yesterday: "",
+          ThisWeek: "",
+          ThisMonth: "",
+        })
+      );
     });
     setTeamsList(data);
   }, [getTeams]);

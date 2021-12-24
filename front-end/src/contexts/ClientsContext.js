@@ -178,10 +178,8 @@ export const ClientsContextProvider = (props) => {
       ],
     },
   ]);
-  const [currentClient, setcurrentClient] = useState(clients[0]);
-  const [currentProject, setcurrentProject] = useState(
-    currentClient.projects[0]
-  );
+  const [currentClient, setcurrentClient] = useState("");
+  const [currentProject, setcurrentProject] = useState("");
 
   // const [currentProjectmembers, setcurrentProjectmembers] = useState(
   //   clients.projects[0].Projectmembers
