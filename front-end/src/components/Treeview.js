@@ -12,7 +12,7 @@ export default function Treeview(props) {
       onClick={props.onClick}
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
-      sx={{ width: '100%', overflowY: 'auto' }}
+      sx={{ width: '100%'}}
     >
       <TreeItem sx={{}} nodeId={1} label={<Typography variant="h4">{props.parentName}</Typography>}>
         {props.children}
