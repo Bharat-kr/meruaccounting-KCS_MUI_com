@@ -1,15 +1,15 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const path = require("path");
-const morgan = require("morgan");
-var cors = require("cors");
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const path = require('path');
+const morgan = require('morgan');
+var cors = require('cors');
 
-const connectDB = require("./config/db");
+const connectDB = require('./config/db');
 
 const app = express();
 
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: './config/config.env' });
 connectDB();
 
 app.use(cors());
@@ -17,19 +17,23 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
 }
 
-app.get("/getMe", (req, res) => {
-  res.send("Ok");
+app.get('/getMe', (req, res) => {
+  res.send('Ok');
 });
 
-app.use("/employee", require("./routers/employee"));
-app.use("/", require("./routers/auth"));
-app.use("/team", require("./routers/team"));
-app.use("/client", require("./routers/client"));
-app.use("/project", require("./routers/project"));
+app.use('/employee', require('./routers/employee'));
+app.use('/', require('./routers/auth'));
+app.use('/team', require('./routers/team'));
+app.use('/client', require('./routers/client'));
+app.use('/project', require('./routers/project'));
+
+// Middleware
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 
