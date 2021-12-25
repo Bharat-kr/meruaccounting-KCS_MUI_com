@@ -6,8 +6,8 @@ import {
   getClientProjects,
   deleteClient,
   editClient,
-} from '../controllers/clientController.js';
-import { authPass } from '../controllers/authController.js';
+} from '../controllers/client.js';
+import { authPass } from '../middleware/authMiddleware.js';
 
 router
   .route('/')
@@ -16,7 +16,5 @@ router
   .delete(authPass, deleteClient);
 router.route('/getClient').get(authPass, getClient);
 router.route('/getClientProjects').post(authPass, getClientProjects);
-
-// router.post("/login", authController.login);
 
 export default router;

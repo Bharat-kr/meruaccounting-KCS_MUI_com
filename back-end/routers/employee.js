@@ -1,5 +1,5 @@
 import express from 'express';
-import { authPass } from '../controllers/authController.js';
+import { authPass } from '../middleware/authMiddleware.js';
 
 import User from '../models/user.js';
 

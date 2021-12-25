@@ -1,7 +1,7 @@
 import express from 'express';
 import Team from '../models/team.js';
 import User from '../models/user.js';
-import { authPass } from '../controllers/authController.js';
+import { authPass } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 

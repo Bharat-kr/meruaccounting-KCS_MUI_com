@@ -5,7 +5,7 @@ import connectDB from './config/db.js';
 
 // import data
 import users from './data/users.js';
-// import models
+
 import User from './models/user.js';
 import Team from './models/team.js';
 import Client from './models/client.js';
@@ -32,6 +32,7 @@ const importData = async () => {
 const destroyData = async () => {
   try {
     // await model.deleteMany(); .... repeat for all
+
     await User.deleteMany();
     await Client.deleteMany();
     await Project.deleteMany();

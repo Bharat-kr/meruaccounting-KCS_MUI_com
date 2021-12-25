@@ -1,13 +1,13 @@
 import express from 'express';
 const router = express.Router();
-import { authPass } from '../controllers/authController.js';
+import { authPass } from '../middleware/authMiddleware.js';
 import {
   createProject,
   projectTeam,
   deleteProject,
   editProject,
   getProject,
-} from '../controllers/projectController.js';
+} from '../controllers/project.js';
 
 router.post('/', authPass, createProject);
 router.get('/:id', authPass, getProject);
