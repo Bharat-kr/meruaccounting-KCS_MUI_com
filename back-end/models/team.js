@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import User from './user.js';
-import Project from '../models/project.js';
 
 const teamSchema = new mongoose.Schema({
   name: { type: String },

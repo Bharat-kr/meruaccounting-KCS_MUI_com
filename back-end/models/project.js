@@ -1,7 +1,4 @@
 import mongoose from 'mongoose';
-import User from './user.js';
-import Team from './team.js';
-import Client from './client.js';
 
 const projectSchema = new mongoose.Schema({
   name: { type: String },
