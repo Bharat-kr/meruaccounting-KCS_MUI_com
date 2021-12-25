@@ -1,5 +1,8 @@
 import Client from '../models/client.js';
-import mongoose from 'mongoose';
+
+// @desc    Create a new client
+// @route   POST /client
+// @access  Private
 
 const createClient = async (req, res) => {
   const employee = req.user;
@@ -16,91 +19,84 @@ const createClient = async (req, res) => {
         data: client,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
+
+// @desc    Get client
+// @route   GET /client
+// @access  Private
+
 const getClient = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
-    const { name } = req.body;
-
     try {
-      // const id = mongoose.Types.ObjectId(employee._id);
-      // // const ID = ObjectId(employee._id);
-      // console.log("This is employee id" < employee._id);
-      // console.log(id);
-
       const client = await Client.find({ manager: employee._id }).populate(
         'projects'
       );
 
       if (!client) {
-        return res.status(404).json({
-          messsage: 'Client not found',
-        });
+        res.status(404);
+        throw new Error('No clients found');
       }
 
-      res.status(201).json({
-        messsage: 'Get Client',
+      res.status(200).json({
+        messsage: 'Client fetched succesfully',
         data: client,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
-const getClientProjects = async (req, res) => {
-  const employee = req.user;
 
+// @desc    Get client projects
+// @route   GET /client/getClientProjects
+// @access  Private
+
+const getClientProjects = async (req, res) => {
   const { clientId } = req.body;
   const client = await Client.findById(clientId).populate('projects');
-
-  if (!client) {
-    return res.status(404).json({
-      messsage: 'Client not found',
+  try {
+    if (!client) {
+      res.status(404);
+      throw new Error('Client not found');
+    }
+    res.status(201).json({
+      messsage: 'Client Projects',
+      data: client,
     });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
   }
-  res.status(201).json({
-    messsage: 'Client Projects',
-    data: client,
-  });
 };
+
+// @desc    Edit client
+// @route   PATCH /client
+// @access  Private
 
 const editClient = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
-    const { name } = req.body;
-
     try {
-      // const id = mongoose.Types.ObjectId(employee._id);
-      // // const ID = ObjectId(employee._id);
-      // console.log("This is employee id" < employee._id);
-      // console.log(id);
-
       const client = await Client.findOneAndUpdate(
         { manager: employee._id },
         req.body
       );
 
       if (!client) {
-        return res.status(404).json({
-          messsage: 'Client not found',
-        });
+        res.status(404);
+        throw new Error('Client not found');
       }
 
       res.status(201).json({
@@ -108,34 +104,28 @@ const editClient = async (req, res) => {
         data: client,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
+
+// @desc    Delete client
+// @route   DELETE /client
+// @access  Private
+
 const deleteClient = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
-    const { name } = req.body;
-
     try {
-      // const id = mongoose.Types.ObjectId(employee._id);
-      // // const ID = ObjectId(employee._id);
-      // console.log("This is employee id" < employee._id);
-      // console.log(id);
-
       const client = await Client.findOneAndRemove({ manager: employee._id });
 
       if (!client) {
-        return res.status(404).json({
-          messsage: 'Client not found',
-        });
+        res.status(404);
+        throw new Error('Client not found');
       }
 
       res.status(201).json({
@@ -143,15 +133,12 @@ const deleteClient = async (req, res) => {
         data: client,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
 

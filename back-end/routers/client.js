@@ -15,6 +15,6 @@ router
   .patch(authPass, editClient)
   .delete(authPass, deleteClient);
 router.route('/getClient').get(authPass, getClient);
-router.route('/getClientProjects').post(authPass, getClientProjects);
+router.route('/getClientProjects').get(authPass, getClientProjects);
 
 export default router;
