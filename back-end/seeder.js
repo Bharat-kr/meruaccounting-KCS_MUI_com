@@ -6,6 +6,9 @@ import connectDB from './config/db.js';
 import users from './data/users.js';
 // import models
 import User from './models/user.js';
+import Team from './models/team.js';
+import Client from './models/client.js';
+import Project from './models/project.js';
 
 dotenv.config({ path: './config/config.env' });
 
@@ -27,6 +30,11 @@ const importData = async () => {
 const destroyData = (async) => {
   try {
     // await model.deleteMany(); .... repeat for all
+    await User.deleteMany();
+    await Client.deleteMany();
+    await Project.deleteMany();
+    await Team.deleteMany();
+
     console.log(`Data destroyed`.red.inverse);
     process.exit(0);
   } catch (error) {
