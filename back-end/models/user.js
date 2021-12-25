@@ -2,24 +2,20 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
-  role: {
-    type: String,
-    // default: "admin",
-  },
-  isAdmin: Boolean,
-  isManager: Boolean,
-  company: String,
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-  password: {
-    type: String,
+  role: { type: String },
+  isManager: { type: Boolean, default: false },
+  firstName: { type: String, required: true },
+  lastName: { type: String },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  payRate: Number,
+  lastActive: Date,
+  activityStatus: Boolean,
+  accountInfo: {
+    managerFor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    country: { type: String, default: 'India' },
+    ip: { type: String },
+    countryName: { type: String, default: 'India' },
   },
   projects: [
     {
@@ -38,47 +34,16 @@ const userSchema = new mongoose.Schema({
   //   ref: "User",
   // }],
   settings: {
-    ScreenShotPerHour: {
-      type: Number,
-      default: 6,
-    },
-    AllowBlur: {
-      type: Boolean,
-      default: false,
-    },
-    AppsAndUrlTracking: {
-      type: Boolean,
-      default: true,
-    },
-    WeeklyTimeLimit: {
-      type: Number,
-      default: 120,
-    },
-    AutoPause: {
-      type: Number,
-      default: 4,
-    },
-    OfflineTime: {
-      type: Boolean,
-      default: false,
-    },
-    NotifyUser: {
-      type: Boolean,
-      default: true,
-    },
-    WeekStart: {
-      type: String,
-      default: 'Monday',
-    },
-    CurrencySymbol: {
-      type: String,
-      default: '$',
-    },
+    ScreenShotPerHour: { type: Number, default: 6 },
+    AllowBlur: { type: Boolean, default: false },
+    AppsAndUrlTracking: { type: Boolean, default: true },
+    WeeklyTimeLimit: { type: Number, default: 120 },
+    AutoPause: { type: Number, default: 4 },
+    OfflineTime: { type: Boolean, default: false },
+    NotifyUser: { type: Boolean, default: true },
+    WeekStart: { type: String, default: 'Monday' },
+    CurrencySymbol: { type: String, default: '$' },
   },
-  payRate: Number,
-  lastActive: Date,
-  activityStatus: Boolean,
-
   days: [
     {
       date: Date,
