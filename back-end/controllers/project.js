@@ -1,12 +1,13 @@
 import Client from '../models/client.js';
 import Project from '../models/project.js';
 import Team from '../models/team.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new project
 // @route   POST /project
 // @access  Private
 
-const createProject = async (req, res) => {
+const createProject = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const { name, clientId } = req.body;
@@ -31,13 +32,13 @@ const createProject = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 // @desc    Get project by id
 // @route   GET /project/:id
 // @access  Private
 
-const getProject = async (req, res) => {
+const getProject = asyncHandler(async (req, res) => {
   const id = req.params.id;
   try {
     const project = await Project.findById(id);
@@ -52,13 +53,13 @@ const getProject = async (req, res) => {
     res.status(500);
     throw new Error(error);
   }
-};
+});
 
 // @desc    Edit project
 // @route   PATCH /project
 // @access  Private
 
-const editProject = async (req, res) => {
+const editProject = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const projectId = req.params.id;
@@ -82,13 +83,13 @@ const editProject = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 // @desc    Delete a project
 // @route   DELETE /project
 // @access  Private
 
-const deleteProject = async (req, res) => {
+const deleteProject = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const { projectId } = req.body;
@@ -111,13 +112,13 @@ const deleteProject = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 // @desc    Add team to project
 // @route   PATCH /project
 // @access  Private
 
-const projectTeam = async (req, res) => {
+const projectTeam = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const { teamId, projectId } = req.body;
@@ -157,6 +158,6 @@ const projectTeam = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 export { createProject, deleteProject, editProject, getProject, projectTeam };

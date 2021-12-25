@@ -1,10 +1,11 @@
 import Client from '../models/client.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new client
 // @route   POST /client
 // @access  Private
 
-const createClient = async (req, res) => {
+const createClient = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const { name } = req.body;
@@ -26,13 +27,13 @@ const createClient = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 // @desc    Get client
 // @route   GET /client
 // @access  Private
 
-const getClient = async (req, res) => {
+const getClient = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     try {
@@ -57,13 +58,13 @@ const getClient = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 // @desc    Get client projects
 // @route   GET /client/getClientProjects
 // @access  Private
 
-const getClientProjects = async (req, res) => {
+const getClientProjects = asyncHandler(async (req, res) => {
   const { clientId } = req.body;
   const client = await Client.findById(clientId).populate('projects');
   try {
@@ -79,13 +80,13 @@ const getClientProjects = async (req, res) => {
     res.status(500);
     throw new Error(error);
   }
-};
+});
 
 // @desc    Edit client
 // @route   PATCH /client
 // @access  Private
 
-const editClient = async (req, res) => {
+const editClient = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     try {
@@ -111,13 +112,13 @@ const editClient = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 // @desc    Delete client
 // @route   DELETE /client
 // @access  Private
 
-const deleteClient = async (req, res) => {
+const deleteClient = asyncHandler(async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     try {
@@ -140,6 +141,6 @@ const deleteClient = async (req, res) => {
     res.status(401);
     throw new Error('Unauthorized manager');
   }
-};
+});
 
 export { createClient, deleteClient, editClient, getClient, getClientProjects };
