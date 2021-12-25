@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import colors from 'colors';
+import asyncHandler from 'express-async-handler';
 import connectDB from './config/db.js';
 
 // import data
@@ -18,6 +19,7 @@ const importData = async () => {
   try {
     // await model.deleteMany(); .... repeat for all
     // await model.insertMany(data); ... repeat for all
+
     await User.insertMany(users);
     console.log(`Data imported`.green.inverse);
     process.exit(0);
@@ -27,7 +29,7 @@ const importData = async () => {
   }
 };
 
-const destroyData = (async) => {
+const destroyData = async () => {
   try {
     // await model.deleteMany(); .... repeat for all
     await User.deleteMany();

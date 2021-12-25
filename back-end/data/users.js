@@ -4,7 +4,7 @@ const users = [
   {
     role: 'employee',
     isAdmin: false,
-    isManage: false,
+    isManager: false,
     company: 'Mern Accounting',
     firstName: 'Prakhar',
     lastName: 'Sharma',
@@ -24,7 +24,7 @@ const users = [
       currencySymbol: '$',
     },
     payRate: 4,
-    lastActive: 1640435784,
+    lastActive: '1640435784',
     activityStatus: false,
     days: [],
   },
