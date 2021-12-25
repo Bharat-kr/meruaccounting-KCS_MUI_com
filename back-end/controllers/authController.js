@@ -1,22 +1,22 @@
 // const bcrypt = require("bcrypt");
 
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const bcrypt = require("bcrypt");
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
+import bcrypt from 'bcrypt';
 
 const register = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
     return res.status(400).json({
-      status: "error",
-      message: "Email already exists",
+      status: 'error',
+      message: 'Email already exists',
     });
   } else {
     bcrypt.hash(req.body.password, 10, async function (err, hashedPassword) {
       if (err) {
-        console.log("Erorr is", err);
+        console.log('Erorr is', err);
         res.status(400).json({
-          status: "error",
+          status: 'error',
           message: err,
         });
       }
@@ -35,12 +35,12 @@ const register = async (req, res) => {
         await user.save();
 
         res.status(200).json({
-          status: "success",
-          message: "Successfully registered User",
+          status: 'success',
+          message: 'Successfully registered User',
         });
       } catch (error) {
         res.status(500).json({
-          status: "Failure",
+          status: 'Failure',
           message: error,
         });
       }
@@ -54,7 +54,7 @@ const login = async (req, res) => {
 
   if (!email || !password) {
     return res.status(401).json({
-      message: "Pls Provide Credentials",
+      message: 'Pls Provide Credentials',
     });
   }
 
@@ -63,24 +63,24 @@ const login = async (req, res) => {
     bcrypt.compare(password, user.password, (err, result) => {
       if (err) {
         res.status(400).json({
-          status: "error",
-          message: "Some error occured",
+          status: 'error',
+          message: 'Some error occured',
         });
       }
       if (result) {
         var token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-          expiresIn: "2d",
+          expiresIn: '2d',
         });
         res.status(200).json({
-          status: "success",
-          message: "Logged In successfully",
+          status: 'success',
+          message: 'Logged In successfully',
           token,
           user,
         });
       } else {
         res.status(400).json({
-          status: "error",
-          message: "Credentials Not Correct",
+          status: 'error',
+          message: 'Credentials Not Correct',
         });
       }
     });
@@ -94,19 +94,19 @@ const authPass = async (req, res, next) => {
     let token;
     if (
       req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
+      req.headers.authorization.startsWith('Bearer')
     ) {
-      console.log("Inside If of auth Pass");
+      console.log('Inside If of auth Pass');
       console.log(req.headers.authorization);
-      console.log(req.headers.authorization.startsWith("Bearer"));
+      console.log(req.headers.authorization.startsWith('Bearer'));
 
-      token = req.headers.authorization.split(" ")[1];
+      token = req.headers.authorization.split(' ')[1];
       // console.log(token);
     } else if (req.cookies.jwt) {
       token = req.cookies.jwt;
     } else {
       return res.status(400).json({
-        message: "No Bearer Token",
+        message: 'No Bearer Token',
       });
     }
 
@@ -120,7 +120,7 @@ const authPass = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded) {
       return res.status(400).json({
-        message: "Incorrect JWT",
+        message: 'Incorrect JWT',
       });
     }
     // console.log("This is decoded", decoded);
@@ -149,8 +149,4 @@ const authPass = async (req, res, next) => {
   // 1) Getting token and check of it's there
 };
 
-module.exports = {
-  register,
-  login,
-  authPass,
-};
+export { login, register, authPass };

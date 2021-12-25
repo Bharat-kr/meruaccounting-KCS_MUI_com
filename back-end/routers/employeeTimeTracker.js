@@ -1,12 +1,12 @@
-const express = require("express");
-const Team = require("../models/team");
-const User = require("../models/user");
+import express from 'express';
+import Team from '../models/team';
+import User from '../models/user';
 
 const router = express.Router();
 
-var moment = require("moment"); // require
+import moment from 'moment';
 moment().format();
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const date = req.body.date;
@@ -20,16 +20,16 @@ router.get("/:id", async (req, res) => {
     const employee = await User.findById(id);
 
     if (!employee) {
-      return res.status(404).send("Employee Not Found");
+      return res.status(404).send('Employee Not Found');
     }
     const day = {
-      date: moment("1-12-1995", "DD-MM-YYYY"),
+      date: moment('1-12-1995', 'DD-MM-YYYY'),
       hours: hours,
       screenShots: [
         {
           activityLevel: activityLevel,
           url: url,
-          time: moment(time, "DD MM YYYY hh:mm:ss", true),
+          time: moment(time, 'DD MM YYYY hh:mm:ss', true),
           taskName: taskName,
         },
       ],
@@ -37,19 +37,19 @@ router.get("/:id", async (req, res) => {
     employee.day.push(day);
     await employee.save();
     res.json({
-      status: "Success",
+      status: 'Success',
       data: employee,
     });
   } catch (error) {
     res.json({
-      status: "Error",
+      status: 'Error',
       data: error,
     });
   }
 });
 
-router.get("/timeCount", (req, res) => {
+router.get('/timeCount', (req, res) => {
   con;
 });
 
-module.exports = router;
+export default router;

@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const Team = require("./team");
+import mongoose from 'mongoose';
+import Team from './team.js';
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   role: {
     type: String,
     // default: "admin",
@@ -26,13 +25,13 @@ const userSchema = new Schema({
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
+      ref: 'Project',
     },
   ],
   team: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
+      ref: 'Team',
     },
   ],
   // employees: [{
@@ -70,11 +69,11 @@ const userSchema = new Schema({
     },
     WeekStart: {
       type: String,
-      default: "Monday",
+      default: 'Monday',
     },
     CurrencySymbol: {
       type: String,
-      default: "$",
+      default: '$',
     },
   },
   payRate: Number,
@@ -104,6 +103,6 @@ const userSchema = new Schema({
   ],
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default User;

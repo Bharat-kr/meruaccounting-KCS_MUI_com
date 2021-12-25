@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
-const User = require('./user');
-const Project = require('../models/project');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+import User from './user.js';
+import Project from '../models/project.js';
 
-const clientSchema = new Schema({
+const clientSchema = new mongoose.Schema({
   name: { type: String },
   manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
@@ -11,4 +10,4 @@ const clientSchema = new Schema({
 
 const Client = mongoose.model('Client', clientSchema);
 
-module.exports = Client;
+export default Client;

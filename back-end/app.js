@@ -1,11 +1,15 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const path = require('path');
-const morgan = require('morgan');
-var cors = require('cors');
+import express from 'express';
+import dotenv from 'dotenv';
+import morgan from 'morgan';
+import cors from 'cors';
+// import { notFound, errorHandler } from '../middleware/errorMiddleware.js';
+import connectDB from './config/db.js';
 
-const connectDB = require('./config/db');
+import authRoutes from './routers/auth.js';
+import clientRoutes from './routers/client.js';
+import teamRoutes from './routers/team.js';
+import projectRoutes from './routers/project.js';
+import employeeRoutes from './routers/employee.js';
 
 const app = express();
 
@@ -25,15 +29,15 @@ app.get('/getMe', (req, res) => {
   res.send('Ok');
 });
 
-app.use('/employee', require('./routers/employee'));
-app.use('/', require('./routers/auth'));
-app.use('/team', require('./routers/team'));
-app.use('/client', require('./routers/client'));
-app.use('/project', require('./routers/project'));
+app.use('/employee', employeeRoutes);
+app.use('/', authRoutes);
+app.use('/team', teamRoutes);
+app.use('/client', clientRoutes);
+app.use('/project', projectRoutes);
 
 // Middleware
-app.use(notFound);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(errorHandler);
 
 const PORT = process.env.PORT || 8000;
 

@@ -1,20 +1,22 @@
-const express = require("express");
+import express from 'express';
 const router = express.Router();
-const { authPass } = require("../controllers/authController");
-const {
+import {
   createClient,
   getClient,
   getClientProjects,
   deleteClient,
   editClient,
-} = require("../controllers/clientController");
+} from '../controllers/clientController.js';
+import { authPass } from '../controllers/authController.js';
 
-router.post("/", authPass, createClient);
-router.patch("/", authPass, editClient);
-router.get("/getClient", authPass, getClient);
-router.post("/getClientProjects", authPass, getClientProjects);
-router.delete("/", authPass, deleteClient);
+router
+  .route('/')
+  .post(authPass, createClient)
+  .patch(authPass, editClient)
+  .delete(authPass, deleteClient);
+router.route('/getClient').get(authPass, getClient);
+router.route('/getClientProjects').post(authPass, getClientProjects);
 
 // router.post("/login", authController.login);
 
-module.exports = router;
+export default router;

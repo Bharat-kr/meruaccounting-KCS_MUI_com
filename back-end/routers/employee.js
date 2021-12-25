@@ -1,13 +1,14 @@
-const express = require("express");
-const { authPass } = require("../controllers/authController");
+import express from 'express';
+import { authPass } from '../controllers/authController.js';
 
-const User = require("../models/user");
+import User from '../models/user.js';
 
 const router = express.Router();
-var moment = require("moment"); // require
+
+import moment from 'moment';
 moment().format();
 
-router.patch("/add/:id", async (req, res) => {
+router.patch('/add/:id', async (req, res) => {
   const startTime = req.body.startTime;
   const endTime = req.body.endTime;
   const id = req.params.id;
@@ -26,21 +27,21 @@ router.patch("/add/:id", async (req, res) => {
     console.log(req.body.day);
     var Tday = Object.keys(req.body.day)[0];
     const day = req.body.day[Tday];
-    console.log("This is a Day", day);
+    console.log('This is a Day', day);
     console.log(Tday);
     var found = false;
 
     if (!employee) {
-      return res.status(404).send("Employee Not Found");
+      return res.status(404).send('Employee Not Found');
     }
     if (employee.day == undefined) {
-      console.log("Inside If");
+      console.log('Inside If');
       employee.days.push(req.body.day);
       const emp = await employee.save();
-      console.log("This is a employeee", employee);
-      console.log("This is emp", emp);
+      console.log('This is a employeee', employee);
+      console.log('This is emp', emp);
       return res.json({
-        status: "Success",
+        status: 'Success',
         data: employee,
       });
     }
@@ -82,92 +83,92 @@ router.patch("/add/:id", async (req, res) => {
     // }
 
     const emp = await employee.save();
-    console.log("This is a employeee", employee);
-    console.log("This is emp", emp);
+    console.log('This is a employeee', employee);
+    console.log('This is emp', emp);
     res.json({
-      status: "Success",
+      status: 'Success',
       data: employee,
     });
   } catch (error) {
     console.log(error);
 
     res.status(400).json({
-      status: "Error",
+      status: 'Error',
       data: error,
     });
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   const id = req.params.id;
   const employee = await User.findById(id);
   if (!employee) {
-    return res.status(404).send("Employee Not Found");
+    return res.status(404).send('Employee Not Found');
   }
   res.json({
-    status: "Ok",
+    status: 'Ok',
     data: employee,
   });
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const employee = new User(req.body);
     await employee.save();
     if (!employee) {
-      return res.status(404).send("Employee Not Created");
+      return res.status(404).send('Employee Not Created');
     }
     res.json({
-      status: "Ok",
+      status: 'Ok',
       data: employee,
     });
   } catch (error) {
     res.json({
-      status: "Error",
+      status: 'Error',
       data: error,
     });
   }
 });
 
-router.patch("/", async (req, res) => {
+router.patch('/', async (req, res) => {
   try {
     const employee = new User(req.body);
     await employee.save();
     if (!employee) {
-      return res.status(404).send("Employee Not Created");
+      return res.status(404).send('Employee Not Created');
     }
     res.json({
-      status: "Ok",
+      status: 'Ok',
       data: employee,
     });
   } catch (error) {
     res.json({
-      status: "Error",
+      status: 'Error',
       data: error,
     });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete('/:id', async (req, res) => {
   const id = req.params.id;
   try {
     const employee = await User.findByIdAndDelete(id);
     if (employee) {
-      return res.status(404).send("Employee Not deleted");
+      return res.status(404).send('Employee Not deleted');
     }
     res.json({
-      status: "Employee Deleted",
+      status: 'Employee Deleted',
       data: employee,
     });
   } catch (error) {
     res.json({
-      status: "Error",
+      status: 'Error',
       data: error,
     });
   }
 });
 
-router.patch("/edit/:id", authPass, async (req, res) => {
+router.patch('/edit/:id', authPass, async (req, res) => {
   const user = req.user;
   const employeeId = req.params.id;
 
@@ -175,24 +176,24 @@ router.patch("/edit/:id", authPass, async (req, res) => {
     const user = await User.findByIdAndUpdate(employeeId, req.body);
     user.save();
     res.json({
-      message: "User Settings Updated",
+      message: 'User Settings Updated',
       data: user,
     });
   } catch (error) {
     console.log(error);
     res.json({
-      message: "Error Occured",
+      message: 'Error Occured',
       data: error,
     });
   }
 });
 
-router.get("/employeeList", authPass, (req, res) => {
+router.get('/employeeList', authPass, (req, res) => {
   const user = req.user;
 
   if (!user.isManager == true) {
     res.status(201).json({
-      messsage: "UnAuthorized Manager",
+      messsage: 'UnAuthorized Manager',
     });
   }
 
@@ -200,10 +201,10 @@ router.get("/employeeList", authPass, (req, res) => {
   const team = user.team.populate();
 
   res.status(200).json({
-    messsage: "Success",
+    messsage: 'Success',
     employees,
     team,
   });
 });
 
-module.exports = router;
+export default router;
