@@ -2,6 +2,10 @@ import Client from '../models/client.js';
 import Project from '../models/project.js';
 import Team from '../models/team.js';
 
+// @desc    Create a new project
+// @route   POST /project
+// @access  Private
+
 const createProject = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
@@ -11,7 +15,6 @@ const createProject = async (req, res) => {
       const client = await Client.findById(clientId);
 
       await project.save();
-      console.log('THis is project', project);
       client.projects.push(project._id.toHexString());
       await client.save();
       project.client = clientId;
@@ -21,120 +24,123 @@ const createProject = async (req, res) => {
         data: project,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
+
+// @desc    Get project by id
+// @route   GET /project/:id
+// @access  Private
+
 const getProject = async (req, res) => {
   const id = req.params.id;
   try {
     const project = await Project.findById(id);
     if (!project) {
-      return res.status(404).send('No project Found');
+      res.status(404);
+      throw new Error('No projects found');
     }
     res.status(200).json({
       project,
     });
   } catch (error) {
-    console.log(error);
-    res.status(200).json({
-      error,
-    });
+    res.status(500);
+    throw new Error(error);
   }
 };
+
+// @desc    Edit project
+// @route   PATCH /project
+// @access  Private
+
 const editProject = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const projectId = req.params.id;
 
     try {
-      //   const team = await Team.findOne({ manager: employee._id });
-
       const project = await Project.findByIdAndUpdate(projectId, req.body);
       if (!project) {
-        return res.status(404).send('OOps, no project found');
+        res.status(404);
+        throw new Error(`No project found ${projectId}`);
       }
 
-      res.status(201).json({
-        messsage: 'Successfully Deleted Project',
+      res.status(202).json({
+        messsage: 'Successfully edited project',
         data: project,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
+
+// @desc    Delete a project
+// @route   DELETE /project
+// @access  Private
+
 const deleteProject = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const { projectId } = req.body;
     try {
-      //   const team = await Team.findOne({ manager: employee._id });
-
       const project = await Project.findByIdAndRemove(projectId);
       if (!project) {
-        return res.status(404).send('OOps, no project found');
+        res.status(404);
+        throw new Error(`No project found ${projectId}`);
       }
 
-      res.status(201).json({
+      res.status(202).json({
         messsage: 'Successfully Deleted Project',
         data: project,
       });
     } catch (error) {
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
+
+// @desc    Add team to project
+// @route   PATCH /project
+// @access  Private
+
 const projectTeam = async (req, res) => {
   const employee = req.user;
   if (employee.role === 'manager') {
     const { teamId, projectId } = req.body;
     try {
-      //   const team = await Team.findOne({ manager: employee._id });
-
       const project = await Project.findById(projectId);
       if (!project) {
-        return res.status(404).send('OOps, no project found');
+        res.status(404);
+        throw new Error(`No project found ${projectId}`);
       }
+
       const team = await Team.findById(teamId).populate('employees');
       if (!team) {
-        return res.status(404).send('OOps, no team found');
+        res.status(404);
+        throw new Error(`No team found ${teamId}`);
       }
-      console.log(team);
-      // team.employees.forEach((employee) => {});
-      for (var i = 0; i < team.employees.length; i++) {
-        console.log('Inside For Team Employees ');
-        var emp = team.employees[i];
 
-        console.log('This is a EMployee', emp);
+      for (let i = 0; i < team.employees.length; i++) {
+        let emp = team.employees[i];
 
         emp.projects.push(projectId);
         await emp.save();
-        console.log(emp);
       }
 
-      console.log('THis is project', project);
       project.team.push(teamId);
       team.projects.push(projectId);
       await project.save();
@@ -144,16 +150,12 @@ const projectTeam = async (req, res) => {
         data: project,
       });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        messsage: 'Bad Request ',
-        data: error,
-      });
+      res.status(500);
+      throw new Error(error);
     }
   } else {
-    res.status(201).json({
-      messsage: 'UnAuthorized Manager',
-    });
+    res.status(401);
+    throw new Error('Unauthorized manager');
   }
 };
 
