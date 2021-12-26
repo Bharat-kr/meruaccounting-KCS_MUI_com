@@ -1,9 +1,6 @@
-const mongoose = require('mongoose');
-const User = require('./user');
-const Project = require('../models/project');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
 
-const teamSchema = new Schema({
+const teamSchema = new mongoose.Schema({
   name: { type: String },
   manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   employees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -12,4 +9,4 @@ const teamSchema = new Schema({
 
 const Team = mongoose.model('Team', teamSchema);
 
-module.exports = Team;
+export default Team;

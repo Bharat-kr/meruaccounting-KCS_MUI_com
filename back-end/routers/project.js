@@ -1,20 +1,21 @@
-const express = require("express");
-const router = express.Router();
-const { authPass } = require("../controllers/authController");
-const { createClient } = require("../controllers/clientController");
-const {
+import express from 'express';
+import { authPass } from '../middleware/authMiddleware.js';
+import {
   createProject,
   projectTeam,
   deleteProject,
   editProject,
   getProject,
-} = require("../controllers/projectController");
+} from '../controllers/project.js';
 
-router.post("/", authPass, createProject);
-router.get("/:id", authPass, getProject);
-router.patch("/", authPass, projectTeam);
-router.patch("/:id", authPass, editProject);
-router.delete("/", authPass, deleteProject);
-// router.post("/login", authController.login);
+const router = express.Router();
 
-module.exports = router;
+router
+  .route('/')
+  .post(authPass, createProject)
+  .patch(authPass, projectTeam)
+  .delete(authPass, deleteProject);
+
+router.route(':/id').get(authPass, getProject).patch(authPass, editProject);
+
+export default router;
