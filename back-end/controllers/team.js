@@ -230,9 +230,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     const teamMembers = team.employees;
     const managerId = team.manager;
     if (!managerId === manager._id) {
-      return res.json({
-        message: 'You Can Only Delete Your Teams',
-      });
+      throw new Error('You Can Only Delete Your Teams');
     }
     manager.team.forEach((team, index) => {
       if (team.equals(team._id)) {

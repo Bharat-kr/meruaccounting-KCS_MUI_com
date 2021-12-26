@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema({
   role: { type: String },
   isManager: { type: Boolean, default: false },
   firstName: { type: String, required: true },
-  lastName: { type: String },
-  email: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   payRate: Number,
-  lastActive: Date,
+  lastActive: String,
   activityStatus: Boolean,
   accountInfo: {
     managerFor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -23,26 +23,64 @@ const userSchema = new mongoose.Schema({
       ref: 'Project',
     },
   ],
-  team: [
+  clients: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Client',
+    },
+  ],
+  teams: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Team',
     },
   ],
-  // employees: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  // }],
   settings: {
-    ScreenShotPerHour: { type: Number, default: 6 },
-    AllowBlur: { type: Boolean, default: false },
-    AppsAndUrlTracking: { type: Boolean, default: true },
-    WeeklyTimeLimit: { type: Number, default: 120 },
-    AutoPause: { type: Number, default: 4 },
-    OfflineTime: { type: Boolean, default: false },
-    NotifyUser: { type: Boolean, default: true },
-    WeekStart: { type: String, default: 'Monday' },
-    CurrencySymbol: { type: String, default: '$' },
+    ScreenShotPerHour: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Number, default: 6 },
+      individualValue: { type: Number, default: 6 },
+    },
+    AllowBlur: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: false },
+      individualValue: { type: Boolean, default: false },
+    },
+    AppsAndUrlTracking: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: true },
+      individualValue: { type: Boolean, default: true },
+    },
+    WeeklyTimeLimit: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Number, default: 120 },
+      individualValue: { type: Number, default: 120 },
+    },
+    AutoPause: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Number, default: 4 },
+      individualValue: { type: Number, default: 4 },
+    },
+    OfflineTime: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: false },
+      individualValue: { type: Boolean, default: false },
+    },
+    NotifyUser: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: false },
+      individualValue: { type: Boolean, default: false },
+    },
+    WeekStart: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: String, default: 'Monday' },
+      individualValue: { type: String, default: 'Monday' },
+    },
+    CurrencySymbol: {
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: String, default: '$' },
+      individualValue: { type: String, default: '$' },
+    },
   },
   days: [
     {
