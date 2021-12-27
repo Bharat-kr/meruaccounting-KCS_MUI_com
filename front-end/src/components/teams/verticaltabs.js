@@ -1,40 +1,32 @@
-import * as React from 'react';
-import { useContext } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import PropTypes from 'prop-types';
-import {
-  Box,
-  Paper,
-  styled,
-  OutlinedInput,
-  TextField,
-  Autocomplete,
-  Button,
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { RestaurantRounded } from '@material-ui/icons';
-import Main from './Main';
-import { UserContext } from '../../contexts/UserContext';
-import { ClientsContext } from '../../contexts/ClientsContext';
-import { teamContext } from '../../contexts/TeamsContext';
-import { loginContext } from '../../contexts/LoginContext';
-import { getTeam, createTeam, updateMember } from '../../api/teams api/teams';
-import Treeview from '../Treeview';
-import { TreeItem } from '@mui/lab';
-import SearchBar from '../SearchBar';
-import { getFullName } from 'src/_helpers/getFullName';
+import * as React from "react";
+import { useContext } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import PropTypes from "prop-types";
+import { Box, Paper, TextField, Button } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { RestaurantRounded } from "@material-ui/icons";
+import Main from "./Main";
+import { UserContext } from "../../contexts/UserContext";
+import { ClientsContext } from "../../contexts/ClientsContext";
+import { teamContext } from "../../contexts/TeamsContext";
+import { loginContext } from "../../contexts/LoginContext";
+import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
+import Treeview from "../Treeview";
+import { TreeItem } from "@mui/lab";
+import SearchBar from "../SearchBar";
+import { getFullName } from "src/_helpers/getFullName";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '700px',
-    width: '100%',
-    margin: 'auto',
-    display: 'grid',
-    gridTemplateColumns: '30% 70%',
-    backgroundColor: '#fdfdff',
+    height: "700px",
+    width: "100%",
+    margin: "auto",
+    display: "grid",
+    gridTemplateColumns: "30% 70%",
+    backgroundColor: "#fdfdff",
   },
 }));
 
@@ -66,7 +58,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -78,11 +70,11 @@ export default function VerticalTabs() {
   const { dispatchgetTeam, getTeams, dispatchTeam, dispatchUpdateMember } =
     useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
-  const [newTeam, setNewTeam] = React.useState('');
+  const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
 
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
-  const [newMemberMail, setNewMemberMail] = React.useState('');
+  const [newMemberMail, setNewMemberMail] = React.useState("");
 
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
@@ -99,7 +91,7 @@ export default function VerticalTabs() {
       // eslint-disable-next-line prefer-template
       team.employees?.map((member) =>
         teamsList.push(
-          team.name + ':' + getFullName(member.firstName, member.lastName)
+          team.name + ":" + getFullName(member.firstName, member.lastName)
         )
       );
     });
@@ -117,7 +109,7 @@ export default function VerticalTabs() {
   // change currentclient on search
   const handleSearch = (e, value) => {
     const teams = getTeams.getTeam.filter((team) =>
-      team.name === value ? team : ''
+      team.name === value ? team : ""
     );
     if (teams.length === 0) {
       // eslint-disable-next-line no-useless-return
@@ -130,7 +122,7 @@ export default function VerticalTabs() {
   const handleClick = (e) => {
     // console.log(e.target.id);
     const team = getTeams.getTeam.filter((team) =>
-      team.name === e.target.dataset.client ? team : ''
+      team.name === e.target.dataset.client ? team : ""
     );
     setCurrTeam(team[0]);
     const member = team[0].employees.filter(
@@ -148,9 +140,8 @@ export default function VerticalTabs() {
     // RestaurantRounded(console.log("hello", e));
   };
   const changeCurrTeam = async (e) => {
-    console.log(e.target.textContent);
     const team = await getTeams.getTeam.filter((team) =>
-      team.name === e.target.textContent ? team : ''
+      team.name === e.target.textContent ? team : ""
     );
     setCurrTeamToUpdate(team[0]);
   };
@@ -171,41 +162,59 @@ export default function VerticalTabs() {
       <Box
         component="div"
         sx={{
-          margin: '10px',
-          maxHeight: '70vh',
-          height: 'auto',
+          margin: "10px",
+          maxHeight: "70vh",
+          height: "auto",
         }}
       >
         <Paper
           component="div"
           elevation={3}
           sx={{
-            overflow: 'hidden',
-            height: '100%',
-            position: 'relative',
+            overflow: "hidden",
+            height: "100%",
+            position: "relative",
           }}
         >
           {/* search box */}
+          {/* <Box sx={{ display: "flex", flexDirection: "row" }}> */}
           <SearchBar
             handleSearch={handleSearch}
             label="Search Member"
             options={teamsList}
           />
-
+          {/* <Tooltip title="Add New Team" placement="right">
+              <ToggleButton
+                value="check"
+                size="small"
+                selected={selected}
+                onChange={() => {
+                  setSelected(!selected);
+                }}
+              >
+                <AddBoxIcon />
+              </ToggleButton>
+            </Tooltip> */}
+          {/* </Box> */}
           {/* teams and members tree view flex container */}
           <Box
             component="div"
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
             }}
           >
             {getTeams?.getTeam?.map((el) => (
-              <Treeview parentName={el.name} onClick={changeCurrTeam}>
+              <Treeview
+                parentName={el.name}
+                key={el.name}
+                onClick={changeCurrTeam}
+              >
                 {el.employees.map((member) => (
                   <TreeItem
                     nodeId={1 + el.employees.indexOf(member) + 1}
+                    key={member._id}
                     label={
                       <Typography
                         data-client={el.name}
@@ -221,16 +230,15 @@ export default function VerticalTabs() {
               </Treeview>
             ))}
           </Box>
-
           {/* INPUT BOX, add validations, connect to context */}
           <Box
             sx={{
-              boxSizing: 'border-box',
-              width: '95%',
-              position: 'absolute',
-              bottom: '0',
+              boxSizing: "border-box",
+              width: "95%",
+              position: "absolute",
+              bottom: "0",
 
-              '& > :not(style)': { m: 1 },
+              "& > :not(style)": { m: 1 },
             }}
           >
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
@@ -278,16 +286,16 @@ export default function VerticalTabs() {
       {/* HEADER */}
       <Box
         component="div"
-        sx={{ margin: '10px 10px 10px 0', overflow: 'auto' }}
+        sx={{ margin: "10px 10px 10px 0", overflow: "auto" }}
       >
         {/* grid container 40 60 */}
         <Paper
           component="div"
           elevation={3}
           sx={{
-            overflow: 'visible',
+            overflow: "visible",
 
-            position: 'relative',
+            position: "relative",
             // display: 'grid',
             // gridTemplateRows: '30% 70%'
           }}
@@ -299,7 +307,7 @@ export default function VerticalTabs() {
               // index={User.indexOf(user)}
               currMember={currMember}
               currTeam={currTeam}
-              sx={{ overflow: 'hidden' }}
+              sx={{ overflow: "hidden" }}
             />
             {/* ))} */}
           </Box>

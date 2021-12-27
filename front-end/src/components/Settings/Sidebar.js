@@ -96,15 +96,15 @@ export default function Sidebar() {
         component="div"
         sx={{
           margin: '10px',
-          maxHeight: '75vh',
-          height: '75vh'
+          maxHeight: '80vh',
+          height: 'auto'
         }}
       >
         <Paper
           component="div"
           elevation={3}
           sx={{
-            overflow: 'hidden',
+            overflowY: 'scroll',
             height: '100%',
             position: 'relative'
           }}

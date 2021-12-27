@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const Team = require("./team");
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   role: {
     type: String,
     // default: "admin",
@@ -16,7 +15,6 @@ const userSchema = new Schema({
   lastName: {
     type: String,
   },
-
   email: {
     type: String,
   },
@@ -26,13 +24,13 @@ const userSchema = new Schema({
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
+      ref: 'Project',
     },
   ],
   team: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
+      ref: 'Team',
     },
   ],
   // employees: [{
@@ -70,11 +68,11 @@ const userSchema = new Schema({
     },
     WeekStart: {
       type: String,
-      default: "Monday",
+      default: 'Monday',
     },
     CurrencySymbol: {
       type: String,
-      default: "$",
+      default: '$',
     },
   },
   payRate: Number,
@@ -104,6 +102,18 @@ const userSchema = new Schema({
   ],
 });
 
-const User = mongoose.model("User", userSchema);
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
-module.exports = User;
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+const User = mongoose.model('User', userSchema);
+
+export default User;

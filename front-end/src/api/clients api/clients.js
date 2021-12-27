@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 import {
   GET_CLIENT_REQUEST,
@@ -10,14 +10,39 @@ import {
   DELETE_CLIENT_REQUEST,
   DELETE_CLIENT_SUCCESS,
   DELETE_CLIENT_FAILED,
-} from '../../constants/ClientConstants';
+  GET_CLIENTPRO_FAILED,
+  GET_CLIENTPRO_REQUEST,
+  GET_CLIENTPRO_SUCCESS,
+} from "../../constants/ClientConstants";
 
 const config = {
   headers: {
-    Authorization: `Bearer ${localStorage['Bearer Token']}`,
+    Authorization: `Bearer ${localStorage["Bearer Token"]}`,
   },
 };
+export const getClientProjects = async (id, dispatch) => {
+  try {
+    dispatch({
+      type: GET_CLIENTPRO_REQUEST,
+    });
 
+    const { data } = await axios.post(`/client/getClientProjects`, id, config);
+    dispatch({
+      type: GET_CLIENTPRO_SUCCESS,
+      payload: data.data,
+    });
+    console.log("clientProjects");
+    console.log(data);
+  } catch (error) {
+    dispatch({
+      type: GET_CLIENTPRO_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 export const getClient = async (dispatch) => {
   try {
     dispatch({
@@ -32,7 +57,6 @@ export const getClient = async (dispatch) => {
     });
     console.log(`Client details`);
     console.log(data);
-    localStorage.setItem('clientdata', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: GET_CLIENT_FAILED,
@@ -46,7 +70,7 @@ export const getClient = async (dispatch) => {
 
 export const addClient = async (incomingData, dispatch) => {
   try {
-    if (incomingData.name !== '') {
+    if (incomingData.name !== "") {
       dispatch({ type: ADD_CLIENT_REQUEST });
 
       const { data } = await axios.post(`/client`, incomingData, config);

@@ -14,7 +14,6 @@ export default function Settings() {
         <Box component="div" sx={{ width: '95%', margin: 'auto' }}>
           <CssBaseline />
           <PageHeader title="Settings" />
-
           <div>
             <Sidebar />
           </div>

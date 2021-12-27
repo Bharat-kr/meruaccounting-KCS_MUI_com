@@ -16,7 +16,7 @@ const previews = [
 export default function Activity(props) {
   const { currentUser } = useContext(CurrentUserContext);
   const { loginC } = useContext(loginContext);
-  console.log(loginC);
+  // console.log(loginC.userData.days);
 
   return (
     <Box component="div" sx={{}}>

@@ -1,6 +1,6 @@
-import { indexOf } from 'lodash-es';
-import React, { createContext, useState, useReducer, useEffect } from 'react';
-import { ADD_TEAM_PROJECTS_RESET } from 'src/constants/ProjectConstants';
+import { indexOf } from "lodash-es";
+import React, { createContext, useState, useReducer, useEffect } from "react";
+import { ADD_TEAM_PROJECTS_RESET } from "src/constants/ProjectConstants";
 
 import {
   GET_CLIENT_REQUEST,
@@ -14,9 +14,33 @@ import {
   DELETE_CLIENT_SUCCESS,
   DELETE_CLIENT_FAILED,
   DELETE_CLIENT_RESET,
-} from '../constants/ClientConstants';
+  GET_CLIENTPRO_FAILED,
+  GET_CLIENTPRO_REQUEST,
+  GET_CLIENTPRO_SUCCESS,
+} from "../constants/ClientConstants";
 
 export const ClientsContext = createContext();
+
+const clientProjectDetailsReducer = (state, action) => {
+  switch (action.type) {
+    case GET_CLIENTPRO_REQUEST:
+      return {
+        loader: true,
+      };
+    case GET_CLIENTPRO_SUCCESS:
+      return {
+        loader: false,
+        clientProjectDetails: action.payload,
+      };
+    case GET_CLIENTPRO_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 const clientDetailsReducer = (state, action) => {
   switch (action.type) {
@@ -96,65 +120,66 @@ export const ClientsContextProvider = (props) => {
   const [deleteClient, dispatchDeleteClient] = useReducer(deleteClientReducer, {
     deleteClient: {},
   });
-
+  const [clientProjectDetails, dispatchClientProjectDetails] = useReducer(
+    clientProjectDetailsReducer,
+    { clientProjectDetails: {} }
+  );
   const [clients, setClients] = useState([
     {
       id: 1,
-      name: 'Amazon',
+      name: "Amazon",
       Clientmembers: [
-        'Kamal',
-        'Ayush',
-        'Raksha',
-        'Mark',
-        'Surya',
-        'Zuckerberg',
-        'Jaya',
-        'Sushma',
+        "Kamal",
+        "Ayush",
+        "Raksha",
+        "Mark",
+        "Surya",
+        "Zuckerberg",
+        "Jaya",
+        "Sushma",
       ],
       projects: [
         {
-          name: 'Project 1',
-          Projectmembers: ['Raksha', 'Mark', 'Surya'],
+          name: "Project 1",
+          Projectmembers: ["Raksha", "Mark", "Surya"],
           rate: 200,
         },
         {
-          name: 'Project 2',
-          Projectmembers: ['Ayush', 'Zuckerberg'],
+          name: "Project 2",
+          Projectmembers: ["Ayush", "Zuckerberg"],
           rate: 300,
         },
       ],
     },
     {
       id: 2,
-      name: 'Google',
+      name: "Google",
       Clientmembers: [
-        'Kamal',
-        'Ayush',
-        'Raksha',
-        'Mark',
-        'Surya',
-        'Zuckerberg',
-        'Jaya',
-        'Sushma',
+        "Kamal",
+        "Ayush",
+        "Raksha",
+        "Mark",
+        "Surya",
+        "Zuckerberg",
+        "Jaya",
+        "Sushma",
       ],
       projects: [
         {
-          name: 'Project 3',
-          Projectmembers: ['Jaya', 'Sushma'],
+          name: "Project 3",
+          Projectmembers: ["Jaya", "Sushma"],
           rate: 100,
         },
         {
-          name: 'Project 4',
-          Projectmembers: ['Kamal', 'Ayush'],
+          name: "Project 4",
+          Projectmembers: ["Kamal", "Ayush"],
           rate: 50,
         },
       ],
     },
   ]);
-  const [currentClient, setcurrentClient] = useState(clients[0]);
-  const [currentProject, setcurrentProject] = useState(
-    currentClient.projects[0]
-  );
+  const [currentClient, setcurrentClient] = useState("");
+  const [currentProject, setcurrentProject] = useState("");
 
   // const [currentProjectmembers, setcurrentProjectmembers] = useState(
   //   clients.projects[0].Projectmembers
@@ -198,6 +223,8 @@ export const ClientsContextProvider = (props) => {
           currentProject,
           changeProject,
           updateClient,
+          clientProjectDetails,
+          dispatchClientProjectDetails,
           // changeProjectmember
         }}
       >
