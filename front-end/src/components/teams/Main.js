@@ -13,7 +13,6 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
   Switch,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -26,7 +25,9 @@ import { UserContext, convertString } from "../../contexts/UserContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
+import { getTeam, removeMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
+import { teamContext } from "src/contexts/TeamsContext";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -40,6 +41,7 @@ export default function Main(props) {
   const { User } = useContext(UserContext);
   const { clients, changeProjectmembers } = useContext(ClientsContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
+  const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
   const [Checked, setChecked] = useState();
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
@@ -52,6 +54,15 @@ export default function Main(props) {
       payRate: value,
     };
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+  };
+  const deleteMember = async () => {
+    const data = {
+      employeeId: currMember._id,
+      teamId: currTeam._id,
+    };
+    console.log(data);
+    await removeMember(data, dispatchRemoveMember);
+    await getTeam(dispatchgetTeam);
   };
 
   const Labelconfig = function () {
@@ -131,7 +142,7 @@ export default function Main(props) {
                     <PauseIcon sx={{ fontSize: "small" }} />
                     Pause{" "}
                   </Link>
-                  <Link sx={{ padding: 1 }}>
+                  <Link sx={{ padding: 1 }} onClick={deleteMember}>
                     <DeleteIcon sx={{ fontSize: "small" }} /> Delete
                   </Link>
                   <Link sx={{ padding: 1 }}>

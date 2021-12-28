@@ -1,17 +1,12 @@
 import * as React from "react";
 import { useContext } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import { Box, Paper, TextField, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { RestaurantRounded } from "@material-ui/icons";
 import Main from "./Main";
-import { UserContext } from "../../contexts/UserContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { teamContext } from "../../contexts/TeamsContext";
-import { loginContext } from "../../contexts/LoginContext";
 import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
 import Treeview from "../Treeview";
 import { TreeItem } from "@mui/lab";
@@ -188,7 +183,7 @@ export default function VerticalTabs() {
               label="Search Member"
               options={teamsList}
             />
-            <FloatingForm>
+            <FloatingForm toolTip="Add Team" color="primary" icon={<AddIcon />}>
               <form
                 onSubmit={handleSubmit}
                 noValidate

@@ -1,12 +1,10 @@
 import * as React from "react";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
 import Popover from "@mui/material/Popover";
 import Tooltip from "@mui/material/Tooltip";
 
-export default function FloatingForm({ children }) {
+export default function FloatingForm({ children, icon ,toolTip , color}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -22,15 +20,15 @@ export default function FloatingForm({ children }) {
 
   return (
     <Box sx={{ ml: 2, mr: 1 }}>
-      <Tooltip title="Add Team" placement="right">
+      <Tooltip title={`${toolTip}`} placement="right">
         <Fab
           size="small"
-          color="primary"
+          color={color}
           aria-label="add"
           aria-describedby={id}
           onClick={handleClick}
         >
-          <AddIcon />
+          {icon}
         </Fab>
       </Tooltip>
       <Popover
