@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   lastActive: String,
   activityStatus: Boolean,
   accountInfo: {
-    managerFor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     country: { type: String, default: 'India' },
     ip: { type: String },
     countryName: { type: String, default: 'India' },

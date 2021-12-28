@@ -19,7 +19,7 @@ const register = asyncHandler(async (req, res) => {
     lastName: req.body.lastName,
     email: req.body.email,
     role: req.body.role,
-    company: req.body.company,
+    isManager: req.body.isManager,
     password: req.body.password,
   });
 
@@ -32,7 +32,6 @@ const register = asyncHandler(async (req, res) => {
         lastname: user.lastName,
         email: user.email,
         role: user.role,
-        company: user.company,
       },
       token: generateToken(user._id),
     });
@@ -65,7 +64,6 @@ const login = asyncHandler(async (req, res) => {
         lastname: user.lastName,
         email: user.email,
         role: user.role,
-        company: user.company,
       },
       token: generateToken(user._id),
     });
