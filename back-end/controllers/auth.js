@@ -1,6 +1,4 @@
-import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import bcrypt from 'bcrypt';
 import generateToken from '../utils/generateToken.js';
 import asyncHandler from 'express-async-handler';
 
@@ -71,4 +69,21 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, register };
+// @desc    Get common data
+// @route   GET /commondata
+// @access  Private
+
+const commondata = asyncHandler(async (req, res) => {
+  try {
+    const user = req.user;
+
+    res.json({
+      user,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+export { login, register, commondata };
