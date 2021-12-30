@@ -65,16 +65,23 @@ export default function ApiRefRowsGrid() {
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) =>
-        data.push({
-          Employee: getFullName(member.firstName, member.lastName),
-          LastActive: "",
-          Today: "",
-          Yesterday: "",
-          ThisWeek: "",
-          ThisMonth: "",
-        })
-      );
+      team.employees?.map((member) => {
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
+          data.push({
+            Employee: getFullName(member.firstName, member.lastName),
+            LastActive: "",
+            id: member._id,
+            Today: "",
+            Yesterday: "",
+            ThisWeek: "",
+            ThisMonth: "",
+          });
+        }
+      });
     });
     setTeamsList(data);
   }, [getTeams]);
