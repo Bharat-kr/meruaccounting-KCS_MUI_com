@@ -25,12 +25,7 @@ export default function EmployeePage(props) {
   }, []);
 
   console.log(employee);
-  // extra currEmployee variable, of no use iguess.
-  // const [currEmployee, setCurrEmployee] = useState({});
-  // useEffect(() => {
-  //   setCurrEmployee(employee);
-  // }, [employee]);
-  // console.log(currEmployee);
+
   return (
     <CssBaseline>
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>

@@ -1,4 +1,4 @@
-import colors from 'colors';
+import colors from "colors";
 
 const notFound = (req, res, next) => {
   const error = new Error(`Not found - ${req.originalUrl}`);
@@ -9,9 +9,10 @@ const notFound = (req, res, next) => {
 const errorHandler = (error, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
+  // res.send({ message: error.message });
   res.json({
     message: error.message,
-    stack: process.env.NODE_ENV === 'production' ? null : error.stack,
+    stack: process.env.NODE_ENV === "production" ? null : error.stack,
   });
   console.log(`Error : ${error}`.red.inverse);
 };
