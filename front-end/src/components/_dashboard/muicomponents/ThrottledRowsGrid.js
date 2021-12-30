@@ -65,16 +65,21 @@ export default function ApiRefRowsGrid() {
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) =>
+      team.employees?.map((member) => {
+        if (data.some((mem) => mem._id === member._id)) {
+          return;
+        }
+
         data.push({
+          _id: member._id,
           Employee: getFullName(member.firstName, member.lastName),
           LastActive: "",
           Today: "",
           Yesterday: "",
           ThisWeek: "",
           ThisMonth: "",
-        })
-      );
+        });
+      });
     });
     setTeamsList(data);
   }, [getTeams]);
@@ -105,9 +110,9 @@ export default function ApiRefRowsGrid() {
           </TableHead>
           <TableBody>
             {teamsList.map((member) => (
-              <StyledTableRow key={member.id}>
+              <StyledTableRow key={member._id}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to={`/dashboard/employeepage/${member.id}`}>
+                  <RouterLink to={`/dashboard/employeepage/${member._id}`}>
                     <Typography vairant="subtitle3">
                       {member.Employee}
                     </Typography>
