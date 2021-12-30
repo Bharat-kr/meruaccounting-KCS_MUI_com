@@ -14,18 +14,18 @@ import {
   REMOVE_MEMBER_SUCCESS,
 } from '../../constants/TeamConstants';
 
-const token = localStorage['Bearer Token'];
-const config = {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-};
+// const token = localStorage['Bearer Token'];
+// const config = {
+//   headers: {
+//     Authorization: `Bearer ${token}`,
+//   },
+// };
 
 export const createTeam = async (name, dispatch) => {
   try {
     dispatch({ type: TEAM_CREATE_REQUEST });
 
-    const { data } = await axios.post('/team/create', name, config);
+    const { data } = await axios.post('/team/create', name);
 
     dispatch({ type: TEAM_CREATE_SUCCESS, payload: data.data });
     console.log('team create');
@@ -44,7 +44,7 @@ export const createTeam = async (name, dispatch) => {
 export const getTeam = async (dispatch, id) => {
   try {
     dispatch({ type: GET_TEAM_REQUEST });
-    const res = await axios.get(`http://localhost:8000/team/getTeam`, config);
+    const res = await axios.get(`http://localhost:8000/team/getTeam`);
 
     // console.log(res);
 
@@ -67,8 +67,7 @@ export const updateMember = async (incomingData, dispatch) => {
 
     const { data } = await axios.patch(
       '/team/updateMember',
-      incomingData,
-      config
+      incomingData
     );
 
     dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
@@ -87,7 +86,7 @@ export const updateMember = async (incomingData, dispatch) => {
   }
 };
 
-export const removeMember = async (dispatch, incomingData) => {
+export const removeMember = async (incomingData,dispatch ) => {
   try {
     dispatch({ type: REMOVE_MEMBER_REQUEST });
 

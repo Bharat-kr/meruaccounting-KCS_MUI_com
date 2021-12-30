@@ -111,6 +111,7 @@ const removeMember = asyncHandler(async (req, res) => {
   const employeeId = req.body.employeeId;
   const teamId = req.body.teamId;
   let alreadyMember = false;
+  console.log(teamId  , employeeId)
   try {
     const team = await Team.findById(teamId);
     team.employees.forEach((employee, index) => {

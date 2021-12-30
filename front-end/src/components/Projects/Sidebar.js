@@ -120,17 +120,23 @@ export default function Sidebar() {
         component="div"
         elevation={3}
         sx={{
-          overflow: "hidden",
+          // overflow: "hidden",
           height: "100%",
-          position: "relative",
+          // position: "relative",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         {/* search box */}
-        <SearchBar
-          handleSearch={handleSearch}
-          label="Search Project"
-          options={clientsList}
-        />
+        <Box
+          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+        >
+          <SearchBar
+            handleSearch={handleSearch}
+            label="Search Project"
+            options={clientsList}
+          />
+        </Box>
 
         {/* clients and project tree view flex container */}
         <Box
@@ -138,16 +144,16 @@ export default function Sidebar() {
           sx={{
             display: "flex",
             flexDirection: "column",
+            flexGrow: "1",
             alignItems: "flex-start",
-            maxHeight: "100%",
-            overflowY: "scrollbar",
+            overflowY: "auto",
           }}
         >
           {clientsList.map((client) => (
             <Treeview
               parentName={client.name}
               className={classes.root}
-              sx={{ width: "100%", overflowY: "auto" }}
+              sx={{ width: "100%" }}
               onClick={handleClick}
               id={client._id}
             >
@@ -178,13 +184,18 @@ export default function Sidebar() {
           sx={{
             boxSizing: "border-box",
             width: "95%",
-            position: "absolute",
-            bottom: "0",
+            // position: "absolute",
+            // bottom: "0",
 
             "& > :not(style)": { m: 1 },
           }}
         >
-          <form onSubmit={handleSubmit} noValidate autoComplete="off">
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            autoComplete="off"
+            style={{ width: "100%" }}
+          >
             <TextField
               onChange={(e) => setnewClientValue(e.target.value)}
               required

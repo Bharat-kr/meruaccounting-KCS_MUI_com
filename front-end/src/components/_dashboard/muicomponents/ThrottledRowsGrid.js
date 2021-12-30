@@ -66,19 +66,21 @@ export default function ApiRefRowsGrid() {
       // eslint-disable-next-line prefer-template
 
       team.employees?.map((member) => {
-        if (data.some((mem) => mem._id === member._id)) {
-          return;
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
+          data.push({
+            Employee: getFullName(member.firstName, member.lastName),
+            LastActive: "",
+            id: member._id,
+            Today: "",
+            Yesterday: "",
+            ThisWeek: "",
+            ThisMonth: "",
+          });
         }
-
-        data.push({
-          _id: member._id,
-          Employee: getFullName(member.firstName, member.lastName),
-          LastActive: "",
-          Today: "",
-          Yesterday: "",
-          ThisWeek: "",
-          ThisMonth: "",
-        });
       });
     });
     setTeamsList(data);

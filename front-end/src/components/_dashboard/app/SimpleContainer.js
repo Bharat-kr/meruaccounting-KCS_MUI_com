@@ -35,7 +35,6 @@ export default function SimpleContainer() {
                 varinat="h3"
                 sx={{ fontWeight: "bold", fontSize: "23px" }}
               >
-                {" "}
                 Manager Dashboard
               </Typography>
               <Autocomplete
