@@ -1,6 +1,7 @@
 import Client from '../models/client.js';
 import Project from '../models/project.js';
 import Team from '../models/team.js';
+import User from '../models/user.js';
 import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new project
@@ -34,11 +35,33 @@ const createProject = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get project
+// @route   GET /project
+// @access  Public
+// @params  object - {userId : string}
+const getProject = asyncHandler(async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404);
+      throw new Error('No such user found');
+    }
+    res.json({
+      message: 'Successfully fetched projects',
+      data: user.projects,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
 // @desc    Get project by id
 // @route   GET /project/:id
 // @access  Private
 
-const getProject = asyncHandler(async (req, res) => {
+const getProjectById = asyncHandler(async (req, res) => {
   const id = req.params.id;
   try {
     const project = await Project.findById(id);
@@ -160,4 +183,11 @@ const projectTeam = asyncHandler(async (req, res) => {
   }
 });
 
-export { createProject, deleteProject, editProject, getProject, projectTeam };
+export {
+  createProject,
+  deleteProject,
+  editProject,
+  getProjectById,
+  getProject,
+  projectTeam,
+};

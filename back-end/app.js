@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import colors from 'colors';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import path from 'path';
 import YAML from 'yamljs';
 import cors from 'cors';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -14,6 +15,7 @@ import clientRoutes from './routes/client.js';
 import teamRoutes from './routes/team.js';
 import projectRoutes from './routes/project.js';
 import employeeRoutes from './routes/employee.js';
+import uploadRoutes from './routes/upload.js';
 
 dotenv.config({ path: './config/config.env' });
 
@@ -38,6 +40,10 @@ app.use('/', authRoutes);
 app.use('/team', teamRoutes);
 app.use('/client', clientRoutes);
 app.use('/project', projectRoutes);
+app.use('/upload', uploadRoutes);
+
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Middleware
 app.use(notFound);
