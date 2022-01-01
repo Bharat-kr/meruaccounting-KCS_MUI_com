@@ -254,7 +254,6 @@ export default class Calendar extends React.Component {
     var totalSlots = [...daysInMonth];
     let rows = [];
     dayofDate.forEach((row, i) => {
-
       dayOfDateCells.push(row);
       if (i === totalSlots.length - 1) {
         dayOfDateRow.push(dayOfDateCells);
@@ -293,6 +292,9 @@ export default class Calendar extends React.Component {
           className="calendar-navi"
           sx={{
             backgroundColor: "primary.main",
+            "@media (max-width: 800px)": {
+              width: "100%",
+            },
           }}
         >
           <span
@@ -330,6 +332,8 @@ export default class Calendar extends React.Component {
         </Box>
         <div className="calendar-date">
           {this.state.showYearTable && <this.YearTable props={this.year()} />}
+        </div>
+        <div className="calendar-date">
           {this.state.showMonthTable && (
             <this.MonthList data={moment.months()} />
           )}
