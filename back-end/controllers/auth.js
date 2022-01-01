@@ -80,6 +80,9 @@ const login = asyncHandler(async (req, res) => {
 const commondata = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
+    if (!user) {
+      throw new Error('No such user found');
+    }
 
     res.json({
       user,

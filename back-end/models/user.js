@@ -84,23 +84,10 @@ const userSchema = new mongoose.Schema({
   },
   days: [
     {
-      date: Date,
-      hours: Number,
-      timeRange: [
-        {
-          startTime: Date,
-          endTime: Date,
-          activityLevelTotal: Number,
-          screenShots: [
-            {
-              activityLevel: Number,
-              url: String,
-              time: Date,
-              taskName: String,
-            },
-          ],
-        },
-      ],
+      //TODO: default string value changed to epoch value
+      date: { type: String, default: '' },
+      hours: { type: Number, default: 0 },
+      activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
     },
   ],
 });

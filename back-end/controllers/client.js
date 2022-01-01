@@ -6,19 +6,19 @@ import asyncHandler from 'express-async-handler';
 // @access  Private
 
 const createClient = asyncHandler(async (req, res) => {
-  const employee = req.user;
-  if (employee.isMananger) {
+  const manager = req.user;
+  if (manager.role === 'manager') {
     const { name } = req.body;
     try {
       const client = new Client({ name });
       await client.save();
 
-      employee.clients.push(client);
-      await employee.save();
+      manager.clients.push(client);
+      await manager.save();
 
       res.status(201).json({
         messsage: 'Successfully Created Client',
-        data: client,
+        data: { manager },
       });
     } catch (error) {
       res.status(500);
@@ -36,7 +36,7 @@ const createClient = asyncHandler(async (req, res) => {
 
 const getClient = asyncHandler(async (req, res) => {
   const employee = req.user;
-  if (employee.isManager) {
+  if (employee.role === 'manager') {
     try {
       const client = await Client.find({ manager: employee._id }).populate(
         'projects'
