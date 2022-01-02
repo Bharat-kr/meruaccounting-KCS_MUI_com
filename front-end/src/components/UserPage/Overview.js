@@ -7,11 +7,17 @@ import {
   Card,
   CardActions,
   Button,
-  Grid
-} from '@mui/material';
-import React from 'react';
-import { Monthlyhours, Weeklyhours, AppItemOrders, AppBugReports } from '../_dashboard/app';
-import Calendar from './Calendar';
+  Grid,
+} from "@mui/material";
+import React from "react";
+import {
+  Monthlyhours,
+  Weeklyhours,
+  AppItemOrders,
+  AppBugReports,
+  Highlights,
+} from "../_dashboard/app";
+import Calendar from "./Calendar";
 
 export default function Overview() {
   return (
@@ -19,26 +25,29 @@ export default function Overview() {
       component="div"
       sx={{
         m: 2,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center'
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
       }}
     >
       {/* <Calendar /> */}
       <Container maxWidth="lg">
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={3} sm={3} md={3} lg={1.5}>
             <Monthlyhours />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={3} sm={3} md={3} lg={1.5}>
             <Weeklyhours />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={3} sm={3} md={3} lg={1.5}>
             <AppItemOrders />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={3} sm={3} md={3} lg={1.5}>
             <AppBugReports />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12} lg={6}>
+            <Highlights />
           </Grid>
         </Grid>
       </Container>
