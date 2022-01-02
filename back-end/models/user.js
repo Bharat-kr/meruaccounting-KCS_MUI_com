@@ -8,9 +8,9 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  payRate: Number,
-  lastActive: String,
-  activityStatus: Boolean,
+  payRate: { type: Number, default: 100 },
+  lastActive: { type: String, default: '0' },
+  activityStatus: { type: Boolean, default: false },
   accountInfo: {
     managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     country: { type: String, default: 'India' },
@@ -85,7 +85,7 @@ const userSchema = new mongoose.Schema({
   days: [
     {
       //TODO: default string value changed to epoch value
-      date: { type: String, default: '' },
+      date: { type: String, default: '0' },
       hours: { type: Number, default: 0 },
       activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
     },
