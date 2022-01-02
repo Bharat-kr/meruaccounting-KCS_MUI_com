@@ -1,3 +1,4 @@
+
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -19,6 +20,7 @@ import uploadRoutes from './routes/upload.js';
 
 dotenv.config({ path: './config/config.env' });
 
+
 connectDB();
 
 const app = express();
@@ -28,9 +30,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
 }
+
 
 const swaggerDocs = YAML.load('./api.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -44,6 +47,7 @@ app.use('/upload', uploadRoutes);
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 
 // Middleware
 app.use(notFound);
