@@ -2,102 +2,92 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
-  role: {
-    type: String,
-    // default: "admin",
-  },
-  isAdmin: Boolean,
-  isManager: Boolean,
-  company: String,
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-  password: {
-    type: String,
+  role: { type: String },
+  isManager: { type: Boolean, default: false },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  payRate: { type: Number, default: 100 },
+  lastActive: { type: String, default: '0' },
+  activityStatus: { type: Boolean, default: false },
+  accountInfo: {
+    managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    country: { type: String, default: 'India' },
+    ip: { type: String },
+    countryName: { type: String, default: 'India' },
   },
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Project',
+      ref: 'project',
     },
   ],
-  team: [
+  clients: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Team',
+      ref: 'client',
     },
   ],
-  // employees: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "User",
-  // }],
+  teams: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'team',
+    },
+  ],
   settings: {
     ScreenShotPerHour: {
-      type: Number,
-      default: 6,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Number, default: 6 },
+      individualValue: { type: Number, default: 6 },
     },
     AllowBlur: {
-      type: Boolean,
-      default: false,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: false },
+      individualValue: { type: Boolean, default: false },
     },
     AppsAndUrlTracking: {
-      type: Boolean,
-      default: true,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: true },
+      individualValue: { type: Boolean, default: true },
     },
     WeeklyTimeLimit: {
-      type: Number,
-      default: 120,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Number, default: 120 },
+      individualValue: { type: Number, default: 120 },
     },
     AutoPause: {
-      type: Number,
-      default: 4,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Number, default: 4 },
+      individualValue: { type: Number, default: 4 },
     },
     OfflineTime: {
-      type: Boolean,
-      default: false,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: false },
+      individualValue: { type: Boolean, default: false },
     },
     NotifyUser: {
-      type: Boolean,
-      default: true,
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: Boolean, default: false },
+      individualValue: { type: Boolean, default: false },
     },
     WeekStart: {
-      type: String,
-      default: 'Monday',
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: String, default: 'Monday' },
+      individualValue: { type: String, default: 'Monday' },
     },
     CurrencySymbol: {
-      type: String,
-      default: '$',
+      isTeamSetting: { type: Boolean, required: true, default: true },
+      teamValue: { type: String, default: '$' },
+      individualValue: { type: String, default: '$' },
     },
   },
-  payRate: Number,
-  lastActive: Date,
-  activityStatus: Boolean,
-
   days: [
     {
-      date: Date,
-      hours: Number,
-      timeRange: [
-        {
-          startTime: Date,
-          endTime: Date,
-          activityLevelTotal: Number,
-          screenShots: [
-            {
-              activityLevel: Number,
-              url: String,
-              time: Date,
-              taskName: String,
-            },
-          ],
-        },
-      ],
+      //TODO: default string value changed to epoch value
+      date: { type: String, default: '0' },
+      hours: { type: Number, default: 0 },
+      activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
     },
   ],
 });
