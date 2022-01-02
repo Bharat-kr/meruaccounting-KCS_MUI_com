@@ -8,16 +8,16 @@ import asyncHandler from 'express-async-handler';
 
 const createTeam = asyncHandler(async (req, res) => {
   const manager = req.user;
-  const { name } = req.body;
-  if (!manager.role === 'manager') {
+  const teamName = req.body.name;
+  if (!manager.isManager) {
     res.status(401);
     throw new Error('Unauthorized Access');
   }
   try {
-    const team = new Team({ name });
+    const team = new Team({ teamName });
     await team.save();
     team.manager = manager._id;
-    manager.team.push(team._id.toHexString());
+    manager.teams.push(team._id.toHexString());
     await manager.save();
     await team.save();
     res.status(201).json({
@@ -37,7 +37,7 @@ const createTeam = asyncHandler(async (req, res) => {
 const addMember = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const employee = req.user;
-  if (employee.role === 'manager') {
+  if (manager.isManager) {
     try {
       await team.save();
       team.employees.push(id);
@@ -62,7 +62,7 @@ const addMember = asyncHandler(async (req, res) => {
 
 const updateMember = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (!manager.role == 'manager') {
+  if (!manager.isManager) {
     res.status(401);
     throw new Error('Unauthorized');
   }
@@ -80,7 +80,7 @@ const updateMember = asyncHandler(async (req, res) => {
         alreadyMember = true;
       }
     });
-    if (alreadyMember == true) {
+    if (alreadyMember) {
       return res.json({
         status: 'Ok',
         data: 'Already A Member',
@@ -194,8 +194,8 @@ const getTeam = asyncHandler(async (req, res) => {
     throw new Error('Unauthorized');
   }
 
-  for (let i = 0; i < user.team.length; i++) {
-    const team = await Team.findById(user.team[i]);
+  for (let i = 0; i < user.teams.length; i++) {
+    const team = await Team.findById(user.teams[i]);
     if (team) {
       await Team.populate(team, {
         path: 'employees',
@@ -220,7 +220,7 @@ const getTeam = asyncHandler(async (req, res) => {
 
 const deleteTeam = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (!manager.role == 'manager') {
+  if (!manager.isManager) {
     res.status(401);
     throw new Error('Unauthorized');
   }
@@ -231,9 +231,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     const teamMembers = team.employees;
     const managerId = team.manager;
     if (!managerId === manager._id) {
-      return res.json({
-        message: 'You Can Only Delete Your Teams',
-      });
+      throw new Error('You Can Only Delete Your Teams');
     }
     manager.team.forEach((team, index) => {
       if (team.equals(team._id)) {
