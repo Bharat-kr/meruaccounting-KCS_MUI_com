@@ -79,19 +79,20 @@ import { Paper } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: "100%",
+    width: "95%",
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: "30px",
-    overflowX:"scroll"
+    overflowX: "auto",
   },
   cell: {
     width: "auto",
     fontSize: "12px",
     margin: "0",
     padding: "8px",
+    textAlign:"center",
     paddingBottom: "15px",
     position: "relative",
     border: `1px solid #C4CDD5`,
@@ -118,18 +119,20 @@ const Timeline = () => {
             backgroundColor: "primary.main",
             position: "absolute",
             bottom: "0",
-            left: "0",
+            right: "0",
           }}
         ></Box>
       </TableCell>
     );
   }
   return (
-    <TableContainer className={classes.container} elevation={1}>
-      {row.map((e) => {
-        return e;
-      })}
-    </TableContainer>
+    <Box sx={{ display: "flex", width: "100%", justifyContent: "center" }}>
+      <TableContainer className={classes.container} elevation={1}>
+        {row.map((e) => {
+          return e;
+        })}
+      </TableContainer>
+    </Box>
   );
 };
 

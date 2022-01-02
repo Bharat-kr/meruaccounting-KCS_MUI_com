@@ -12,7 +12,7 @@ const RootStyle = styled(Card)(({ theme }) => ({
   boxShadow: 'none',
   textAlign: 'center',
   margin:"5px",
-  width:"40%",
+  width:"45%",
   padding: theme.spacing(4, 0),
   color: theme.palette.error.darker,
   backgroundColor: theme.palette.error.lighter
