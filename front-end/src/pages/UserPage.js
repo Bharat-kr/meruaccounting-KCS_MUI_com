@@ -5,6 +5,7 @@ import Calendar from "../components/UserPage/Calendar";
 // components
 import Overview from "../components/UserPage/Overview";
 import ScreenShots from "../components/UserPage/ScreenShots";
+import Timeline from "../components/UserPage/Timeline";
 import PageHeader from "../components/PageHeader";
 
 // contexts
@@ -21,6 +22,7 @@ export default function UserPage() {
             <PageHeader title="Hi, Welcome Back!" />
             <Calendar />
             <Overview />
+            <Timeline/>
             <ScreenShots />
           </CurrentUserContextProvider>
         </LoginProvider>
