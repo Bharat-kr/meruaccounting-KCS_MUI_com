@@ -20,19 +20,19 @@ const userSchema = new mongoose.Schema({
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Project',
+      ref: 'project',
     },
   ],
   clients: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Client',
+      ref: 'client',
     },
   ],
   teams: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Team',
+      ref: 'team',
     },
   ],
   settings: {

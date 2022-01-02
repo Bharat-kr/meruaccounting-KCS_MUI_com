@@ -31,7 +31,7 @@ const createClient = asyncHandler(async (req, res) => {
 });
 
 // @desc    Get client
-// @route   GET /client
+// @route   GET /client/getClient
 // @access  Private
 
 const getClient = asyncHandler(async (req, res) => {

@@ -9,12 +9,15 @@ import asyncHandler from 'express-async-handler';
 // @access  Private
 
 const createProject = asyncHandler(async (req, res) => {
-  const employee = req.user;
-  if (employee.role === 'manager') {
+  const manager = req.user;
+  if (manager.role === 'manager') {
     const { name, clientId } = req.body;
     try {
       const project = new Project({ name });
       const client = await Client.findById(clientId);
+
+      manager.projects.push(project._id.toHexString());
+      await manager.save();
 
       await project.save();
       client.projects.push(project._id.toHexString());
@@ -35,21 +38,22 @@ const createProject = asyncHandler(async (req, res) => {
   }
 });
 
+//TODO: not working
 // @desc    Get project
 // @route   GET /project
 // @access  Public
 // @params  object - {userId : string}
 const getProject = asyncHandler(async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await User.findById(userId);
+    const { user } = req;
     if (!user) {
       res.status(404);
       throw new Error('No such user found');
     }
+    const projects = user.projects.populate();
     res.json({
       message: 'Successfully fetched projects',
-      data: user.projects,
+      data: projects,
     });
   } catch (error) {
     res.status(500);

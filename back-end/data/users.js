@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 const users = [
   {
     role: 'manager',
-    isManager: false,
+    isManager: true,
     firstName: 'Ayush',
     lastName: 'Garg',
     email: 'ayushg@gmail.com',
@@ -74,7 +74,7 @@ const users = [
   },
   {
     role: 'manager',
-    isManager: false,
+    isManager: true,
     firstName: 'Ayush',
     lastName: 'Dwivedi',
     email: 'ayushd@gmail.com',
