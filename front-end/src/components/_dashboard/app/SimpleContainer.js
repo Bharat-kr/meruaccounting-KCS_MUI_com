@@ -20,7 +20,7 @@ export default function SimpleContainer() {
       <CssBaseline />
       <Paper elevation={3} sx={{ width: "100%" }}>
         <Box sx={{ height: "100vh", width: "100%" }}>
-          <Grid item xs={3} sm={6} md={12}>
+          <Grid item xs={12} sm={12} md={12}>
             <Container
               style={{
                 padding: "1rem",

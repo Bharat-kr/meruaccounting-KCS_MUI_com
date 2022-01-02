@@ -22,6 +22,7 @@ import { sidebarConfigfn, sidebarConfigDefault } from "./SidebarConfig";
 import account from "../../_mocks_/account";
 import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
+import { getFullName } from "src/_helpers/getFullName";
 
 // ----------------------------------------------------------------------
 
@@ -88,7 +89,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                {loginC.userData.firstName} {loginC.userData.lastName}
+              {getFullName(loginC.userData.firstName, loginC.userData.lastName)}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {account.role}
@@ -97,9 +98,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           </AccountStyle>
         </Link>
       </Box>
-
       <NavSection navConfig={sidebarConfig} />
-
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
   );

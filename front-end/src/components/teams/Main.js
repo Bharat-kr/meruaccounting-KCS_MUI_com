@@ -22,7 +22,6 @@ import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import EdiText from "react-editext";
 import { UserContext, convertString } from "../../contexts/UserContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
@@ -39,7 +38,6 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Main(props) {
   const { index, value, currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
-  const { clients, changeProjectmembers } = useContext(ClientsContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
   const [Checked, setChecked] = useState();
@@ -68,23 +66,6 @@ export default function Main(props) {
   const Labelconfig = function () {
     return (
       <>
-        {/* {clients.map((client) =>
-          client.projects.map((pro) => (
-            <FormControlLabel
-              sx={{ display: "block", pt: 1, fontWeight: 10 }}
-              control={
-                <Switch
-                  checked={pro.Projectmembers.includes(User[index].name)}
-                />
-              }
-              // clients.projects.map((pro) => ))
-              label={`${client.name}(${pro.name})`}
-              // onChange={(e) => {
-              //   handleSwitchChange(e, pro, User.name);
-              // }}
-            />
-          ))
-        )} */}
         {currTeam.projects.map((pro) => (
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}

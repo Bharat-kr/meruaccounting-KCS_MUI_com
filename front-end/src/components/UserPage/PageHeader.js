@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Paper, Card, Typography, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { loginContext } from '../../contexts/LoginContext';
 
 const useStyles = makeStyles((theme) => ({

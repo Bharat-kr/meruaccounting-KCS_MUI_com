@@ -167,9 +167,7 @@ export default function VerticalTabs() {
           component="div"
           elevation={3}
           sx={{
-            // overflow: "hidden",
             height: "100%",
-            // position: "relative",
             display: "flex",
             flexDirection: "column",
           }}
@@ -250,31 +248,9 @@ export default function VerticalTabs() {
             sx={{
               boxSizing: "border-box",
               width: "95%",
-              // position: "absolute",
-              // bottom: "0",
-
               "& > :not(style)": { m: 1 },
             }}
           >
-            {/* <form onSubmit={handleSubmit} noValidate autoComplete="off">
-              <TextField
-                onChange={(e) => setNewTeam(e.target.value)}
-                required
-                fullWidth
-                label="Add new Team"
-                // error={newClientError}
-                sx={{}}
-              />
-
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                sx={{ mt: 1 }}
-              >
-                Submit
-              </Button>
-            </form> */}
             <form
               onSubmit={AddMember}
               noValidate
@@ -314,14 +290,10 @@ export default function VerticalTabs() {
           elevation={3}
           sx={{
             overflow: "visible",
-
             position: "relative",
-            // display: 'grid',
-            // gridTemplateRows: '30% 70%'
           }}
         >
           <Box>
-            {/* {User.map((user) => ( */}
             <Main
               value={value}
               // index={User.indexOf(user)}
