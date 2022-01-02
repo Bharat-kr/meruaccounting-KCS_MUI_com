@@ -121,7 +121,7 @@ export default function ApiRefRowsGrid() {
                   </RouterLink>
 
                   {/* <div>project placeholder</div> */}
-                  <Chip label="Employee" color="success" size="small" />
+                  {/* <Chip label="Employee" color="success" size="small" /> */}
                 </StyledTableCell>
 
                 <StyledTableCell align="right">
