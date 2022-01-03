@@ -1,7 +1,5 @@
 import User from '../models/user.js';
-import moment from 'moment';
 import asyncHandler from 'express-async-handler';
-moment().format();
 
 // @desc    Get employee details by ID
 // @route   GET /employee/:id

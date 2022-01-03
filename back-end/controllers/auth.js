@@ -1,6 +1,4 @@
-import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import bcrypt from 'bcrypt';
 import generateToken from '../utils/generateToken.js';
 import asyncHandler from 'express-async-handler';
 
@@ -21,7 +19,7 @@ const register = asyncHandler(async (req, res) => {
     lastName: req.body.lastName,
     email: req.body.email,
     role: req.body.role,
-    company: req.body.company,
+    isManager: req.body.isManager,
     password: req.body.password,
   });
 
@@ -75,4 +73,24 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, register };
+// @desc    Get common data
+// @route   GET /commondata
+// @access  Private
+
+const commondata = asyncHandler(async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error('No such user found');
+    }
+
+    res.json({
+      user,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+export { login, register, commondata };

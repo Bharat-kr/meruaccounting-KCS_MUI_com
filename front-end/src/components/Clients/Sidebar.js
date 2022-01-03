@@ -166,7 +166,12 @@ export default function Sidebar() {
             "& > :not(style)": { m: 1 },
           }}
         >
-          <form onSubmit={handleSubmit} noValidate autoComplete="off">
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            autoComplete="off"
+            style={{ width: "100%" }}
+          >
             <TextField
               onChange={(e) => setnewClientValue(e.target.value)}
               required
@@ -175,7 +180,6 @@ export default function Sidebar() {
               error={newClientError}
               sx={{}}
             />
-
             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
               Submit
             </Button>

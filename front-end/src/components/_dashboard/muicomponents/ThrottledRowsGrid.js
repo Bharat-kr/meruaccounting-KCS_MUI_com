@@ -65,16 +65,23 @@ export default function ApiRefRowsGrid() {
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) =>
-        data.push({
-          Employee: getFullName(member.firstName, member.lastName),
-          LastActive: "",
-          Today: "",
-          Yesterday: "",
-          ThisWeek: "",
-          ThisMonth: "",
-        })
-      );
+      team.employees?.map((member) => {
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
+          data.push({
+            Employee: getFullName(member.firstName, member.lastName),
+            LastActive: "",
+            id: member._id,
+            Today: "",
+            Yesterday: "",
+            ThisWeek: "",
+            ThisMonth: "",
+          });
+        }
+      });
     });
     setTeamsList(data);
   }, [getTeams]);
@@ -105,16 +112,16 @@ export default function ApiRefRowsGrid() {
           </TableHead>
           <TableBody>
             {teamsList.map((member) => (
-              <StyledTableRow key={member.id}>
+              <StyledTableRow key={member._id}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to={`/dashboard/employeepage/${member.id}`}>
+                  <RouterLink to={`/dashboard/employeepage/${member._id}`}>
                     <Typography vairant="subtitle3">
                       {member.Employee}
                     </Typography>
                   </RouterLink>
 
                   {/* <div>project placeholder</div> */}
-                  <Chip label="Employee" color="success" size="small" />
+                  {/* <Chip label="Employee" color="success" size="small" /> */}
                 </StyledTableCell>
 
                 <StyledTableCell align="right">

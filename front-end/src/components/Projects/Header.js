@@ -1,19 +1,26 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Paper, Typography, Divider } from "@mui/material";
-import { TreeItem } from "@mui/lab";
+import {
+  Paper,
+  Typography,
+  Divider,
+  Autocomplete,
+  TextField,
+  Link,
+} from "@mui/material";
+import SearchBar from "../SearchBar";
+import CollapsibleTable from "../Projects/ProjectMemers";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { TreeItem, TreeView } from "@mui/lab";
 import Treeview from "../Treeview";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormHelperText from "@mui/material/FormHelperText";
 import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { getClientProjects } from "../../api/clients api/clients";
+import AddIcon from "@mui/icons-material/Add";
+import { display } from "@mui/material/node_modules/@mui/system";
 //---------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -34,6 +41,7 @@ export default function Header() {
   const classes = useStyles();
   // to focus edit name of client
   const inputRef = useRef();
+  const [mockTeamLeader, setMockTeamLeader] = useState("");
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
@@ -53,8 +61,17 @@ export default function Header() {
     // getClientProjects(currentClient._id, dispatchClientProjectDetails);
     // console.log("hey");
   }, [currentClient]);
-
+  const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
   // console.log(currentClient);
+  const handleSearch = (e, value) => {
+    console.log(value);
+    const employee = mockEmployeeList.filter((emp) =>
+      emp == value ? emp : ""
+    );
+    console.log(employee);
+    return setMockTeamLeader(employee[0]);
+  };
+  const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
 
@@ -83,14 +100,17 @@ export default function Header() {
           sx={{
             overflow: "visible",
             height: "100%",
-            position: "relative",
-            display: "grid",
-            gridTemplateRows: "30% 70%",
+            // position: "relative",
+            display: "flex",
+            // gridTemplateRows: "30% 70%",
+            flexDirection: "column",
           }}
         >
-          <Box sx={{ m: 1 }}>
-            <h1 style={{ backgroundColor: "#fff" }}>
+          <Box sx={{ m: 1, display: "block" }}>
+            <div></div>
+            <h3 style={{ backgroundColor: "#fff" }}>
               <input
+                onClick={handleClick}
                 type="text"
                 ref={inputRef}
                 className={classes.input}
@@ -112,50 +132,69 @@ export default function Header() {
                   <DeleteIcon />
                 </button>
               </div>
-            </h1>
-            <div
-              style={{
-                float: "right",
-                paddingTop: "20px",
+            </h3>
+            <Typography
+              variant="h4"
+              sx={{
+                mt: 2,
+                display: "block",
+                width: "100%",
               }}
             >
-              {/* <input
-                type="text"
-                ref={inputRef}
-                className={classes.input}
-                value={currentProject.name}
-              /> */}
-              To be team laeder here
-              <button
-                type="button"
-                style={{ marginRight: "5px" }}
-                onClick={handleEditClick}
-              >
-                <EditIcon />
-              </button>
-              <button type="button" style={{}}>
-                <DeleteIcon />
-              </button>
-            </div>
-          </Box>
-
-          <Box sx={{ m: 1 }}>
-            <h2 style={{}}>Teams</h2>
-            <Treeview>
-              <TreeItem>hello</TreeItem>
-            </Treeview>
-
-            <Divider />
-            <Box
-              component="div"
-              sx={{
+              Project Leader
+            </Typography>
+            <div
+              style={{
+                width: "100%",
+                float: "left",
+                paddingTop: "20px",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                m: 1,
+                // justifyContent: "left",
+                marginLeft: "2px",
               }}
-            ></Box>
+            >
+              <Paper
+                elevation={3}
+                // variant="h4"
+                sx={{
+                  textAlign: "center",
+                  color: "red",
+                  fontSize: "25px",
+                  width: 150,
+                  mt: 2,
+                  mr: 2,
+                }}
+              >
+                {mockTeamLeader}
+              </Paper>
+
+              <SearchBar
+                handleSearch={handleSearch}
+                id="combo-box-demo"
+                options={["Ayush", "Shrey", "Kamal", "Bharat"]}
+                sx={{ width: 100 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select New Team Leader" />
+                )}
+              />
+            </div>
+            <hr />
+            <Paper elevation={2} sx={{ pt: 1 }}>
+              <Typography variant="h5" sx={{ pt: 5 }}>
+                Total Project Hours: <Link>150hr</Link>
+              </Typography>
+              <Typography variant="h5" sx={{ pt: 1 }}>
+                Total Internal Hours:<Link>30hr</Link>
+              </Typography>
+            </Paper>
+
+            <Paper elevation={2} sx={{ pt: 1 }}>
+              <hr />
+              <Typography variant="h5" sx={{ pt: 1 }}>
+                Project Members
+              </Typography>
+              <CollapsibleTable />
+            </Paper>
           </Box>
         </Paper>
       </Box>

@@ -1,22 +1,18 @@
 import * as React from "react";
 import { useContext } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import { Box, Paper, TextField, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { RestaurantRounded } from "@material-ui/icons";
 import Main from "./Main";
-import { UserContext } from "../../contexts/UserContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { teamContext } from "../../contexts/TeamsContext";
-import { loginContext } from "../../contexts/LoginContext";
 import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
 import Treeview from "../Treeview";
 import { TreeItem } from "@mui/lab";
 import SearchBar from "../SearchBar";
 import { getFullName } from "src/_helpers/getFullName";
+import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -171,38 +167,57 @@ export default function VerticalTabs() {
           component="div"
           elevation={3}
           sx={{
-            overflow: "hidden",
+            // overflow: "hidden",
             height: "100%",
-            position: "relative",
+            // position: "relative",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           {/* search box */}
-          {/* <Box sx={{ display: "flex", flexDirection: "row" }}> */}
-          <SearchBar
-            handleSearch={handleSearch}
-            label="Search Member"
-            options={teamsList}
-          />
-          {/* <Tooltip title="Add New Team" placement="right">
-              <ToggleButton
-                value="check"
-                size="small"
-                selected={selected}
-                onChange={() => {
-                  setSelected(!selected);
-                }}
+          <Box
+            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+          >
+            <SearchBar
+              handleSearch={handleSearch}
+              label="Search Member"
+              options={teamsList}
+            />
+            <FloatingForm toolTip="Add Team" color="primary" icon={<AddIcon />}>
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                autoComplete="off"
+                style={{ padding: "10px" }}
               >
-                <AddBoxIcon />
-              </ToggleButton>
-            </Tooltip> */}
-          {/* </Box> */}
+                <TextField
+                  onChange={(e) => setNewTeam(e.target.value)}
+                  required
+                  fullWidth
+                  label="Add new Team"
+                  // error={newClientError}
+                  sx={{}}
+                />
+                <Button
+                  fullWidth
+                  type="submit"
+                  variant="contained"
+                  sx={{ mt: 1 }}
+                >
+                  Submit
+                </Button>
+              </form>
+            </FloatingForm>
+          </Box>
           {/* teams and members tree view flex container */}
           <Box
             component="div"
             sx={{
               display: "flex",
               flexDirection: "column",
+              flexGrow: "1",
               alignItems: "flex-start",
+              overflowY: "auto",
             }}
           >
             {getTeams?.getTeam?.map((el) => (
@@ -235,13 +250,13 @@ export default function VerticalTabs() {
             sx={{
               boxSizing: "border-box",
               width: "95%",
-              position: "absolute",
-              bottom: "0",
+              // position: "absolute",
+              // bottom: "0",
 
               "& > :not(style)": { m: 1 },
             }}
           >
-            <form onSubmit={handleSubmit} noValidate autoComplete="off">
+            {/* <form onSubmit={handleSubmit} noValidate autoComplete="off">
               <TextField
                 onChange={(e) => setNewTeam(e.target.value)}
                 required
@@ -259,8 +274,13 @@ export default function VerticalTabs() {
               >
                 Submit
               </Button>
-            </form>
-            <form onSubmit={AddMember} noValidate autoComplete="off">
+            </form> */}
+            <form
+              onSubmit={AddMember}
+              noValidate
+              autoComplete="off"
+              style={{ width: "100%" }}
+            >
               <TextField
                 onChange={(e) => setNewMemberMail(e.target.value)}
                 required

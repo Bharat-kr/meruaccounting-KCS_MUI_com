@@ -8,9 +8,9 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  payRate: Number,
-  lastActive: String,
-  activityStatus: Boolean,
+  payRate: { type: Number, default: 100 },
+  lastActive: { type: String, default: '0' },
+  activityStatus: { type: Boolean, default: false },
   accountInfo: {
     managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     country: { type: String, default: 'India' },
@@ -20,19 +20,19 @@ const userSchema = new mongoose.Schema({
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Project',
+      ref: 'project',
     },
   ],
   clients: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Client',
+      ref: 'client',
     },
   ],
   teams: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Team',
+      ref: 'team',
     },
   ],
   settings: {
@@ -84,23 +84,10 @@ const userSchema = new mongoose.Schema({
   },
   days: [
     {
-      date: Date,
-      hours: Number,
-      timeRange: [
-        {
-          startTime: Date,
-          endTime: Date,
-          activityLevelTotal: Number,
-          screenShots: [
-            {
-              activityLevel: Number,
-              url: String,
-              time: Date,
-              taskName: String,
-            },
-          ],
-        },
-      ],
+      //TODO: default string value changed to epoch value
+      date: { type: String, default: '0' },
+      hours: { type: Number, default: 0 },
+      activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
     },
   ],
 });
