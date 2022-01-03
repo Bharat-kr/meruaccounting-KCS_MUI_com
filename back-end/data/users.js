@@ -70,7 +70,13 @@ const users = [
         individualValue: '₹',
       },
     },
-    days: [],
+    days: [
+      {
+        date: '0',
+        hours: '0',
+        activities: [],
+      },
+    ],
   },
   {
     role: 'manager',
@@ -138,7 +144,13 @@ const users = [
         individualValue: '₹',
       },
     },
-    days: [],
+    days: [
+      {
+        date: '0',
+        hours: '0',
+        activities: [],
+      },
+    ],
   },
   {
     role: 'employee',
@@ -206,7 +218,13 @@ const users = [
         individualValue: '₹',
       },
     },
-    days: [],
+    days: [
+      {
+        date: '0',
+        hours: '0',
+        activities: [],
+      },
+    ],
   },
   {
     role: 'employee',
@@ -274,7 +292,13 @@ const users = [
         individualValue: '₹',
       },
     },
-    days: [],
+    days: [
+      {
+        date: '0',
+        hours: '0',
+        activities: [],
+      },
+    ],
   },
   {
     role: 'employee',
@@ -342,7 +366,13 @@ const users = [
         individualValue: '₹',
       },
     },
-    days: [],
+    days: [
+      {
+        date: '0',
+        hours: '0',
+        activities: [],
+      },
+    ],
   },
 ];
 

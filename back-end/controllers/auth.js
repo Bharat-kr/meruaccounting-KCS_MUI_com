@@ -1,8 +1,6 @@
-
 import User from '../models/user.js';
 import generateToken from '../utils/generateToken.js';
 import asyncHandler from 'express-async-handler';
-
 
 // @desc    Register new user
 // @route   POST /register
@@ -13,7 +11,7 @@ const register = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
   const user = await User.create({
@@ -27,7 +25,7 @@ const register = asyncHandler(async (req, res) => {
 
   if (user) {
     res.status(201).json({
-      status: "success",
+      status: 'success',
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -39,7 +37,7 @@ const register = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
@@ -52,14 +50,14 @@ const login = asyncHandler(async (req, res) => {
 
   if (!email || !password) {
     res.status(401);
-    throw new Error("Missing credentials");
+    throw new Error('Missing credentials');
   }
 
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
     res.json({
-      status: "success",
+      status: 'success',
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -71,7 +69,7 @@ const login = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid email or password");
+    throw new Error('Invalid email or password');
   }
 });
 
