@@ -65,7 +65,7 @@ export default function ApiRefRowsGrid() {
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) => {
+      team.members?.map((member) => {
         if (
           !data.find((el) => {
             return el.id === member._id;

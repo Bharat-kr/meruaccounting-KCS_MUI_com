@@ -18,6 +18,6 @@ router
   .patch(authPass, projectTeam)
   .delete(authPass, deleteProject);
 
-router.route(':/id').get(authPass, getProjectById).patch(authPass, editProject);
+router.route('/:id').get(authPass, getProjectById).patch(authPass, editProject);
 
 export default router;

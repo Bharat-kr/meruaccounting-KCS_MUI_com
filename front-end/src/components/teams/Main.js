@@ -182,11 +182,11 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
+              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
             </Box>
             <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {currMember.settings &&
+              {/* {currMember.settings &&
                 Object.keys(currMember.settings).map((keyName, keyIndex) => (
                   <>
                     <Box
@@ -196,10 +196,10 @@ export default function Main(props) {
                       <Typography
                         varihant="h6"
                         sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                      >
-                        {convertString(keyName)}
-                        {/* {console.log(index)} */}
-                      </Typography>
+                      > */}
+              {/* {convertString(keyName)} */}
+              {/* {console.log(index)} */}
+              {/* </Typography>
                       <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
                         {currMember.settings[keyName] === true
                           ? "On"
@@ -207,7 +207,7 @@ export default function Main(props) {
                       </RouterLink>
                     </Box>
                   </>
-                ))}
+                ))} */}
             </Box>
           </Typography>
         </Container>
