@@ -102,7 +102,7 @@ export default function ApiRefRowsGrid() {
               <StyledTableCell align="right">This Month</StyledTableCell>
             </TableRow>
             <TableRow>
-              <StyledTableCell>2 online 4 worked Today</StyledTableCell>
+              <StyledTableCell>2 out of 4 worked Today</StyledTableCell>
               <StyledTableCell align="right"> </StyledTableCell>
               <StyledTableCell align="right">$100</StyledTableCell>
               <StyledTableCell align="right">$100</StyledTableCell>

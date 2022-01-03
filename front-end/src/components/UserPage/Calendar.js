@@ -1,25 +1,3 @@
-// import * as React from 'react';
-// import TextField from '@mui/material/TextField';
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-// import LocalizationProvider from '@mui/lab/LocalizationProvider';
-// import DatePicker from '@mui/lab/DatePicker';
-
-// export default function BasicDatePicker() {
-//   const [value, setValue] = React.useState(null);
-
-//   return (
-//     <LocalizationProvider dateAdapter={AdapterDateFns}>
-//       <DatePicker
-//         label="Basic example"
-//         value={value}
-//         onChange={(newValue) => {
-//           setValue(newValue);
-//         }}
-//         renderInput={(params) => <TextField {...params} />}
-//       />
-//     </LocalizationProvider>
-//   );
-// }
 import React from "react";
 import moment from "moment";
 import Box from "@mui/material/Box";
@@ -89,17 +67,11 @@ export default class Calendar extends React.Component {
     let cells = [];
 
     months.forEach((row, i) => {
-      // if (i % 3 !== 0 || i == 0) {
       cells.push(row);
-      // } else {
-      //   rows.push(cells);
-      //   cells = [];
-      //   cells.push(row);
-      // }
     });
     rows.push(cells);
     let monthlist = rows.map((d, i) => {
-      return <tr>{d}</tr>;
+      return <tr key={i}>{d}</tr>;
     });
 
     return (
@@ -188,17 +160,11 @@ export default class Calendar extends React.Component {
     let cells = [];
 
     months.forEach((row, i) => {
-      // if (i % 3 !== 0 || i == 0) {
       cells.push(row);
-      // } else {
-      //   rows.push(cells);
-      //   cells = [];
-      //   cells.push(row);
-      // }
     });
     rows.push(cells);
     let yearlist = rows.map((d, i) => {
-      return <tr>{d}</tr>;
+      return <tr key={i}>{d}</tr>;
     });
 
     return (
@@ -235,6 +201,7 @@ export default class Calendar extends React.Component {
       );
     }
     let daysInMonth = [];
+    let trackingData = [];
     for (let d = 1; d <= this.daysInMonth(); d++) {
       let currentDay = d == this.currentDay() ? "today" : "";
       daysInMonth.push(
@@ -246,6 +213,22 @@ export default class Calendar extends React.Component {
           >
             {d}
           </span>
+          {/* <div style={{height:"15px", width: "10%", backgroundColor: "#007B55" }}></div> */}
+        </td>
+      );
+      trackingData.push(
+        <td
+          className="hoursCells"
+          key={d}
+          style={{
+            borderWidth: "0 1px 0 1px",
+            borderStyle: "solid",
+            borderColor:"#C4CDD5",
+            height: "15px",
+            pointerEvents:"none"
+          }}
+        >
+          <div style={{height:"100%", width: `${d*3}%`, backgroundColor: "#007B55" }}></div>
         </td>
       );
     }
@@ -260,31 +243,20 @@ export default class Calendar extends React.Component {
       }
     });
     let weekdayshortname = dayOfDateRow.map((d, i) => {
-      return <tr>{d}</tr>;
+      return <tr key={i}>{d}</tr>;
     });
     let cells = [];
 
     totalSlots.forEach((row, i) => {
-      // if (i % 7 !== 0) {
       cells.push(row);
-      // } else {
-      //   rows.push(cells);
-      //   cells = [];
-      //   cells.push(row);
-      // }
       if (i === totalSlots.length - 1) {
-        // let insertRow = cells.slice();
         rows.push(cells);
       }
     });
 
     let daysinmonth = rows.map((d, i) => {
-      return <tr>{d}</tr>;
+      return <tr key={i}>{d}</tr>;
     });
-
-    let value = Math.round(
-      parseInt(this.firstDayOfMonth()) + parseInt(this.daysInMonth()) / 7
-    );
 
     return (
       <div className="tail-datetime-calendar">
@@ -301,7 +273,7 @@ export default class Calendar extends React.Component {
             onClick={(e) => {
               this.onPrev();
             }}
-            class="calendar-button button-prev"
+            className="calendar-button button-prev"
           >
             <ArrowLeftIcon />
           </span>
@@ -310,7 +282,7 @@ export default class Calendar extends React.Component {
               onClick={(e) => {
                 this.showMonth();
               }}
-              class="calendar-label"
+              className="calendar-label"
             >
               {this.month()}
             </span>
@@ -343,7 +315,10 @@ export default class Calendar extends React.Component {
           <div className="calendar-date">
             <table className="calendar-day">
               <thead>{weekdayshortname}</thead>
-              <tbody>{daysinmonth}</tbody>
+              <tbody>
+                {daysinmonth}
+                <tr>{trackingData.map((e) => e)}</tr>
+              </tbody>
             </table>
           </div>
         )}

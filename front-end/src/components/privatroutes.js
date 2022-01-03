@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Route, Redirect, Navigate } from 'react-router-dom';
+import {  Navigate } from 'react-router-dom';
 import { Role } from '../_helpers/role';
 import { loginContext } from '../contexts/LoginContext';
 // import { authenticationService } from '../_services/authetication.service';
