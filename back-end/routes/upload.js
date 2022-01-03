@@ -15,6 +15,8 @@ const storage = multer.diskStorage({
   },
 });
 
+//TODO: file filter not working..
+
 function checkFileType(file, cb) {
   const filetypes = /jpg|jpeg|png/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());

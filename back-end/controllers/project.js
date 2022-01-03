@@ -42,7 +42,7 @@ const createProject = asyncHandler(async (req, res) => {
 // @desc    Get project
 // @route   GET /project
 // @access  Public
-// @params  object - {userId : string}
+
 const getProject = asyncHandler(async (req, res) => {
   try {
     const { user } = req;

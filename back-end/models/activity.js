@@ -13,7 +13,6 @@ const activitySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curProjectId',
   },
-  // this is a taskId
   task: {
     type: String,
     default: '',
@@ -26,10 +25,6 @@ const activitySchema = new mongoose.Schema({
   endTime: {
     type: String,
   },
-  activityAt: {
-    type: String,
-  },
-  activity: {},
   totalPerformance: { type: Number, default: 0 },
   screenshots: [{ type: mongoose.Types.ObjectId, ref: 'Screenshot' }],
 });
