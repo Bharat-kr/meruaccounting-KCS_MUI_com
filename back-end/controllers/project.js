@@ -1,6 +1,7 @@
 import Client from '../models/client.js';
 import Project from '../models/project.js';
 import Team from '../models/team.js';
+import User from '../models/user.js';
 import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new project
@@ -8,12 +9,16 @@ import asyncHandler from 'express-async-handler';
 // @access  Private
 
 const createProject = asyncHandler(async (req, res) => {
-  const employee = req.user;
-  if (employee.role === 'manager') {
+  const manager = req.user;
+  if (manager.role === 'manager') {
     const { name, clientId } = req.body;
     try {
       const project = new Project({ name });
+
       const client = await Client.findById(clientId);
+      if (!client) throw new Error('Client not found');
+      manager.projects.push(project._id.toHexString());
+      await manager.save();
 
       await project.save();
       client.projects.push(project._id.toHexString());
@@ -34,11 +39,42 @@ const createProject = asyncHandler(async (req, res) => {
   }
 });
 
+//TODO: not working
+// @desc    Get project
+// @route   GET /project
+// @access  Public
+
+const getProject = asyncHandler(async (req, res) => { 
+  const responseArray = [];
+  const user = req.user;
+
+  if (!user) {
+    res.status(401);
+    throw new Error('Unauthorized');
+  }
+
+  for (let i = 0; i < user.projects.length; i++) {
+    const project = await Project.findById(user.projects[i]);
+    if (project) {
+      await Project.populate(project, {
+        path: 'members',
+      });
+      responseArray.push(project);
+    } else {
+      continue;
+    }
+  }
+  res.json({
+    msg: 'Success',
+    data: responseArray,
+  });
+});
+
 // @desc    Get project by id
 // @route   GET /project/:id
 // @access  Private
 
-const getProject = asyncHandler(async (req, res) => {
+const getProjectById = asyncHandler(async (req, res) => {
   const id = req.params.id;
   try {
     const project = await Project.findById(id);
@@ -100,9 +136,15 @@ const deleteProject = asyncHandler(async (req, res) => {
         throw new Error(`No project found ${projectId}`);
       }
 
+      employee.projects.filter(
+        (id) => id.toHexString !== projectId.toHexString
+      );
+
+      await employee.save();
+
       res.status(202).json({
         messsage: 'Successfully Deleted Project',
-        data: project,
+        data: employee.projects,
       });
     } catch (error) {
       res.status(500);
@@ -160,4 +202,11 @@ const projectTeam = asyncHandler(async (req, res) => {
   }
 });
 
-export { createProject, deleteProject, editProject, getProject, projectTeam };
+export {
+  createProject,
+  deleteProject,
+  editProject,
+  getProjectById,
+  getProject,
+  projectTeam,
+};

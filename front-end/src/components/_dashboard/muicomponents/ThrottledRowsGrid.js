@@ -40,9 +40,7 @@ function dispdata(data) {
   return (
     <>
       <Link underline="hover">{data}</Link>
-      <Typography variant="caption" display="block" gutterBottom>
-        $100
-      </Typography>
+      <Typography variant="caption" display="block" gutterBottom></Typography>
     </>
   );
 }
@@ -65,16 +63,23 @@ export default function ApiRefRowsGrid() {
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) =>
-        data.push({
-          Employee: getFullName(member.firstName, member.lastName),
-          LastActive: "",
-          Today: "",
-          Yesterday: "",
-          ThisWeek: "",
-          ThisMonth: "",
-        })
-      );
+      team.members?.map((member) => {
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
+          data.push({
+            Employee: getFullName(member.firstName, member.lastName),
+            LastActive: "",
+            id: member._id,
+            Today: "",
+            Yesterday: "",
+            ThisWeek: "",
+            ThisMonth: "",
+          });
+        }
+      });
     });
     setTeamsList(data);
   }, [getTeams]);
@@ -95,26 +100,26 @@ export default function ApiRefRowsGrid() {
               <StyledTableCell align="right">This Month</StyledTableCell>
             </TableRow>
             <TableRow>
-              <StyledTableCell>2 online 4 worked Today</StyledTableCell>
+              <StyledTableCell>2 out of 4 worked Today</StyledTableCell>
               <StyledTableCell align="right"> </StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {teamsList.map((member) => (
               <StyledTableRow key={member.id}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to={`/dashboard/employeepage/${member.id}`}>
+                  <RouterLink to={`/dashboard/employeepage/${member._id}`}>
                     <Typography vairant="subtitle3">
                       {member.Employee}
                     </Typography>
                   </RouterLink>
 
                   {/* <div>project placeholder</div> */}
-                  <Chip label="Employee" color="success" size="small" />
+                  {/* <Chip label="Employee" color="success" size="small" /> */}
                 </StyledTableCell>
 
                 <StyledTableCell align="right">

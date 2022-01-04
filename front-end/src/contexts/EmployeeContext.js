@@ -4,6 +4,9 @@ import {
   EMPLOYEE_DETAILS_REQUEST,
   EMPLOYEE_DETAILS_SUCCESS,
   EMPLOYEE_DETAILS_FAILED,
+  EMPLOYEE_UPDATE_REQUEST,
+  EMPLOYEE_UPDATE_SUCCESS,
+  EMPLOYEE_UPDATE_FAILED,
 } from "../constants/EmployeeConstants";
 
 export const employeeContext = createContext();
@@ -31,10 +34,37 @@ const employeeDetailsReducer = (state, action) => {
       return state;
   }
 };
+const employeeUpdatesReducer = (state, action) => {
+  switch (action.type) {
+    case EMPLOYEE_UPDATE_REQUEST:
+      return {
+        loader: true,
+      };
+
+    case EMPLOYEE_UPDATE_SUCCESS:
+      return {
+        loader: false,
+        employee: action.payload,
+      };
+
+    case EMPLOYEE_UPDATE_FAILED:
+      return {
+        loader: false,
+        err: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
 
 export function EmployeeProvider(props) {
   const [employee, dispatchEmployeeDetails] = useReducer(
     employeeDetailsReducer,
+    { employee: {} }
+  );
+  const [employeeUpdate, dispatchEmployeeUpdate] = useReducer(
+    employeeUpdatesReducer,
     { employee: {} }
   );
 
@@ -43,7 +73,7 @@ export function EmployeeProvider(props) {
   // }, [teamCreate]);
 
   return (
-    <employeeContext.Provider value={{ employee, dispatchEmployeeDetails }}>
+    <employeeContext.Provider value={{ employee, dispatchEmployeeDetails , employeeUpdate , dispatchEmployeeUpdate }}>
       {props.children}
     </employeeContext.Provider>
   );

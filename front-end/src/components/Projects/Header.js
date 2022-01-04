@@ -1,20 +1,32 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Paper, Typography, Divider } from "@mui/material";
-import { TreeItem } from "@mui/lab";
+import {
+  Paper,
+  Typography,
+  Divider,
+  Autocomplete,
+  TextField,
+  Link,
+  Button,
+  Fab,
+} from "@mui/material";
+
+import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
+import SearchBar from "../SearchBar";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { TreeItem, TreeView } from "@mui/lab";
 import Treeview from "../Treeview";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormHelperText from "@mui/material/FormHelperText";
 import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { getClientProjects } from "../../api/clients api/clients";
+import AddIcon from "@mui/icons-material/Add";
+import { display } from "@mui/material/node_modules/@mui/system";
+import EnhancedTable from "../Projects/ProjectMemers";
 //---------------------------------------------------------------
+
 const useStyles = makeStyles((theme) => ({
   input: {
     color: "#000",
@@ -31,9 +43,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function Header() {
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "firstName", headerName: "First name", width: 130 },
+    { field: "lastName", headerName: "Last name", width: 130 },
+    {
+      field: "age",
+      headerName: "Age",
+      type: "number",
+      width: 90,
+    },
+    {
+      field: "fullName",
+      headerName: "Full name",
+      description: "This column has a value getter and is not sortable.",
+      sortable: false,
+      width: 160,
+      valueGetter: (params) =>
+        `${params.getValue(params.id, "firstName") || ""} ${
+          params.getValue(params.id, "lastName") || ""
+        }`,
+    },
+  ];
+
+  const rows = [
+    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
+    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
+    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
+    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
+    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+  ];
+
   const classes = useStyles();
   // to focus edit name of client
   const inputRef = useRef();
+  const [mockTeamLeader, setMockTeamLeader] = useState("");
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
@@ -53,8 +101,17 @@ export default function Header() {
     // getClientProjects(currentClient._id, dispatchClientProjectDetails);
     // console.log("hey");
   }, [currentClient]);
-
+  const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
   // console.log(currentClient);
+  const handleSearch = (e, value) => {
+    console.log(value);
+    const employee = mockEmployeeList.filter((emp) =>
+      emp == value ? emp : ""
+    );
+    console.log(employee);
+    return setMockTeamLeader(employee[0]);
+  };
+  const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
 
@@ -83,14 +140,17 @@ export default function Header() {
           sx={{
             overflow: "visible",
             height: "100%",
-            position: "relative",
-            display: "grid",
-            gridTemplateRows: "30% 70%",
+            // position: "relative",
+            display: "flex",
+            // gridTemplateRows: "30% 70%",
+            flexDirection: "column",
           }}
         >
-          <Box sx={{ m: 1 }}>
-            <h1 style={{ backgroundColor: "#fff" }}>
+          <Box sx={{ m: 1, display: "block" }}>
+            <div></div>
+            <h3 style={{ backgroundColor: "#fff" }}>
               <input
+                onClick={handleClick}
                 type="text"
                 ref={inputRef}
                 className={classes.input}
@@ -112,50 +172,132 @@ export default function Header() {
                   <DeleteIcon />
                 </button>
               </div>
-            </h1>
-            <div
-              style={{
-                float: "right",
-                paddingTop: "20px",
+            </h3>
+            <Typography
+              variant="h4"
+              sx={{
+                mt: 2,
+                display: "block",
+                width: "100%",
               }}
             >
-              {/* <input
-                type="text"
-                ref={inputRef}
-                className={classes.input}
-                value={currentProject.name}
-              /> */}
-              To be team laeder here
-              <button
-                type="button"
-                style={{ marginRight: "5px" }}
-                onClick={handleEditClick}
-              >
-                <EditIcon />
-              </button>
-              <button type="button" style={{}}>
-                <DeleteIcon />
-              </button>
-            </div>
-          </Box>
-
-          <Box sx={{ m: 1 }}>
-            <h2 style={{}}>Teams</h2>
-            <Treeview>
-              <TreeItem>hello</TreeItem>
-            </Treeview>
-
-            <Divider />
-            <Box
-              component="div"
-              sx={{
+              Project Leader
+            </Typography>
+            <div
+              style={{
+                width: "100%",
+                float: "left",
+                paddingTop: "20px",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                m: 1,
+                // justifyContent: "left",
+                marginLeft: "2px",
               }}
-            ></Box>
+            >
+              <Paper
+                elevation={3}
+                // variant="h4"
+                sx={{
+                  textAlign: "center",
+                  color: "red",
+                  fontSize: "25px",
+                  width: 150,
+                  mt: 2,
+                  mr: 2,
+                }}
+              >
+                {mockTeamLeader}
+              </Paper>
+
+              <SearchBar
+                label="Assign Project Leader"
+                handleSearch={handleSearch}
+                id="combo-box-demo"
+                options={["Ayush", "Shrey", "Kamal", "Bharat"]}
+                sx={{ width: 100 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Select New Team Leader" />
+                )}
+              />
+            </div>
+            <hr />
+            <Paper elevation={2} sx={{ pt: 1 }}>
+              <Typography variant="h5" sx={{ pt: 5 }}>
+                Total Project Hours: <Link>150hr</Link>
+              </Typography>
+              <Typography variant="h5" sx={{ pt: 1 }}>
+                Total Internal Hours:<Link>30hr</Link>
+              </Typography>
+            </Paper>
+
+            <Paper elevation={2} sx={{ pt: 1 }}>
+              <hr />
+              <Box
+                sx={{
+                  display: "flex ",
+                  justifyContent: "space-between",
+                  pt: 2,
+                  pb: 2,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex ",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="h5" sx={{ pt: 1 }}>
+                    Project Members
+                  </Typography>
+                  <FloatingForm
+                    toolTip="Add Member"
+                    color="primary"
+                    icon={<AddIcon />}
+                  >
+                    <form
+                      // onSubmit={handleSubmit}
+                      noValidate
+                      autoComplete="off"
+                      style={{ padding: "10px" }}
+                    >
+                      <TextField
+                        // onChange={(e) => setNewTeam(e.target.value)}
+                        required
+                        fullWidth
+                        label="Add new Member"
+                        // error={newClientError}
+                        sx={{}}
+                      />
+                      <Button
+                        fullWidth
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 1 }}
+                      >
+                        Submit
+                      </Button>
+                    </form>
+                  </FloatingForm>
+                </div>
+                <div
+                  style={{
+                    display: "inherit",
+                    width: "300px",
+                    alignItems: "center",
+                  }}
+                >
+                  <SearchBar
+                    label="Search Member"
+                    handleSearch={handleSearch}
+                    id="combo-box-demo"
+                    options={["Ayush", "Shrey", "Kamal", "Bharat"]}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Select New Team Leader" />
+                    )}
+                  />
+                </div>
+              </Box>
+              <EnhancedTable />
+            </Paper>
           </Box>
         </Paper>
       </Box>

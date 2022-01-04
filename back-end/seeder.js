@@ -15,11 +15,9 @@ dotenv.config({ path: './config/config.env' });
 
 connectDB();
 
-const importData = async () => {
+const importData = asyncHandler(async () => {
   try {
-    // await model.deleteMany(); .... repeat for all
-    // await model.insertMany(data); ... repeat for all
-
+    await User.deleteMany();
     await User.insertMany(users);
     console.log(`Data imported`.green.inverse);
     process.exit(0);
@@ -27,12 +25,10 @@ const importData = async () => {
     console.log(`${error}`.red.inverse);
     process.exit(1);
   }
-};
+});
 
-const destroyData = async () => {
+const destroyData = asyncHandler(async () => {
   try {
-    // await model.deleteMany(); .... repeat for all
-
     await User.deleteMany();
     await Client.deleteMany();
     await Project.deleteMany();
@@ -44,6 +40,6 @@ const destroyData = async () => {
     console.log(`${error}`.red.inverse);
     process.exit(1);
   }
-};
+});
 
 process.argv[2] === '-d' ? destroyData() : importData();

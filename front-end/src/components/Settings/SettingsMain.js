@@ -519,7 +519,7 @@ export default function SettingsMain(props) {
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={User.map((user) => user.name)}
+                options={teamsList.map((user) => user.name)}
                 sx={{ width: 300, mt: 4 }}
                 renderInput={(params) => <TextField {...params} label="User" />}
               />
