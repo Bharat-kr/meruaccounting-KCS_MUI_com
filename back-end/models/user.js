@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
   role: {
@@ -24,13 +24,13 @@ const userSchema = new mongoose.Schema({
   projects: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Project',
+      ref: "Project",
     },
   ],
   team: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Team',
+      ref: "Team",
     },
   ],
   // employees: [{
@@ -68,11 +68,11 @@ const userSchema = new mongoose.Schema({
     },
     WeekStart: {
       type: String,
-      default: 'Monday',
+      default: "Monday",
     },
     CurrencySymbol: {
       type: String,
-      default: '$',
+      default: "$",
     },
   },
   payRate: Number,
@@ -102,18 +102,30 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+userSchema.statics.updateSettings = async (employeeId, settings) => {
+  const employee = await User.findById(employeeId);
+  employee.settings = settings;
+  employee.save();
+};
+
+userSchema.methods.setTeamInManager = async function (teamId) {
+  const manager = this;
+  manager.team.push(teamId);
+  await manager.save();
+};
+
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
