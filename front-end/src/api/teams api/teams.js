@@ -44,9 +44,9 @@ export const createTeam = async (name, dispatch) => {
 export const getTeam = async (dispatch, id) => {
   try {
     dispatch({ type: GET_TEAM_REQUEST });
-    const res = await axios.get(`http://localhost:8000/team/getTeam`);
+    const res = await axios.get(`team/getTeam`);
 
-    // console.log(res);
+    console.log(res.data.data);
 
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
   } catch (error) {

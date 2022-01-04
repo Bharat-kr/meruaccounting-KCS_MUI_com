@@ -50,7 +50,7 @@ const getProject = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error('No such user found');
     }
-    const projects = user.projects.populate();
+    const projects = user.projects.forEach((el) => el.populate());
     res.json({
       message: 'Successfully fetched projects',
       data: projects,

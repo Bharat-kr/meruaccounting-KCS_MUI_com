@@ -85,20 +85,20 @@ export default function VerticalTabs() {
   React.useEffect(() => {
     getTeams?.getTeam?.forEach((team) => {
       // eslint-disable-next-line prefer-template
-      team.employees?.map((member) =>
+      team.members?.map((member) =>
         teamsList.push(
           team.name + ":" + getFullName(member.firstName, member.lastName)
         )
       );
     });
-    console.log(teamsList);
   }, [getTeams, teamsList]);
 
+  console.log(getTeams);
   React.useEffect(() => {
     if (getTeams?.getTeam?.length > 0) {
       //setting the current member
       setCurrTeam(getTeams?.getTeam[0]);
-      setCurrMember(getTeams?.getTeam[0].employees[0]);
+      setCurrMember(getTeams?.getTeam[0].members[0]);
     }
   }, [getTeams, setCurrMember]);
 
@@ -112,7 +112,7 @@ export default function VerticalTabs() {
       return;
     }
 
-    return setCurrMember(teams[0].employees[0]);
+    return setCurrMember(teams[0].members[0]);
   };
 
   const handleClick = (e) => {
@@ -121,7 +121,7 @@ export default function VerticalTabs() {
       team.name === e.target.dataset.client ? team : ""
     );
     setCurrTeam(team[0]);
-    const member = team[0].employees.filter(
+    const member = team[0].members.filter(
       (member) => member._id === e.target.id
     );
 
@@ -167,9 +167,7 @@ export default function VerticalTabs() {
           component="div"
           elevation={3}
           sx={{
-            // overflow: "hidden",
             height: "100%",
-            // position: "relative",
             display: "flex",
             flexDirection: "column",
           }}
@@ -226,9 +224,9 @@ export default function VerticalTabs() {
                 key={el.name}
                 onClick={changeCurrTeam}
               >
-                {el.employees.map((member) => (
+                {el.members.map((member) => (
                   <TreeItem
-                    nodeId={1 + el.employees.indexOf(member) + 1}
+                    nodeId={1 + el.members.indexOf(member) + 1}
                     key={member._id}
                     label={
                       <Typography
@@ -250,31 +248,9 @@ export default function VerticalTabs() {
             sx={{
               boxSizing: "border-box",
               width: "95%",
-              // position: "absolute",
-              // bottom: "0",
-
               "& > :not(style)": { m: 1 },
             }}
           >
-            {/* <form onSubmit={handleSubmit} noValidate autoComplete="off">
-              <TextField
-                onChange={(e) => setNewTeam(e.target.value)}
-                required
-                fullWidth
-                label="Add new Team"
-                // error={newClientError}
-                sx={{}}
-              />
-
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                sx={{ mt: 1 }}
-              >
-                Submit
-              </Button>
-            </form> */}
             <form
               onSubmit={AddMember}
               noValidate
@@ -314,14 +290,10 @@ export default function VerticalTabs() {
           elevation={3}
           sx={{
             overflow: "visible",
-
             position: "relative",
-            // display: 'grid',
-            // gridTemplateRows: '30% 70%'
           }}
         >
           <Box>
-            {/* {User.map((user) => ( */}
             <Main
               value={value}
               // index={User.indexOf(user)}
