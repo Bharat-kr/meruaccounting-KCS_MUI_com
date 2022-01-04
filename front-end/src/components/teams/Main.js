@@ -85,7 +85,7 @@ export default function Main(props) {
       {currMember && (
         <Container
           component="div"
-          sx={{ border: 1, height: "100%", overflow: "scroll" }}
+          sx={{ border: 1, height: "100%", overflow: "auto" }}
           role="tabpanel"
           id={`vertical-tabpanel`}
           aria-labelledby={`vertical-tab`}

@@ -17,7 +17,7 @@ import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "700px",
+    height: "100%",
     width: "100%",
     margin: "auto",
     display: "grid",
@@ -159,7 +159,6 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: "10px",
-          maxHeight: "70vh",
           height: "auto",
         }}
       >

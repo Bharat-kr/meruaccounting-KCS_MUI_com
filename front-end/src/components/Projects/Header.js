@@ -132,21 +132,20 @@ export default function Header() {
   console.log(currentProject);
   return (
     <>
-      <Box component="div" sx={{ margin: "10px 10px 10px 0" }}>
+      <Box component="div" sx={{ width:"70%", flexGrow:"1", overflowX:"hidden", overflowY:"auto",margin: "10px 10px 10px 0" }} >
         {/* grid container 40 60 */}
         <Paper
-          component="div"
-          elevation={3}
-          sx={{
-            overflow: "visible",
-            height: "100%",
-            // position: "relative",
-            display: "flex",
-            // gridTemplateRows: "30% 70%",
-            flexDirection: "column",
-          }}
+           component="div"
+           elevation={3}
+           sx={{
+             overflow: "visible",
+             height: "100%",
+             position: "relative",
+             display: "grid",
+             gridTemplateRows: "30% 70%",
+           }}
         >
-          <Box sx={{ m: 1, display: "block" }}>
+          <Box sx={{ m: 1}}>
             <div></div>
             <h3 style={{ backgroundColor: "#fff" }}>
               <input

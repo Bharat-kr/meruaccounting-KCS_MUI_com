@@ -112,19 +112,19 @@ export default function Sidebar() {
       component="div"
       sx={{
         margin: "10px",
-        maxHeight: "70vh",
-        height: "70vh",
+        // height: "70vh",
+        flexGrow:"1"
       }}
     >
       <Paper
         component="div"
         elevation={3}
         sx={{
-          // overflow: "hidden",
+          overflow: "hidden",
           height: "100%",
+          display:"flex",
+          flexDirection:"column"
           // position: "relative",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
         {/* search box */}
