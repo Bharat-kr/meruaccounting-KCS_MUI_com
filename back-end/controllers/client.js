@@ -73,7 +73,7 @@ const getClientProjects = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error('Client not found');
     }
-    res.status(201).json({
+    res.status(200).json({
       messsage: 'Client Projects',
       data: client,
     });

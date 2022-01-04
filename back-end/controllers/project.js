@@ -14,8 +14,9 @@ const createProject = asyncHandler(async (req, res) => {
     const { name, clientId } = req.body;
     try {
       const project = new Project({ name });
-      const client = await Client.findById(clientId);
 
+      const client = await Client.findById(clientId);
+      if (!client) throw new Error('Client not found');
       manager.projects.push(project._id.toHexString());
       await manager.save();
 
@@ -155,9 +156,15 @@ const deleteProject = asyncHandler(async (req, res) => {
         user.save();
       }
 
+      employee.projects.filter(
+        (id) => id.toHexString !== projectId.toHexString
+      );
+
+      await employee.save();
+
       res.status(202).json({
-        messsage: "Successfully Deleted Project",
-        data: project,
+        messsage: 'Successfully Deleted Project',
+        data: employee.projects,
       });
     } catch (error) {
       res.status(500);
