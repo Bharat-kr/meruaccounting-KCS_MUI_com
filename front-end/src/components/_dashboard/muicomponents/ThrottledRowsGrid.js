@@ -40,9 +40,7 @@ function dispdata(data) {
   return (
     <>
       <Link underline="hover">{data}</Link>
-      <Typography variant="caption" display="block" gutterBottom>
-        $100
-      </Typography>
+      <Typography variant="caption" display="block" gutterBottom></Typography>
     </>
   );
 }
@@ -104,10 +102,10 @@ export default function ApiRefRowsGrid() {
             <TableRow>
               <StyledTableCell>2 out of 4 worked Today</StyledTableCell>
               <StyledTableCell align="right"> </StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
-              <StyledTableCell align="right">$100</StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
