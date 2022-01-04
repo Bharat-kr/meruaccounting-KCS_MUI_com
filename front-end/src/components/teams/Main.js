@@ -36,7 +36,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Main(props) {
-  const { index, value, currTeam, currMember, ...other } = props;
+  const {  currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
@@ -87,9 +87,8 @@ export default function Main(props) {
           component="div"
           sx={{ border: 1, height: "100%", overflow: "scroll" }}
           role="tabpanel"
-          hidden={value !== index}
-          id={`vertical-tabpanel-${index}`}
-          aria-labelledby={`vertical-tab-${index}`}
+          id={`vertical-tabpanel`}
+          aria-labelledby={`vertical-tab`}
           {...other}
         >
           <Typography sx={{ overflow: "auto" }}>
@@ -121,7 +120,7 @@ export default function Main(props) {
                     onClick={(e) => console.log(e.currentTarget.dataset.key)}
                   >
                     <PauseIcon sx={{ fontSize: "small" }} />
-                    Pause{" "}
+                    Pause
                   </Link>
                   <Link sx={{ padding: 1 }} onClick={deleteMember}>
                     <DeleteIcon sx={{ fontSize: "small" }} /> Delete
@@ -218,6 +217,6 @@ export default function Main(props) {
 
 Main.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
+  // index: PropTypes.number.isRequired,
+  // value: PropTypes.number.isRequired,
 };

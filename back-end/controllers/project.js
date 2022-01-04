@@ -43,22 +43,30 @@ const createProject = asyncHandler(async (req, res) => {
 // @route   GET /project
 // @access  Public
 
-const getProject = asyncHandler(async (req, res) => {
-  try {
-    const { user } = req;
-    if (!user) {
-      res.status(404);
-      throw new Error('No such user found');
-    }
-    const projects = user.projects.forEach((el) => el.populate());
-    res.json({
-      message: 'Successfully fetched projects',
-      data: projects,
-    });
-  } catch (error) {
-    res.status(500);
-    throw new Error(error);
+const getProject = asyncHandler(async (req, res) => { 
+  const responseArray = [];
+  const user = req.user;
+
+  if (!user) {
+    res.status(401);
+    throw new Error('Unauthorized');
   }
+
+  for (let i = 0; i < user.projects.length; i++) {
+    const project = await Project.findById(user.projects[i]);
+    if (project) {
+      await Project.populate(project, {
+        path: 'members',
+      });
+      responseArray.push(project);
+    } else {
+      continue;
+    }
+  }
+  res.json({
+    msg: 'Success',
+    data: responseArray,
+  });
 });
 
 // @desc    Get project by id

@@ -14,7 +14,7 @@ export default function Treeview(props) {
       defaultExpandIcon={<ChevronRightIcon />}
       sx={{ width: '100%'}}
     >
-      <TreeItem sx={{}} nodeId={1} label={<Typography variant="h4">{props.parentName}</Typography>}>
+      <TreeItem sx={{}} nodeId="1" label={<Typography variant="h4">{props.parentName}</Typography>}>
         {props.children}
       </TreeItem>
     </TreeView>
