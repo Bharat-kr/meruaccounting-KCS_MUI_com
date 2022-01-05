@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useEffect } from 'react';
+import React, { useContext, useReducer, useEffect } from "react";
 
 import {
   GET_PROJECTS_REQUEST,
@@ -20,16 +20,12 @@ import {
   DELETE_PROJECTS_SUCCESS,
   DELETE_PROJECTS_FAILED,
   DELETE_PROJECTS_RESET,
-} from '../constants/ProjectConstants';
+} from "../constants/ProjectConstants";
 
 export const projectContext = React.createContext();
 
 const getProjectsReducer = (state, action) => {
   switch (action.type) {
-    case GET_PROJECTS_REQUEST:
-      return {
-        loader: true,
-      };
     case GET_PROJECTS_SUCCESS:
       return {
         loader: false,
@@ -47,10 +43,6 @@ const getProjectsReducer = (state, action) => {
 
 const createProjectsReducer = (state, action) => {
   switch (action.type) {
-    case CREATE_PROJECTS_REQUEST:
-      return {
-        loader: true,
-      };
     case CREATE_PROJECTS_SUCCESS:
       return {
         loader: false,
@@ -70,10 +62,6 @@ const createProjectsReducer = (state, action) => {
 
 const addTeamToProjectsReducer = (state, action) => {
   switch (action.type) {
-    case ADD_TEAM_PROJECTS_REQUEST:
-      return {
-        loader: true,
-      };
     case ADD_TEAM_PROJECTS_SUCCESS:
       return {
         loader: false,
@@ -93,10 +81,6 @@ const addTeamToProjectsReducer = (state, action) => {
 
 const editProjectsReducer = (state, action) => {
   switch (action.type) {
-    case EDIT_PROJECTS_REQUEST:
-      return {
-        loader: true,
-      };
     case EDIT_PROJECTS_SUCCESS:
       return {
         loader: false,
@@ -116,10 +100,6 @@ const editProjectsReducer = (state, action) => {
 
 const deleteProjectsReducer = (state, action) => {
   switch (action.type) {
-    case DELETE_PROJECTS_REQUEST:
-      return {
-        loader: true,
-      };
     case DELETE_PROJECTS_SUCCESS:
       return {
         loader: false,
@@ -141,24 +121,24 @@ export const ProjectsContextProvider = (props) => {
   const [projectDetails, dispatchProjectDetails] = useReducer(
     getProjectsReducer,
     {
-      projectDetails: {},
+      projectDetails: { loader: true },
     }
   );
   const [createProject, dispatchCreateProject] = useReducer(
     createProjectsReducer,
-    { createProject: {} }
+    { createProject: { loader: true } }
   );
   const [addTeamProject, dispatchAddTeamProject] = useReducer(
     addTeamToProjectsReducer,
-    { addTeamProject: {} }
+    { addTeamProject: { loader: true } }
   );
   const [editProject, dispatchEditProject] = useReducer(editProjectsReducer, {
-    editProject: {},
+    editProject: { loader: true },
   });
   const [deleteProject, dispatchDeleteProject] = useReducer(
     deleteProjectsReducer,
     {
-      deleteProject: {},
+      deleteProject: { loader: true },
     }
   );
 
