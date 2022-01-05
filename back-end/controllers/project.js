@@ -223,6 +223,60 @@ const addEmailToProject = asyncHandler(async (req, res) => {
 
     project.employees.push(employeeId);
     await project.save();
+    res.status(201).json({
+      status: 'ok',
+      data: project,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+// @desc    Assign project leader to the given id
+// @route   POST /project/projectLeader/:id
+// @access  Private
+
+const assignProjectLeader = asyncHandler(async (req, res) => {
+  const manager = req.user;
+  if (manager.role !== 'manager') {
+    throw new Error('Unauthorized');
+  }
+  const employeeMail = req.body.employeeMail;
+  const projectId = req.params.id;
+  let alreadyMember = false;
+  let alreadyProjectAdded = false;
+  try {
+    const project = await Project.findById(projectId);
+    const newEmployee = await User.findOne({ email: employeeMail });
+    const employeeId = newEmployee._id;
+    project.employees.forEach((employee) => {
+      if (employee.equals(employeeId)) {
+        alreadyMember = true;
+      }
+    });
+    if (!alreadyMember) {
+      project.employees.push(employeeId);
+    }
+
+    newEmployee.projects.forEach((id) => {
+      if (id.equals(project._id)) {
+        alreadyProjectAdded = true;
+      }
+    });
+    if (!alreadyProjectAdded) {
+      newEmployee.projects.push(projectId);
+      await newEmployee.save();
+    }
+
+    project.projectLeader = employeeId;
+    await newEmployee.save();
+    await project.save();
+    res.json({
+      status: 'ok',
+      data: project,
+      newEmployee,
+    });
   } catch (error) {
     res.status(500);
     throw new Error(error);
@@ -236,6 +290,7 @@ export {
   getProjectById,
   getProject,
   addEmailToProject,
+  assignProjectLeader,
 };
 
 // // @desc    Add team to project
