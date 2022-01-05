@@ -21,10 +21,6 @@ export const teamContext = React.createContext();
 
 const teamCreateReducer = (state, action) => {
   switch (action.type) {
-    case TEAM_CREATE_REQUEST:
-      return {
-        loader: true,
-      };
     case TEAM_CREATE_SUCCESS:
       return {
         loader: false,
@@ -47,10 +43,6 @@ const teamCreateReducer = (state, action) => {
 
 const getTeamReducer = (state, action) => {
   switch (action.type) {
-    case GET_TEAM_REQUEST:
-      return {
-        loader: true,
-      };
     case GET_TEAM_SUCCESS:
       return {
         loader: false,
@@ -68,10 +60,6 @@ const getTeamReducer = (state, action) => {
 
 const updateMemberReducer = (state, action) => {
   switch (action.type) {
-    case UPDATE_MEMBER_REQUEST:
-      return {
-        loader: true,
-      };
     case UPDATE_MEMBER_SUCCESS:
       return {
         loader: false,
@@ -91,10 +79,6 @@ const updateMemberReducer = (state, action) => {
 
 const removeMemberReducer = (state, action) => {
   switch (action.type) {
-    case REMOVE_MEMBER_REQUEST:
-      return {
-        loader: true,
-      };
     case REMOVE_MEMBER_SUCCESS:
       return {
         loader: false,
@@ -117,14 +101,14 @@ export function TeamsProvider(props) {
     getTeam: [],
   });
   const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, {
-    teamCreate: {},
+    teamCreate: { loader: true },
   });
   const [updatedMember, dispatchUpdateMember] = useReducer(
     updateMemberReducer,
-    { updatedMember: {} }
+    { updatedMember: { loader: true } }
   );
   const [removeMember, dispatchRemoveMember] = useReducer(removeMemberReducer, {
-    removeMember: {},
+    removeMember: { loader: true },
   });
 
   return (
