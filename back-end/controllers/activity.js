@@ -1,7 +1,7 @@
-import Activity from '../models/activity.js';
-import User from '../models/user.js';
-import Screenshot from '../models/screenshot.js';
-import asyncHandler from 'express-async-handler';
+import Activity from "../models/activity.js";
+import User from "../models/user.js";
+import Screenshot from "../models/screenshot.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -37,7 +37,7 @@ const createScreenShot = asyncHandler(async (req, res) => {
     await activity.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       screenshot,
       activity,
     });
@@ -77,7 +77,7 @@ const createActivity = asyncHandler(async (req, res) => {
 
     for (i = 0; i < user.days.length(); i++) {
       if (user.days[i].date === day) {
-        console.log('inside if');
+        console.log("inside if");
         // user.days[i].activities.push(activity);
         break;
       }
@@ -94,13 +94,13 @@ const createActivity = asyncHandler(async (req, res) => {
     await user.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       activity,
       days: user.days,
     });
   } else {
     res.status(500);
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
 });
 

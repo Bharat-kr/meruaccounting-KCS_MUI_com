@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "0.2rem",
     paddingBottom: "1rem",
     position: "relative",
-    borderWidth:"0 1px 0 0",
-    borderStyle:"solid",
-    borderColor:"#919EAB",
+    borderWidth: "0 1px 0 0",
+    borderStyle: "solid",
+    borderColor: "#919EAB",
     "&:first-child": {
       borderRadius: "5px 0 0 5px",
     },
     "&:last-child": {
-      borderStyle:"none",
+      borderStyle: "none",
       borderRadius: "0 5px 5px 0",
     },
   },
@@ -49,17 +49,19 @@ const Timeline = () => {
             backgroundColor: "primary.dark",
             position: "absolute",
             bottom: "0",
-            right: `${i}`,
+            right: "0",
           }}
         ></Box>
       </TableCell>
     );
   }
   return (
-    <Box
-      sx={{ width: "100%", display: "flex", padding: "20px" }}
-    >
-      <TableContainer component={Paper} className={classes.container} elevation={3}>
+    <Box sx={{ width: "100%", display: "flex", padding: "20px" }}>
+      <TableContainer
+        component={Paper}
+        className={classes.container}
+        elevation={3}
+      >
         {row.map((e) => {
           return e;
         })}

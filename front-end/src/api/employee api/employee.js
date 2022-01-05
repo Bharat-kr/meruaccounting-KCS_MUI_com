@@ -11,8 +11,6 @@ import {
 
 export const getEmployeeDetails = async (_id, dispatch) => {
   try {
-    dispatch({ type: EMPLOYEE_DETAILS_REQUEST });
-
     const { data } = await axios.get(`/employee/${_id}`);
 
     dispatch({ type: EMPLOYEE_DETAILS_SUCCESS, payload: data });
@@ -30,8 +28,6 @@ export const getEmployeeDetails = async (_id, dispatch) => {
 };
 export const employeeUpdate = async (_id, data, dispatch) => {
   try {
-    dispatch({ type: EMPLOYEE_UPDATE_REQUEST });
-
     const res = await axios.patch(`/employee/edit/${_id}`, data);
 
     dispatch({ type: EMPLOYEE_UPDATE_SUCCESS, payload: data });
