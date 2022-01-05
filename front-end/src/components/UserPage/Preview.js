@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Backdrop, Typography, Tooltip, Card, CardActionArea, CardMedia } from '@mui/material';
+import { Backdrop, Tooltip, Card, CardActionArea, CardMedia } from '@mui/material';
 
 export default function Preview(props) {
   const [open, setOpen] = React.useState(false);

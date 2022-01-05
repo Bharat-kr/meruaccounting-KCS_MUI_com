@@ -10,23 +10,26 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    border: `1px solid #919EAB`,
     alignItems: "center",
-    justifyContent: "center",
-    marginBottom: "30px",
-    overflowX: "scroll",
   },
   cell: {
-    width: "auto",
-    fontSize: "12px",
+    fontSize: "0.8rem",
     margin: "0",
-    padding: "8px",
-    paddingBottom: "15px",
+    flexGrow: "1",
+    padding: "0.6rem",
+    textAlign: "center",
+    paddingTop: "0.2rem",
+    paddingBottom: "1rem",
     position: "relative",
-    border: `1px solid #C4CDD5`,
+    borderWidth: "0 1px 0 0",
+    borderStyle: "solid",
+    borderColor: "#919EAB",
     "&:first-child": {
       borderRadius: "5px 0 0 5px",
     },
     "&:last-child": {
+      borderStyle: "none",
       borderRadius: "0 5px 5px 0",
     },
   },
@@ -37,27 +40,33 @@ const Timeline = () => {
   const row = [];
   for (let i = 0; i < 24; i++) {
     row.push(
-      <TableCell className={classes.cell}>
+      <TableCell className={classes.cell} key={i}>
         {i !== 0 ? `${i < 12 ? `${i} AM` : `${i - 12} PM`}` : `${i + 12} AM`}
         <Box
           sx={{
-            width: "50%",
-            height: "30%",
-            backgroundColor: "primary.main",
+            width: `${i * 3}%`,
+            height: "15px",
+            backgroundColor: "primary.dark",
             position: "absolute",
             bottom: "0",
-            left: "0",
+            right: "0",
           }}
         ></Box>
       </TableCell>
     );
   }
   return (
-    <TableContainer className={classes.container} elevation={1}>
-      {row.map((e) => {
-        return e;
-      })}
-    </TableContainer>
+    <Box sx={{ width: "100%", display: "flex", padding: "20px" }}>
+      <TableContainer
+        component={Paper}
+        className={classes.container}
+        elevation={3}
+      >
+        {row.map((e) => {
+          return e;
+        })}
+      </TableContainer>
+    </Box>
   );
 };
 

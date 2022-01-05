@@ -250,9 +250,9 @@
     overflow-x: scroll;
   } */
   .tail-datetime-calendar .calendar-date{
-    overflow-x: scroll;
+    overflow-x: auto;
   }
   .tail-datetime-calendar .calendar-date .calendar-day{
-    width: 900px;
+    width: 1000px;
   }
 }

@@ -20,6 +20,7 @@ import { loginContext } from "src/contexts/LoginContext";
 import MenuPopover from "../../components/MenuPopover";
 //
 import account from "../../_mocks_/account";
+import { getFullName } from "src/_helpers/getFullName";
 
 // ----------------------------------------------------------------------
 
@@ -88,7 +89,7 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {loginC.userData.firstName} {loginC.userData.lastName}
+            {getFullName(loginC.userData.firstName, loginC.userData.lastName)}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
             {loginC.userData.email}

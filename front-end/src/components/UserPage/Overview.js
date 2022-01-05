@@ -1,14 +1,4 @@
-import {
-  Container,
-  Box,
-  Paper,
-  Typography,
-  CardContent,
-  Card,
-  CardActions,
-  Button,
-  Grid,
-} from "@mui/material";
+import { Box, Typography, CardContent, Card } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import React from "react";
 import moment from "moment";
@@ -22,7 +12,6 @@ import {
   AppItemOrders,
   AppBugReports,
 } from "../_dashboard/app";
-import Calendar from "./Calendar";
 
 export default function Overview() {
   const [value, setValue] = React.useState("1");
@@ -44,27 +33,6 @@ export default function Overview() {
         },
       }}
     >
-      {/* <Calendar /> */}
-      {/* <Container maxWidth="lg">
-        <Grid container spacing={2}>
-          <Grid item xs={3} sm={3} md={3} lg={1.5}>
-            <Monthlyhours />
-          </Grid>
-          <Grid item xs={3} sm={3} md={3} lg={1.5}>
-            <Weeklyhours />
-          </Grid>
-
-          <Grid item xs={3} sm={3} md={3} lg={1.5}>
-            <AppItemOrders />
-          </Grid>
-          <Grid item xs={3} sm={3} md={3} lg={1.5}>
-            <AppBugReports />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={6}>
-            <Highlights />
-          </Grid>
-        </Grid>
-      </Container> */}
       <Box
         sx={{
           width: "40%",
@@ -121,7 +89,6 @@ export default function Overview() {
                   </TabList>
                 </Typography>
               </Box>
-              {/* <Divider sx={{ backgroundColor: "info.dark" }} /> */}
               <TabPanel value="1">
                 <Box overflow={"auto"}>
                   <Box
@@ -154,29 +121,6 @@ export default function Overview() {
           </CardContent>
         </Card>
       </Box>
-
-      {/* <Card elevation={3} sx={{ minWidth: 275 }}>
-        <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Friday, December 3
-          </Typography>
-          <Typography variant="h4" component="div">
-            1h 32m
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Current Project
-          </Typography>
-          <Typography variant="body2">
-            Week 9h 48m
-            <br />
-            Month 4h 19m
-          </Typography>
-        </CardContent>
-      </Card> */}
-
-      {/* <Card elevation={3} sx={{ width: '80%' }}>
-        HEllo
-      </Card> */}
     </Box>
   );
 }

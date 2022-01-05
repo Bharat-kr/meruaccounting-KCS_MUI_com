@@ -22,7 +22,6 @@ import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import EdiText from "react-editext";
 import { UserContext, convertString } from "../../contexts/UserContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
@@ -37,9 +36,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Main(props) {
-  const { index, value, currTeam, currMember, ...other } = props;
+  const {  currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
-  const { clients, changeProjectmembers } = useContext(ClientsContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
   const [Checked, setChecked] = useState();
@@ -68,23 +66,6 @@ export default function Main(props) {
   const Labelconfig = function () {
     return (
       <>
-        {/* {clients.map((client) =>
-          client.projects.map((pro) => (
-            <FormControlLabel
-              sx={{ display: "block", pt: 1, fontWeight: 10 }}
-              control={
-                <Switch
-                  checked={pro.Projectmembers.includes(User[index].name)}
-                />
-              }
-              // clients.projects.map((pro) => ))
-              label={`${client.name}(${pro.name})`}
-              // onChange={(e) => {
-              //   handleSwitchChange(e, pro, User.name);
-              // }}
-            />
-          ))
-        )} */}
         {currTeam.projects.map((pro) => (
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
@@ -106,9 +87,8 @@ export default function Main(props) {
           component="div"
           sx={{ border: 1, height: "100%", overflow: "scroll" }}
           role="tabpanel"
-          hidden={value !== index}
-          id={`vertical-tabpanel-${index}`}
-          aria-labelledby={`vertical-tab-${index}`}
+          id={`vertical-tabpanel`}
+          aria-labelledby={`vertical-tab`}
           {...other}
         >
           <Typography sx={{ overflow: "auto" }}>
@@ -140,7 +120,7 @@ export default function Main(props) {
                     onClick={(e) => console.log(e.currentTarget.dataset.key)}
                   >
                     <PauseIcon sx={{ fontSize: "small" }} />
-                    Pause{" "}
+                    Pause
                   </Link>
                   <Link sx={{ padding: 1 }} onClick={deleteMember}>
                     <DeleteIcon sx={{ fontSize: "small" }} /> Delete
@@ -201,11 +181,11 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
+              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
             </Box>
             <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {currMember.settings &&
+              {/* {currMember.settings &&
                 Object.keys(currMember.settings).map((keyName, keyIndex) => (
                   <>
                     <Box
@@ -215,10 +195,10 @@ export default function Main(props) {
                       <Typography
                         varihant="h6"
                         sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                      >
-                        {convertString(keyName)}
-                        {/* {console.log(index)} */}
-                      </Typography>
+                      > */}
+              {/* {convertString(keyName)} */}
+              {/* {console.log(index)} */}
+              {/* </Typography>
                       <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
                         {currMember.settings[keyName] === true
                           ? "On"
@@ -226,7 +206,7 @@ export default function Main(props) {
                       </RouterLink>
                     </Box>
                   </>
-                ))}
+                ))} */}
             </Box>
           </Typography>
         </Container>
@@ -237,6 +217,6 @@ export default function Main(props) {
 
 Main.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
+  // index: PropTypes.number.isRequired,
+  // value: PropTypes.number.isRequired,
 };

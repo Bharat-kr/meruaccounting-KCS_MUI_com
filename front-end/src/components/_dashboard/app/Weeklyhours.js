@@ -1,18 +1,13 @@
-import { Icon } from "@iconify/react";
-import appleFilled from "@iconify/icons-ant-design/apple-filled";
-// material
 import { alpha, styled } from "@mui/material/styles";
 import { Card, Typography } from "@mui/material";
-// utils
-import { fShortenNumber } from "../../../utils/formatNumber";
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Card)(({ theme }) => ({
   boxShadow: "none",
   textAlign: "center",
-  margin: "5px",
-  width: "40%",
+  margin: "5px 0 5px 0",
+  width: "45%",
   padding: theme.spacing(4, 0),
   color: theme.palette.info.darker,
   backgroundColor: theme.palette.info.lighter,

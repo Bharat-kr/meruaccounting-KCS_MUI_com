@@ -26,7 +26,10 @@ const screenshotSchema = new mongoose.Schema({
   activityAt: {
     type: String,
   },
-  activity: {},
+  activityId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'activityId',
+  },
   performanceData: {
     type: Number,
     default: 0,

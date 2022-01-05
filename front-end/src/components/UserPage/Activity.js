@@ -30,18 +30,13 @@ export default function Activity(props) {
       <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
         |{currentUser.day[1638729000].timeRange[0].taskName}
       </Typography>
-
       <Box
         component="div"
         sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
       >
-        {previews.map((preview) => (
-          <>
-            <Preview preview={preview} />
-          </>
+        {previews.map((preview , key) => (
+            <Preview preview={preview} key={key}/>
         ))}
-
-        {/* screenshots here flex wrap rowwise justify center */}
       </Box>
     </Box>
   );
