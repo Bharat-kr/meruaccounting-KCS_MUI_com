@@ -6,7 +6,8 @@ import {
   editProject,
   getProjectById,
   getProject,
-  addEmailToProject,
+  addMember,
+  removeMember,
   assignProjectLeader,
 } from '../controllers/project.js';
 
@@ -18,7 +19,9 @@ router
   .post(authPass, createProject)
   .delete(authPass, deleteProject);
 
-router.route('/addMember/:id').post(authPass, addEmailToProject);
+router.route('/addMember/:id').post(authPass, addMember);
+
+router.route('/removeMember/:id').patch(authPass, removeMember);
 
 router.route('/projectLeader/:id').post(authPass, assignProjectLeader);
 
