@@ -22,10 +22,6 @@ const config = {
 };
 export const getClientProjects = async (id, dispatch) => {
   try {
-    dispatch({
-      type: GET_CLIENTPRO_REQUEST,
-    });
-
     const { data } = await axios.post(`/client/getClientProjects`, id, config);
     dispatch({
       type: GET_CLIENTPRO_SUCCESS,
@@ -45,10 +41,6 @@ export const getClientProjects = async (id, dispatch) => {
 };
 export const getClient = async (dispatch) => {
   try {
-    dispatch({
-      type: GET_CLIENT_REQUEST,
-    });
-
     const { data } = await axios.get(`/client/getClient`, config);
 
     dispatch({
@@ -71,8 +63,6 @@ export const getClient = async (dispatch) => {
 export const addClient = async (incomingData, dispatch) => {
   try {
     if (incomingData.name !== "") {
-      dispatch({ type: ADD_CLIENT_REQUEST });
-
       const { data } = await axios.post(`/client`, incomingData, config);
 
       dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
@@ -92,8 +82,6 @@ export const addClient = async (incomingData, dispatch) => {
 
 export const deleteClient = async (dispatch) => {
   try {
-    dispatch({ type: DELETE_CLIENT_REQUEST });
-
     const { data } = await axios.delete(`/client`, config);
 
     dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });

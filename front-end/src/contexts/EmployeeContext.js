@@ -13,11 +13,6 @@ export const employeeContext = createContext();
 
 const employeeDetailsReducer = (state, action) => {
   switch (action.type) {
-    case EMPLOYEE_DETAILS_REQUEST:
-      return {
-        loader: true,
-      };
-
     case EMPLOYEE_DETAILS_SUCCESS:
       return {
         loader: false,
@@ -36,11 +31,6 @@ const employeeDetailsReducer = (state, action) => {
 };
 const employeeUpdatesReducer = (state, action) => {
   switch (action.type) {
-    case EMPLOYEE_UPDATE_REQUEST:
-      return {
-        loader: true,
-      };
-
     case EMPLOYEE_UPDATE_SUCCESS:
       return {
         loader: false,
@@ -61,11 +51,11 @@ const employeeUpdatesReducer = (state, action) => {
 export function EmployeeProvider(props) {
   const [employee, dispatchEmployeeDetails] = useReducer(
     employeeDetailsReducer,
-    { employee: {} }
+    { employee: { loader: true } }
   );
   const [employeeUpdate, dispatchEmployeeUpdate] = useReducer(
     employeeUpdatesReducer,
-    { employee: {} }
+    { employee: { loader: true } }
   );
 
   // useEffect(() => {
@@ -73,7 +63,14 @@ export function EmployeeProvider(props) {
   // }, [teamCreate]);
 
   return (
-    <employeeContext.Provider value={{ employee, dispatchEmployeeDetails , employeeUpdate , dispatchEmployeeUpdate }}>
+    <employeeContext.Provider
+      value={{
+        employee,
+        dispatchEmployeeDetails,
+        employeeUpdate,
+        dispatchEmployeeUpdate,
+      }}
+    >
       {props.children}
     </employeeContext.Provider>
   );
