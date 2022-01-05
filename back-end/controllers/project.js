@@ -128,7 +128,7 @@ const editProject = asyncHandler(async (req, res) => {
 
 const deleteProject = asyncHandler(async (req, res) => {
   const employee = req.user;
-  if (employee.role === "manager") {
+  if (employee.role === 'manager') {
     const { projectId } = req.body;
     try {
       // delete project itself
@@ -137,26 +137,6 @@ const deleteProject = asyncHandler(async (req, res) => {
       if (!project) {
         res.status(404);
         throw new Error(`No project found ${projectId}`);
-      }
-      const clientId = project.client;
-      const client = Client.findById(clientId);
-      if (client) {
-        client.projects.forEach((project, index) => {
-          if (project.equals(projectId)) {
-            client.projects.splice(index, 1);
-          }
-
-        });
-      }
-      await client.save();
-      for (let i = 0; i < project.employees.length; i++) {
-        const user = User.findById(project.employees[i]);
-        user.projects.forEach((project, index) => {
-          if (project.equals(projectId)) {
-            user.projects.splice(index, 1);
-          }
-        });
-        user.save();
       }
 
       // delete project from client
@@ -196,9 +176,10 @@ const deleteProject = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error("Unauthorized manager");
+    throw new Error('Unauthorized manager');
   }
 });
+
 
 // @desc    Add employee to project by email
 // @route   POST /project/addMember/:id

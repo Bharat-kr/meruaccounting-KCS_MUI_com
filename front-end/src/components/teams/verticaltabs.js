@@ -142,15 +142,15 @@ export default function VerticalTabs() {
     setCurrTeamToUpdate(team[0]);
   };
 
-  const AddMember = (e) => {
+  const AddMember = async (e) => {
     e.preventDefault();
     console.log(newMemberMail);
     console.log(currTeamToUpdate);
-    updateMember(
+    await updateMember(
       { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
       dispatchUpdateMember
     );
-    getTeam(dispatchgetTeam);
+    await getTeam(dispatchgetTeam);
   };
 
   return (
@@ -294,7 +294,6 @@ export default function VerticalTabs() {
         >
           <Box>
             <Main
-              
               currMember={currMember}
               currTeam={currTeam}
               sx={{ overflow: "hidden" }}

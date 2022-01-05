@@ -22,7 +22,7 @@ import { Box } from "@mui/system";
 import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
-import { getClientProjects } from "../../api/clients api/clients";
+import { getClient, getClientProjects } from "../../api/clients api/clients";
 import { editProject, deleteProject } from "../../api/projects api/projects";
 import AddIcon from "@mui/icons-material/Add";
 import { display } from "@mui/material/node_modules/@mui/system";
@@ -90,6 +90,7 @@ export default function Header() {
     currentProject,
     changeProject,
     updateClient,
+    dispatchClientDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
   const { dispatchEditProject, dispatchDeleteProject } =
@@ -116,6 +117,7 @@ export default function Header() {
     console.log("hello", projectName);
     editProject(currentProject._id, { name: projectName }, dispatchEditProject);
     changeProject(projectName);
+    getClient(dispatchClientDetails);
   };
   const handleProjectDelete = (e) => {
     console.log(currentProject._id);
