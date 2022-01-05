@@ -204,7 +204,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 // @route   POST /project/addMember/:id
 // @access  Private
 
-const addEmailToProject = asyncHandler(async (req, res) => {
+const addMember = asyncHandler(async (req, res) => {
   const manager = req.user;
   if (manager.role !== 'manager') {
     throw new Error('Unauthorized');
@@ -245,6 +245,45 @@ const addEmailToProject = asyncHandler(async (req, res) => {
     await project.save();
     res.status(201).json({
       status: 'ok',
+      data: project,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+// @desc    Remove employee from project by id
+// @route   PATCH /project/removeMember/:id
+// @access  Private
+
+const removeMember = asyncHandler(async (req, res) => {
+  try {
+    const manager = req.user;
+    if (manager.role !== 'manager') {
+      throw new Error('Unauthorized');
+    }
+    const employeeId = req.body.employeeId;
+    const projectId = req.params.id;
+    const project = await Project.findById(projectId);
+    const employee = await User.findById(employeeId);
+
+    if (project.projectLeader?._id.toHexString() === employeeId) {
+      project.projectLeader = null;
+    }
+
+    project.employees = project.employees.filter(
+      (id) => id.toHexString() !== employeeId
+    );
+
+    employee.projects = employee.projects.filter(
+      (id) => id.toHexString() !== projectId
+    );
+
+    await employee.save();
+    await project.save();
+    res.json({
+      status: 'success',
       data: project,
     });
   } catch (error) {
@@ -309,8 +348,9 @@ export {
   editProject,
   getProjectById,
   getProject,
-  addEmailToProject,
+  addMember,
   assignProjectLeader,
+  removeMember,
 };
 
 // // @desc    Add team to project
