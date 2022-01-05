@@ -14,7 +14,8 @@ const createProject = asyncHandler(async (req, res) => {
     const { name, clientId } = req.body;
     try {
       const project = new Project({ name });
-
+      project.employees.push(manager._id.toHexString());
+      project.createdBy = manager._id;
       const client = await Client.findById(clientId);
       if (!client) throw new Error('Client not found');
       manager.projects.push(project._id.toHexString());
@@ -39,7 +40,6 @@ const createProject = asyncHandler(async (req, res) => {
   }
 });
 
-//TODO: not working
 // @desc    Get project
 // @route   GET /project
 // @access  Public
@@ -130,7 +130,9 @@ const deleteProject = asyncHandler(async (req, res) => {
   if (employee.role === "manager") {
     const { projectId } = req.body;
     try {
+      // delete project itself
       const project = await Project.findByIdAndRemove(projectId);
+      // const project = await Project.findById(projectId);
       if (!project) {
         res.status(404);
         throw new Error(`No project found ${projectId}`);
@@ -156,14 +158,36 @@ const deleteProject = asyncHandler(async (req, res) => {
         user.save();
       }
 
-      employee.projects.filter(
-        (id) => id.toHexString !== projectId.toHexString
-      );
+      // delete project from client
+      {
+        const client = await Client.findById(project.client.toHexString());
+        if (!client) {
+          throw new Error('Client not found');
+        }
+        client.projects = client.projects.filter(
+          (id) => id.toHexString() !== projectId
+        );
+        await client.save();
+      }
 
-      await employee.save();
+      // delete project from employees array
+      if (project.employees.length === 0) {
+        throw new Error('No employee in projects');
+      }
+      project.createdBy;
+      for (let i = 0; i < project.employees.length; i++) {
+        const emp = await User.findById(project.employees[i]);
+        if (!emp) throw new Error(`Employee ${project.employees[i]} not found`);
+        emp.projects = emp.projects.filter(
+          (id) => id.toHexString() !== projectId
+        );
+        console.log(emp.projects);
+        await emp.save();
+      }
 
       res.status(202).json({
         messsage: 'Successfully Deleted Project',
+        status: 'success',
         data: employee.projects,
       });
     } catch (error) {
