@@ -22,7 +22,7 @@ import { Box } from "@mui/system";
 import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
-import { getClient, getClientProjects } from "../../api/clients api/clients";
+import { getClientProjects } from "../../api/clients api/clients";
 import { editProject, deleteProject } from "../../api/projects api/projects";
 import AddIcon from "@mui/icons-material/Add";
 import { display } from "@mui/material/node_modules/@mui/system";
@@ -90,7 +90,6 @@ export default function Header() {
     currentProject,
     changeProject,
     updateClient,
-    dispatchClientDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
   const { dispatchEditProject, dispatchDeleteProject } =
@@ -117,7 +116,6 @@ export default function Header() {
     console.log("hello", projectName);
     editProject(currentProject._id, { name: projectName }, dispatchEditProject);
     changeProject(projectName);
-    getClient(dispatchClientDetails);
   };
   const handleProjectDelete = (e) => {
     console.log(currentProject._id);
@@ -144,20 +142,21 @@ export default function Header() {
   console.log(currentProject);
   return (
     <>
-      <Box component="div" sx={{ width:"70%", flexGrow:"1", overflowX:"hidden", overflowY:"auto",margin: "10px 10px 10px 0" }} >
+      <Box component="div" sx={{ margin: "10px 10px 10px 0" }}>
         {/* grid container 40 60 */}
         <Paper
-           component="div"
-           elevation={3}
-           sx={{
-             overflow: "visible",
-             height: "100%",
-             position: "relative",
-             display: "grid",
-             gridTemplateRows: "30% 70%",
-           }}
+          component="div"
+          elevation={3}
+          sx={{
+            overflow: "visible",
+            height: "100%",
+            // position: "relative",
+            display: "flex",
+            // gridTemplateRows: "30% 70%",
+            flexDirection: "column",
+          }}
         >
-          <Box sx={{ m: 1}}>
+          <Box sx={{ m: 1, display: "block" }}>
             <div></div>
             <h3 style={{ backgroundColor: "#fff" }}>
               <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
