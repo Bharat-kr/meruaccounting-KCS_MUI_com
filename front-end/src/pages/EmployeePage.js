@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import Overview from "../components/EmployeePage/Overview";
 import ScreenShots from "../components/EmployeePage/ScreenShots";
 import PageHeader from "../components/PageHeader";
+import Timeline from "../components/EmployeePage/Timeline";
 
 // contexts
 // eslint-disable-next-line import/no-named-as-default
@@ -15,6 +16,7 @@ import { LoginProvider } from "../contexts/LoginContext";
 
 // apis
 import { getEmployeeDetails } from "../api/employee api/employee";
+import Calendar from "src/components/UserPage/Calendar";
 
 export default function EmployeePage(props) {
   const { employee, dispatchEmployeeDetails } = useContext(employeeContext);
@@ -36,8 +38,10 @@ export default function EmployeePage(props) {
                 !employee.loader ? employee?.employee?.data?._id : "Employee"
               }
             />
-
+            <Calendar />
+            {/* <Overview /> */}
             <Overview employee={employee} />
+            <Timeline/>
             <ScreenShots employee={employee} />
           </CurrentUserContextProvider>
         </LoginProvider>
