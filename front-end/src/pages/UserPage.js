@@ -22,7 +22,7 @@ export default function UserPage() {
             <PageHeader title="Hi, Welcome Back!" />
             <Calendar />
             <Overview />
-            <Timeline />
+            <Timeline/>
             <ScreenShots />
           </CurrentUserContextProvider>
         </LoginProvider>
