@@ -37,7 +37,7 @@ const TOTAL = 234;
 export default function AppBugReports() {
   return (
     <RootStyle>
-      <Typography variant="h4">{TOTAL} Hr</Typography>
+      <Typography variant="h3">{TOTAL} Hr</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Total Hours
       </Typography>

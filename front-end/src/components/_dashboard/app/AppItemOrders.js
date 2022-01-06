@@ -39,7 +39,7 @@ export default function AppItemOrders() {
       {/* <IconWrapperStyle>
         <Icon icon={windowsFilled} width={24} height={24} />
       </IconWrapperStyle> */}
-      <Typography variant="h4">{TOTAL} Hr</Typography>
+      <Typography variant="h3">{TOTAL} Hr</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         TODAY
       </Typography>

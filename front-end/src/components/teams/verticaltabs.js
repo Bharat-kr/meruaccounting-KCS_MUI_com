@@ -17,7 +17,7 @@ import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "700px",
+    height: "100%",
     width: "100%",
     margin: "auto",
     display: "grid",
@@ -142,15 +142,15 @@ export default function VerticalTabs() {
     setCurrTeamToUpdate(team[0]);
   };
 
-  const AddMember = (e) => {
+  const AddMember = async (e) => {
     e.preventDefault();
     console.log(newMemberMail);
     console.log(currTeamToUpdate);
-    updateMember(
+    await updateMember(
       { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
       dispatchUpdateMember
     );
-    getTeam(dispatchgetTeam);
+    await getTeam(dispatchgetTeam);
   };
 
   return (
@@ -159,7 +159,6 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: "10px",
-          maxHeight: "70vh",
           height: "auto",
         }}
       >
@@ -295,7 +294,6 @@ export default function VerticalTabs() {
         >
           <Box>
             <Main
-              
               currMember={currMember}
               currTeam={currTeam}
               sx={{ overflow: "hidden" }}
