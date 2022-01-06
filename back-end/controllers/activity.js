@@ -1,7 +1,7 @@
-import Activity from '../models/activity.js';
-import User from '../models/user.js';
-import Screenshot from '../models/screenshot.js';
-import asyncHandler from 'express-async-handler';
+import Activity from "../models/activity.js";
+import User from "../models/user.js";
+import Screenshot from "../models/screenshot.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -25,7 +25,7 @@ const createScreenShot = asyncHandler(async (req, res) => {
     project: projectId,
     task,
     image,
-    activityAt,
+    activityat: activityAt,
     activityId,
     performanceData,
     title,
@@ -37,7 +37,7 @@ const createScreenShot = asyncHandler(async (req, res) => {
     await activity.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       screenshot,
       activity,
     });
@@ -49,14 +49,21 @@ const createScreenShot = asyncHandler(async (req, res) => {
 // @access  Private
 
 const createActivity = asyncHandler(async (req, res) => {
-  const { clientId, task, startTime, endTime, performanceData } = req.body;
-
+  const {
+    // clientId,
+    task,
+    startTime,
+    endTime,
+    activityAt,
+    performanceData,
+  } = req.body;
   //FIXME: project in model what to do with that
   // no employeeId in activity
 
   const activity = await Activity.create({
-    client: clientId,
-    task: task,
+    // activityAt,
+    // client: clientId,
+    // task: task,
     startTime,
     endTime,
   });
@@ -64,43 +71,46 @@ const createActivity = asyncHandler(async (req, res) => {
   if (activity) {
     const user = await User.findById(req.user._id);
 
-    const date = new Date();
-    date.setUTCSeconds(startTime);
+    // const date = new Date();
+    // date.setUTCSeconds(startTime);
 
     //FIXME: conversion problem
+    let actAt = new Date(activityAt);
+    let dd = actAt.getDate();
+    let mm = actAt.getMonth() + 1;
+    let yyyy = actAt.getFullYear();
+    let today = dd + "/" + mm + "/" + yyyy;
 
-    console.log(typeof startTime);
-    const day = Date.parse(startTime).getDate().getTime();
-
-    const epoch = date.getDate().getTime();
-    let i = 0;
-
-    for (i = 0; i < user.days.length(); i++) {
-      if (user.days[i].date === day) {
-        console.log('inside if');
-        // user.days[i].activities.push(activity);
+    let found = false;
+    for (let i = 0; i < user.days.length; i++) {
+      const day = user.days[i];
+      if (day.date == today) {
+        console.log("Inside Date Equals");
+        found = true;
+        day.activities.push(activity);
         break;
+      } else {
+        console.log("not found");
       }
     }
-    if (i != 0) {
-      user.days[i].activities.push(activity);
-    } else {
-      user.days.push({
-        date: epoch,
+    if (found == false) {
+      const day = {
+        date: today,
         activities: [activity],
-      });
+      };
+      user.days.push(day);
     }
 
     await user.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       activity,
       days: user.days,
     });
   } else {
     res.status(500);
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
 });
 
