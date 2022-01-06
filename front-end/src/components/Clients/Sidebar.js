@@ -92,7 +92,8 @@ export default function Sidebar() {
       component="div"
       sx={{
         margin: "10px",
-        height: "auto",
+        maxHeight: "70vh",
+        height: "70vh",
       }}
     >
       <Paper
@@ -101,9 +102,7 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
-          display:"flex",
-          flexDirection:"column"
-          // position: "relative",
+          position: "relative",
         }}
       >
         {/* search box */}
@@ -135,14 +134,13 @@ export default function Sidebar() {
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-start",
-            flexGrow:"1",
-            overflowY:"auto"
+            maxHeight: "72%",
           }}
         >
           <TreeView
             fullWidth
-            // className={classes.root}
-            sx={{ width: "100%"}}
+            className={classes.root}
+            sx={{ width: "100%", overflowY: "auto" }}
           >
             {clientsList.map((client) => (
               <TreeItem
@@ -162,6 +160,9 @@ export default function Sidebar() {
           sx={{
             boxSizing: "border-box",
             width: "95%",
+            position: "absolute",
+            bottom: "0",
+
             "& > :not(style)": { m: 1 },
           }}
         >

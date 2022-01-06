@@ -13,13 +13,11 @@ import ClientsContextProvider from '../contexts/ClientsContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxHeight: '70vh',
-    height: '70vh',
+    height: '700px',
     width: '100%',
     margin: 'auto',
-    display: 'flex',
+    display: 'grid',
     gridTemplateColumns: '30% 70%',
-    justifyContent:"space-around",
     backgroundColor: '#fdfdff'
   }
 }));
@@ -29,7 +27,7 @@ export default function Projects() {
   const classes = useStyles();
   return (
     <ClientsContextProvider>
-      <Box component="div" sx={{ width: '95%', margin: 'auto', maxHeight: '70vh', height: '70vh'  }}>
+      <Box component="div" sx={{ width: '95%', margin: 'auto' }}>
         <CssBaseline />
         <PageHeader title="Projects" />
         <div className={classes.root}>

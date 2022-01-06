@@ -1,8 +1,8 @@
-import Client from "../models/client.js";
-import Project from "../models/project.js";
-import Team from "../models/team.js";
-import User from "../models/user.js";
-import asyncHandler from "express-async-handler";
+import Client from '../models/client.js';
+import Project from '../models/project.js';
+import Team from '../models/team.js';
+import User from '../models/user.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new project
 // @route   POST /project
@@ -10,7 +10,7 @@ import asyncHandler from "express-async-handler";
 
 const createProject = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (manager.role === "manager") {
+  if (manager.role === 'manager') {
     const { name, clientId } = req.body;
     try {
       const project = new Project({ name });
@@ -28,7 +28,7 @@ const createProject = asyncHandler(async (req, res) => {
       project.client = clientId;
       await project.save();
       res.status(201).json({
-        messsage: "Successfully Created Project",
+        messsage: 'Successfully Created Project',
         data: project,
       });
     } catch (error) {
@@ -37,7 +37,7 @@ const createProject = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error("Unauthorized manager");
+    throw new Error('Unauthorized manager');
   }
 });
 
@@ -51,14 +51,14 @@ const getProject = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(401);
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
   for (let i = 0; i < user.projects.length; i++) {
     const project = await Project.findById(user.projects[i]);
     if (project) {
       await Project.populate(project, {
-        path: "members",
+        path: 'members',
       });
       responseArray.push(project);
     } else {
@@ -66,7 +66,7 @@ const getProject = asyncHandler(async (req, res) => {
     }
   }
   res.json({
-    msg: "Success",
+    msg: 'Success',
     data: responseArray,
   });
 });
@@ -81,7 +81,7 @@ const getProjectById = asyncHandler(async (req, res) => {
     const project = await Project.findById(id);
     if (!project) {
       res.status(404);
-      throw new Error("No projects found");
+      throw new Error('No projects found');
     }
     res.status(200).json({
       project,
@@ -98,7 +98,7 @@ const getProjectById = asyncHandler(async (req, res) => {
 
 const editProject = asyncHandler(async (req, res) => {
   const employee = req.user;
-  if (employee.role === "manager") {
+  if (employee.role === 'manager') {
     const projectId = req.params.id;
 
     try {
@@ -109,7 +109,7 @@ const editProject = asyncHandler(async (req, res) => {
       }
 
       res.status(202).json({
-        messsage: "Successfully edited project",
+        messsage: 'Successfully edited project',
         data: project,
       });
     } catch (error) {
@@ -118,7 +118,7 @@ const editProject = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error("Unauthorized manager");
+    throw new Error('Unauthorized manager');
   }
 });
 
@@ -179,7 +179,6 @@ const deleteProject = asyncHandler(async (req, res) => {
     throw new Error('Unauthorized manager');
   }
 });
-
 
 // @desc    Add employee to project by email
 // @route   POST /project/addMember/:id

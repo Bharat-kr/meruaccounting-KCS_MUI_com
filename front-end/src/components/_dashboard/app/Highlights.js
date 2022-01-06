@@ -1,15 +1,17 @@
+import { Icon } from "@iconify/react";
+import bugFilled from "@iconify/icons-ant-design/bug-filled";
 // material
 import { alpha, styled } from "@mui/material/styles";
 import { Card, Typography } from "@mui/material";
+// utils
+import { fShortenNumber } from "../../../utils/formatNumber";
 
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Card)(({ theme }) => ({
   boxShadow: "none",
   textAlign: "center",
-  margin: "5px 0 5px 0",
-  width: "45%",
-  padding: theme.spacing(4, 0),
+  padding: theme.spacing(5, 0),
   color: theme.palette.error.darker,
   backgroundColor: theme.palette.error.lighter,
 }));
@@ -34,12 +36,22 @@ const IconWrapperStyle = styled("div")(({ theme }) => ({
 
 const TOTAL = 234;
 
-export default function AppBugReports() {
+export default function Highlights() {
   return (
     <RootStyle>
-      <Typography variant="h4">{TOTAL} Hr</Typography>
-      <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Total Hours
+      <Typography
+        variant="h4"
+        sx={{ textAlign: { sm: "center", lg: "left" }, pl: 1 }}
+      >
+        Projects Highlights
+      </Typography>
+      <Typography
+        variant="subtitle2"
+        sx={{ opacity: 0.72, textAlign: { sm: "center", lg: "left" }, pl: 1 }}
+      >
+        Project 1 : 69 hrs
+        <br></br>
+        Project 2 : 420 hrs
       </Typography>
     </RootStyle>
   );

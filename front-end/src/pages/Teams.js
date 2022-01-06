@@ -15,7 +15,7 @@ export default function SimpleContainer() {
         <CssBaseline />
         <Box
           component="div"
-          sx={{ width: '95%', margin: 'auto', maxHeight: '70vh', height: '70vh'}}
+          sx={{ width: '95%', margin: 'auto', maxHeight: '70vh', height: '70vh' }}
         >
           <PageHeader title="Teams" />
           <VerticalTabs />
