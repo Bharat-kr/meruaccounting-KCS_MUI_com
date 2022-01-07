@@ -27,6 +27,7 @@ import { editProject, deleteProject } from "../../api/projects api/projects";
 import AddIcon from "@mui/icons-material/Add";
 import { display } from "@mui/material/node_modules/@mui/system";
 import EnhancedTable from "../Projects/ProjectMemers";
+import { indexOf } from "lodash";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +45,19 @@ const useStyles = makeStyles((theme) => ({
     "& :focus": { width: "100%" },
   },
 }));
-export default function Header() {
+export default function Header(props) {
+  const {
+    // newClientValue,
+    currentClient,
+    // currentProject,
+    setcurrentProject,
+    setcurrentClient,
+    ...other
+  } = props;
+  // const [currentClient, setCurrentClient] = useState(currentClient);
+  // const [currentProject, setCurrentProject] = useState(currentProject);
+
+  // console.log(currentClient, currentProject);
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First name", width: 130 },
@@ -86,7 +99,7 @@ export default function Header() {
   //context
   const {
     clients,
-    currentClient,
+    // currentClient,
     currentProject,
     changeProject,
     updateClient,
@@ -96,7 +109,7 @@ export default function Header() {
   const { dispatchEditProject, dispatchDeleteProject } =
     useContext(projectContext);
   const [mockTeamLeader, setMockTeamLeader] = useState("");
-  const [projectName, setprojectName] = useState(`${currentProject.name}`);
+  const [projectName, setprojectName] = useState("");
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
@@ -116,12 +129,19 @@ export default function Header() {
     e.preventDefault();
     console.log("hello", projectName);
     editProject(currentProject._id, { name: projectName }, dispatchEditProject);
-    changeProject(projectName);
-    getClient(dispatchClientDetails);
+    // changeProject(projectName);
+    // getClient(dispatchClientDetails);
   };
-  const handleProjectDelete = (e) => {
+  console.log(currentClient);
+  const handleProjectDelete = async (e) => {
     console.log(currentProject._id);
-    deleteProject({ projectId: currentProject._id }, dispatchDeleteProject);
+    const data = { projectId: `${currentProject._id}` };
+    await deleteProject(currentProject._id, dispatchDeleteProject);
+    changeProject(
+      currentClient.projects[currentClient.projects.indexOf(currentProject) - 1]
+    );
+    await getClient(dispatchClientDetails);
+    console.log(currentClient);
   };
   const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
@@ -144,20 +164,29 @@ export default function Header() {
   console.log(currentProject);
   return (
     <>
-      <Box component="div" sx={{ width:"70%", flexGrow:"1", overflowX:"hidden", overflowY:"auto",margin: "10px 10px 10px 0" }} >
+      <Box
+        component="div"
+        sx={{
+          width: "70%",
+          flexGrow: "1",
+          overflowX: "hidden",
+          overflowY: "auto",
+          margin: "10px 10px 10px 0",
+        }}
+      >
         {/* grid container 40 60 */}
         <Paper
-           component="div"
-           elevation={3}
-           sx={{
-             overflow: "visible",
-             height: "100%",
-             position: "relative",
-             display: "grid",
-             gridTemplateRows: "30% 70%",
-           }}
+          component="div"
+          elevation={3}
+          sx={{
+            overflow: "visible",
+            height: "100%",
+            position: "relative",
+            display: "grid",
+            gridTemplateRows: "30% 70%",
+          }}
         >
-          <Box sx={{ m: 1}}>
+          <Box sx={{ m: 1 }}>
             <div></div>
             <h3 style={{ backgroundColor: "#fff" }}>
               <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>

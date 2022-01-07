@@ -36,7 +36,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Main(props) {
-  const {  currTeam, currMember, ...other } = props;
+  const { currTeam, currMember, ...other } = props;
   const { User } = useContext(UserContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
@@ -45,7 +45,6 @@ export default function Main(props) {
     setChecked(event.target.checked);
     console.log(event.target.checked);
   };
-  console.log(currMember);
 
   const updatePayrate = async (value) => {
     const data = {
