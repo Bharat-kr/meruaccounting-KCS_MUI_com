@@ -25,7 +25,11 @@ const activitySchema = new mongoose.Schema({
   endTime: {
     type: String,
   },
-  totalPerformance: { type: Number, default: 0 },
+  consumeTime: {
+    type: String,
+  },
+  isInternal: { type: Boolean, default: false },
+  performanceData: { type: Number, default: 0 },
   screenshots: [{ type: mongoose.Types.ObjectId, ref: 'Screenshot' }],
 });
 
