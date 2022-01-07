@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const projectSchema = new mongoose.Schema(
   {
     name: { type: String },
-    budgetedHours: { type: Number },
+    consumeTime: { type: String },
+    budgetTime: { type: Number },
 
     projectLeader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
@@ -12,7 +13,6 @@ const projectSchema = new mongoose.Schema(
     employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
     client: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
-    consumeTime: String,
   },
   { timestamps: true }
 );

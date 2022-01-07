@@ -28,7 +28,7 @@ const activitySchema = new mongoose.Schema({
   consumeTime: {
     type: String,
   },
-  isAcepted: {
+  isAccepted: {
     type: Boolean,
     default: true,
   },
