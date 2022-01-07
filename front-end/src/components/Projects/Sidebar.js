@@ -21,6 +21,7 @@ import Treeview from "../Treeview";
 import SearchBar from "../SearchBar";
 import { getClientProjects, getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
+import Header from "./Header";
 //-------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -36,27 +37,35 @@ export default function Sidebar() {
   // contexts
   const {
     clients,
-    currentClient,
-    changeClient,
+    // currentClient,
+    // setCurrentClient,
     addClient,
-    currentProject,
-    changeProject,
+    // currentProject,
+    // setCurrentProject,
     client,
     clientDetails,
     dispatchClientDetails,
     clientProjectDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
-
+  const [currentClient, setCurrentClient] = useState("");
+  const [currentProject, setCurrentProject] = useState("");
   const { dispatchCreateProject } = useContext(projectContext);
 
-  useEffect(() => {
-    getClient(dispatchClientDetails);
+  useEffect(async () => {
+    await getClient(dispatchClientDetails);
   }, []);
   let clientsList = [];
+
   if (clientDetails.loader === false) {
     clientsList = clientDetails.client.data;
   }
+  useEffect(() => {
+    if (clientDetails.loader === false) {
+      setCurrentClient(clientDetails?.client.data[0]);
+      setCurrentProject(clientDetails?.client.data[0].projects[0]);
+    }
+  }, []);
   const projectList = [];
   useEffect(() => {
     clientDetails?.client?.data?.map((client) => {
@@ -64,7 +73,7 @@ export default function Sidebar() {
         projectList.push(client.name + ":" + pro.name);
       });
     });
-  }, [projectList]);
+  }, [clientDetails, currentClient, currentProject]);
   // useEffect(() => {
   //   getClientProjects(
   //     { clientId: currentClient._id },
@@ -93,8 +102,8 @@ export default function Sidebar() {
         // eslint-disable-next-line no-useless-return
         return;
       }
-      changeClient(client[0]);
-      changeProject(project[0]);
+      setCurrentClient(client[0]);
+      setCurrentProject(project[0]);
     }
   };
   // change currenclient on projects name click
@@ -102,31 +111,32 @@ export default function Sidebar() {
     const client = clientsList.filter((client) =>
       client.name === e.target.textContent ? client : ""
     );
-    changeClient(client[0]);
-    // changeProject(project[0]);
+    setCurrentClient(client[0]);
   };
   const handleProjectClick = (e) => {
     const client = clientsList.filter((client) =>
       client.name === e.target.dataset.client ? client : ""
     );
-    changeClient(client[0]);
+    setCurrentClient(client[0]);
     const project = client[0].projects.filter((project) =>
       project.name === e.target.dataset.project ? project : ""
     );
 
-    changeProject(project[0]);
+    setCurrentProject(project[0]);
   };
   // add client in submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setnewClientError(false);
     if (newProjectValue === "" || currentClient === null) {
       setnewClientError(true);
       return;
     }
-    const data = { name: newProjectValue, clientId: currentClient._id };
-    createProject(data, dispatchCreateProject);
-    setnewClientValue("");
+    if (currentClient !== null) {
+      const data = { name: newProjectValue, clientId: currentClient._id };
+      await createProject(data, dispatchCreateProject);
+      await getClient(dispatchClientDetails);
+    }
   };
 
   return (
@@ -135,7 +145,9 @@ export default function Sidebar() {
       sx={{
         margin: "10px",
         // height: "70vh",
-        flexGrow:"1"
+        flexGrow: "1",
+        display: "flex",
+        flexDirection: "row",
       }}
     >
       <Paper
@@ -144,8 +156,8 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
-          display:"flex",
-          flexDirection:"column"
+          display: "flex",
+          flexDirection: "column",
           // position: "relative",
         }}
       >
@@ -233,6 +245,12 @@ export default function Sidebar() {
           </form>
         </Box>
       </Paper>
+      <Header
+        currClient={currentClient}
+        currProject={currentProject}
+        setcurrClient={setCurrentClient}
+        setCurrProjct={setCurrentProject}
+      />
     </Box>
   );
 }

@@ -27,6 +27,7 @@ import { editProject, deleteProject } from "../../api/projects api/projects";
 import AddIcon from "@mui/icons-material/Add";
 import { display } from "@mui/material/node_modules/@mui/system";
 import EnhancedTable from "../Projects/ProjectMemers";
+import { indexOf } from "lodash";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -44,7 +45,13 @@ const useStyles = makeStyles((theme) => ({
     "& :focus": { width: "100%" },
   },
 }));
-export default function Header() {
+export default function Header(props) {
+  const { currClient, currProject, setcurrProject, setcurrClient, ...other } =
+    props;
+  const [currentClient, setCurrentClient] = useState(currClient);
+  const [currentProject, setCurrentProject] = useState(currProject);
+
+  console.log(currClient, currProject);
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First name", width: 130 },
@@ -86,8 +93,8 @@ export default function Header() {
   //context
   const {
     clients,
-    currentClient,
-    currentProject,
+    // currClient,
+    // currProject,
     changeProject,
     updateClient,
     dispatchClientDetails,
@@ -95,15 +102,16 @@ export default function Header() {
   } = useContext(ClientsContext);
   const { dispatchEditProject, dispatchDeleteProject } =
     useContext(projectContext);
+
   const [mockTeamLeader, setMockTeamLeader] = useState("");
-  const [projectName, setprojectName] = useState(`${currentProject.name}`);
+  const [projectName, setprojectName] = useState("");
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
   const test = useRef(false);
   useEffect(() => {
-    setprojectName(`${currentProject.name}`);
-  }, [currentClient, currentProject]);
+    setprojectName(`${currProject.name}`);
+  }, [currProject]);
   const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
   const handleSearch = (e, value) => {
     const employee = mockEmployeeList.filter((emp) =>
@@ -115,34 +123,35 @@ export default function Header() {
   const handleEditSubmit = (e) => {
     e.preventDefault();
     console.log("hello", projectName);
-    editProject(currentProject._id, { name: projectName }, dispatchEditProject);
+    editProject(currProject._id, { name: projectName }, dispatchEditProject);
     // changeProject(projectName);
     // getClient(dispatchClientDetails);
   };
-  const handleProjectDelete = (e) => {
-    console.log(currentProject._id);
-    const data = { projectId: `"${currentProject._id}"` };
-    deleteProject(currentProject._id, dispatchDeleteProject);
+  const handleProjectDelete = async (e) => {
+    console.log(currProject._id);
+    const data = { projectId: `${currProject._id}` };
+    setcurrClient(currentClient.projects[indexOf(currProject) - 1]);
+    await deleteProject(currProject._id, dispatchDeleteProject);
   };
   const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
 
-    const index = newClient.projects.indexOf(currentProject);
+    const index = newClient.projects.indexOf(currProject);
     const members = newClient.projects[index].Projectmembers;
     if (members.includes(member)) {
       newClient.projects[index].Projectmembers.splice(
         members.indexOf(member),
         1
       );
-      updateClient(newClient, clients.indexOf(currentClient));
+      updateClient(newClient, clients.indexOf(currClient));
     } else {
       newClient.projects[index].Projectmembers.push(member);
-      updateClient(newClient, clients.indexOf(currentClient));
+      updateClient(newClient, clients.indexOf(currClient));
     }
     console.log("hello");
   };
-  console.log(currentProject);
+  console.log(currProject);
   return (
     <>
       <Box

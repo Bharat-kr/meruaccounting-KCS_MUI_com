@@ -83,7 +83,7 @@ export const editProject = async (_id, incomingData, dispatch) => {
 export const deleteProject = async (incomingData, dispatch) => {
   try {
     const { data } = await axios.delete(`/project`, {
-      data: { projectId: `"${incomingData}"` },
+      data: { projectId: `${incomingData}` },
     });
 
     dispatch({ type: DELETE_PROJECTS_SUCCESS, payload: data });
