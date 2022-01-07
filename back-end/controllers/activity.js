@@ -32,7 +32,10 @@ const createScreenShot = asyncHandler(async (req, res) => {
   });
 
   if (screenshot) {
-    const activity = Activity.findById(activityId);
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      res.status(404).json({ mssg: "no act found" });
+    }
     activity.screenshots.push(screenshot._id.toHexString());
     await activity.save();
 
