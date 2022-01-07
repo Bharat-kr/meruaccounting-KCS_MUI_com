@@ -112,8 +112,12 @@ const createActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const activityId = req.params.id;
-    const activity = await Activity.findByIdAndUpdate(activityId, req.body);
-    if (!activity) {
+    const unUpdatedactivity = await Activity.findByIdAndUpdate(activityId, {
+      $set: req.body,
+    });
+    const activity = await Activity.findById(activityId);
+
+    if (!unUpdatedactivity) {
       res.status(404);
       throw new Error(`No activity found ${activityId}`);
     }
