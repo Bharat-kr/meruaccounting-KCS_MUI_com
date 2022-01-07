@@ -46,12 +46,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function Header(props) {
-  const { currClient, currProject, setcurrProject, setcurrClient, ...other } =
-    props;
-  const [currentClient, setCurrentClient] = useState(currClient);
-  const [currentProject, setCurrentProject] = useState(currProject);
+  const {
+    // newClientValue,
+    currentClient,
+    // currentProject,
+    setcurrentProject,
+    setcurrentClient,
+    ...other
+  } = props;
+  // const [currentClient, setCurrentClient] = useState(currentClient);
+  // const [currentProject, setCurrentProject] = useState(currentProject);
 
-  console.log(currClient, currProject);
+  // console.log(currentClient, currentProject);
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First name", width: 130 },
@@ -93,8 +99,8 @@ export default function Header(props) {
   //context
   const {
     clients,
-    // currClient,
-    // currProject,
+    // currentClient,
+    currentProject,
     changeProject,
     updateClient,
     dispatchClientDetails,
@@ -102,7 +108,6 @@ export default function Header(props) {
   } = useContext(ClientsContext);
   const { dispatchEditProject, dispatchDeleteProject } =
     useContext(projectContext);
-
   const [mockTeamLeader, setMockTeamLeader] = useState("");
   const [projectName, setprojectName] = useState("");
   const handleEditClick = (e) => {
@@ -110,8 +115,8 @@ export default function Header(props) {
   };
   const test = useRef(false);
   useEffect(() => {
-    setprojectName(`${currProject.name}`);
-  }, [currProject]);
+    setprojectName(`${currentProject.name}`);
+  }, [currentClient, currentProject]);
   const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
   const handleSearch = (e, value) => {
     const employee = mockEmployeeList.filter((emp) =>
@@ -123,35 +128,40 @@ export default function Header(props) {
   const handleEditSubmit = (e) => {
     e.preventDefault();
     console.log("hello", projectName);
-    editProject(currProject._id, { name: projectName }, dispatchEditProject);
+    editProject(currentProject._id, { name: projectName }, dispatchEditProject);
     // changeProject(projectName);
     // getClient(dispatchClientDetails);
   };
+  console.log(currentClient);
   const handleProjectDelete = async (e) => {
-    console.log(currProject._id);
-    const data = { projectId: `${currProject._id}` };
-    setcurrClient(currentClient.projects[indexOf(currProject) - 1]);
-    await deleteProject(currProject._id, dispatchDeleteProject);
+    console.log(currentProject._id);
+    const data = { projectId: `${currentProject._id}` };
+    await deleteProject(currentProject._id, dispatchDeleteProject);
+    changeProject(
+      currentClient.projects[currentClient.projects.indexOf(currentProject) - 1]
+    );
+    await getClient(dispatchClientDetails);
+    console.log(currentClient);
   };
   const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
 
-    const index = newClient.projects.indexOf(currProject);
+    const index = newClient.projects.indexOf(currentProject);
     const members = newClient.projects[index].Projectmembers;
     if (members.includes(member)) {
       newClient.projects[index].Projectmembers.splice(
         members.indexOf(member),
         1
       );
-      updateClient(newClient, clients.indexOf(currClient));
+      updateClient(newClient, clients.indexOf(currentClient));
     } else {
       newClient.projects[index].Projectmembers.push(member);
-      updateClient(newClient, clients.indexOf(currClient));
+      updateClient(newClient, clients.indexOf(currentClient));
     }
     console.log("hello");
   };
-  console.log(currProject);
+  console.log(currentProject);
   return (
     <>
       <Box

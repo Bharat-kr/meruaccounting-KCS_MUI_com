@@ -37,19 +37,19 @@ export default function Sidebar() {
   // contexts
   const {
     clients,
-    // currentClient,
-    // setCurrentClient,
+    currentClient,
+    changeClient,
     addClient,
-    // currentProject,
-    // setCurrentProject,
+    currentProject,
+    changeProject,
     client,
     clientDetails,
     dispatchClientDetails,
     clientProjectDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
-  const [currentClient, setCurrentClient] = useState("");
-  const [currentProject, setCurrentProject] = useState("");
+  // const [currentClient, changeClient] = useState("");
+  // const [currentProject, changeProject] = useState("");
   const { dispatchCreateProject } = useContext(projectContext);
 
   useEffect(async () => {
@@ -58,21 +58,23 @@ export default function Sidebar() {
   let clientsList = [];
 
   if (clientDetails.loader === false) {
-    clientsList = clientDetails.client.data;
+    clientsList = clientDetails?.client?.data[0];
   }
-  useEffect(() => {
-    if (clientDetails.loader === false) {
-      setCurrentClient(clientDetails?.client.data[0]);
-      setCurrentProject(clientDetails?.client.data[0].projects[0]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (clientDetails.length > 0) {
+  //     changeClient(clientDetails?.client?.data[0]);
+  //     changeProject(clientDetails?.client?.data[0].projects[0]);
+  //   }
+  // }, []);
   const projectList = [];
   useEffect(() => {
-    clientDetails?.client?.data?.map((client) => {
-      client.projects.map((pro) => {
-        projectList.push(client.name + ":" + pro.name);
+    if (clientDetails.loader === false) {
+      clientDetails?.client?.data[0].map((client) => {
+        client.projects.map((pro) => {
+          projectList.push(client.name + ":" + pro.name);
+        });
       });
-    });
+    }
   }, [clientDetails, currentClient, currentProject]);
   // useEffect(() => {
   //   getClientProjects(
@@ -102,8 +104,8 @@ export default function Sidebar() {
         // eslint-disable-next-line no-useless-return
         return;
       }
-      setCurrentClient(client[0]);
-      setCurrentProject(project[0]);
+      changeClient(client[0]);
+      changeProject(project[0]);
     }
   };
   // change currenclient on projects name click
@@ -111,31 +113,38 @@ export default function Sidebar() {
     const client = clientsList.filter((client) =>
       client.name === e.target.textContent ? client : ""
     );
-    setCurrentClient(client[0]);
+    changeClient(client[0]);
   };
   const handleProjectClick = (e) => {
     const client = clientsList.filter((client) =>
       client.name === e.target.dataset.client ? client : ""
     );
-    setCurrentClient(client[0]);
+    changeClient(client[0]);
+    setnewClientValue(client[0]);
     const project = client[0].projects.filter((project) =>
       project.name === e.target.dataset.project ? project : ""
     );
 
-    setCurrentProject(project[0]);
+    changeProject(project[0]);
   };
+  console.log(newClientValue);
+  console.log(currentProject);
   // add client in submit
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setnewClientError(false);
-    if (newProjectValue === "" || currentClient === null) {
-      setnewClientError(true);
-      return;
-    }
-    if (currentClient !== null) {
-      const data = { name: newProjectValue, clientId: currentClient._id };
-      await createProject(data, dispatchCreateProject);
-      await getClient(dispatchClientDetails);
+    try {
+      e.preventDefault();
+      setnewClientError(false);
+      if (newProjectValue === "" || currentClient === null) {
+        setnewClientError(true);
+        return;
+      }
+      if (currentClient !== null) {
+        const data = { name: newProjectValue, clientId: currentClient._id };
+        await createProject(data, dispatchCreateProject);
+        await getClient(dispatchClientDetails);
+      }
+    } catch (error) {
+      console.log("Choose A client ,to be display in popup");
     }
   };
 
@@ -183,34 +192,37 @@ export default function Sidebar() {
             overflowY: "auto",
           }}
         >
-          {clientsList.map((client) => (
-            <Treeview
-              parentName={client.name}
-              className={classes.root}
-              sx={{ width: "100%" }}
-              onClick={handleClick}
-              id={client._id}
-            >
-              {client.projects.map((project) => {
-                return (
-                  <TreeItem
-                    id={project._id}
-                    label={
-                      <Typography
-                        data-client={client.name}
-                        data-project={project.name}
-                        onClick={handleProjectClick}
-                        variant="h6"
-                      >
-                        {project.name}
-                      </Typography>
-                    }
-                    id={project._id}
-                  />
-                );
-              })}
-            </Treeview>
-          ))}
+          {clientsList.length > 0 &&
+            clientsList.map((client) => (
+              <Treeview
+                parentName={client.name}
+                key={client.name}
+                className={classes.root}
+                sx={{ width: "100%" }}
+                onClick={handleClick}
+                id={client._id}
+              >
+                {client.projects.map((project) => {
+                  return (
+                    <TreeItem
+                      id={project._id}
+                      key={project.name}
+                      label={
+                        <Typography
+                          data-client={client.name}
+                          data-project={project.name}
+                          onClick={handleProjectClick}
+                          variant="h6"
+                        >
+                          {project.name}
+                        </Typography>
+                      }
+                      id={project._id}
+                    />
+                  );
+                })}
+              </Treeview>
+            ))}
         </Box>
 
         {/* INPUT BOX, add validations, connect to context */}
@@ -246,10 +258,10 @@ export default function Sidebar() {
         </Box>
       </Paper>
       <Header
-        currClient={currentClient}
-        currProject={currentProject}
-        setcurrClient={setCurrentClient}
-        setCurrProjct={setCurrentProject}
+        currentClient={newClientValue}
+        currentProject={currentProject}
+        setcurrClient={changeClient}
+        setCurrProjct={changeProject}
       />
     </Box>
   );
