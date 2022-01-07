@@ -54,33 +54,26 @@ const createActivity = asyncHandler(async (req, res) => {
     task,
     startTime,
     endTime,
-    activityAt,
     performanceData,
+    isInternal,
   } = req.body;
-  //FIXME: project in model what to do with that
-  // no employeeId in activity
 
   const activity = await Activity.create({
-    // activityAt,
     // client: clientId,
-    // task: task,
+    task,
+    performanceData,
     startTime,
     endTime,
+    isInternal,
   });
 
   if (activity) {
     const user = await User.findById(req.user._id);
-
-    // const date = new Date();
-    // date.setUTCSeconds(startTime);
-
-    //FIXME: conversion problem
-    let actAt = new Date(activityAt);
+    let actAt = new Date(startTime);
     let dd = actAt.getDate();
     let mm = actAt.getMonth() + 1;
     let yyyy = actAt.getFullYear();
     let today = dd + "/" + mm + "/" + yyyy;
-
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
@@ -100,9 +93,7 @@ const createActivity = asyncHandler(async (req, res) => {
       };
       user.days.push(day);
     }
-
     await user.save();
-
     res.status(201).json({
       status: "success",
       activity,
@@ -114,4 +105,26 @@ const createActivity = asyncHandler(async (req, res) => {
   }
 });
 
-export { createActivity, createScreenShot };
+// @desc    Update the activity
+// @route   PATCH /activity/:id
+// @access  Private
+
+const updateActivity = asyncHandler(async (req, res) => {
+  try {
+    const activityId = req.params.id;
+    const activity = await Activity.findByIdAndUpdate(activityId, req.body);
+    if (!activity) {
+      res.status(404);
+      throw new Error(`No activity found ${activityId}`);
+    }
+
+    res.status(202).json({
+      message: "Succesfully edited activity",
+      data: activity,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { createActivity, createScreenShot, updateActivity };

@@ -21,7 +21,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
-import { getClientProjects } from "../../api/clients api/clients";
+import { projectContext } from "../../contexts/ProjectsContext";
+import { getClient, getClientProjects } from "../../api/clients api/clients";
+import { editProject, deleteProject } from "../../api/projects api/projects";
 import AddIcon from "@mui/icons-material/Add";
 import { display } from "@mui/material/node_modules/@mui/system";
 import EnhancedTable from "../Projects/ProjectMemers";
@@ -81,35 +83,45 @@ export default function Header() {
   const classes = useStyles();
   // to focus edit name of client
   const inputRef = useRef();
-  const [mockTeamLeader, setMockTeamLeader] = useState("");
-  const handleEditClick = (e) => {
-    inputRef.current.focus();
-  };
-  const test = useRef(false);
-
-  // contexts
+  //context
   const {
     clients,
     currentClient,
     currentProject,
     changeProject,
     updateClient,
+    dispatchClientDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
-
+  const { dispatchEditProject, dispatchDeleteProject } =
+    useContext(projectContext);
+  const [mockTeamLeader, setMockTeamLeader] = useState("");
+  const [projectName, setprojectName] = useState(`${currentProject.name}`);
+  const handleEditClick = (e) => {
+    inputRef.current.focus();
+  };
+  const test = useRef(false);
   useEffect(() => {
-    // getClientProjects(currentClient._id, dispatchClientProjectDetails);
-    // console.log("hey");
-  }, [currentClient]);
+    setprojectName(`${currentProject.name}`);
+  }, [currentClient, currentProject]);
   const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
-  // console.log(currentClient);
   const handleSearch = (e, value) => {
-    console.log(value);
     const employee = mockEmployeeList.filter((emp) =>
       emp == value ? emp : ""
     );
-    console.log(employee);
     return setMockTeamLeader(employee[0]);
+  };
+  const handleEdit = () => {};
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    console.log("hello", projectName);
+    editProject(currentProject._id, { name: projectName }, dispatchEditProject);
+    changeProject(projectName);
+    getClient(dispatchClientDetails);
+  };
+  const handleProjectDelete = (e) => {
+    console.log(currentProject._id);
+    deleteProject({ projectId: currentProject._id }, dispatchDeleteProject);
   };
   const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
@@ -132,30 +144,33 @@ export default function Header() {
   console.log(currentProject);
   return (
     <>
-      <Box component="div" sx={{ margin: "10px 10px 10px 0" }}>
+      <Box component="div" sx={{ width:"70%", flexGrow:"1", overflowX:"hidden", overflowY:"auto",margin: "10px 10px 10px 0" }} >
         {/* grid container 40 60 */}
         <Paper
-          component="div"
-          elevation={3}
-          sx={{
-            overflow: "visible",
-            height: "100%",
-            // position: "relative",
-            display: "flex",
-            // gridTemplateRows: "30% 70%",
-            flexDirection: "column",
-          }}
+           component="div"
+           elevation={3}
+           sx={{
+             overflow: "visible",
+             height: "100%",
+             position: "relative",
+             display: "grid",
+             gridTemplateRows: "30% 70%",
+           }}
         >
-          <Box sx={{ m: 1, display: "block" }}>
+          <Box sx={{ m: 1}}>
             <div></div>
             <h3 style={{ backgroundColor: "#fff" }}>
-              <input
-                onClick={handleClick}
-                type="text"
-                ref={inputRef}
-                className={classes.input}
-                value={currentProject.name}
-              />
+              <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
+                <input
+                  onClick={handleClick}
+                  onChange={(e) => setprojectName(e.target.value)}
+                  type="text"
+                  ref={inputRef}
+                  className={classes.input}
+                  value={projectName}
+                />
+              </form>
+
               <div
                 style={{
                   float: "right",
@@ -168,7 +183,7 @@ export default function Header() {
                 >
                   <EditIcon />
                 </button>
-                <button type="button" style={{}}>
+                <button onClick={handleProjectDelete} type="button" style={{}}>
                   <DeleteIcon />
                 </button>
               </div>

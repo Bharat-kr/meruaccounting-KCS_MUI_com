@@ -1,4 +1,5 @@
 import Client from '../models/client.js';
+import Project from '../models/project.js';
 import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new client
@@ -11,6 +12,7 @@ const createClient = asyncHandler(async (req, res) => {
     const { name } = req.body;
     try {
       const client = new Client({ name });
+      client.createdBy = manager._id;
       await client.save();
 
       manager.clients.push(client);
@@ -18,7 +20,7 @@ const createClient = asyncHandler(async (req, res) => {
 
       res.status(201).json({
         messsage: 'Successfully Created Client',
-        data: { manager },
+        data: client,
       });
     } catch (error) {
       res.status(500);
@@ -36,20 +38,35 @@ const createClient = asyncHandler(async (req, res) => {
 
 const getClient = asyncHandler(async (req, res) => {
   const employee = req.user;
+  let responseArray = [];
   if (employee.role === 'manager') {
     try {
-      const client = await Client.find({ manager: employee._id }).populate(
-        'projects'
-      );
+      for (let i = 0; i < employee.clients.length; i++) {
+        const client = await Client.find(employee.clients[i]).populate(
+          'projects'
+        );
 
-      if (!client) {
-        res.status(404);
-        throw new Error('No clients found');
+        // for (let j = 0; j < client.projects.length; j++) {
+        //   await Project.populate(client.projects[i], {
+        //     path: 'members',
+        //   });
+        // }
+
+        if (!client) {
+          res.status(404);
+          throw new Error('No clients found');
+        }
+
+        responseArray.push(client);
       }
+
+      // for (let j = 0; j < responseArray.length; j++) {
+      //   console.log(responseArray[j]);
+      // }
 
       res.status(200).json({
         messsage: 'Client fetched succesfully',
-        data: client,
+        data: responseArray,
       });
     } catch (error) {
       res.status(500);
@@ -73,7 +90,7 @@ const getClientProjects = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error('Client not found');
     }
-    res.status(200).json({
+    res.status(201).json({
       messsage: 'Client Projects',
       data: client,
     });
@@ -121,9 +138,11 @@ const editClient = asyncHandler(async (req, res) => {
 
 const deleteClient = asyncHandler(async (req, res) => {
   const employee = req.user;
+  const clientId = req.body.clientId;
+
   if (employee.role === 'manager') {
     try {
-      const client = await Client.findOneAndRemove({ manager: employee._id });
+      const client = await Client.findByIdAndRemove(clientId);
 
       if (!client) {
         res.status(404);
@@ -136,6 +155,7 @@ const deleteClient = asyncHandler(async (req, res) => {
       });
     } catch (error) {
       res.status(500);
+      console.log('hey');
       throw new Error(error);
     }
   } else {

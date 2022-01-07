@@ -10,6 +10,7 @@ import { LoginProvider } from "./contexts/LoginContext";
 import { TeamsProvider } from "./contexts/TeamsContext";
 import { ClientsContextProvider } from "./contexts/ClientsContext";
 import { EmployeeProvider } from "./contexts/EmployeeContext";
+import { ProjectsContextProvider } from "./contexts/ProjectsContext";
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -20,11 +21,13 @@ export default function App() {
         <GlobalStyles />
         <BaseOptionChartStyle />
         <ClientsContextProvider>
-          <EmployeeProvider>
-            <TeamsProvider>
-              <Router />
-            </TeamsProvider>
-          </EmployeeProvider>
+          <ProjectsContextProvider>
+            <EmployeeProvider>
+              <TeamsProvider>
+                <Router />
+              </TeamsProvider>
+            </EmployeeProvider>
+          </ProjectsContextProvider>
         </ClientsContextProvider>
       </ThemeConfig>
     </LoginProvider>

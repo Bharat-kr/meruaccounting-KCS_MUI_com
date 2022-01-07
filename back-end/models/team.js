@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 
-const teamSchema = new mongoose.Schema({
-  name: { type: String },
-  // manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  // projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-});
+const teamSchema = new mongoose.Schema(
+  {
+    name: { type: String },
+    // manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    // projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+  },
+  { timestamps: true }
+);
 
 teamSchema.methods.setManagerInTeam = async function (managerId) {
   const team = this;

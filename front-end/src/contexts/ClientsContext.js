@@ -23,10 +23,6 @@ export const ClientsContext = createContext();
 
 const clientProjectDetailsReducer = (state, action) => {
   switch (action.type) {
-    case GET_CLIENTPRO_REQUEST:
-      return {
-        loader: true,
-      };
     case GET_CLIENTPRO_SUCCESS:
       return {
         loader: false,
@@ -44,10 +40,6 @@ const clientProjectDetailsReducer = (state, action) => {
 
 const clientDetailsReducer = (state, action) => {
   switch (action.type) {
-    case GET_CLIENT_REQUEST:
-      return {
-        loader: true,
-      };
     case GET_CLIENT_SUCCESS:
       return {
         loader: false,
@@ -65,10 +57,6 @@ const clientDetailsReducer = (state, action) => {
 
 const addClientReducer = (state, action) => {
   switch (action.type) {
-    case ADD_CLIENT_REQUEST:
-      return {
-        loader: true,
-      };
     case ADD_CLIENT_SUCCESS:
       return {
         loader: false,
@@ -88,10 +76,6 @@ const addClientReducer = (state, action) => {
 
 const deleteClientReducer = (state, action) => {
   switch (action.type) {
-    case DELETE_CLIENT_REQUEST:
-      return {
-        loader: true,
-      };
     case DELETE_CLIENT_SUCCESS:
       return {
         loader: false,
@@ -112,17 +96,17 @@ const deleteClientReducer = (state, action) => {
 export const ClientsContextProvider = (props) => {
   const [clientDetails, dispatchClientDetails] = useReducer(
     clientDetailsReducer,
-    { client: {} }
+    { client: { loader: true } }
   );
   const [newClient, dispatchAddClient] = useReducer(addClientReducer, {
-    newClient: {},
+    newClient: { loader: true },
   });
   const [deleteClient, dispatchDeleteClient] = useReducer(deleteClientReducer, {
-    deleteClient: {},
+    deleteClient: { loader: true },
   });
   const [clientProjectDetails, dispatchClientProjectDetails] = useReducer(
     clientProjectDetailsReducer,
-    { clientProjectDetails: {} }
+    { clientProjectDetails: { loader: true } }
   );
   const [clients, setClients] = useState([
     {
