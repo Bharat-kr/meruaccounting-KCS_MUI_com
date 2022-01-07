@@ -1,7 +1,7 @@
-import Activity from '../models/activity.js';
-import User from '../models/user.js';
-import Screenshot from '../models/screenshot.js';
-import asyncHandler from 'express-async-handler';
+import Activity from "../models/activity.js";
+import User from "../models/user.js";
+import Screenshot from "../models/screenshot.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -25,7 +25,7 @@ const createScreenShot = asyncHandler(async (req, res) => {
     project: projectId,
     task,
     image,
-    activityAt,
+    activityat: activityAt,
     activityId,
     performanceData,
     title,
@@ -37,7 +37,7 @@ const createScreenShot = asyncHandler(async (req, res) => {
     await activity.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       screenshot,
       activity,
     });
@@ -73,17 +73,17 @@ const createActivity = asyncHandler(async (req, res) => {
     let dd = actAt.getDate();
     let mm = actAt.getMonth() + 1;
     let yyyy = actAt.getFullYear();
-    let today = dd + '/' + mm + '/' + yyyy;
+    let today = dd + "/" + mm + "/" + yyyy;
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
       if (day.date == today) {
-        console.log('Inside Date Equals');
+        console.log("Inside Date Equals");
         found = true;
         day.activities.push(activity);
         break;
       } else {
-        console.log('not found');
+        console.log("not found");
       }
     }
     if (found == false) {
@@ -95,13 +95,13 @@ const createActivity = asyncHandler(async (req, res) => {
     }
     await user.save();
     res.status(201).json({
-      status: 'success',
+      status: "success",
       activity,
       days: user.days,
     });
   } else {
     res.status(500);
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
 });
 
@@ -112,14 +112,18 @@ const createActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const activityId = req.params.id;
-    const activity = await Activity.findByIdAndUpdate(activityId, req.body);
-    if (!activity) {
+    const unUpdatedactivity = await Activity.findByIdAndUpdate(activityId, {
+      $set: req.body,
+    });
+    const activity = await Activity.findById(activityId);
+
+    if (!unUpdatedactivity) {
       res.status(404);
       throw new Error(`No activity found ${activityId}`);
     }
 
     res.status(202).json({
-      message: 'Succesfully edited activity',
+      message: "Succesfully edited activity",
       data: activity,
     });
   } catch (error) {
