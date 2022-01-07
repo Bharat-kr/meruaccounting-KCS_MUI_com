@@ -112,9 +112,10 @@ const createActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const activityId = req.params.id;
-    const unUpdatedactivity = await Activity.findByIdAndUpdate(activityId, {
-      $set: req.body,
-    });
+    const unUpdatedactivity = await Activity.findByIdAndUpdate(
+      activityId,
+      req.body
+    );
     const activity = await Activity.findById(activityId);
 
     if (!unUpdatedactivity) {

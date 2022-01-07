@@ -36,6 +36,17 @@ const userSchema = new mongoose.Schema(
         ref: "team",
       },
     ],
+    notifications: [
+      {
+        id: String,
+        title: String,
+        description: String,
+        avatar: String,
+        type: String,
+        createdAt: Date,
+        isUnRead: Boolean,
+      },
+    ],
     settings: {
       ScreenShotPerHour: {
         isTeamSetting: { type: Boolean, required: true, default: true },

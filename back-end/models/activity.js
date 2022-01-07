@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const activitySchema = new mongoose.Schema({
   hoursWorked: {
@@ -7,20 +7,20 @@ const activitySchema = new mongoose.Schema({
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'curClientId',
+    ref: "curClientId",
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'curProjectId',
+    ref: "curProjectId",
   },
   task: {
     type: String,
-    default: '',
+    default: "",
   },
   // date
   startTime: {
     type: String,
-    default: '',
+    default: "",
   },
   endTime: {
     type: String,
@@ -28,11 +28,15 @@ const activitySchema = new mongoose.Schema({
   consumeTime: {
     type: String,
   },
+  isAcepted: {
+    type: Boolean,
+    default: true,
+  },
   isInternal: { type: Boolean, default: false },
   performanceData: { type: Number, default: 0 },
-  screenshots: [{ type: mongoose.Types.ObjectId, ref: 'Screenshot' }],
+  screenshots: [{ type: mongoose.Types.ObjectId, ref: "Screenshot" }],
 });
 
-const Activity = mongoose.model('Activity', activitySchema);
+const Activity = mongoose.model("Activity", activitySchema);
 
 export default Activity;
