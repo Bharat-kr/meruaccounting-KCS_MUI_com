@@ -103,6 +103,7 @@ export default function Header(props) {
     currentProject,
     changeProject,
     updateClient,
+    clientDetails,
     dispatchClientDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
@@ -115,7 +116,9 @@ export default function Header(props) {
   };
   const test = useRef(false);
   useEffect(() => {
-    setprojectName(`${currentProject.name}`);
+    return currentProject
+      ? setprojectName(`${currentProject.name}`)
+      : setprojectName("No Projects In this client");
   }, [currentClient, currentProject]);
   const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
   const handleSearch = (e, value) => {
@@ -125,21 +128,40 @@ export default function Header(props) {
     return setMockTeamLeader(employee[0]);
   };
   const handleEdit = () => {};
-  const handleEditSubmit = (e) => {
+  const handleEditSubmit = async (e) => {
     e.preventDefault();
     console.log("hello", projectName);
     editProject(currentProject._id, { name: projectName }, dispatchEditProject);
-    // changeProject(projectName);
-    // getClient(dispatchClientDetails);
+    await getClient(dispatchClientDetails);
+    // changeProject(curr);
   };
   console.log(currentClient);
   const handleProjectDelete = async (e) => {
     console.log(currentProject._id);
     const data = { projectId: `${currentProject._id}` };
     await deleteProject(currentProject._id, dispatchDeleteProject);
-    changeProject(
-      currentClient.projects[currentClient.projects.indexOf(currentProject) - 1]
-    );
+    if (
+      currentClient.projects[
+        currentClient.projects.indexOf(currentProject) - 1
+      ] === 0
+    ) {
+      setcurrentClient(
+        clientDetails.client.data[
+          clientDetails.client.data.indexOf(currentClient - 1)
+        ]
+      );
+      changeProject(
+        currentClient.projects[
+          currentClient.projects.lastIndexOf(currentProject)
+        ]
+      );
+    } else {
+      changeProject(
+        currentClient.projects[
+          currentClient.projects.indexOf(currentProject) - 1
+        ]
+      );
+    }
     await getClient(dispatchClientDetails);
     console.log(currentClient);
   };
@@ -205,16 +227,16 @@ export default function Header(props) {
                   float: "right",
                 }}
               >
-                <button
+                {/* <button
                   type="button"
                   style={{ marginRight: "5px" }}
-                  onClick={handleEditClick}
-                >
-                  <EditIcon />
-                </button>
-                <button onClick={handleProjectDelete} type="button" style={{}}>
-                  <DeleteIcon />
-                </button>
+                  
+                > */}
+                <EditIcon onClick={handleEditClick} sx={{ mr: 2 }} />
+                {/* </button> */}
+                {/* <button type="button" style={{}}> */}
+                <DeleteIcon onClick={handleProjectDelete} />
+                {/* </button> */}
               </div>
             </h3>
             <Typography
@@ -305,6 +327,7 @@ export default function Header(props) {
                     >
                       <TextField
                         // onChange={(e) => setNewTeam(e.target.value)}
+                        // onSubmit={}
                         required
                         fullWidth
                         label="Add new Member"
