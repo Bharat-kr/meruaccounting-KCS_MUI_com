@@ -61,9 +61,13 @@ export default function Sidebar() {
     clientsList = clientDetails?.client?.data;
   }
   useEffect(() => {
-    if (clientDetails.length > 0) {
-      changeClient(clientDetails?.client?.data[0]);
-      changeProject(clientDetails?.client?.data[0].projects[0]);
+    try {
+      if (clientDetails !== null) {
+        changeClient(clientDetails?.client?.data[0]);
+        changeProject(clientDetails?.client?.data[0].projects[0]);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   }, []);
   const projectList = [];
@@ -93,19 +97,23 @@ export default function Sidebar() {
   };
 
   const handleSearch = (e, value) => {
-    const val = differentiateFunction(value);
-    if (val !== null) {
-      const client = clientsList?.filter((client) =>
-        client.name === val[0] ? client : ""
-      );
-      const project = client[0].projects?.filter((pro) =>
-        pro.name == val[1] ? pro : ""
-      );
-      if (client.length === 0) {
-        // eslint-disable-next-line no-useless-return
-        return;
+    try {
+      const val = differentiateFunction(value);
+      if (val !== null) {
+        const client = clientsList?.filter((client) =>
+          client.name === val[0] ? client : ""
+        );
+        const project = client[0].projects?.filter((pro) =>
+          pro.name == val[1] ? pro : ""
+        );
+        if (client.length === 0) {
+          // eslint-disable-next-line no-useless-return
+          return;
+        }
+        changeProject(project[0]);
       }
-      changeProject(project[0]);
+    } catch (error) {
+      console.log(error.message);
     }
   };
   // change currenclient on projects name click
@@ -192,7 +200,7 @@ export default function Sidebar() {
             overflowY: "auto",
           }}
         >
-          {clientsList.length > 0 &&
+          {clientsList?.length > 0 &&
             clientsList.map((client) => (
               <Treeview
                 parentName={client.name}
