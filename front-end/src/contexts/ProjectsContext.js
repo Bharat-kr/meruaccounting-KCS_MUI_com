@@ -20,6 +20,22 @@ import {
   DELETE_PROJECTS_SUCCESS,
   DELETE_PROJECTS_FAILED,
   DELETE_PROJECTS_RESET,
+  GET_PROJECT_BYID_REQUEST,
+  GET_PROJECT_BYID_SUCCESS,
+  GET_PROJECT_BYID_FAILED,
+  GET_PROJECT_BYID_RESET,
+  ADD_MEMBER_TOPROJECT_SUCCESS,
+  ADD_MEMBER_TOPROJECT_FAILED,
+  ADD_MEMBER_TOPROJECT_RESET,
+  ADD_PROJECTLEADER_SUCCESS,
+  ADD_PROJECTLEADER_FAILED,
+  ADD_PROJECTLEADER_RESET,
+  EDIT_PROJECTLEADER_SUCCESS,
+  EDIT_PROJECTLEADER_FAILED,
+  EDIT_PROJECTLEADER_RESET,
+  REMOVE_MEMBER_FROMRPOJECT_SUCCESS,
+  REMOVE_MEMBER_FROMRPOJECT_FAILED,
+  REMOVE_MEMBER_FROMRPOJECT_RESET,
 } from "../constants/ProjectConstants";
 
 export const projectContext = React.createContext();
@@ -117,6 +133,107 @@ const deleteProjectsReducer = (state, action) => {
   }
 };
 
+const getProjctByIdReducer = (state, action) => {
+  switch (action.type) {
+    case GET_PROJECT_BYID_SUCCESS:
+      return {
+        loader: false,
+        ProjectById: action.payload,
+      };
+    case GET_PROJECT_BYID_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case GET_PROJECT_BYID_RESET:
+      return {
+        projectById: {},
+      };
+    default:
+      return state;
+  }
+};
+const addProjectMemberReducer = (state, action) => {
+  switch (action.type) {
+    case ADD_MEMBER_TOPROJECT_SUCCESS:
+      return {
+        loader: false,
+        addProjectMember: action.payload,
+      };
+    case ADD_MEMBER_TOPROJECT_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case ADD_MEMBER_TOPROJECT_RESET:
+      return {
+        addProjectMember: {},
+      };
+    default:
+      return state;
+  }
+};
+
+const editProjectLeaderReducer = (state, action) => {
+  switch (action.type) {
+    case EDIT_PROJECTLEADER_SUCCESS:
+      return {
+        loader: false,
+        editProjectLeader: action.payload,
+      };
+    case EDIT_PROJECTLEADER_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case EDIT_PROJECTLEADER_RESET:
+      return {
+        editProjectLeader: {},
+      };
+    default:
+      return state;
+  }
+};
+const addProjectLeaderReducer = (state, action) => {
+  switch (action.type) {
+    case ADD_PROJECTLEADER_SUCCESS:
+      return {
+        loader: false,
+        addProjectLeader: action.payload,
+      };
+    case ADD_PROJECTLEADER_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case ADD_PROJECTLEADER_RESET:
+      return {
+        addProjectLeader: {},
+      };
+    default:
+      return state;
+  }
+};
+const removeProjectMemberReducer = (state, action) => {
+  switch (action.type) {
+    case REMOVE_MEMBER_FROMRPOJECT_SUCCESS:
+      return {
+        loader: false,
+        removeProjectMember: action.payload,
+      };
+    case REMOVE_MEMBER_FROMRPOJECT_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case REMOVE_MEMBER_FROMRPOJECT_RESET:
+      return {
+        removeProjectMember: {},
+      };
+    default:
+      return state;
+  }
+};
 export const ProjectsContextProvider = (props) => {
   const [projectDetails, dispatchProjectDetails] = useReducer(
     getProjectsReducer,
@@ -141,7 +258,33 @@ export const ProjectsContextProvider = (props) => {
       deleteProject: { loader: true },
     }
   );
-
+  const [projectById, dispatchProjectById] = useReducer(getProjctByIdReducer, {
+    projectById: { loader: true },
+  });
+  const [addProjectMember, dispatchaddProjectMember] = useReducer(
+    addProjectMemberReducer,
+    {
+      addProjectMember: { loader: true },
+    }
+  );
+  const [addProjectLeader, dispatchaddProjectLeader] = useReducer(
+    addProjectLeaderReducer,
+    {
+      addProjectLeader: { loader: true },
+    }
+  );
+  const [editProjectLeader, dispatcheditProjectLeader] = useReducer(
+    editProjectLeaderReducer,
+    {
+      editProjectLeader: { loader: true },
+    }
+  );
+  const [removeProjectMember, dispatchremoveProjectMember] = useReducer(
+    removeProjectMemberReducer,
+    {
+      removeProjectMember: { loader: true },
+    }
+  );
   return (
     <projectContext.Provider
       value={{
