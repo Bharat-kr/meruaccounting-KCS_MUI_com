@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,30 +10,41 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     payRate: { type: Number, default: 100 },
-    lastActive: { type: String, default: '0' },
+    lastActive: { type: String, default: "0" },
     activityStatus: { type: Boolean, default: false },
     accountInfo: {
-      managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-      country: { type: String, default: 'India' },
+      managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      country: { type: String, default: "India" },
       ip: { type: String },
-      countryName: { type: String, default: 'India' },
+      countryName: { type: String, default: "India" },
     },
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'project',
+        ref: "project",
       },
     ],
     clients: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'client',
+        ref: "client",
       },
     ],
     teams: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'team',
+        ref: "team",
+      },
+    ],
+    notifications: [
+      {
+        id: String,
+        title: String,
+        description: String,
+        avatar: String,
+        type: String,
+        createdAt: Date,
+        isUnRead: Boolean,
       },
     ],
     settings: {
@@ -74,39 +85,51 @@ const userSchema = new mongoose.Schema(
       },
       WeekStart: {
         isTeamSetting: { type: Boolean, required: true, default: true },
-        teamValue: { type: String, default: 'Monday' },
-        individualValue: { type: String, default: 'Monday' },
+        teamValue: { type: String, default: "Monday" },
+        individualValue: { type: String, default: "Monday" },
       },
       CurrencySymbol: {
         isTeamSetting: { type: Boolean, required: true, default: true },
-        teamValue: { type: String, default: '$' },
-        individualValue: { type: String, default: '$' },
+        teamValue: { type: String, default: "$" },
+        individualValue: { type: String, default: "$" },
       },
     },
     days: [
       {
         //TODO: default string value changed to epoch value
-        date: { type: String, default: '0' },
+        date: { type: String, default: "0" },
         hours: { type: Number, default: 0 },
-        activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
+        activities: [{ type: mongoose.Types.ObjectId, ref: "Activity" }],
       },
     ],
   },
   { timestamps: true }
 );
 
+userSchema.statics.updateSettings = async (employeeId, settings) => {
+  const employee = await User.findById(employeeId);
+  employee.settings = settings;
+  employee.save();
+};
+
+userSchema.methods.setTeamInManager = async function (teamId) {
+  const manager = this;
+  manager.team.push(teamId);
+  await manager.save();
+};
+
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

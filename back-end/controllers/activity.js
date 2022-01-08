@@ -25,14 +25,17 @@ const createScreenShot = asyncHandler(async (req, res) => {
     project: projectId,
     task,
     image,
-    activityAt,
+    activityat: activityAt,
     activityId,
     performanceData,
     title,
   });
 
   if (screenshot) {
-    const activity = Activity.findById(activityId);
+    const activity = await Activity.findById(activityId);
+    if (!activity) {
+      res.status(404).json({ mssg: "no act found" });
+    }
     activity.screenshots.push(screenshot._id.toHexString());
     await activity.save();
 
@@ -49,50 +52,51 @@ const createScreenShot = asyncHandler(async (req, res) => {
 // @access  Private
 
 const createActivity = asyncHandler(async (req, res) => {
-  const { clientId, task, startTime, endTime, performanceData } = req.body;
-
-  //FIXME: project in model what to do with that
-  // no employeeId in activity
-
-  const activity = await Activity.create({
-    client: clientId,
-    task: task,
+  const {
+    // clientId,
+    task,
     startTime,
     endTime,
+    performanceData,
+    isInternal,
+  } = req.body;
+
+  const activity = await Activity.create({
+    // client: clientId,
+    task,
+    performanceData,
+    startTime,
+    endTime,
+    isInternal,
   });
 
   if (activity) {
     const user = await User.findById(req.user._id);
-
-    const date = new Date();
-    date.setUTCSeconds(startTime);
-
-    //FIXME: conversion problem
-
-    console.log(typeof startTime);
-    const day = Date.parse(startTime).getDate().getTime();
-
-    const epoch = date.getDate().getTime();
-    let i = 0;
-
-    for (i = 0; i < user.days.length(); i++) {
-      if (user.days[i].date === day) {
-        console.log("inside if");
-        // user.days[i].activities.push(activity);
+    let actAt = new Date(startTime);
+    let dd = actAt.getDate();
+    let mm = actAt.getMonth() + 1;
+    let yyyy = actAt.getFullYear();
+    let today = dd + "/" + mm + "/" + yyyy;
+    let found = false;
+    for (let i = 0; i < user.days.length; i++) {
+      const day = user.days[i];
+      if (day.date == today) {
+        console.log("Inside Date Equals");
+        found = true;
+        day.activities.push(activity);
         break;
+      } else {
+        console.log("not found");
       }
     }
-    if (i != 0) {
-      user.days[i].activities.push(activity);
-    } else {
-      user.days.push({
-        date: epoch,
+    if (found == false) {
+      const day = {
+        date: today,
         activities: [activity],
-      });
+      };
+      user.days.push(day);
     }
-
     await user.save();
-
     res.status(201).json({
       status: "success",
       activity,
@@ -104,4 +108,31 @@ const createActivity = asyncHandler(async (req, res) => {
   }
 });
 
-export { createActivity, createScreenShot };
+// @desc    Update the activity
+// @route   PATCH /activity/:id
+// @access  Private
+
+const updateActivity = asyncHandler(async (req, res) => {
+  try {
+    const activityId = req.params.id;
+    const unUpdatedactivity = await Activity.findByIdAndUpdate(
+      activityId,
+      req.body
+    );
+    const activity = await Activity.findById(activityId);
+
+    if (!unUpdatedactivity) {
+      res.status(404);
+      throw new Error(`No activity found ${activityId}`);
+    }
+
+    res.status(202).json({
+      message: "Succesfully edited activity",
+      data: activity,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { createActivity, createScreenShot, updateActivity };

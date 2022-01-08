@@ -21,6 +21,7 @@ import Treeview from "../Treeview";
 import SearchBar from "../SearchBar";
 import { getClientProjects, getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
+import Header from "./Header";
 //-------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -47,24 +48,34 @@ export default function Sidebar() {
     clientProjectDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
-
+  // const [currentClient, changeClient] = useState("");
+  // const [currentProject, changeProject] = useState("");
   const { dispatchCreateProject } = useContext(projectContext);
 
-  useEffect(() => {
-    getClient(dispatchClientDetails);
+  useEffect(async () => {
+    await getClient(dispatchClientDetails);
   }, []);
   let clientsList = [];
+
   if (clientDetails.loader === false) {
-    clientsList = clientDetails.client.data;
+    clientsList = clientDetails?.client?.data[0];
   }
+  // useEffect(() => {
+  //   if (clientDetails.length > 0) {
+  //     changeClient(clientDetails?.client?.data[0]);
+  //     changeProject(clientDetails?.client?.data[0].projects[0]);
+  //   }
+  // }, []);
   const projectList = [];
   useEffect(() => {
-    clientDetails?.client?.data?.map((client) => {
-      client.projects.map((pro) => {
-        projectList.push(client.name + ":" + pro.name);
+    if (clientDetails.loader === false) {
+      clientDetails?.client?.data[0].map((client) => {
+        client.projects.map((pro) => {
+          projectList.push(client.name + ":" + pro.name);
+        });
       });
-    });
-  }, [projectList]);
+    }
+  }, [clientDetails, currentClient, currentProject]);
   // useEffect(() => {
   //   getClientProjects(
   //     { clientId: currentClient._id },
@@ -103,30 +114,38 @@ export default function Sidebar() {
       client.name === e.target.textContent ? client : ""
     );
     changeClient(client[0]);
-    // changeProject(project[0]);
   };
   const handleProjectClick = (e) => {
     const client = clientsList.filter((client) =>
       client.name === e.target.dataset.client ? client : ""
     );
     changeClient(client[0]);
+    setnewClientValue(client[0]);
     const project = client[0].projects.filter((project) =>
       project.name === e.target.dataset.project ? project : ""
     );
 
     changeProject(project[0]);
   };
+  console.log(newClientValue);
+  console.log(currentProject);
   // add client in submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setnewClientError(false);
-    if (newProjectValue === "" || currentClient === null) {
-      setnewClientError(true);
-      return;
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setnewClientError(false);
+      if (newProjectValue === "" || currentClient === null) {
+        setnewClientError(true);
+        return;
+      }
+      if (currentClient !== null) {
+        const data = { name: newProjectValue, clientId: currentClient._id };
+        await createProject(data, dispatchCreateProject);
+        await getClient(dispatchClientDetails);
+      }
+    } catch (error) {
+      console.log("Choose A client ,to be display in popup");
     }
-    const data = { name: newProjectValue, clientId: currentClient._id };
-    createProject(data, dispatchCreateProject);
-    setnewClientValue("");
   };
 
   return (
@@ -135,7 +154,9 @@ export default function Sidebar() {
       sx={{
         margin: "10px",
         // height: "70vh",
-        flexGrow:"1"
+        flexGrow: "1",
+        display: "flex",
+        flexDirection: "row",
       }}
     >
       <Paper
@@ -144,8 +165,8 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
-          display:"flex",
-          flexDirection:"column"
+          display: "flex",
+          flexDirection: "column",
           // position: "relative",
         }}
       >
@@ -171,34 +192,37 @@ export default function Sidebar() {
             overflowY: "auto",
           }}
         >
-          {clientsList.map((client) => (
-            <Treeview
-              parentName={client.name}
-              className={classes.root}
-              sx={{ width: "100%" }}
-              onClick={handleClick}
-              id={client._id}
-            >
-              {client.projects.map((project) => {
-                return (
-                  <TreeItem
-                    id={project._id}
-                    label={
-                      <Typography
-                        data-client={client.name}
-                        data-project={project.name}
-                        onClick={handleProjectClick}
-                        variant="h6"
-                      >
-                        {project.name}
-                      </Typography>
-                    }
-                    id={project._id}
-                  />
-                );
-              })}
-            </Treeview>
-          ))}
+          {clientsList.length > 0 &&
+            clientsList.map((client) => (
+              <Treeview
+                parentName={client.name}
+                key={client.name}
+                className={classes.root}
+                sx={{ width: "100%" }}
+                onClick={handleClick}
+                id={client._id}
+              >
+                {client.projects.map((project) => {
+                  return (
+                    <TreeItem
+                      id={project._id}
+                      key={project.name}
+                      label={
+                        <Typography
+                          data-client={client.name}
+                          data-project={project.name}
+                          onClick={handleProjectClick}
+                          variant="h6"
+                        >
+                          {project.name}
+                        </Typography>
+                      }
+                      id={project._id}
+                    />
+                  );
+                })}
+              </Treeview>
+            ))}
         </Box>
 
         {/* INPUT BOX, add validations, connect to context */}
@@ -233,6 +257,12 @@ export default function Sidebar() {
           </form>
         </Box>
       </Paper>
+      <Header
+        currentClient={newClientValue}
+        currentProject={currentProject}
+        setcurrClient={changeClient}
+        setCurrProjct={changeProject}
+      />
     </Box>
   );
 }
