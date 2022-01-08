@@ -58,18 +58,23 @@ export default function Sidebar() {
   let clientsList = [];
 
   if (clientDetails.loader === false) {
-    clientsList = clientDetails?.client?.data[0];
+    clientsList = clientDetails?.client?.data;
   }
-  // useEffect(() => {
-  //   if (clientDetails.length > 0) {
-  //     changeClient(clientDetails?.client?.data[0]);
-  //     changeProject(clientDetails?.client?.data[0].projects[0]);
-  //   }
-  // }, []);
+  useEffect(() => {
+    try {
+      if (clientDetails !== null) {
+        changeClient(clientDetails?.client?.data[0]);
+        changeProject(clientDetails?.client?.data[0].projects[0]);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, []);
   const projectList = [];
+  console.log(clientDetails);
   useEffect(() => {
     if (clientDetails.loader === false) {
-      clientDetails?.client?.data[0].map((client) => {
+      clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
           projectList.push(client.name + ":" + pro.name);
         });
@@ -92,20 +97,23 @@ export default function Sidebar() {
   };
 
   const handleSearch = (e, value) => {
-    const val = differentiateFunction(value);
-    if (val !== null) {
-      const client = clientsList?.filter((client) =>
-        client.name === val[0] ? client : ""
-      );
-      const project = client[0].projects?.filter((pro) =>
-        pro.name == val[1] ? pro : ""
-      );
-      if (client.length === 0) {
-        // eslint-disable-next-line no-useless-return
-        return;
+    try {
+      const val = differentiateFunction(value);
+      if (val !== null) {
+        const client = clientsList?.filter((client) =>
+          client.name === val[0] ? client : ""
+        );
+        const project = client[0].projects?.filter((pro) =>
+          pro.name == val[1] ? pro : ""
+        );
+        if (client.length === 0) {
+          // eslint-disable-next-line no-useless-return
+          return;
+        }
+        changeProject(project[0]);
       }
-      changeClient(client[0]);
-      changeProject(project[0]);
+    } catch (error) {
+      console.log(error.message);
     }
   };
   // change currenclient on projects name click
@@ -192,7 +200,7 @@ export default function Sidebar() {
             overflowY: "auto",
           }}
         >
-          {clientsList.length > 0 &&
+          {clientsList?.length > 0 &&
             clientsList.map((client) => (
               <Treeview
                 parentName={client.name}
