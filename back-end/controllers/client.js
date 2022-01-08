@@ -40,9 +40,14 @@ const getClient = asyncHandler(async (req, res) => {
   let responseArray = [];
   if (employee.role === 'manager') {
     try {
-      const client = await Client.find({ manager: employee._id }).populate(
-        'projects'
-      );
+      const client = await Client.find({ manager: employee._id }).populate({
+        path: 'projects',
+        populate: {
+          path: 'employees',
+          model: 'User',
+          select: ['firstName', 'lastName', 'days'],
+        },
+      });
 
       // for (let j = 0; j < client.projects.length; j++) {
       //   await Project.populate(client.projects[i], {

@@ -55,9 +55,10 @@ const getProject = asyncHandler(async (req, res) => {
   }
 
   for (let i = 0; i < user.projects.length; i++) {
-    const project = await Project.findById(user.projects[i]).populate(
-      'employees'
-    );
+    const project = await Project.findById(user.projects[i]).populate({
+      path: 'employees',
+      select: ['firstName', 'lastName', 'days'],
+    });
     if (project) {
       // project = await Project.populate({
       //   path: 'project',
