@@ -1,6 +1,7 @@
-import Client from '../models/client.js';
-import Project from '../models/project.js';
-import asyncHandler from 'express-async-handler';
+import Client from "../models/client.js";
+import Project from "../models/project.js";
+import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
 
 // @desc    Create a new client
 // @route   POST /client
@@ -8,7 +9,7 @@ import asyncHandler from 'express-async-handler';
 
 const createClient = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (manager.role === 'manager') {
+  if (manager.role === "manager") {
     const { name } = req.body;
     try {
       const client = new Client({ name });
@@ -19,7 +20,7 @@ const createClient = asyncHandler(async (req, res) => {
       await manager.save();
 
       res.status(201).json({
-        messsage: 'Successfully Created Client',
+        messsage: "Successfully Created Client",
         data: client,
       });
     } catch (error) {
@@ -27,7 +28,7 @@ const createClient = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error('Unauthorized manager');
+    throw new Error("Unauthorized manager");
   }
 });
 
@@ -38,14 +39,14 @@ const createClient = asyncHandler(async (req, res) => {
 const getClient = asyncHandler(async (req, res) => {
   const employee = req.user;
   let responseArray = [];
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     try {
       const client = await Client.find({ manager: employee._id }).populate({
-        path: 'projects',
+        path: "projects",
         populate: {
-          path: 'employees',
-          model: 'User',
-          select: ['firstName', 'lastName', 'days'],
+          path: "employees",
+          model: "User",
+          select: ["firstName", "lastName", "days"],
         },
       });
 
@@ -57,7 +58,7 @@ const getClient = asyncHandler(async (req, res) => {
 
       if (!client) {
         res.status(404);
-        throw new Error('No clients found');
+        throw new Error("No clients found");
       }
 
       responseArray.push(client);
@@ -67,7 +68,7 @@ const getClient = asyncHandler(async (req, res) => {
       // }
 
       res.status(200).json({
-        messsage: 'Client fetched succesfully',
+        messsage: "Client fetched succesfully",
         data: responseArray[0],
       });
     } catch (error) {
@@ -75,7 +76,7 @@ const getClient = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error('Unauthorized manager');
+    throw new Error("Unauthorized manager");
   }
 });
 
@@ -85,14 +86,14 @@ const getClient = asyncHandler(async (req, res) => {
 
 const getClientProjects = asyncHandler(async (req, res) => {
   const { clientId } = req.body;
-  const client = await Client.findById(clientId).populate('projects');
+  const client = await Client.findById(clientId).populate("projects");
   try {
     if (!client) {
       res.status(404);
-      throw new Error('Client not found');
+      throw new Error("Client not found");
     }
     res.status(201).json({
-      messsage: 'Client Projects',
+      messsage: "Client Projects",
       data: client,
     });
   } catch (error) {
@@ -106,7 +107,7 @@ const getClientProjects = asyncHandler(async (req, res) => {
 
 const editClient = asyncHandler(async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     try {
       const client = await Client.findOneAndUpdate(
         { manager: employee._id },
@@ -115,11 +116,11 @@ const editClient = asyncHandler(async (req, res) => {
 
       if (!client) {
         res.status(404);
-        throw new Error('Client not found');
+        throw new Error("Client not found");
       }
 
       res.status(201).json({
-        messsage: 'Successfully Updated Client',
+        messsage: "Successfully Updated Client",
         data: client,
       });
     } catch (error) {
@@ -127,7 +128,7 @@ const editClient = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error('Unauthorized manager');
+    throw new Error("Unauthorized manager");
   }
 });
 
@@ -136,29 +137,65 @@ const editClient = asyncHandler(async (req, res) => {
 // @access  Private
 
 const deleteClient = asyncHandler(async (req, res) => {
+  console.log("Inside Route");
   const employee = req.user;
+
   const clientId = req.body.clientId;
 
-  if (employee.role === 'manager') {
+  if (employee.role === "manager") {
     try {
-      const client = await Client.findByIdAndRemove(clientId);
+      /* ---------------------------- // finding Client ---------------------------- */
+      const client = await Client.findById(clientId);
 
       if (!client) {
         res.status(404);
-        throw new Error('Client not found');
+        throw new Error("Client not found");
       }
 
+      const userId = client.createdBy;
+
+      /* ------------------ finding user to delete client in that ----------------- */
+      const user = await User.findById(userId);
+      if (user) {
+        user.clients.forEach((client, index) => {
+          console.log("This is client", client.toHexString());
+          console.log("This is clientId", clientId);
+          if (client.toHexString() == clientId) {
+            user.clients.splice(index, 1);
+          }
+        });
+        await user.save();
+      }
+      /* ------------------- loop for deleting client of project ------------------ */
+
+      for (let i = 0; i < client.projects.length; i++) {
+        const projectId = client.projects[i];
+        const project = await Project.findById(projectId);
+        console.log(project);
+        if (project) {
+          console.log("Insdie If");
+          project.client = undefined;
+          await project.save();
+        }
+      }
+
+      /* --------------------------- deleting the client -------------------------- */
+
+      await Client.findByIdAndRemove(clientId);
+
+      /* ---------------------------- Sending response ---------------------------- */
+
       res.status(201).json({
-        messsage: 'Successfully Deleted Client',
+        messsage: "Successfully Deleted Client",
         data: client,
       });
     } catch (error) {
-      console.log('hey');
+      console.log(error);
       throw new Error(error);
     }
   } else {
     res.status(401);
-    throw new Error('Unauthorized manager');
+    throw new Error("Unauthorized manager");
   }
 });
 
