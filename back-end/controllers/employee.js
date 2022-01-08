@@ -26,7 +26,7 @@ const getEmployeeList = asyncHandler((req, res) => {
   const user = req.user;
   if (!user.isManager == true) {
     res.status(401);
-    throw new Error('Unauthrized manager');
+    throw new Error('Unauthorized manager');
   }
   const employees = user.employees;
   const team = user.team.populate();
@@ -37,6 +37,7 @@ const getEmployeeList = asyncHandler((req, res) => {
   });
 });
 
+// delete this function
 // @desc    Create a new employee
 // @route   POST /employee
 // @access  Private
