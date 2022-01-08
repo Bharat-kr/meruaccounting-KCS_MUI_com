@@ -1,6 +1,6 @@
-import Team from "../models/team.js";
-import User from "../models/user.js";
-import asyncHandler from "express-async-handler";
+import Team from '../models/team.js';
+import User from '../models/user.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new team
 // @route   POST /team/create
@@ -9,20 +9,22 @@ import asyncHandler from "express-async-handler";
 const createTeam = asyncHandler(async (req, res) => {
   const manager = req.user;
   const teamName = req.body.name;
-  if (!manager.isManager) {
+  if (!manager.role === 'manager') {
     res.status(401);
-    throw new Error("Unauthorized Access");
+    throw new Error('Unauthorized Access');
   }
   try {
     const team = new Team();
     team.name = teamName;
+    team.members.push(req.user._id);
     await team.save();
     // team.manager = manager._id;
     manager.teams.push(team._id.toHexString());
+
     await manager.save();
-    await team.save();
+
     res.status(201).json({
-      status: "New team created",
+      status: 'New team created',
       data: team,
     });
   } catch (error) {
@@ -46,7 +48,7 @@ const addMember = asyncHandler(async (req, res) => {
       await team.save();
 
       res.json({
-        status: "Ok",
+        status: 'Ok',
         data: team,
       });
     } catch (error) {
@@ -54,7 +56,7 @@ const addMember = asyncHandler(async (req, res) => {
     }
   } else {
     res.status(401);
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 });
 
@@ -66,7 +68,7 @@ const updateMember = asyncHandler(async (req, res) => {
   const manager = req.user;
   if (!manager.isManager) {
     res.status(401);
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
   // const settings = manager.settings;
 
@@ -84,8 +86,8 @@ const updateMember = asyncHandler(async (req, res) => {
     });
     if (alreadyMember) {
       return res.json({
-        status: "Ok",
-        data: "Already A Member",
+        status: 'Ok',
+        data: 'Already A Member',
       });
     }
     // const employee = await User.findById(employeeId);
@@ -95,7 +97,7 @@ const updateMember = asyncHandler(async (req, res) => {
     await team.save();
 
     res.json({
-      status: "Ok",
+      status: 'Ok',
       data: team,
     });
   } catch (error) {
@@ -132,14 +134,14 @@ const removeMember = asyncHandler(async (req, res) => {
     });
     if (alreadyMember == false) {
       return res.json({
-        status: "Ok",
-        data: "No Member Found",
+        status: 'Ok',
+        data: 'No Member Found',
       });
     }
     await team.save();
     await employee.save();
     res.json({
-      status: "Ok",
+      status: 'Ok',
       data: team,
     });
   } catch (error) {
@@ -158,32 +160,32 @@ const getTeamById = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(401);
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
   const team = await Team.findById(teamId);
   if (!team) {
     res.status(404);
-    throw new Error("No teams found");
+    throw new Error('No teams found');
   }
   const TeamMembers = await Team.populate(team, {
-    path: "employees",
+    path: 'employees',
   });
   let teamMember = [];
   for (let i = 0; i < TeamMembers.employees.length; i++) {
     const emp = TeamMembers.employees[i];
     const member = await User.populate(emp, {
-      path: "projects",
+      path: 'projects',
     });
     teamMember.push(member);
   }
 
   const TeamProject = await Team.populate(team, {
-    path: "projects",
+    path: 'projects',
   });
   const teamProject = TeamProject.projects;
 
   res.json({
-    msg: "Success",
+    msg: 'Success',
     data: {
       team,
       teamMember,
@@ -202,15 +204,18 @@ const getTeam = asyncHandler(async (req, res) => {
 
   if (!user) {
     res.status(401);
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
 
   for (let i = 0; i < user.teams.length; i++) {
-    const team = await Team.findById(user.teams[i]);
+    const team = await Team.findById(user.teams[i]).populate({
+      path: 'members',
+      populate: { path: 'projects', model: 'Project', select: ['name', '_id'] },
+    });
     if (team) {
-      await Team.populate(team, {
-        path: "members",
-      });
+      // await Team.populate(team, {
+      //   path: 'members',
+      // });
       // await Team.populate(team, {
       //   path: 'projects',
       // });
@@ -220,12 +225,12 @@ const getTeam = asyncHandler(async (req, res) => {
     }
   }
   res.json({
-    msg: "Success",
+    msg: 'Success',
     data: responseArray,
   });
 });
 
-// @desc    Get teams
+// @desc    Delete teams
 // @route   DELETE /team
 // @access  Private
 
@@ -233,7 +238,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
   const manager = req.user;
   if (!manager.isManager) {
     res.status(401);
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
   const teamId = req.body.teamId;
   try {
@@ -242,7 +247,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     const teamMembers = team.employees;
     const managerId = team.manager;
     if (!managerId === manager._id) {
-      throw new Error("You Can Only Delete Your Teams");
+      throw new Error('You Can Only Delete Your Teams');
     }
     manager.team.forEach((team, index) => {
       if (team.equals(team._id)) {
@@ -268,7 +273,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     }
 
     res.json({
-      status: "Deleted Team",
+      status: 'Deleted Team',
       data: team,
     });
   } catch (error) {

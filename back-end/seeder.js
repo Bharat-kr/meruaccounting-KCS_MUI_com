@@ -10,6 +10,8 @@ import User from './models/user.js';
 import Team from './models/team.js';
 import Client from './models/client.js';
 import Project from './models/project.js';
+import Activity from './models/activity.js';
+import Screenshot from './models/screenshot.js';
 
 dotenv.config({ path: './config/config.env' });
 
@@ -29,10 +31,12 @@ const importData = asyncHandler(async () => {
 
 const destroyData = asyncHandler(async () => {
   try {
-    await User.deleteMany();
-    await Client.deleteMany();
-    await Project.deleteMany();
-    await Team.deleteMany();
+    // await User.deleteMany();
+    // await Client.deleteMany();
+    // await Project.deleteMany();
+    // await Team.deleteMany();
+    await Activity.deleteMany();
+    await Screenshot.deleteMany();
 
     console.log(`Data destroyed`.red.inverse);
     process.exit(0);
