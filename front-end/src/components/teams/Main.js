@@ -27,6 +27,7 @@ import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { teamContext } from "src/contexts/TeamsContext";
+import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -69,7 +70,7 @@ export default function Main(props) {
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
             control={<Switch checked />}
-            label={`${pro}`}
+            label={`${pro.name}`}
           />
         ))}
       </>
@@ -148,7 +149,7 @@ export default function Main(props) {
                     label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
                   />
                   <FormControlLabel
-                    value="Manager"
+                    value="manager"
                     control={<Radio />}
                     label="Manager - can see selected user's Timeline & Reports (but not rates)"
                   />
@@ -160,11 +161,12 @@ export default function Main(props) {
                 </RadioGroup>
               </FormControl>
             </Box>
-            {(currMember.role === "Manager" || currMember.role === "Admin") && (
+            {currMember.role === "Admin" && (
               <Box>
                 <Typography variant="h5">Manage for</Typography>
                 <Typography varinat="body2">
-                  If enabled, {currMember.firstName} {currMember.lastName} will
+                  If enabled,
+                   {getFullName(currMember.firstName, currMember.lastName)} will
                   be able to see selected user's Timeline and Reports, but not
                   rates.
                 </Typography>
@@ -198,13 +200,17 @@ export default function Main(props) {
                         varihant="h6"
                         sx={{ pr: 2, fontSize: "20px", color: "success" }}
                       >
-              {convertString(keyName)}
-              {/* {console.log(index)} */}
-              </Typography>
+                        {convertString(keyName)}
+                        {/* {console.log(index)} */}
+                      </Typography>
                       <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                        {currMember.settings?.keyName?.isTeamSetting === true
-                          ? currMember.settings?.keyName?.teamValue
-                          : currMember.settings?.keyName?.individualValue}
+                        {currMember.settings[keyName].isTeamSetting
+                          ? settingsValueToString(
+                              currMember.settings[keyName].teamValue
+                            )
+                          : settingsValueToString(
+                              currMember.settings[keyName].individualValue
+                            )}
                       </RouterLink>
                     </Box>
                   </>
@@ -219,6 +225,4 @@ export default function Main(props) {
 
 Main.propTypes = {
   children: PropTypes.node,
-  // index: PropTypes.number.isRequired,
-  // value: PropTypes.number.isRequired,
 };

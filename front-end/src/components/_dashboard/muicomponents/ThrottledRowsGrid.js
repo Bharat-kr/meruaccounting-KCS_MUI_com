@@ -47,7 +47,7 @@ export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}
   ) : (
     <div style={{ height: "auto", width: "100%" }}> 
       <TableContainer component={Paper} >
-        <Table sx={{ maxWidth: 700 }} aria-label="customized table">
+        <Table sx={{ maxHeight: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Employees</StyledTableCell>
