@@ -58,18 +58,19 @@ export default function Sidebar() {
   let clientsList = [];
 
   if (clientDetails.loader === false) {
-    clientsList = clientDetails?.client?.data[0];
+    clientsList = clientDetails?.client?.data;
   }
-  // useEffect(() => {
-  //   if (clientDetails.length > 0) {
-  //     changeClient(clientDetails?.client?.data[0]);
-  //     changeProject(clientDetails?.client?.data[0].projects[0]);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (clientDetails.length > 0) {
+      changeClient(clientDetails?.client?.data[0]);
+      changeProject(clientDetails?.client?.data[0].projects[0]);
+    }
+  }, []);
   const projectList = [];
+  console.log(clientDetails);
   useEffect(() => {
     if (clientDetails.loader === false) {
-      clientDetails?.client?.data[0].map((client) => {
+      clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
           projectList.push(client.name + ":" + pro.name);
         });
@@ -104,7 +105,6 @@ export default function Sidebar() {
         // eslint-disable-next-line no-useless-return
         return;
       }
-      changeClient(client[0]);
       changeProject(project[0]);
     }
   };
