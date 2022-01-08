@@ -10,10 +10,6 @@ import { styled } from "@mui/material/styles";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { teamContext } from "../../../contexts/TeamsContext";
-import { getFullName } from "src/_helpers/getFullName";
-import { getTeam } from "../../../api/teams api/teams";
 
 // -----------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -46,50 +42,12 @@ function dispdata(data) {
 }
 
 export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}) {
-  // const { dispatchgetTeam, getTeams } = useContext(teamContext);
-
-  // const [teamsList, setTeamsList] = useState([]);
-  // const getTeamsLoader = getTeams.loader;
-
-  // useEffect(() => {
-  //   getTeam(dispatchgetTeam);
-  // }, []);
-
-  // // useState hook for rerender component
-  // console.log(getTeams);
-  // useEffect(() => {
-  //   const data = [];
-  //   let test = -1;
-  //   getTeams?.getTeam?.forEach((team) => {
-  //     // eslint-disable-next-line prefer-template
-
-  //     team.members?.map((member) => {
-  //       if (
-  //         !data.find((el) => {
-  //           return el.id === member._id;
-  //         })
-  //       ) {
-  //         data.push({
-  //           Employee: getFullName(member.firstName, member.lastName),
-  //           LastActive: "",
-  //           id: member._id,
-  //           Today: "",
-  //           Yesterday: "",
-  //           ThisWeek: "",
-  //           ThisMonth: "",
-  //         });
-  //       }
-  //     });
-  //   });
-  //   setTeamsList(data);
-  // }, [getTeams]);
-
   return getTeamsLoader ? (
     <CircularProgress />
   ) : (
-    <div style={{ maxWidth: "lg", height: "auto", width: "100%" }}  ref={tableListRef}> 
+    <div style={{ height: "auto", width: "100%" }}> 
       <TableContainer component={Paper} >
-        <Table sx={{ maxWidth: 700 , overflowY:"auto"}} aria-label="customized table">
+        <Table sx={{ maxWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Employees</StyledTableCell>
@@ -110,7 +68,7 @@ export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}
           </TableHead>
           <TableBody >
             {teamsList.map((member) => (
-              <StyledTableRow key={member.id} id={`${member.id}`}ref={tableListRef}>
+              <StyledTableRow key={member.id} ref={tableListRef}>
                 <StyledTableCell component="th" scope="row">
                   <RouterLink
                     to={`/dashboard/employeepage/${member.id}`}

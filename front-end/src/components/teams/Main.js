@@ -65,19 +65,17 @@ export default function Main(props) {
   const Labelconfig = function () {
     return (
       <>
-        {currTeam.projects.map((pro) => (
+        {currMember.projects.map((pro) => (
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            control={<Switch checked={currMember.projects.includes(pro._id)} />}
-            label={`${currTeam.name}(${pro.name})`}
-            // onChange={(e) => {
-            //   handleSwitchChange(e, pro, User.name);
-            // }}
+            control={<Switch checked />}
+            label={`${pro}`}
           />
         ))}
       </>
     );
   };
+  console.log("currMember", JSON.stringify(currMember, null, " "));
 
   return (
     <>
@@ -97,9 +95,14 @@ export default function Main(props) {
                 spacing={0}
               >
                 <Grid xs={4}>
-                  <Typography sx={{ fontSize: 40 }}>
-                    {getFullName(currMember?.firstName, currMember?.lastName)}
-                  </Typography>
+                  <RouterLink
+                    to={`/dashboard/employeepage/${currMember._id}`}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    <Typography sx={{ fontSize: 40 }}>
+                      {getFullName(currMember?.firstName, currMember?.lastName)}
+                    </Typography>
+                  </RouterLink>
                   <Divider />
                   <Typography variant="body1">{currMember?.email}</Typography>
                   <Grid xs={8} sx={{ mt: 2 }}>
@@ -180,11 +183,11 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
+              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
             </Box>
             <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {/* {currMember.settings &&
+              {currMember.settings &&
                 Object.keys(currMember.settings).map((keyName, keyIndex) => (
                   <>
                     <Box
@@ -194,18 +197,18 @@ export default function Main(props) {
                       <Typography
                         varihant="h6"
                         sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                      > */}
-              {/* {convertString(keyName)} */}
+                      >
+              {convertString(keyName)}
               {/* {console.log(index)} */}
-              {/* </Typography>
+              </Typography>
                       <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                        {currMember.settings[keyName] === true
-                          ? "On"
-                          : currMember.settings[keyName]}
+                        {currMember.settings?.keyName?.isTeamSetting === true
+                          ? currMember.settings?.keyName?.teamValue
+                          : currMember.settings?.keyName?.individualValue}
                       </RouterLink>
                     </Box>
                   </>
-                ))} */}
+                ))}
             </Box>
           </Typography>
         </Container>
