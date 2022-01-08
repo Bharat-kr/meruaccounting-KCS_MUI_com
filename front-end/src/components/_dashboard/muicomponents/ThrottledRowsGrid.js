@@ -45,51 +45,51 @@ function dispdata(data) {
   );
 }
 
-export default function ApiRefRowsGrid() {
-  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}) {
+  // const { dispatchgetTeam, getTeams } = useContext(teamContext);
 
-  const [teamsList, setTeamsList] = useState([]);
-  const getTeamsLoader = getTeams.loader;
+  // const [teamsList, setTeamsList] = useState([]);
+  // const getTeamsLoader = getTeams.loader;
 
-  useEffect(() => {
-    getTeam(dispatchgetTeam);
-  }, []);
+  // useEffect(() => {
+  //   getTeam(dispatchgetTeam);
+  // }, []);
 
-  // useState hook for rerender component
-  console.log(getTeams);
-  useEffect(() => {
-    const data = [];
-    let test = -1;
-    getTeams?.getTeam?.forEach((team) => {
-      // eslint-disable-next-line prefer-template
+  // // useState hook for rerender component
+  // console.log(getTeams);
+  // useEffect(() => {
+  //   const data = [];
+  //   let test = -1;
+  //   getTeams?.getTeam?.forEach((team) => {
+  //     // eslint-disable-next-line prefer-template
 
-      team.members?.map((member) => {
-        if (
-          !data.find((el) => {
-            return el.id === member._id;
-          })
-        ) {
-          data.push({
-            Employee: getFullName(member.firstName, member.lastName),
-            LastActive: "",
-            id: member._id,
-            Today: "",
-            Yesterday: "",
-            ThisWeek: "",
-            ThisMonth: "",
-          });
-        }
-      });
-    });
-    setTeamsList(data);
-  }, [getTeams]);
+  //     team.members?.map((member) => {
+  //       if (
+  //         !data.find((el) => {
+  //           return el.id === member._id;
+  //         })
+  //       ) {
+  //         data.push({
+  //           Employee: getFullName(member.firstName, member.lastName),
+  //           LastActive: "",
+  //           id: member._id,
+  //           Today: "",
+  //           Yesterday: "",
+  //           ThisWeek: "",
+  //           ThisMonth: "",
+  //         });
+  //       }
+  //     });
+  //   });
+  //   setTeamsList(data);
+  // }, [getTeams]);
 
   return getTeamsLoader ? (
     <CircularProgress />
   ) : (
-    <div style={{ maxWidth: "lg", height: 400, width: "100%" }}>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+    <div style={{ maxWidth: "lg", height: "auto", width: "100%" }}  ref={tableListRef}> 
+      <TableContainer component={Paper} >
+        <Table sx={{ maxWidth: 700 , overflowY:"auto"}} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Employees</StyledTableCell>
@@ -108,11 +108,14 @@ export default function ApiRefRowsGrid() {
               <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody >
             {teamsList.map((member) => (
-              <StyledTableRow key={member.id}>
+              <StyledTableRow key={member.id} id={`${member.id}`}ref={tableListRef}>
                 <StyledTableCell component="th" scope="row">
-                  <RouterLink to={`/dashboard/employeepage/${member.id}`} style={{textDecoration:"none", color:"primary.main"}}>
+                  <RouterLink
+                    to={`/dashboard/employeepage/${member.id}`}
+                    style={{ textDecoration: "none", color: "primary.main" }}
+                  >
                     <Typography vairant="subtitle3">
                       {member.Employee}
                     </Typography>
