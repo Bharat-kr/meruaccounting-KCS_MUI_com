@@ -155,28 +155,46 @@ const deleteClient = asyncHandler(async (req, res) => {
       const userId = client.createdBy;
 
       /* ------------------ finding user to delete client in that ----------------- */
+
       const user = await User.findById(userId);
       if (user) {
         user.clients.forEach((client, index) => {
-          console.log("This is client", client.toHexString());
-          console.log("This is clientId", clientId);
+          // console.log("This is client", client.toHexString());
+          // console.log("This is clientId", clientId);
           if (client.toHexString() == clientId) {
             user.clients.splice(index, 1);
           }
         });
         await user.save();
       }
-      /* ------------------- loop for deleting client of project ------------------ */
+
+      /* ------------------------ deleting projects in user ------------------------ */
+      // taking projects from deleting client and deleting the projects and project field from their respective members
 
       for (let i = 0; i < client.projects.length; i++) {
         const projectId = client.projects[i];
         const project = await Project.findById(projectId);
-        console.log(project);
-        if (project) {
-          console.log("Insdie If");
-          project.client = undefined;
-          await project.save();
+        // console.log("This is project", project);
+
+        for (let j = 0; j < project.employees.length; j++) {
+          // Deleting projects reference from the emoployee
+          const employeeId = project.employees[j];
+          const employee = await User.findById(employeeId);
+
+          // console.log("This is employee", employee);
+
+          if (employee) {
+            employee.projects.forEach((project, index) => {
+              if (project.toHexString() == projectId.toHexString()) {
+                console.log("Deleting Employee Project", project);
+                employee.projects.splice(index, 1);
+              }
+            });
+            await employee.save();
+          }
         }
+        // Deleting Project
+        await Project.findByIdAndRemove(projectId);
       }
 
       /* --------------------------- deleting the client -------------------------- */
@@ -185,7 +203,7 @@ const deleteClient = asyncHandler(async (req, res) => {
 
       /* ---------------------------- Sending response ---------------------------- */
 
-      res.status(201).json({
+      res.status(200).json({
         messsage: "Successfully Deleted Client",
         data: client,
       });
