@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const teamSchema = new mongoose.Schema(
   {
-    name: { type: String },
-    // manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    name: { type: String, required: true },
+    manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     // projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
   },
   { timestamps: true }
@@ -21,6 +21,6 @@ teamSchema.methods.addEmployees = async function (employeeId) {
   team.employees.push(employeeId);
   await team.save();
 };
-const Team = mongoose.model("Team", teamSchema);
+const Team = mongoose.model('Team', teamSchema);
 
 export default Team;
