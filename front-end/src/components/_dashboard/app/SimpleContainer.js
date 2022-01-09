@@ -5,16 +5,73 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { Typography, Paper, Autocomplete, TextField } from "@mui/material";
 import ApiRefRowsGrid from "../muicomponents/ThrottledRowsGrid";
+import { useContext, useEffect, useState } from "react";
+import { teamContext } from "../../../contexts/TeamsContext";
+import { getFullName } from "src/_helpers/getFullName";
+import { getTeam } from "../../../api/teams api/teams";
 
 //----------------------------------------------------------------------------------------
 export default function SimpleContainer() {
   const [open, setOpen] = React.useState(false);
-  const handleClose = () => {
-    setOpen(false);
+  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+
+  const [teamsList, setTeamsList] = useState([]);
+  const [searchedMember, setSearchedMember] = useState(0);
+  const getTeamsLoader = getTeams.loader;
+  const tableListRef = React.useRef();
+
+  useEffect(() => {
+    getTeam(dispatchgetTeam);
+  }, []);
+
+  // useState hook for rerender component
+  console.log(getTeams);
+  useEffect(() => {
+    const data = [];
+    let test = -1;
+    getTeams?.getTeam?.forEach((team) => {
+      // eslint-disable-next-line prefer-template
+
+      team.members?.map((member) => {
+        if (
+          !data.find((el) => {
+            return el.id === member._id;
+          })
+        ) {
+          data.push({
+            Employee: getFullName(member.firstName, member.lastName),
+            LastActive: "",
+            id: member._id,
+            Today: "",
+            Yesterday: "",
+            ThisWeek: "",
+            ThisMonth: "",
+          });
+        }
+      });
+    });
+    setTeamsList(data);
+  }, [getTeams]);
+
+  const handleSearch = (e, value) => {
+    const member = teamsList.filter((member) =>
+      member.Employee === value ? member : ""
+    );
+    if (member.length === 0) {
+      // eslint-disable-next-line no-useless-return
+      return;
+    }
+    // const wea = document.querySelector(`#${member[0].id}`);
+    // console.log(tableListRef);
+    // console.log(tableListRef.current.scrollHeight*teamsList.indexOf(member[0]) );
+    window.scroll({
+      top: 250 + tableListRef.current.scrollHeight*teamsList.indexOf(member[0]),
+      behavior: 'smooth'
+    });
+  
+    return setSearchedMember(teamsList.indexOf(member[0]));
   };
-  const handleToggle = () => {
-    setOpen(!open);
-  };
+
   return (
     <>
       <CssBaseline />
@@ -39,8 +96,11 @@ export default function SimpleContainer() {
               </Typography>
               <Autocomplete
                 disablePortal
+                onChange={handleSearch}
                 id="employee-search"
-                options={["hello", "there"]}
+                options={teamsList.map((element) => {
+                  return element.Employee;
+                })}
                 sx={{
                   width: 300,
                   height: 20,
@@ -51,7 +111,11 @@ export default function SimpleContainer() {
                 )}
               />
             </Container>
-            <ApiRefRowsGrid />
+            <ApiRefRowsGrid
+              teamsList={teamsList}
+              getTeamsLoader={getTeamsLoader}
+              tableListRef={tableListRef}
+            />
           </Grid>
         </Box>
       </Paper>

@@ -66,7 +66,7 @@ function checkheading(index, settings, setSettings, loginC) {
   ];
   // const settings = loginC.userData.settings;
 
-  // console.log(loginC.userData.settings);
+  console.log(settings);
 
   const UpdateSettings = async (data) => {
     // console.log(settings);
@@ -197,7 +197,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeScreenShotPerHour}
-              checked={settings.ScreenShotPerHour}
+              checked={settings.ScreenShotPerHour?.teamValue}
             />
           }
           label="Take"
@@ -207,7 +207,7 @@ function checkheading(index, settings, setSettings, loginC) {
           id="screenShotPerHour"
           label="Hours per week"
           type="number"
-          defaultValue={settings.ScreenShotPerHour}
+          defaultValue={settings?.ScreenShotPerHour?.teamValue}
           InputLabelProps={{
             shrink: true,
           }}
@@ -220,7 +220,7 @@ function checkheading(index, settings, setSettings, loginC) {
           renderInput={(params) => (
             <TextField
               {...params}
-              label={settings.AllowBlur ? "Allow blur" : "Disallow"}
+              label={settings?.AllowBlur?.teamValue ? "Allow blur" : "Disallow"}
             />
           )}
         />
@@ -229,7 +229,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeScreenShotPerHour}
-              checked={!settings.ScreenShotPerHour}
+              checked={!settings?.ScreenShotPerHour?.teamValue}
             />
           }
           label="Do not take"
@@ -245,7 +245,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeAppsAndUrlTracking}
-              checked={settings.AppsAndUrlTracking}
+              checked={settings.AppsAndUrlTracking.teamValue}
             />
           }
           label="Track"
@@ -255,7 +255,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeAppsAndUrlTracking}
-              checked={!settings.AppsAndUrlTracking}
+              checked={!settings.AppsAndUrlTracking.teamValue}
             />
           }
           label="Do not track"
@@ -271,7 +271,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeWeeklyTimeLimit}
-              checked={settings.WeeklyTimeLimit}
+              checked={settings.WeeklyTimeLimit.teamValue}
             />
           }
           label="Limit"
@@ -282,7 +282,7 @@ function checkheading(index, settings, setSettings, loginC) {
           id="weekLimit"
           label="Hours per week"
           type="number"
-          defaultValue={settings.WeeklyTimeLimit}
+          defaultValue={settings.WeeklyTimeLimit.teamValue}
           InputLabelProps={{
             shrink: true,
           }}
@@ -293,7 +293,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeWeeklyTimeLimit}
-              checked={!settings.WeeklyTimeLimit}
+              checked={!settings.WeeklyTimeLimit.teamValue}
             />
           }
           label="Do not limit"
@@ -307,7 +307,7 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Pause"
           control={
-            <Radio onClick={changeAutoPause} checked={settings.AutoPause} />
+            <Radio onClick={changeAutoPause} checked={settings.AutoPause.teamValue} />
           }
           label="Pause after"
         />
@@ -316,7 +316,7 @@ function checkheading(index, settings, setSettings, loginC) {
           id="autoPause"
           label="Time limit"
           type="number"
-          defaultValue={settings.AutoPause}
+          defaultValue={settings.AutoPause.teamValue}
           InputLabelProps={{
             shrink: true,
           }}
@@ -327,7 +327,7 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Do not pause"
           control={
-            <Radio onClick={changeAutoPause} checked={!settings.AutoPause} />
+            <Radio onClick={changeAutoPause} checked={!settings.AutoPause.teamValue} />
           }
           label="Do not pause"
         />
@@ -340,7 +340,7 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Allow"
           control={
-            <Radio onClick={changeOfflineTime} checked={settings.OfflineTime} />
+            <Radio onClick={changeOfflineTime} checked={settings.OfflineTime.teamValue} />
           }
           label="Allow"
         />
@@ -349,7 +349,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeOfflineTime}
-              checked={!settings.OfflineTime}
+              checked={!settings.OfflineTime.teamValue}
             />
           }
           label="Disallow"
@@ -363,14 +363,14 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Notify"
           control={
-            <Radio onClick={changeNotifyUser} checked={settings.NotifyUser} />
+            <Radio onClick={changeNotifyUser} checked={settings.NotifyUser.teamValue} />
           }
           label="Notify"
         />
         <FormControlLabel
           value="Do not notify"
           control={
-            <Radio onClick={changeNotifyUser} checked={!settings.NotifyUser} />
+            <Radio onClick={changeNotifyUser} checked={!settings.NotifyUser.teamValue} />
           }
           label="Do not notify"
         />
@@ -393,7 +393,7 @@ function checkheading(index, settings, setSettings, loginC) {
                 // console.log(e)
                 changeWeekStart(e);
               }}
-              label={settings.WeekStart}
+              label={settings.WeekStart.teamValue}
             />
           )}
         />
@@ -413,7 +413,7 @@ function checkheading(index, settings, setSettings, loginC) {
               changeCurrencySymbol(e);
             }
           }}
-          defaultValue={settings.CurrencySymbol}
+          defaultValue={settings.CurrencySymbol.teamValue}
           InputLabelProps={{
             shrink: true,
           }}
@@ -444,6 +444,7 @@ export default function SettingsMain(props) {
   // data is in variable but not showing on the screen
 
   useEffect(() => {
+
     setSettings(loginC.userData.settings);
     const data = [];
     getTeams?.getTeam?.forEach((team) => {
