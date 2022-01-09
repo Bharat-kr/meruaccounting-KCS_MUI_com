@@ -10,34 +10,30 @@ import asyncHandler from 'express-async-handler';
 
 const createProject = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (manager.role === 'manager') {
-    const { name, clientId } = req.body;
-    try {
-      const project = new Project({ name });
-      project.employees.push(manager._id.toHexString());
-      project.createdBy = manager._id;
-      const client = await Client.findById(clientId);
-      if (!client) throw new Error('Client not found');
 
-      manager.projects.push(project._id.toHexString());
-      await manager.save();
+  const { name, clientId } = req.body;
+  try {
+    const project = new Project({ name });
+    project.employees.push(manager._id.toHexString());
+    project.createdBy = manager._id;
+    const client = await Client.findById(clientId);
+    if (!client) throw new Error('Client not found');
 
-      await project.save();
-      client.projects.push(project._id.toHexString());
-      await client.save();
-      project.client = clientId;
-      await project.save();
-      res.status(201).json({
-        messsage: 'Successfully Created Project',
-        data: project,
-      });
-    } catch (error) {
-      res.status(500);
-      throw new Error(error);
-    }
-  } else {
-    res.status(401);
-    throw new Error('Unauthorized manager');
+    manager.projects.push(project._id.toHexString());
+    await manager.save();
+
+    await project.save();
+    client.projects.push(project._id.toHexString());
+    await client.save();
+    project.client = clientId;
+    await project.save();
+    res.status(201).json({
+      messsage: 'Successfully Created Project',
+      data: project,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
   }
 });
 
@@ -46,46 +42,15 @@ const createProject = asyncHandler(async (req, res) => {
 // @access  Public
 
 const getProject = asyncHandler(async (req, res) => {
-  const responseArray = [];
-  const user = req.user;
+  const { projects } = await User.findById(req.user._id).populate({
+    path: 'projects',
+    model: 'Project',
+    populate: { path: 'employees', select: ['firstName', 'lastName', 'days'] },
+  });
 
-  if (!user) {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-
-  for (let i = 0; i < user.projects.length; i++) {
-    const project = await Project.findById(user.projects[i]).populate({
-      path: 'employees',
-      select: ['firstName', 'lastName', 'days'],
-    });
-    if (project) {
-      // project = await Project.populate({
-      //   path: 'project',
-      //   populate: {
-      //     path: 'employees',
-      //     model: 'User',
-      //   },
-      // });
-
-      // for (let j = 0; j < project.employees.length; j++) {
-      //   const employee = await User.findById(project.employees[j]);
-      //   console.log(employee);
-
-      //   project.employees[j] = employee;
-      //   console.log(project.employees[j]);
-      // }
-
-      // console.log(project.employees);
-
-      responseArray.push(project);
-    } else {
-      continue;
-    }
-  }
   res.json({
     msg: 'Success',
-    data: responseArray,
+    data: projects,
   });
 });
 
@@ -102,7 +67,7 @@ const getProjectById = asyncHandler(async (req, res) => {
       throw new Error('No projects found');
     }
     res.status(200).json({
-      project,
+      data: project,
     });
   } catch (error) {
     res.status(500);
@@ -116,27 +81,21 @@ const getProjectById = asyncHandler(async (req, res) => {
 
 const editProject = asyncHandler(async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
-    const projectId = req.params.id;
-
-    try {
-      const project = await Project.findByIdAndUpdate(projectId, req.body);
-      if (!project) {
-        res.status(404);
-        throw new Error(`No project found ${projectId}`);
-      }
-
-      res.status(202).json({
-        messsage: 'Successfully edited project',
-        data: project,
-      });
-    } catch (error) {
-      res.status(500);
-      throw new Error(error);
+  const projectId = req.params.id;
+  try {
+    const project = await Project.findByIdAndUpdate(projectId, req.body);
+    if (!project) {
+      res.status(404);
+      throw new Error(`No project found ${projectId}`);
     }
-  } else {
-    res.status(401);
-    throw new Error('Unauthorized manager');
+
+    res.status(202).json({
+      messsage: 'Successfully edited project',
+      data: project,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
   }
 });
 
@@ -146,33 +105,25 @@ const editProject = asyncHandler(async (req, res) => {
 
 const deleteProject = asyncHandler(async (req, res) => {
   const employee = req.user;
-  if (employee.role === 'manager') {
-    const { projectId } = req.body;
-    try {
-      // delete project itself
-      const project = await Project.findByIdAndRemove(projectId);
-      // const project = await Project.findById(projectId);
-      if (!project) {
-        res.status(404);
-        throw new Error(`No project found ${projectId}`);
-      }
+  const { projectId } = req.body;
+  try {
+    const project = await Project.findByIdAndRemove(projectId);
+    if (!project) {
+      res.status(404);
+      throw new Error(`No project found ${projectId}`);
+    }
 
-      // delete project from client
-      {
-        const client = await Client.findById(project.client.toHexString());
-        if (!client) {
-          throw new Error('Client not found');
-        }
-        client.projects = client.projects.filter(
-          (id) => id.toHexString() !== projectId
-        );
-        await client.save();
-      }
+    // delete project from client
+    const client = await Client.findById(project.client.toHexString());
+    if (client) {
+      client.projects = client.projects.filter(
+        (id) => id.toHexString() !== projectId
+      );
+    }
+    await client.save();
 
-      // delete project from employees array
-      if (project.employees.length === 0) {
-        throw new Error('No employee in projects');
-      }
+    // delete project from employees array
+    if (project.employees.length > 0) {
       // project.createdBy;
       for (let i = 0; i < project.employees.length; i++) {
         const emp = await User.findById(project.employees[i]);
@@ -183,18 +134,15 @@ const deleteProject = asyncHandler(async (req, res) => {
         await emp.save();
       }
       await employee.save();
-
-      res.status(202).json({
-        messsage: 'Successfully Deleted Project',
-        status: 'success',
-      });
-    } catch (error) {
-      res.status(500);
-      throw new Error(error);
     }
-  } else {
-    res.status(401);
-    throw new Error('Unauthorized manager');
+
+    res.status(202).json({
+      messsage: 'Successfully Deleted Project',
+      status: 'success',
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
   }
 });
 
@@ -204,11 +152,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 
 const addMember = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (manager.role !== 'manager') {
-    throw new Error('Unauthorized');
-  }
-
-  const employeeMail = req.body.employeeMail;
+  const { employeeMail } = req.body;
   const projectId = req.params.id;
   let alreadyMember = false;
   let alreadyProjectAdded = false;
@@ -258,9 +202,6 @@ const addMember = asyncHandler(async (req, res) => {
 const removeMember = asyncHandler(async (req, res) => {
   try {
     const manager = req.user;
-    if (manager.role !== 'manager') {
-      throw new Error('Unauthorized');
-    }
     const employeeId = req.body.employeeId;
     const projectId = req.params.id;
     const project = await Project.findById(projectId);
@@ -296,9 +237,7 @@ const removeMember = asyncHandler(async (req, res) => {
 
 const assignProjectLeader = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (manager.role !== 'manager') {
-    throw new Error('Unauthorized');
-  }
+
   const employeeMail = req.body.employeeMail;
   const projectId = req.params.id;
   let alreadyMember = false;
