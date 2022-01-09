@@ -63,6 +63,7 @@ const createActivity = asyncHandler(async (req, res) => {
   } = req.body;
 
   const activity = await Activity.create({
+    employee: req.user._id,
     client: clientId,
     project: projectId,
     task,
@@ -83,12 +84,9 @@ const createActivity = asyncHandler(async (req, res) => {
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
       if (day.date == today) {
-        console.log('Inside Date Equals');
         found = true;
         day.activities.push(activity);
         break;
-      } else {
-        console.log('not found');
       }
     }
     if (found == false) {
