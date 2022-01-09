@@ -1,6 +1,7 @@
 import Client from '../models/client.js';
 import Project from '../models/project.js';
 import asyncHandler from 'express-async-handler';
+import User from '../models/user.js';
 
 // @desc    Create a new client
 // @route   POST /client
@@ -40,20 +41,21 @@ const getClient = asyncHandler(async (req, res) => {
   let responseArray = [];
   if (employee.role === 'manager') {
     try {
-      const client = await Client.find({ manager: employee._id }).populate({
-        path: 'projects',
-        populate: {
-          path: 'employees',
-          model: 'User',
-          select: ['firstName', 'lastName', 'days'],
-        },
-      });
-
-      // for (let j = 0; j < client.projects.length; j++) {
-      //   await Project.populate(client.projects[i], {
-      //     path: 'members',
-      //   });
-      // }
+      const client = await Client.find({ manager: employee._id })
+        .populate({
+          path: 'projects',
+          populate: {
+            path: 'projectLeader',
+            select: ['firstName', 'lastName', 'email'],
+          },
+        })
+        .populate({
+          path: 'projects',
+          populate: {
+            path: 'employees',
+            select: ['firstName', 'lastName', 'days', 'email'],
+          },
+        });
 
       if (!client) {
         res.status(404);
@@ -136,24 +138,78 @@ const editClient = asyncHandler(async (req, res) => {
 // @access  Private
 
 const deleteClient = asyncHandler(async (req, res) => {
+  console.log('Inside Route');
   const employee = req.user;
+
   const clientId = req.body.clientId;
 
   if (employee.role === 'manager') {
     try {
-      const client = await Client.findByIdAndRemove(clientId);
+      /* ---------------------------- // finding Client ---------------------------- */
+      const client = await Client.findById(clientId);
 
       if (!client) {
         res.status(404);
         throw new Error('Client not found');
       }
 
-      res.status(201).json({
+      const userId = client.createdBy;
+
+      /* ------------------ finding user to delete client in that ----------------- */
+
+      const user = await User.findById(userId);
+      if (user) {
+        user.clients.forEach((client, index) => {
+          // console.log("This is client", client.toHexString());
+          // console.log("This is clientId", clientId);
+          if (client.toHexString() == clientId) {
+            user.clients.splice(index, 1);
+          }
+        });
+        await user.save();
+      }
+
+      /* ------------------------ deleting projects in user ------------------------ */
+      // taking projects from deleting client and deleting the projects and project field from their respective members
+
+      for (let i = 0; i < client.projects.length; i++) {
+        const projectId = client.projects[i];
+        const project = await Project.findById(projectId);
+        // console.log("This is project", project);
+
+        for (let j = 0; j < project.employees.length; j++) {
+          // Deleting projects reference from the emoployee
+          const employeeId = project.employees[j];
+          const employee = await User.findById(employeeId);
+
+          // console.log("This is employee", employee);
+
+          if (employee) {
+            employee.projects.forEach((project, index) => {
+              if (project.toHexString() == projectId.toHexString()) {
+                console.log('Deleting Employee Project', project);
+                employee.projects.splice(index, 1);
+              }
+            });
+            await employee.save();
+          }
+        }
+        // Deleting Project
+        await Project.findByIdAndRemove(projectId);
+      }
+
+      /* --------------------------- deleting the client -------------------------- */
+
+      await Client.findByIdAndRemove(clientId);
+
+      /* ---------------------------- Sending response ---------------------------- */
+
+      res.status(200).json({
         messsage: 'Successfully Deleted Client',
         data: client,
       });
     } catch (error) {
-      console.log('hey');
+      console.log(error);
       throw new Error(error);
     }
   } else {

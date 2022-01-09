@@ -9,16 +9,12 @@ import asyncHandler from 'express-async-handler';
 const createTeam = asyncHandler(async (req, res) => {
   const manager = req.user;
   const teamName = req.body.name;
-  if (!manager.role === 'manager') {
-    res.status(401);
-    throw new Error('Unauthorized Access');
-  }
+
   try {
-    const team = new Team();
-    team.name = teamName;
-    team.members.push(req.user._id);
+    const team = await Team.create({ name: teamName });
+    team.members.push(manager._id);
+    team.manager = manager._id;
     await team.save();
-    // team.manager = manager._id;
     manager.teams.push(team._id.toHexString());
 
     await manager.save();
@@ -33,47 +29,15 @@ const createTeam = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Add a member to a team
-// @route   POST /team/add/:id
-// @access  Private
-
-const addMember = asyncHandler(async (req, res) => {
-  const id = req.params.id;
-  const employee = req.user;
-  const team = Team.findById();
-  if (manager.isManager) {
-    try {
-      await team.save();
-      team.employees.push(id);
-      await team.save();
-
-      res.json({
-        status: 'Ok',
-        data: team,
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
-  } else {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-});
-
-// @desc    Update member
+// @desc    Add member to team
 // @route   PATCH /team/updateMember
 // @access  Private
+// @params  { teamId: " " , employeeMail: " "}
 
 const updateMember = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (!manager.isManager) {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-  // const settings = manager.settings;
 
-  const employeeMail = req.body.employeeMail;
-  const teamId = req.body.teamId;
+  const { employeeMail, teamId } = req.body;
   let alreadyMember = false;
   try {
     const team = await Team.findById(teamId);
@@ -86,13 +50,11 @@ const updateMember = asyncHandler(async (req, res) => {
     });
     if (alreadyMember) {
       return res.json({
-        status: 'Ok',
-        data: 'Already A Member',
+        status: 'Already A Member',
+        data: team,
       });
     }
-    // const employee = await User.findById(employeeId);
-    newEmployee.teams.push(teamId);
-    await newEmployee.save();
+
     team.members.push(employeeId);
     await team.save();
 
@@ -106,36 +68,39 @@ const updateMember = asyncHandler(async (req, res) => {
   }
 });
 
-// TODO: why is it public? add authentication
 // @desc    Remove member
 // @route   DELETE /team/updateMember
 // @access  Public
 
 const removeMember = asyncHandler(async (req, res) => {
-  const user = req.user;
-  const employeeId = req.body.employeeId;
-  const teamId = req.body.teamId;
+  const { employeeId, teamId } = req.body;
   let alreadyMember = false;
-  console.log(teamId, employeeId);
   try {
     const team = await Team.findById(teamId);
+    if (!team) throw new Error('Invalid teamId');
+
     const employee = await User.findById(employeeId);
+    if (!employee) throw new Error('Invalid user id');
+    // deleting employee id from team
     team.members.forEach((member, index) => {
       if (member.equals(employeeId)) {
         alreadyMember = true;
         team.members.splice(index, 1);
       }
     });
+
+    // deleting team id in employee if exists
     employee.teams.forEach((team, index) => {
       if (team.equals(teamId)) {
         alreadyMember = true;
         employee.teams.splice(index, 1);
       }
     });
+
     if (alreadyMember == false) {
       return res.json({
-        status: 'Ok',
-        data: 'No Member Found',
+        status: 'No Member Found',
+        data: team,
       });
     }
     await team.save();
@@ -194,40 +159,38 @@ const getTeamById = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get teams
+// @desc    Get all teams of user
 // @route   GET /team/getTeam
 // @access  Private
 
 const getTeam = asyncHandler(async (req, res) => {
-  const responseArray = [];
-  const user = req.user;
+  try {
+    const responseArray = [];
 
-  if (!user) {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-
-  for (let i = 0; i < user.teams.length; i++) {
-    const team = await Team.findById(user.teams[i]).populate({
-      path: 'members',
-      populate: { path: 'projects', model: 'Project', select: ['name', '_id'] },
-    });
-    if (team) {
-      // await Team.populate(team, {
-      //   path: 'members',
-      // });
-      // await Team.populate(team, {
-      //   path: 'projects',
-      // });
-      responseArray.push(team);
-    } else {
-      continue;
+    for (let i = 0; i < req.user.teams.length; i++) {
+      console.log(req.user.teams[i]);
+      const team = await Team.findById(req.user.teams[i]).populate({
+        path: 'members',
+        select: ['firstName', 'lastName', 'email'],
+        populate: {
+          path: 'projects',
+          model: 'Project',
+          select: ['name', '_id'],
+        },
+      });
+      if (team) {
+        responseArray.push(team);
+      } else {
+        continue;
+      }
     }
+    res.json({
+      msg: 'Success',
+      data: responseArray,
+    });
+  } catch (error) {
+    throw new Error(error);
   }
-  res.json({
-    msg: 'Success',
-    data: responseArray,
-  });
 });
 
 // @desc    Delete teams
@@ -284,7 +247,6 @@ const deleteTeam = asyncHandler(async (req, res) => {
 
 export {
   createTeam,
-  addMember,
   updateMember,
   removeMember,
   getTeamById,
