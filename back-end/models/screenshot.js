@@ -13,12 +13,10 @@ const screenshotSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curProjectId',
   },
-  // this is a taskId
   task: {
     type: String,
     default: '',
   },
-  //TODO: not found image in default
   image: {
     type: String,
     default: '',

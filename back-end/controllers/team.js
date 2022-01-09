@@ -81,6 +81,7 @@ const removeMember = asyncHandler(async (req, res) => {
 
     const employee = await User.findById(employeeId);
     if (!employee) throw new Error('Invalid user id');
+
     // deleting employee id from team
     team.members.forEach((member, index) => {
       if (member.equals(employeeId)) {
@@ -120,42 +121,20 @@ const removeMember = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getTeamById = asyncHandler(async (req, res) => {
-  const user = req.user;
   const teamId = req.params.id;
 
-  if (!user) {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-  const team = await Team.findById(teamId);
+  const team = await Team.findById(teamId).populate({
+    path: 'members',
+    model: 'User',
+  });
   if (!team) {
     res.status(404);
     throw new Error('No teams found');
   }
-  const TeamMembers = await Team.populate(team, {
-    path: 'employees',
-  });
-  let teamMember = [];
-  for (let i = 0; i < TeamMembers.employees.length; i++) {
-    const emp = TeamMembers.employees[i];
-    const member = await User.populate(emp, {
-      path: 'projects',
-    });
-    teamMember.push(member);
-  }
-
-  const TeamProject = await Team.populate(team, {
-    path: 'projects',
-  });
-  const teamProject = TeamProject.projects;
 
   res.json({
     msg: 'Success',
-    data: {
-      team,
-      teamMember,
-      teamProject,
-    },
+    data: team,
   });
 });
 
