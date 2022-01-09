@@ -1,9 +1,8 @@
 export function settingsValueToString(value) {
-  if (typeof value === "string") {
-    return value;
-  } else if (value) {
+  if (typeof value === "boolean" && value) {
     return "True";
-  } else if (!value) {
+  } else if (typeof value === "boolean" && !value) {
     return "False";
   }
+  return value;
 }

@@ -52,6 +52,16 @@ export default function Main(props) {
       payRate: value,
     };
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await getTeam(dispatchgetTeam);
+  };
+
+  const updateRole = async (e) => {
+    const data = {
+      role: e.target.value,
+    };
+    console.log(data);
+    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await getTeam(dispatchgetTeam);
   };
   const deleteMember = async () => {
     const data = {
@@ -76,7 +86,6 @@ export default function Main(props) {
       </>
     );
   };
-  console.log("currMember", JSON.stringify(currMember, null, " "));
 
   return (
     <>
@@ -140,22 +149,22 @@ export default function Main(props) {
                 <Typography variant="h4">Role({currMember.role})</Typography>
                 <RadioGroup
                   aria-label="Role"
-                  defaultValue={currMember.role}
+                  value={currMember.role}
                   name="radio-buttons-group"
                 >
                   <FormControlLabel
-                    value="Admin"
-                    control={<Radio />}
+                    value="admin"
+                    control={<Radio onChange={updateRole}/>}
                     label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
                   />
                   <FormControlLabel
                     value="manager"
-                    control={<Radio />}
+                    control={<Radio onChange={updateRole} />}
                     label="Manager - can see selected user's Timeline & Reports (but not rates)"
                   />
                   <FormControlLabel
-                    value="Employee"
-                    control={<Radio />}
+                    value="employee"
+                    control={<Radio onChange={updateRole} />}
                     label="Employee - can see their own data only"
                   />
                 </RadioGroup>
@@ -166,7 +175,7 @@ export default function Main(props) {
                 <Typography variant="h5">Manage for</Typography>
                 <Typography varinat="body2">
                   If enabled,
-                   {getFullName(currMember.firstName, currMember.lastName)} will
+                  {getFullName(currMember.firstName, currMember.lastName)} will
                   be able to see selected user's Timeline and Reports, but not
                   rates.
                 </Typography>
