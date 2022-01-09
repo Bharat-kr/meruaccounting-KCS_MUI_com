@@ -1,5 +1,8 @@
 import User from "../models/user.js";
+import Client from "../models/client.js";
+import Project from "../models/project.js";
 import asyncHandler from "express-async-handler";
+import Team from "../models/team.js";
 
 // @desc    Get employee details by ID
 // @route   GET /employee/:id
@@ -67,11 +70,61 @@ const createEmployee = asyncHandler(async (req, res) => {
 const deleteEmployee = asyncHandler(async (req, res) => {
   const id = req.params.id;
   try {
-    const employee = await User.findByIdAndDelete(id);
+    /* ---------------------------- finding employee ---------------------------- */
+
+    const employee = await User.findById(id);
+
     if (employee) {
       res.status(500);
-      throw new Error("Employee not deleted");
+      throw new Error("Employee to be  deleted not found");
     }
+
+    /* ------ finding employee clients and removing createdBy field ----- */
+
+    for (let i = 0; i < employee.clients.length; i++) {
+      const clientId = employee.clients[i];
+      const client = await Client.findById(clientId);
+      client.createdBy = undefined;
+      await client.save();
+    }
+
+    /* ------ removing project reference field of employee that is deleted ------ */
+    for (let i = 0; i < employee.projects.length; i++) {
+      const projectId = employee.projects[i];
+      const project = await Project.findById(projectId);
+      // console.log("This is project", project);
+
+      project.employees.forEach((employee, index) => {
+        if (employee.toHexString() == id.toHexString()) {
+          console.log("Deleting Employee Project", project);
+          project.employees.splice(index, 1);
+        }
+      });
+      if (project.projectLeader.toHexString() == id.toHexString()) {
+        project.projectLeader = undefined;
+      }
+      if (project.createdBy.toHexString() == id.toHexString()) {
+        project.createdBy = undefined;
+      }
+      await project.save();
+    }
+    /* ------ removing team reference field of employee that is deleted ------ */
+    for (let i = 0; i < employee.teams.length; i++) {
+      const teamId = employee.teams[i];
+      const team = await Team.findById(teamId);
+      // console.log("This is project", project);
+
+      team.members.forEach((employee, index) => {
+        if (employee.toHexString() == id.toHexString()) {
+          console.log("Deleting Employee Team", employee);
+          team.members.splice(index, 1);
+        }
+      });
+
+      await team.save();
+    }
+    await User.findByIdAndRemove(id);
+
     res.json({
       status: "Employee Deleted",
       data: employee,
