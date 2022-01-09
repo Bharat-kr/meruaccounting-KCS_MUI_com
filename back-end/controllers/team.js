@@ -81,6 +81,7 @@ const removeMember = asyncHandler(async (req, res) => {
 
     const employee = await User.findById(employeeId);
     if (!employee) throw new Error('Invalid user id');
+
     // deleting employee id from team
     team.members.forEach((member, index) => {
       if (member.equals(employeeId)) {
@@ -120,42 +121,21 @@ const removeMember = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getTeamById = asyncHandler(async (req, res) => {
-  const user = req.user;
   const teamId = req.params.id;
 
-  if (!user) {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-  const team = await Team.findById(teamId);
+  const team = await Team.findById(teamId).populate({
+    path: 'members',
+    model: 'User',
+    select: ['fistName', 'lastName', 'email'],
+  });
   if (!team) {
     res.status(404);
     throw new Error('No teams found');
   }
-  const TeamMembers = await Team.populate(team, {
-    path: 'employees',
-  });
-  let teamMember = [];
-  for (let i = 0; i < TeamMembers.employees.length; i++) {
-    const emp = TeamMembers.employees[i];
-    const member = await User.populate(emp, {
-      path: 'projects',
-    });
-    teamMember.push(member);
-  }
-
-  const TeamProject = await Team.populate(team, {
-    path: 'projects',
-  });
-  const teamProject = TeamProject.projects;
 
   res.json({
     msg: 'Success',
-    data: {
-      team,
-      teamMember,
-      teamProject,
-    },
+    data: team,
   });
 });
 
@@ -165,28 +145,29 @@ const getTeamById = asyncHandler(async (req, res) => {
 
 const getTeam = asyncHandler(async (req, res) => {
   try {
-    const responseArray = [];
-
-    for (let i = 0; i < req.user.teams.length; i++) {
-      console.log(req.user.teams[i]);
-      const team = await Team.findById(req.user.teams[i]).populate({
-        path: 'members',
-        select: ['firstName', 'lastName', 'email'],
+    const { teams } = await User.findById(req.user._id)
+      .populate({
+        path: 'teams',
+        model: 'Team',
         populate: {
-          path: 'projects',
-          model: 'Project',
-          select: ['name', '_id'],
+          path: 'members',
+          model: 'User',
+          select: ['fistName', 'lastName', 'email'],
+        },
+      })
+      .populate({
+        path: 'teams',
+        model: 'Team',
+        populate: {
+          path: 'manager',
+          model: 'User',
+          select: ['fistName', 'lastName', 'email'],
         },
       });
-      if (team) {
-        responseArray.push(team);
-      } else {
-        continue;
-      }
-    }
+
     res.json({
       msg: 'Success',
-      data: responseArray,
+      data: teams,
     });
   } catch (error) {
     throw new Error(error);
@@ -199,37 +180,35 @@ const getTeam = asyncHandler(async (req, res) => {
 
 const deleteTeam = asyncHandler(async (req, res) => {
   const manager = req.user;
-  if (!manager.isManager) {
-    res.status(401);
-    throw new Error('Unauthorized');
-  }
-  const teamId = req.body.teamId;
+  const { teamId } = req.body;
   try {
     const team = await Team.findByIdAndRemove(teamId);
+    if (!team) throw new Error('No team found');
 
-    const teamMembers = team.employees;
+    const teamMembers = team.members;
     const managerId = team.manager;
+
     if (!managerId === manager._id) {
-      throw new Error('You Can Only Delete Your Teams');
+      throw new Error(
+        'You are not a manager assigned to this team. Please contact administrator'
+      );
     }
-    manager.team.forEach((team, index) => {
+
+    manager.teams.forEach((team, index) => {
       if (team.equals(team._id)) {
-        manager.team.splice(index, 1);
+        manager.teams.splice(index, 1);
       }
     });
+
     await manager.save();
 
     for (let i = 0; i < teamMembers.length; i++) {
       const id = teamMembers[i].toHexString();
       const employee = await User.findById(id);
 
-      console.log(employee);
-
-      employee.team.forEach((team, index) => {
-        console.log(team);
-
+      employee.teams.forEach((team, index) => {
         if (team.equals(team._id)) {
-          employee.team.splice(index, 1);
+          employee.teams.splice(index, 1);
         }
       });
       await employee.save();

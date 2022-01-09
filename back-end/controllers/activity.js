@@ -1,16 +1,15 @@
-import Activity from "../models/activity.js";
-import User from "../models/user.js";
-import Screenshot from "../models/screenshot.js";
-import asyncHandler from "express-async-handler";
+import Activity from '../models/activity.js';
+import User from '../models/user.js';
+import Screenshot from '../models/screenshot.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
 // @access  Private
 
-//TODO: not tested
-
 const createScreenShot = asyncHandler(async (req, res) => {
   const {
+    clientId,
     projectId,
     task,
     image,
@@ -22,10 +21,11 @@ const createScreenShot = asyncHandler(async (req, res) => {
 
   const screenshot = await Screenshot.create({
     employee: req.user._id,
+    client: clientId,
     project: projectId,
     task,
     image,
-    activityat: activityAt,
+    activityAt: activityAt,
     activityId,
     performanceData,
     title,
@@ -34,13 +34,13 @@ const createScreenShot = asyncHandler(async (req, res) => {
   if (screenshot) {
     const activity = await Activity.findById(activityId);
     if (!activity) {
-      res.status(404).json({ mssg: "no act found" });
+      res.status(404).json({ mssg: 'no act found' });
     }
     activity.screenshots.push(screenshot._id.toHexString());
     await activity.save();
 
     res.status(201).json({
-      status: "success",
+      status: 'success',
       screenshot,
       activity,
     });
@@ -53,7 +53,8 @@ const createScreenShot = asyncHandler(async (req, res) => {
 
 const createActivity = asyncHandler(async (req, res) => {
   const {
-    // clientId,
+    clientId,
+    projectId,
     task,
     startTime,
     endTime,
@@ -62,7 +63,9 @@ const createActivity = asyncHandler(async (req, res) => {
   } = req.body;
 
   const activity = await Activity.create({
-    // client: clientId,
+    employee: req.user._id,
+    client: clientId,
+    project: projectId,
     task,
     performanceData,
     startTime,
@@ -76,17 +79,14 @@ const createActivity = asyncHandler(async (req, res) => {
     let dd = actAt.getDate();
     let mm = actAt.getMonth() + 1;
     let yyyy = actAt.getFullYear();
-    let today = dd + "/" + mm + "/" + yyyy;
+    let today = dd + '/' + mm + '/' + yyyy;
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
       if (day.date == today) {
-        console.log("Inside Date Equals");
         found = true;
         day.activities.push(activity);
         break;
-      } else {
-        console.log("not found");
       }
     }
     if (found == false) {
@@ -98,13 +98,13 @@ const createActivity = asyncHandler(async (req, res) => {
     }
     await user.save();
     res.status(201).json({
-      status: "success",
+      status: 'success',
       activity,
       days: user.days,
     });
   } else {
     res.status(500);
-    throw new Error("Internal server error");
+    throw new Error('Internal server error');
   }
 });
 
@@ -127,7 +127,7 @@ const updateActivity = asyncHandler(async (req, res) => {
     }
 
     res.status(202).json({
-      message: "Succesfully edited activity",
+      message: 'Succesfully edited activity',
       data: activity,
     });
   } catch (error) {

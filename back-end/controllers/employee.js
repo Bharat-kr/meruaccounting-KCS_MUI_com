@@ -1,5 +1,5 @@
-import User from "../models/user.js";
-import asyncHandler from "express-async-handler";
+import User from '../models/user.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Get employee details by ID
 // @route   GET /employee/:id
@@ -13,7 +13,7 @@ const getEmployeeById = asyncHandler(async (req, res) => {
     throw new Error(`Employee not found`);
   }
   res.status(200).json({
-    status: "Ok",
+    status: 'Ok',
     data: employee,
   });
 });
@@ -23,15 +23,10 @@ const getEmployeeById = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getEmployeeList = asyncHandler((req, res) => {
-  const user = req.user;
-  if (!user.isManager == true) {
-    res.status(401);
-    throw new Error("Unauthorized manager");
-  }
-  const employees = user.employees;
-  const team = user.team.populate();
+  const employees = req.user.employees;
+  const team = req.user.teams.populate();
   res.status(200).json({
-    messsage: "Success",
+    messsage: 'Success',
     employees,
     team,
   });
@@ -48,10 +43,10 @@ const createEmployee = asyncHandler(async (req, res) => {
     await employee.save();
     if (!employee) {
       res.status(500);
-      throw new Error("Employee not created");
+      throw new Error('Employee not created');
     }
     res.json({
-      status: "Ok",
+      status: 'Ok',
       data: employee,
     });
   } catch (error) {
@@ -70,10 +65,10 @@ const deleteEmployee = asyncHandler(async (req, res) => {
     const employee = await User.findByIdAndDelete(id);
     if (employee) {
       res.status(500);
-      throw new Error("Employee not deleted");
+      throw new Error('Employee not deleted');
     }
     res.json({
-      status: "Employee Deleted",
+      status: 'Employee Deleted',
       data: employee,
     });
   } catch (error) {
@@ -92,7 +87,7 @@ const editEmployee = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(employeeId, req.body);
     user.save();
     res.json({
-      message: "User Updated",
+      message: 'User Updated',
       data: user,
     });
   } catch (error) {
@@ -135,7 +130,7 @@ const addEmployee = asyncHandler(async (req, res) => {
       const emp = await employee.save();
 
       return res.json({
-        status: "Success",
+        status: 'Success',
         data: employee,
       });
     }
@@ -179,7 +174,7 @@ const addEmployee = asyncHandler(async (req, res) => {
     const emp = await employee.save();
 
     res.json({
-      status: "Success",
+      status: 'Success',
       data: employee,
     });
   } catch (error) {
