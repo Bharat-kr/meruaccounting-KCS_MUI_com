@@ -27,6 +27,7 @@ import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { teamContext } from "src/contexts/TeamsContext";
+import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -51,6 +52,16 @@ export default function Main(props) {
       payRate: value,
     };
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await getTeam(dispatchgetTeam);
+  };
+
+  const updateRole = async (e) => {
+    const data = {
+      role: e.target.value,
+    };
+    console.log(data);
+    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await getTeam(dispatchgetTeam);
   };
   const deleteMember = async () => {
     const data = {
@@ -65,14 +76,11 @@ export default function Main(props) {
   const Labelconfig = function () {
     return (
       <>
-        {currTeam.projects.map((pro) => (
+        {currMember.projects.map((pro) => (
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            control={<Switch checked={currMember.projects.includes(pro._id)} />}
-            label={`${currTeam.name}(${pro.name})`}
-            // onChange={(e) => {
-            //   handleSwitchChange(e, pro, User.name);
-            // }}
+            control={<Switch checked />}
+            label={`${pro.name}`}
           />
         ))}
       </>
@@ -97,9 +105,14 @@ export default function Main(props) {
                 spacing={0}
               >
                 <Grid xs={4}>
-                  <Typography sx={{ fontSize: 40 }}>
-                    {getFullName(currMember?.firstName, currMember?.lastName)}
-                  </Typography>
+                  <RouterLink
+                    to={`/dashboard/employeepage/${currMember._id}`}
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    <Typography sx={{ fontSize: 40 }}>
+                      {getFullName(currMember?.firstName, currMember?.lastName)}
+                    </Typography>
+                  </RouterLink>
                   <Divider />
                   <Typography variant="body1">{currMember?.email}</Typography>
                   <Grid xs={8} sx={{ mt: 2 }}>
@@ -136,32 +149,33 @@ export default function Main(props) {
                 <Typography variant="h4">Role({currMember.role})</Typography>
                 <RadioGroup
                   aria-label="Role"
-                  defaultValue={currMember.role}
+                  value={currMember.role}
                   name="radio-buttons-group"
                 >
                   <FormControlLabel
-                    value="Admin"
-                    control={<Radio />}
+                    value="admin"
+                    control={<Radio onChange={updateRole}/>}
                     label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
                   />
                   <FormControlLabel
-                    value="Manager"
-                    control={<Radio />}
+                    value="manager"
+                    control={<Radio onChange={updateRole} />}
                     label="Manager - can see selected user's Timeline & Reports (but not rates)"
                   />
                   <FormControlLabel
-                    value="Employee"
-                    control={<Radio />}
+                    value="employee"
+                    control={<Radio onChange={updateRole} />}
                     label="Employee - can see their own data only"
                   />
                 </RadioGroup>
               </FormControl>
             </Box>
-            {(currMember.role === "Manager" || currMember.role === "Admin") && (
+            {currMember.role === "Admin" && (
               <Box>
                 <Typography variant="h5">Manage for</Typography>
                 <Typography varinat="body2">
-                  If enabled, {currMember.firstName} {currMember.lastName} will
+                  If enabled,
+                  {getFullName(currMember.firstName, currMember.lastName)} will
                   be able to see selected user's Timeline and Reports, but not
                   rates.
                 </Typography>
@@ -180,11 +194,11 @@ export default function Main(props) {
               <Typography variant="h5">Projects</Typography>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
-              {/* <Container sx={{ display: "block" }}>{Labelconfig()}</Container> */}
+              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
             </Box>
             <Box sx={{ pt: 2, fontSize: "20px" }}>
               <Typography variant="h4">Effective Settings</Typography>
-              {/* {currMember.settings &&
+              {currMember.settings &&
                 Object.keys(currMember.settings).map((keyName, keyIndex) => (
                   <>
                     <Box
@@ -194,18 +208,22 @@ export default function Main(props) {
                       <Typography
                         varihant="h6"
                         sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                      > */}
-              {/* {convertString(keyName)} */}
-              {/* {console.log(index)} */}
-              {/* </Typography>
+                      >
+                        {convertString(keyName)}
+                        {/* {console.log(index)} */}
+                      </Typography>
                       <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                        {currMember.settings[keyName] === true
-                          ? "On"
-                          : currMember.settings[keyName]}
+                        {currMember.settings[keyName].isTeamSetting
+                          ? settingsValueToString(
+                              currMember.settings[keyName].teamValue
+                            )
+                          : settingsValueToString(
+                              currMember.settings[keyName].individualValue
+                            )}
                       </RouterLink>
                     </Box>
                   </>
-                ))} */}
+                ))}
             </Box>
           </Typography>
         </Container>
@@ -216,6 +234,4 @@ export default function Main(props) {
 
 Main.propTypes = {
   children: PropTypes.node,
-  // index: PropTypes.number.isRequired,
-  // value: PropTypes.number.isRequired,
 };
