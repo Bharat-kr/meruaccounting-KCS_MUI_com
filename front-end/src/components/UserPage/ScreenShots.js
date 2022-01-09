@@ -1,11 +1,11 @@
-import React from 'react';
-import { Box, Grid, Paper } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import Activity from './Activity';
+import React from "react";
+import { Box, Grid, Paper } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import Activity from "./Activity";
 
 const useStyles = makeStyles((theme) => ({}));
 
-export default function ScreenShots(props) {
+export default function ScreenShots({ isInternal }) {
   const classes = useStyles();
 
   return (
