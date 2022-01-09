@@ -26,13 +26,8 @@ const getEmployeeById = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getEmployeeList = asyncHandler((req, res) => {
-  const user = req.user;
-  if (!user.isManager == true) {
-    res.status(401);
-    throw new Error("Unauthorized manager");
-  }
-  const employees = user.employees;
-  const team = user.team.populate();
+  const employees = req.user.employees;
+  const team = req.user.teams.populate();
   res.status(200).json({
     messsage: "Success",
     employees,
@@ -145,7 +140,7 @@ const editEmployee = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(employeeId, req.body);
     user.save();
     res.json({
-      message: "User Settings Updated",
+      message: "User Updated",
       data: user,
     });
   } catch (error) {
