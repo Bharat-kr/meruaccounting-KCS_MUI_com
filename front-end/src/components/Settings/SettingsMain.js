@@ -162,17 +162,18 @@ function checkheading(index, settings, setSettings, loginC) {
   };
   const changeWeekStart = async (e) => {
     e.preventDefault();
-    // const value = document.querySelector("#WeekStart").value;
     console.log(e);
 
     const data = {
       settings: {
         ...settings,
-        WeekStart: e.target.value,
+        WeekStart: {
+          teamValue: e.target.value,
+        },
       },
     };
-    // console.log(settings);
-    await UpdateSettings(data);
+    console.log(data);
+    // await UpdateSettings(data);
   };
   const changeCurrencySymbol = async (e) => {
     e.preventDefault();
@@ -307,7 +308,10 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Pause"
           control={
-            <Radio onClick={changeAutoPause} checked={settings.AutoPause.teamValue} />
+            <Radio
+              onClick={changeAutoPause}
+              checked={settings.AutoPause.teamValue}
+            />
           }
           label="Pause after"
         />
@@ -327,7 +331,10 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Do not pause"
           control={
-            <Radio onClick={changeAutoPause} checked={!settings.AutoPause.teamValue} />
+            <Radio
+              onClick={changeAutoPause}
+              checked={!settings.AutoPause.teamValue}
+            />
           }
           label="Do not pause"
         />
@@ -340,7 +347,10 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Allow"
           control={
-            <Radio onClick={changeOfflineTime} checked={settings.OfflineTime.teamValue} />
+            <Radio
+              onClick={changeOfflineTime}
+              checked={settings.OfflineTime.teamValue}
+            />
           }
           label="Allow"
         />
@@ -363,14 +373,20 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Notify"
           control={
-            <Radio onClick={changeNotifyUser} checked={settings.NotifyUser.teamValue} />
+            <Radio
+              onClick={changeNotifyUser}
+              checked={settings.NotifyUser.teamValue}
+            />
           }
           label="Notify"
         />
         <FormControlLabel
           value="Do not notify"
           control={
-            <Radio onClick={changeNotifyUser} checked={!settings.NotifyUser.teamValue} />
+            <Radio
+              onClick={changeNotifyUser}
+              checked={!settings.NotifyUser.teamValue}
+            />
           }
           label="Do not notify"
         />
@@ -444,7 +460,6 @@ export default function SettingsMain(props) {
   // data is in variable but not showing on the screen
 
   useEffect(() => {
-
     setSettings(loginC.userData.settings);
     const data = [];
     getTeams?.getTeam?.forEach((team) => {
