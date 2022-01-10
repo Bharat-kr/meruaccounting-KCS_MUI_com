@@ -1,27 +1,20 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useRef, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  Grid,
-  List,
-  Paper,
   Autocomplete,
   TextField,
   Typography,
-  Button,
   Divider,
   Container,
   Radio,
   FormControlLabel,
   FormControl,
   FormGroup,
-  FormLabel,
   RadioGroup,
   Switch,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
-import { ClientsContext } from "../../contexts/ClientsContext";
-import { UserContext } from "../../contexts/UserContext";
 import { loginContext } from "src/contexts/LoginContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { getTeam } from "src/api/teams api/teams";
@@ -483,7 +476,7 @@ export default function SettingsMain(props) {
       {value === index && (
         <Container
           component="div"
-          sx={{}}
+          sx={{ pb: 2 }}
           role="tabpanel"
           hidden={value !== index}
           id={`vertical-tabpanel-${index}`}
@@ -527,7 +520,11 @@ export default function SettingsMain(props) {
               {teamsList.map((user) => (
                 <FormGroup>
                   <FormControlLabel
-                    control={<Switch />}
+                    control={
+                      <Switch
+                        checked={settings?.ScreenShotPerHour?.isTeamSetting}
+                      />
+                    }
                     label={user.name}
                     onChange={() => {
                       userChange(user.name);

@@ -14,6 +14,9 @@ import {
   FormControlLabel,
   FormControl,
   Switch,
+  TextField,
+  Autocomplete,
+  Button,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -73,11 +76,17 @@ export default function Main(props) {
     await getTeam(dispatchgetTeam);
   };
 
+  const handleChange = (e, value) => {
+    const id = value._id;
+    window.location.href = "#" + id;
+  };
+
   const Labelconfig = function () {
     return (
       <>
         {currMember.projects.map((pro) => (
           <FormControlLabel
+            id={`${pro._id}`}
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
             control={<Switch checked />}
             label={`${pro.name}`}
@@ -154,7 +163,7 @@ export default function Main(props) {
                 >
                   <FormControlLabel
                     value="admin"
-                    control={<Radio onChange={updateRole}/>}
+                    control={<Radio onChange={updateRole} />}
                     label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
                   />
                   <FormControlLabel
@@ -170,7 +179,7 @@ export default function Main(props) {
                 </RadioGroup>
               </FormControl>
             </Box>
-            {currMember.role === "Admin" && (
+            {currMember.role === "admin" && (
               <Box>
                 <Typography variant="h5">Manage for</Typography>
                 <Typography varinat="body2">
@@ -191,7 +200,26 @@ export default function Main(props) {
               </Box>
             )}
             <Box sx={{ pt: 2 }}>
-              <Typography variant="h5">Projects</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h5">Projects</Typography>
+                <Autocomplete
+                  id="combo-box-demo"
+                  options={currMember.projects}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Project" />
+                  )}
+                  onChange={handleChange}
+                />
+              </Box>
               <Link sx={{ pr: 1 }}>Add all</Link>
               <Link sx={{ pl: 1 }}>Remove all</Link>
               <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
