@@ -174,18 +174,8 @@ const getTeam = asyncHandler(async (req, res) => {
         populate: {
           path: 'members',
           model: 'User',
-          select: ["firstName",
-          "lastName",
-          "email",
-          "settings",
-          "projects",
-          "role",
-          "payRate",],
-          populate:{
-            path:"projects",
-            model:"Project",
-            select:["name"]
-          }
+          select: ['-password', '-settings'],
+          populate: { path: 'projects', model: 'Project' },
         },
       })
       .populate({
