@@ -37,8 +37,9 @@ const register = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(404);
-    throw new Error('User not found');
+    throw new Error(
+      'There was a problem in creating a new account. Please contact administrator'
+    );
   }
 });
 
@@ -57,7 +58,7 @@ const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
-    res.json({
+    res.status(200).json({
       status: 'success',
       user: {
         _id: user._id,
@@ -83,14 +84,15 @@ const commondata = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
     if (!user) {
+      res.status(404);
       throw new Error('No such user found');
     }
 
-    res.json({
+    res.status(200).json({
+      status: 'Fetched common data',
       user,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });

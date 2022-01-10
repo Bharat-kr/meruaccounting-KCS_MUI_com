@@ -3,20 +3,20 @@ const router = express.Router();
 import {
   createClient,
   getClient,
-  getClientProjects,
+  getClientById,
   deleteClient,
   editClient,
 } from '../controllers/client.js';
 import { authPass } from '../middleware/authMiddleware.js';
 
-router
-  .route('/')
-  .post(authPass, createClient)
-  .patch(authPass, editClient)
-  .delete(authPass, deleteClient);
+router.route('/').post(authPass, createClient);
 
 router.route('/getClient').get(authPass, getClient);
 
-router.route('/getClientProjects').get(authPass, getClientProjects);
+router
+  .route('/:id')
+  .get(authPass, getClientById)
+  .delete(authPass, deleteClient)
+  .patch(authPass, editClient);
 
 export default router;
