@@ -17,6 +17,9 @@ import {
   FormLabel,
   RadioGroup,
   Switch,
+  MenuItem,
+  Select,
+  InputLabel,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
@@ -60,7 +63,7 @@ function checkheading(index, settings, setSettings, loginC) {
     "Monday",
     "TuesDay",
     "Wednesday",
-    "Thusday",
+    "Thursday",
     "Friday",
     "Saturday",
   ];
@@ -89,8 +92,11 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        ScreenShotPerHour: settings.ScreenShotPerHour !== 0 ? 0 : value,
-        AllowBlur: !settings.AllowBlur,
+        ScreenShotPerHour: {
+          isTeamSetting: settings.ScreenShotPerHour.isTeamSetting,
+          teamValue: settings.ScreenShotPerHour.teamValue !== 0 ? 0 : value,
+          individualValue: settings.ScreenShotPerHour.individualValue,
+        },
       },
     };
     // console.log(settings);
@@ -102,7 +108,11 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        AppsAndUrlTracking: !settings.AppsAndUrlTracking,
+        AppsAndUrlTracking: {
+          isTeamSetting: settings.AppsAndUrlTracking.isTeamSetting,
+          teamValue: !settings.AppsAndUrlTracking.teamValue,
+          individualValue: settings.AppsAndUrlTracking.individualValue,
+        },
       },
     };
     // console.log(settings);
@@ -116,7 +126,11 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        WeeklyTimeLimit: settings.WeeklyTimeLimit !== 0 ? 0 : value,
+        WeeklyTimeLimit: {
+          isTeamSetting: settings.WeeklyTimeLimit.isTeamSetting,
+          teamValue: settings.WeeklyTimeLimit.teamValue !== 0 ? 0 : value,
+          individualValue: settings.WeeklyTimeLimit.individualValue,
+        },
       },
     };
     // console.log(settings);
@@ -130,7 +144,11 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        AutoPause: settings.AutoPause !== 0 ? 0 : value,
+        AutoPause: {
+          isTeamSetting: settings.AutoPause.isTeamSetting,
+          teamValue: settings.AutoPause.teamValue !== 0 ? 0 : value,
+          individualValue: settings.AutoPause.individualValue,
+        },
       },
     };
     // console.log(settings);
@@ -142,7 +160,11 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        OfflineTime: !settings.OfflineTime,
+        OfflineTime: {
+          isTeamSetting: settings.OfflineTime.isTeamSetting,
+          teamValue: !settings.OfflineTime.teamValue,
+          individualValue: settings.OfflineTime.individualValue,
+        },
       },
     };
     // console.log(settings);
@@ -154,25 +176,32 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        NotifyUser: !settings.NotifyUser,
+        NotifyUser: {
+          isTeamSetting: settings.NotifyUser.isTeamSetting,
+          teamValue: !settings.NotifyUser.teamValue,
+          individualValue: settings.NotifyUser.individualValue,
+        },
       },
     };
     // console.log(settings);
     await UpdateSettings(data);
   };
+  // const [currDay , setCurrDay] =useState(0);
   const changeWeekStart = async (e) => {
     e.preventDefault();
-    // const value = document.querySelector("#WeekStart").value;
-    console.log(e);
 
     const data = {
       settings: {
         ...settings,
-        WeekStart: e.target.value,
+        WeekStart: {
+          isTeamSetting: settings.WeekStart.isTeamSetting,
+          teamValue: days[e.target.value],
+          individualValue: settings.WeekStart.individualValue,
+        },
       },
     };
-    // console.log(settings);
-    await UpdateSettings(data);
+    UpdateSettings(data);
+    // setSettings(res.data.data.settings);
   };
   const changeCurrencySymbol = async (e) => {
     e.preventDefault();
@@ -182,7 +211,11 @@ function checkheading(index, settings, setSettings, loginC) {
     const data = {
       settings: {
         ...settings,
-        CurrencySymbol: value,
+        CurrencySymbol: {
+          isTeamSetting: settings.CurrencySymbol.isTeamSetting,
+          teamValue: value,
+          individualValue: settings.CurrencySymbol.individualValue,
+        },
       },
     };
     // console.log(settings);
@@ -212,7 +245,7 @@ function checkheading(index, settings, setSettings, loginC) {
             shrink: true,
           }}
         />
-        <Autocomplete
+        {/* <Autocomplete
           disablePortal
           id="combo-box-demo"
           options={["Allow Blur", "Blur All", "Disallow"]}
@@ -223,7 +256,7 @@ function checkheading(index, settings, setSettings, loginC) {
               label={settings?.AllowBlur?.teamValue ? "Allow blur" : "Disallow"}
             />
           )}
-        />
+        /> */}
         <FormControlLabel
           value="Do not take"
           control={
@@ -307,7 +340,10 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Pause"
           control={
-            <Radio onClick={changeAutoPause} checked={settings.AutoPause.teamValue} />
+            <Radio
+              onClick={changeAutoPause}
+              checked={settings.AutoPause.teamValue}
+            />
           }
           label="Pause after"
         />
@@ -327,7 +363,10 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Do not pause"
           control={
-            <Radio onClick={changeAutoPause} checked={!settings.AutoPause.teamValue} />
+            <Radio
+              onClick={changeAutoPause}
+              checked={!settings.AutoPause.teamValue}
+            />
           }
           label="Do not pause"
         />
@@ -340,7 +379,10 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Allow"
           control={
-            <Radio onClick={changeOfflineTime} checked={settings.OfflineTime.teamValue} />
+            <Radio
+              onClick={changeOfflineTime}
+              checked={settings.OfflineTime.teamValue}
+            />
           }
           label="Allow"
         />
@@ -363,14 +405,20 @@ function checkheading(index, settings, setSettings, loginC) {
         <FormControlLabel
           value="Notify"
           control={
-            <Radio onClick={changeNotifyUser} checked={settings.NotifyUser.teamValue} />
+            <Radio
+              onClick={changeNotifyUser}
+              checked={settings.NotifyUser.teamValue}
+            />
           }
           label="Notify"
         />
         <FormControlLabel
           value="Do not notify"
           control={
-            <Radio onClick={changeNotifyUser} checked={!settings.NotifyUser.teamValue} />
+            <Radio
+              onClick={changeNotifyUser}
+              checked={!settings.NotifyUser.teamValue}
+            />
           }
           label="Do not notify"
         />
@@ -380,23 +428,22 @@ function checkheading(index, settings, setSettings, loginC) {
   if (index === 7) {
     return (
       <>
-        <Autocomplete
-          disablePortal
-          id="WeekStartadd"
-          options={days}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              id="WeekStart"
-              onChange={(e) => {
-                // console.log(e)
-                changeWeekStart(e);
-              }}
-              label={settings.WeekStart.teamValue}
-            />
-          )}
-        />
+        <Box sx={{ width: "100%" }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Day</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={days.indexOf(settings.WeekStart.teamValue)}
+              label="Day"
+              onChange={changeWeekStart}
+            >
+              {days.map((el, index) => {
+                return <MenuItem value={index}>{el}</MenuItem>;
+              })}
+            </Select>
+          </FormControl>
+        </Box>
       </>
     );
   }
@@ -429,11 +476,8 @@ function userChange(user) {
 
 export default function SettingsMain(props) {
   const { value, index, heading, subheading, ...other } = props;
-  const { User } = useContext(UserContext);
-  const { clients } = useContext(ClientsContext);
   const { loginC } = useContext(loginContext);
-
-  const { dispatchgetTeam, getTeams, dispatchTeam } = useContext(teamContext);
+  const { dispatchgetTeam, getTeams } = useContext(teamContext);
 
   const [teamsList, setTeamsList] = useState([]);
 
@@ -444,13 +488,13 @@ export default function SettingsMain(props) {
   // data is in variable but not showing on the screen
 
   useEffect(() => {
-
-    setSettings(loginC.userData.settings);
+    // setSettings(loginC.userData.settings);
     const data = [];
     getTeams?.getTeam?.forEach((team) => {
+      console.log("member");
       // eslint-disable-next-line prefer-template
 
-      team.employees?.map((member) => {
+      team.members?.map((member) => {
         if (
           !data.find((el) => {
             return el.id === member._id;
@@ -465,6 +509,17 @@ export default function SettingsMain(props) {
     });
     setTeamsList(data);
   }, [getTeams]);
+  useEffect(() => {
+    axios
+      .get("/commondata")
+      .then((res) => {
+        console.log(res);
+        setSettings(res.data.user.settings);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const effectiveArr = [
     "Screenshot,Activity Level tracking",
@@ -483,7 +538,7 @@ export default function SettingsMain(props) {
       {value === index && (
         <Container
           component="div"
-          sx={{}}
+          sx={{pb:2}}
           role="tabpanel"
           hidden={value !== index}
           id={`vertical-tabpanel-${index}`}
@@ -527,7 +582,7 @@ export default function SettingsMain(props) {
               {teamsList.map((user) => (
                 <FormGroup>
                   <FormControlLabel
-                    control={<Switch />}
+                    control={<Switch checked={settings?.ScreenShotPerHour?.isTeamSetting}/>}
                     label={user.name}
                     onChange={() => {
                       userChange(user.name);
