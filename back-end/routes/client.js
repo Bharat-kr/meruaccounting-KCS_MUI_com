@@ -1,5 +1,5 @@
 import express from 'express';
-const router = express.Router();
+import { authPass } from '../middleware/authMiddleware.js';
 import {
   createClient,
   getClient,
@@ -7,7 +7,8 @@ import {
   deleteClient,
   editClient,
 } from '../controllers/client.js';
-import { authPass } from '../middleware/authMiddleware.js';
+
+const router = express.Router();
 
 router.route('/').post(authPass, createClient);
 

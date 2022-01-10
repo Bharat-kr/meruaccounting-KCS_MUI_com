@@ -240,7 +240,7 @@ This quickstart walks you through:
 // @desc      Assign project leader to the given project id
 // @route     POST /project/projectLeader/:id
 // @access    Private
-// @location  back-end/controllers/project.js/removeMember
+// @location  back-end/controllers/project.js/assignProjectLeader
 // @params    id : "projectId" , object : { employeeId }
 // @res       200 : { status , project } , 404 : No project/employee found , 500 : Internal Server Error
 
@@ -251,6 +251,53 @@ This quickstart walks you through:
 ### Teams API
 
 ```
+
+// @desc      Create a new team
+// @route     POST /team/create
+// @access    Private
+// @location  back-end/controllers/teams.js/createTeam
+// @params    object : { name }
+// @res       201 : { status , team } , 500 : Internal Server Error
+
+
+// @desc      Add member to team
+// @route     PATCH /team/updateMember
+// @access    Private
+// @location  back-end/controllers/teams.js/updateMember
+// @params    { teamId , employeeMail }
+// @res       200 : { "Already a member" , team } , 200 : { "ok" , team } , 500 : Internal Server Error
+
+
+// @desc      Remove member
+// @route     DELETE /team/updateMember
+// @access    Private
+// @location  back-end/controllers/teams.js/removeMember
+// @params    { teamId , employeeId }
+// @res       200 : { status , team } , 200 : { No such member found , team } , 404 : No team/employee found ,  500 : Internal Server Error
+
+
+// @desc      Get teams per id
+// @route     GET /team/getTeam/:id
+// @access    Private
+// @location  back-end/controllers/teams.js/getTeamById
+// @params    id : "teamId"
+// @res       200 : { status , team } , 404 : No team found ,  500 : Internal Server Error
+
+
+// @desc      Get all teams of user
+// @route     GET /team/getTeam
+// @access    Private
+// @location  back-end/controllers/teams.js/getTeam
+// @params
+// @res       200 : { status , team } ,  500 : Internal Server Error
+
+
+// @desc      Delete teams
+// @route     DELETE /team
+// @access    Private
+// @location  back-end/controllers/teams.js/deleteTeam
+// @params    { teamId }
+// @res       202 : { status , team } , 401 : Unauthorised manager ,  500 : Internal Server Error
 
 ```
 

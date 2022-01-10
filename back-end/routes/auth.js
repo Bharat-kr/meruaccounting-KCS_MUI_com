@@ -1,7 +1,7 @@
 import express from 'express';
 import { authPass } from '../middleware/authMiddleware.js';
 import { register, login, commondata } from '../controllers/auth.js';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 
 const router = express.Router();
 

@@ -7,16 +7,17 @@ import asyncHandler from 'express-async-handler';
 // @access  Private
 
 const createTeam = asyncHandler(async (req, res) => {
-  const manager = req.user;
-  const teamName = req.body.name;
-
   try {
+    const manager = req.user;
+    const teamName = req.body.name;
     const team = await Team.create({ name: teamName });
+    if (!team) throw new Error('Error creating new team');
+
     team.members.push(manager._id);
     team.manager = manager._id;
     await team.save();
-    manager.teams.push(team._id.toHexString());
 
+    manager.teams.push(team._id.toHexString());
     await manager.save();
 
     res.status(201).json({
@@ -35,13 +36,22 @@ const createTeam = asyncHandler(async (req, res) => {
 // @params  { teamId: " " , employeeMail: " "}
 
 const updateMember = asyncHandler(async (req, res) => {
-  const manager = req.user;
-
-  const { employeeMail, teamId } = req.body;
-  let alreadyMember = false;
   try {
+    const { employeeMail, teamId } = req.body;
+    let alreadyMember = false;
+
     const team = await Team.findById(teamId);
+    if (!team) {
+      res.status(404);
+      throw new Error(`No team found ${teamId}`);
+    }
+
     const newEmployee = await User.findOne({ email: employeeMail });
+    if (!newEmployee) {
+      res.status(404);
+      throw new Error(`No employee found ${employeeMail}`);
+    }
+
     const employeeId = newEmployee._id;
     team.members.forEach((employee) => {
       if (employee.equals(employeeId)) {
@@ -49,7 +59,7 @@ const updateMember = asyncHandler(async (req, res) => {
       }
     });
     if (alreadyMember) {
-      return res.json({
+      return res.status(200).json({
         status: 'Already A Member',
         data: team,
       });
@@ -58,8 +68,8 @@ const updateMember = asyncHandler(async (req, res) => {
     team.members.push(employeeId);
     await team.save();
 
-    res.json({
-      status: 'Ok',
+    res.status(200).json({
+      status: 'ok',
       data: team,
     });
   } catch (error) {
@@ -70,17 +80,24 @@ const updateMember = asyncHandler(async (req, res) => {
 
 // @desc    Remove member
 // @route   DELETE /team/updateMember
-// @access  Public
+// @access  Private
 
 const removeMember = asyncHandler(async (req, res) => {
-  const { employeeId, teamId } = req.body;
-  let alreadyMember = false;
   try {
+    const { employeeId, teamId } = req.body;
+    let alreadyMember = false;
+
     const team = await Team.findById(teamId);
-    if (!team) throw new Error('Invalid teamId');
+    if (!team) {
+      res.status(404);
+      throw new Error(`No team found ${teamId}`);
+    }
 
     const employee = await User.findById(employeeId);
-    if (!employee) throw new Error('Invalid user id');
+    if (!employee) {
+      res.status(404);
+      throw new Error(`No employee found ${employeeId}`);
+    }
 
     // deleting employee id from team
     team.members.forEach((member, index) => {
@@ -99,14 +116,16 @@ const removeMember = asyncHandler(async (req, res) => {
     });
 
     if (alreadyMember == false) {
-      return res.json({
+      return res.status(200).json({
         status: 'No Member Found',
         data: team,
       });
     }
+
     await team.save();
     await employee.save();
-    res.json({
+
+    res.status(200).json({
       status: 'Ok',
       data: team,
     });
@@ -121,22 +140,25 @@ const removeMember = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getTeamById = asyncHandler(async (req, res) => {
-  const teamId = req.params.id;
+  try {
+    const teamId = req.params.id;
+    const team = await Team.findById(teamId).populate({
+      path: 'members',
+      model: 'User',
+      select: ['fistName', 'lastName', 'email'],
+    });
+    if (!team) {
+      res.status(404);
+      throw new Error(`No team found ${teamId}`);
+    }
 
-  const team = await Team.findById(teamId).populate({
-    path: 'members',
-    model: 'User',
-    select: ['fistName', 'lastName', 'email'],
-  });
-  if (!team) {
-    res.status(404);
-    throw new Error('No teams found');
+    res.status(200).json({
+      status: 'Success',
+      data: team,
+    });
+  } catch (error) {
+    throw new Error(error);
   }
-
-  res.json({
-    msg: 'Success',
-    data: team,
-  });
 });
 
 // @desc    Get all teams of user
@@ -168,7 +190,7 @@ const getTeam = asyncHandler(async (req, res) => {
       });
 
     res.json({
-      msg: 'Success',
+      status: 'Success',
       data: teams,
     });
   } catch (error) {
@@ -191,6 +213,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     const managerId = team.manager;
 
     if (!managerId === manager._id) {
+      res.status(401);
       throw new Error(
         'You are not a manager assigned to this team. Please contact administrator'
       );
@@ -216,7 +239,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
       await employee.save();
     }
 
-    res.json({
+    res.status(202).json({
       status: 'Deleted Team',
       data: team,
     });
