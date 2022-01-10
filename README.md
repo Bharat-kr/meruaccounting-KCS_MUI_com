@@ -43,21 +43,25 @@ This quickstart walks you through:
 
 - **Super admin**
   <br>
-  > _Add Employee to Company_
-  > _Appoint Admin_
+  - _Add Employee to Company_
+  - _Appoint Admin_
+    <br>
 - **Admin**
   <br>
-  > _Set Pay Rates_
-  > _Appoint Manager_
-  > _View Different Teams_
-  > _Set Budget for Different Team_
+  - _Set Pay Rates_
+  - _Appoint Manager_
+  - _View Different Teams_
+  - _Set Budget for Different Team_
+    <br>
 - **Manager**
   <br>
-  > _Edit Employee Settings_
-  > _Add Employee to Team_
-  > _Add Clients and Projects_
-  > _View Employee Details_
+  - _Edit Employee Settings_
+  - _Add Employee to Team_
+  - _Add Clients and Projects_
+  - _View Employee Details_
+    <br>
 - **Employee**
+  <br>
 
 ## API Documentation
 
@@ -107,6 +111,7 @@ This quickstart walks you through:
 // @params    object: { email , password}
 // @res       200 : { status , user , token } , 400 : Invalid username or password , 401 : Missing credentials
 
+
 // @desc      Get common data
 // @route     GET /commondata
 // @access    Private
@@ -126,12 +131,14 @@ This quickstart walks you through:
 // @params    object : { name }
 // @res       201 : { status , client } , 500 : Internal Server Error
 
+
 // @desc      Get client
 // @route     GET /client/getClient
 // @access    Private
 // @location  back-end/controllers/client.js/getClient
 // @params
 // @res       200 : { status , client } , 404 : No clients found , 500 : Internal Server Error
+
 
 // @desc      Get client by id
 // @route     GET /client/:id
@@ -147,6 +154,7 @@ This quickstart walks you through:
 // @location  back-end/controllers/client.js/deleteClient
 // @params    id : "clientId"
 // @res       202 : { status , client } , 404 : No client found , 500 : Internal Server Error
+
 
 // @desc      Edit client
 // @route     PATCH /client/:id
