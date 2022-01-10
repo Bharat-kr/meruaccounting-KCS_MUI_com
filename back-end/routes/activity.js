@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.route('/').post(authPass, createActivity);
 
-router.route('/:id').patch(authPass, updateActivity);
-
 router.route('/screenshot').post(authPass, createScreenShot);
+
+router.route('/:id').patch(authPass, updateActivity);
 
 export default router;

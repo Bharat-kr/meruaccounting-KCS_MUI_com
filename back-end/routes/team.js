@@ -19,11 +19,11 @@ router.route('/updateMember').patch(authPass, updateMember);
 
 router.route('/removeMember').delete(authPass, managerPass, removeMember);
 
-router.route('/getTeam/:id').get(authPass, getTeamById);
-
 router.route('/getTeam').get(authPass, getTeam);
 
 router.route('/').delete(authPass, deleteTeam);
+
+router.route('/getTeam/:id').get(authPass, getTeamById);
 
 export default router;
 
