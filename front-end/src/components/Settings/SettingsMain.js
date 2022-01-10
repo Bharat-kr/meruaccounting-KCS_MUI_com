@@ -582,7 +582,7 @@ export default function SettingsMain(props) {
               {teamsList.map((user) => (
                 <FormGroup>
                   <FormControlLabel
-                    control={<Switch checked={settings.ScreenShotPerHour.isTeamSetting}/>}
+                    control={<Switch checked={settings?.ScreenShotPerHour?.isTeamSetting}/>}
                     label={user.name}
                     onChange={() => {
                       userChange(user.name);
