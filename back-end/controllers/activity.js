@@ -42,7 +42,6 @@ const createScreenShot = asyncHandler(async (req, res) => {
     res.status(201).json({
       status: 'success',
       screenshot,
-      activity,
     });
   }
 });

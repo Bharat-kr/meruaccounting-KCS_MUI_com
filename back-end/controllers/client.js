@@ -12,6 +12,9 @@ const createClient = asyncHandler(async (req, res) => {
   const { name } = req.body;
   try {
     const client = new Client({ name });
+
+    if (!client) throw new Error('Error creating a new client');
+
     client.createdBy = manager._id;
     await client.save();
 
@@ -19,7 +22,7 @@ const createClient = asyncHandler(async (req, res) => {
     await manager.save();
 
     res.status(201).json({
-      messsage: 'Successfully Created Client',
+      status: 'Successfully Created Client',
       data: client,
     });
   } catch (error) {
@@ -32,10 +35,8 @@ const createClient = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getClient = asyncHandler(async (req, res) => {
-  const employee = req.user;
-
   try {
-    const client = await Client.find({ manager: employee._id })
+    const client = await Client.find({ manager: req.user._id })
       .populate({
         path: 'projects',
         populate: {
@@ -57,7 +58,7 @@ const getClient = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json({
-      messsage: 'Client fetched succesfully',
+      status: 'Client fetched succesfully',
       data: client,
     });
   } catch (error) {
@@ -65,20 +66,20 @@ const getClient = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get client projects
-// @route   GET /client/getClientProjects
+// @desc    Get client by id
+// @route   GET /client/:id
 // @access  Private
 
-const getClientProjects = asyncHandler(async (req, res) => {
-  const { clientId } = req.body;
-  const client = await Client.findById(clientId).populate('projects');
+const getClientById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const client = await Client.findById(id).populate('projects');
   try {
     if (!client) {
       res.status(404);
       throw new Error('Client not found');
     }
-    res.status(201).json({
-      messsage: 'Client Projects',
+    res.status(200).json({
+      status: 'Client fetched succesfully',
       data: client,
     });
   } catch (error) {
@@ -87,24 +88,20 @@ const getClientProjects = asyncHandler(async (req, res) => {
 });
 
 // @desc    Edit client
-// @route   PATCH /client
+// @route   PATCH /client/:id
 // @access  Private
 
 const editClient = asyncHandler(async (req, res) => {
-  const employee = req.user;
   try {
-    const client = await Client.findOneAndUpdate(
-      { manager: employee._id },
-      req.body
-    );
+    const client = await Client.findOneAndUpdate(req.params.id, req.body);
 
     if (!client) {
       res.status(404);
       throw new Error('Client not found');
     }
 
-    res.status(201).json({
-      messsage: 'Successfully Updated Client',
+    res.status(200).json({
+      status: 'Successfully Updated Client',
       data: client,
     });
   } catch (error) {
@@ -113,14 +110,11 @@ const editClient = asyncHandler(async (req, res) => {
 });
 
 // @desc    Delete client
-// @route   DELETE /client
+// @route   DELETE /client/:id
 // @access  Private
 
 const deleteClient = asyncHandler(async (req, res) => {
-  console.log('Inside Route');
-  const employee = req.user;
-
-  const clientId = req.body.clientId;
+  const clientId = req.params.id;
 
   try {
     /* ---------------------------- // finding Client ---------------------------- */
@@ -176,14 +170,13 @@ const deleteClient = asyncHandler(async (req, res) => {
 
     /* ---------------------------- Sending response ---------------------------- */
 
-    res.status(200).json({
-      messsage: 'Successfully Deleted Client',
+    res.status(202).json({
+      status: 'Successfully Deleted Client',
       data: client,
     });
   } catch (error) {
-    console.log(error);
     throw new Error(error);
   }
 });
 
-export { createClient, deleteClient, editClient, getClient, getClientProjects };
+export { createClient, deleteClient, editClient, getClient, getClientById };

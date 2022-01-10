@@ -1,4 +1,7 @@
 import User from '../models/user.js';
+import Client from '../models/client.js';
+import Project from '../models/project.js';
+import Team from '../models/team.js';
 import asyncHandler from 'express-async-handler';
 
 // @desc    Get employee details by ID
@@ -6,51 +9,43 @@ import asyncHandler from 'express-async-handler';
 // @access  Private
 
 const getEmployeeById = asyncHandler(async (req, res) => {
-  const id = req.params.id;
-  const employee = await User.findById(id);
-  if (!employee) {
-    res.status(404);
-    throw new Error(`Employee not found`);
+  try {
+    const { id } = req.params;
+    const employee = await User.findById(id);
+    if (!employee) {
+      res.status(404);
+      throw new Error(`Employee not found `);
+    }
+    res.status(200).json({
+      status: 'Ok',
+      data: employee,
+    });
+  } catch (error) {
+    throw new Error(error);
   }
-  res.status(200).json({
-    status: 'Ok',
-    data: employee,
-  });
 });
 
 // @desc    Get employee details
 // @route   GET /employee/employeeList
 // @access  Private
 
-const getEmployeeList = asyncHandler((req, res) => {
-  const employees = req.user.employees;
-  const team = req.user.teams.populate();
-  res.status(200).json({
-    messsage: 'Success',
-    employees,
-    team,
-  });
-});
-
-// delete this function
-// @desc    Create a new employee
-// @route   POST /employee
-// @access  Private
-
-const createEmployee = asyncHandler(async (req, res) => {
+const getEmployeeList = asyncHandler(async (req, res) => {
   try {
-    const employee = new User(req.body);
-    await employee.save();
-    if (!employee) {
-      res.status(500);
-      throw new Error('Employee not created');
-    }
-    res.json({
-      status: 'Ok',
-      data: employee,
+    const { teams } = await User.findById(req.user._id).populate({
+      path: 'teams',
+      model: 'Team',
+      populate: {
+        path: 'members',
+        model: 'User',
+        select: ['firstName', 'lastName', 'email'],
+      },
+    });
+
+    res.status(200).json({
+      messsage: 'Success',
+      data: teams,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
@@ -62,11 +57,58 @@ const createEmployee = asyncHandler(async (req, res) => {
 const deleteEmployee = asyncHandler(async (req, res) => {
   const id = req.params.id;
   try {
-    const employee = await User.findByIdAndDelete(id);
+    /* ---------------------------- finding employee ---------------------------- */
+
+    const employee = await User.findById(id);
+
     if (employee) {
-      res.status(500);
-      throw new Error('Employee not deleted');
+      res.status(404);
+      throw new Error('Employee to be deleted not found');
     }
+
+    /* ------ finding employee clients and removing createdBy field ----- */
+
+    for (let i = 0; i < employee.clients.length; i++) {
+      const clientId = employee.clients[i];
+      const client = await Client.findById(clientId);
+      client.createdBy = undefined;
+      await client.save();
+    }
+
+    /* ------ removing project reference field of employee that is deleted ------ */
+    for (let i = 0; i < employee.projects.length; i++) {
+      const projectId = employee.projects[i];
+      const project = await Project.findById(projectId);
+
+      project.employees.forEach((employee, index) => {
+        if (employee.toHexString() == id.toHexString()) {
+          project.employees.splice(index, 1);
+        }
+      });
+      if (project.projectLeader.toHexString() == id.toHexString()) {
+        project.projectLeader = undefined;
+      }
+      if (project.createdBy.toHexString() == id.toHexString()) {
+        project.createdBy = undefined;
+      }
+      await project.save();
+    }
+
+    /* ------ removing team reference field of employee that is deleted ------ */
+    for (let i = 0; i < employee.teams.length; i++) {
+      const teamId = employee.teams[i];
+      const team = await Team.findById(teamId);
+
+      team.members.forEach((employee, index) => {
+        if (employee.toHexString() == id.toHexString()) {
+          team.members.splice(index, 1);
+        }
+      });
+
+      await team.save();
+    }
+    await User.findByIdAndRemove(id);
+
     res.json({
       status: 'Employee Deleted',
       data: employee,
@@ -96,99 +138,27 @@ const editEmployee = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Add a new employee
-// @route   PATCH /employee/add/:id
-// @access  Private
+export { getEmployeeList, getEmployeeById, deleteEmployee, editEmployee };
 
-const addEmployee = asyncHandler(async (req, res) => {
-  const startTime = req.body.startTime;
-  const endTime = req.body.endTime;
-  const id = req.params.id;
-  const name = req.body.name;
-  const date = req.body.date;
-  const hours = req.body.hours;
-  const activityLevelTotal = req.body.activityLevelTotal;
-  const activityLevel = req.body.activityLevel;
-  const time = req.body.time;
-  const url = req.body.url;
-  const taskName = req.body.taskName;
-  let totalHours;
+// delete this function
+// // @desc    Create a new employee
+// // @route   POST /employee
+// // @access  Private
 
-  try {
-    const employee = await User.findById(id);
-
-    let Tday = Object.keys(req.body.day)[0];
-    const day = req.body.day[Tday];
-
-    let found = false;
-
-    if (!employee) {
-      res.status(404);
-      throw new Error(`Employee not found ${id}`);
-    }
-    if (employee.day == undefined) {
-      employee.days.push(req.body.day);
-      const emp = await employee.save();
-
-      return res.json({
-        status: 'Success',
-        data: employee,
-      });
-    }
-    employee.days.push(req.body.day);
-
-    // var screenShot = {
-    //   activityLevel: activityLevel,
-    //   url: url,
-    //   time: moment(time, "hh:mm:ss"),
-    //   taskName: taskName,
-    // };
-    // const timeRange = {
-    //   startTime: moment(startTime, "hh:mm:ss"),
-    //   endTime: moment(endTime, "hh:mm:ss"),
-    //   activityLevelTotal: activityLevelTotal,
-    //   screenShots: screenShot,
-    // };
-    // employee.day.forEach(async (day, index) => {
-    //   console.log(moment(day.date).format("DD/MM/YYYY"));
-    //   console.log(date);
-    //   if (moment(day.date).format("DD/MM/YYYY") === date) {
-    //     console.log("Inside Date Equals");
-    //     found = true;
-    //     console.log(day.screenShots);
-    //     day.timeRange.push(timeRange);
-    //   } else {
-    //     console.log("not found");
-    //   }
-    // });
-    // if (found == false) {
-    //   const day = {
-    //     date: moment(date, "DD-MM-YYYY"),
-    //     hours: hours,
-    //     timeRange,
-    //   };
-    //   console.log(day);
-
-    //   employee.day.push(day);
-    // }
-
-    const emp = await employee.save();
-
-    res.json({
-      status: 'Success',
-      data: employee,
-    });
-  } catch (error) {
-    res.status(400);
-    throw new Error(error);
-  }
-});
-
-export {
-  addEmployee,
-  getEmployeeList,
-  getEmployeeById,
-  createEmployee,
-  deleteEmployee,
-  editEmployee,
-};
+// const createEmployee = asyncHandler(async (req, res) => {
+//   try {
+//     const employee = new User(req.body);
+//     await employee.save();
+//     if (!employee) {
+//       res.status(500);
+//       throw new Error("Employee not created");
+//     }
+//     res.json({
+//       status: "Ok",
+//       data: employee,
+//     });
+//   } catch (error) {
+//     res.status(500);
+//     throw new Error(error);
+//   }
+// });
