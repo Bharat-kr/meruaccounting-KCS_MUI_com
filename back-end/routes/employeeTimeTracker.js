@@ -3,7 +3,8 @@ import { abc, con } from '../controllers/employeeTimeTracking';
 
 const router = express.Router();
 
-router.get('/:id', abc);
 router.get('/timeCount', con);
+
+router.get('/:id', abc);
 
 export default router;

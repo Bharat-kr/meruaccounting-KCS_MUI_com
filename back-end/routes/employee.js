@@ -2,9 +2,7 @@ import express from "express";
 import { authPass } from "../middleware/authMiddleware.js";
 import { managerPass } from "../middleware/roleMiddleware.js";
 import {
-  addEmployee,
   getEmployeeById,
-  createEmployee,
   deleteEmployee,
   editEmployee,
   getEmployeeList,
@@ -20,5 +18,10 @@ router.route("/:id").get(getEmployeeById).delete(managerPass, deleteEmployee);
 router.route("/").post(createEmployee);
 router.route("/edit/:id").patch(authPass, editEmployee);
 router.route("/employeeList").get(authPass, getEmployeeList);
+
+router
+  .route("/:id")
+  .get(authPass, getEmployeeById)
+  .delete(authPass, deleteEmployee);
 
 export default router;

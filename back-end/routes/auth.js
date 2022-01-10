@@ -14,7 +14,9 @@ router
       .withMessage('Please Provide Correct Password'),
   ])
   .post(register);
+
 router.route('/login').post(login);
+
 router.route('/commondata').get(authPass, commondata);
 
 export default router;

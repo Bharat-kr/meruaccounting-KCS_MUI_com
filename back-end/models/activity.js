@@ -8,10 +8,12 @@ const activitySchema = new mongoose.Schema({
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curClientId',
+    required: true,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curProjectId',
+    required: true,
   },
   task: {
     type: String,

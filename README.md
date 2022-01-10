@@ -16,6 +16,12 @@ Our documentation includes a quickstart guide to help you get started with Scree
   - [App Functionality](#app-functionality)
       - [Roles](#roles)
   - [API Documentation](#api-documentation)
+    - [Activity API](#activity-api)
+    - [Auth API](#auth-api)
+    - [Client API](#client-api)
+    - [Project API](#project-api)
+    - [Teams API](#teams-api)
+    - [Employee API](#employee-api)
   - [Screenshots](#screenshots)
   - [Authentication](#authentication)
   - [Schema](#schema)
@@ -23,6 +29,8 @@ Our documentation includes a quickstart guide to help you get started with Scree
     - [Project Schema](#project-schema)
     - [Team Schema](#team-schema)
     - [User Schema](#user-schema)
+    - [Activity Schema](#activity-schema)
+    - [Screenshot Schema](#screenshot-schema)
   - [Installation](#installation)
   - [Contributors](#contributors)
   - [License](#license)
@@ -38,23 +46,223 @@ This quickstart walks you through:
 
 - **Super admin**
   <br>
-  > _Add Employee to Company_
-  > _Appoint Admin_
+  - _Add Employee to Company_
+  - _Appoint Admin_
+    <br>
 - **Admin**
   <br>
-  > _Set Pay Rates_
-  > _Appoint Manager_
-  > _View Different Teams_
-  > _Set Budget for Different Team( to be added later )_
+  - _Set Pay Rates_
+  - _Appoint Manager_
+  - _View Different Teams_
+  - _Set Budget for Different Team_
+    <br>
 - **Manager**
   <br>
-  > _Edit Employee Settings_ 
-  > _Add Employee to Team_ 
-  > _Add Clients and Projects_ 
-  > _View Employee Details_
+  - _Edit Employee Settings_
+  - _Add Employee to Team_
+  - _Add Clients and Projects_
+  - _View Employee Details_
+    <br>
 - **Employee**
+  <br>
 
 ## API Documentation
+
+### Activity API
+
+```
+
+// @desc      Add a new screenshot to an activity array
+// @route     POST /activity/screenshot
+// @access    Private
+// @location  back-end/controllers/activity.js/createScreenshot
+// @params    object : {clientId , projectId , task , image , activityAt , activityId , performanceData , title }
+// @res       201 : { status , screenshot } , 500 : Internal Server Error
+
+
+// @desc      Add a new activity
+// @route     POST /activity
+// @access    Private
+// @location  back-end/controllers/activity.js/createActivity
+// @params    object : {clientId , projectId , task , startTime , endTime , performanceData , isInternal }
+// @res       201 : { status , activity , days } , 500 : Internal Server Error
+
+
+// @desc      Update the activity
+// @route     PATCH /activity/:id
+// @access    Private
+// @location  back-end/controllers/activity.js/updateActivity
+// @params    id: "activityId" , object : { body }
+// @res       202 : { data , activity } , 404: No activity found - activityId , 500 : Internal Server Error
+
+```
+
+<br>
+
+### Auth API
+
+```
+
+// @desc      Register new user
+// @route     POST /register
+// @access    Public
+// @location  back-end/controllers/auth.js/register
+// @params    object: { firstName , lastName , email , role , isManager , password}
+// @res       201 : { status , user , token } , 400: User already exists , 500 : Internal Server Error
+
+
+// @desc      Login user
+// @route     POST /login
+// @access    Public
+// @location  back-end/controllers/auth.js/login
+// @params    object: { email , password}
+// @res       200 : { status , user , token } , 400 : Invalid username or password , 401 : Missing credentials
+
+
+// @desc      Get common data
+// @route     GET /commondata
+// @access    Private
+// @location  back-end/controllers/auth.js/commondata
+// @params
+// @res       200 : { status , user } , 404 : No user found , 500 : Internal Server Error
+
+```
+
+<br>
+
+### Client API
+
+```
+
+// @desc      Create a new client
+// @route     POST /client
+// @access    Private
+// @location  back-end/controllers/client.js/createClient
+// @params    object : { name }
+// @res       201 : { status , client } , 500 : Internal Server Error
+
+
+// @desc      Get client
+// @route     GET /client/getClient
+// @access    Private
+// @location  back-end/controllers/client.js/getClient
+// @params
+// @res       200 : { status , client } , 404 : No clients found , 500 : Internal Server Error
+
+
+// @desc      Get client by id
+// @route     GET /client/:id
+// @access    Private
+// @location  back-end/controllers/client.js/getClientById
+// @params    id : "clientId"
+// @res       200 : { status , client } , 404 : No client found , 500 : Internal Server Error
+
+
+// @desc      Delete client
+// @route     DELETE /client/:id
+// @access    Private
+// @location  back-end/controllers/client.js/deleteClient
+// @params    id : "clientId"
+// @res       202 : { status , client } , 404 : No client found , 500 : Internal Server Error
+
+
+// @desc      Edit client
+// @route     PATCH /client/:id
+// @access    Private
+// @location  back-end/controllers/client.js/editClient
+// @params    id : "clientId" , object : { body }
+// @res       200 : { status , client } , 404 : No client found , 500 : Internal Server Error
+
+```
+
+<br>
+
+### Project API
+
+```
+
+// @desc      Create a new project
+// @route     POST /project
+// @access    Private
+// @location  back-end/controllers/project.js/createProject
+// @params    object : { name , clientId }
+// @res       201 : { status , project } , 404 : No client found , 500 : Internal Server Error
+
+
+// @desc      Get user's all projects
+// @route     GET /project
+// @access    Private
+// @location  back-end/controllers/project.js/getProject
+// @params
+// @res       200 : { status , projects } , 500 : Internal Server Error
+
+
+// @desc      Get project by id
+// @route     GET /project/:id
+// @access    Public
+// @location  back-end/controllers/project.js/getProjectById
+// @params    id: "projectId"
+// @res       200 : { status , projects } , 404 : No project found , 500 : Internal Server Error
+
+
+// @desc      Edit project
+// @route     PATCH /project
+// @access    Private
+// @location  back-end/controllers/project.js/editProject
+// @params    id: "projectId"
+// @res       200 : { status , project } , 404 : No project found , 500 : Internal Server Error
+
+
+// @desc      Delete a project
+// @route     DELETE /project
+// @access    Private
+// @location  back-end/controllers/project.js/deleteProject
+// @params    object : { projectId }
+// @res       202 : { status , project } , 404 : No project found , 500 : Internal Server Error
+
+
+// @desc      Add employee to project by email
+// @route     POST /project/addMember/:id
+// @access    Private
+// @location  back-end/controllers/project.js/addMember
+// @params    id : "projectId" , object : { employeeMail }
+// @res       200 : { "Already a member" , project } , 201 : { "ok" , project } , 404 : No project/employee found , 500 : Internal Server Error
+
+
+// @desc      Remove employee from project by id
+// @route     PATCH /project/removeMember/:id
+// @access    Private
+// @location  back-end/controllers/project.js/removeMember
+// @params    id : "projectId" , object : { employeeId }
+// @res       200 : { status , project } , 404 : No project/employee found , 500 : Internal Server Error
+
+
+// @desc      Assign project leader to the given project id
+// @route     POST /project/projectLeader/:id
+// @access    Private
+// @location  back-end/controllers/project.js/removeMember
+// @params    id : "projectId" , object : { employeeId }
+// @res       200 : { status , project } , 404 : No project/employee found , 500 : Internal Server Error
+
+```
+
+<br>
+
+### Teams API
+
+```
+
+```
+
+<br>
+
+### Employee API
+
+```
+
+```
+
+<br>
 
 ## Screenshots
 
@@ -67,85 +275,253 @@ To use ScreenShot Monitoring Service, you need to provide credentials to authent
 
 ## Schema
 
-We have used different schemas to store different object
+We have used different schemas to store different objects
 
 ### Client Schema
 
 ```
-const clientSchema = new Schema({
-  name: { type: String },
-  manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-});
+
+const clientSchema = new mongoose.Schema(
+{
+name: { type: String },
+projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+},
+{ timestamps: true }
+);
+
 ```
 
 ### Project Schema
 
 ```
-const projectSchema = new Schema({
-  name: { type: String },
-  client: { type: mongoose.Schema.Types.ObjectId, ref: Client },
-  team: [{ type: mongoose.Schema.Types.ObjectId, ref: Team }],
-});
+
+const projectSchema = new mongoose.Schema(
+{
+name: { type: String },
+consumeTime: { type: String },
+budgetTime: { type: Number },
+projectLeader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+employees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+},
+{ timestamps: true }
+);
+
 ```
 
 ### Team Schema
 
 ```
-const teamSchema = new Schema({
-  name: { type: String },
-  manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  employees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-});
+
+const teamSchema = new mongoose.Schema(
+{
+name: { type: String, required: true },
+manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+},
+{ timestamps: true }
+);
+
 ```
 
 ### User Schema
 
 ```
-const userSchema = new Schema({
-  role: { type: String },
-  isAdmin: Boolean,
-  isManager: Boolean,
-  company: String,
-  firstName: { type: String },
-  lastName: { type: String },
-  email: { type: String },
-  password: { type: String },
-  team: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
-  settings: {
-    ScreenShotPerHour: Number,
-    AllowBlur: Boolean,
-    AppsAndUrlTracking: Boolean,
-    WeeklyTimeLimit: Number,
-    AutoPause: Number,
-    OfflineTime: Boolean,
-    NotifyUser: Boolean,
-    WeekStart: String,
-    CurrencySymbol: String,
-  },
-  pay: Number,
-  day: {
-    date: {
-      hours: Number,
-      timeRange: [
-        {
-          startTime: Date,
-          endTime: Date,
-          activityLevelTotal: Number,
-          screenShots: [
-            {
-              activityLevel: Number,
-              url: String,
-              time: Date,
-              taskName: String,
-            },
-          ],
-        },
-      ],
-    },
-  },
+
+const userSchema = new mongoose.Schema(
+{
+role: { type: String },
+isManager: { type: Boolean, default: false },
+firstName: { type: String, required: true },
+lastName: { type: String, required: true },
+email: { type: String, required: true, unique: true },
+password: { type: String, required: true },
+payRate: { type: Number, default: 100 },
+lastActive: { type: String, default: "0" },
+activityStatus: { type: Boolean, default: false },
+accountInfo: {
+managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+country: { type: String, default: "India" },
+ip: { type: String },
+countryName: { type: String, default: "India" },
+},
+projects: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "project",
+},
+],
+clients: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "client",
+},
+],
+teams: [
+{
+type: mongoose.Schema.Types.ObjectId,
+ref: "team",
+},
+],
+notifications: [
+{
+id: String,
+title: String,
+description: String,
+avatar: String,
+type: String,
+createdAt: Date,
+isUnRead: Boolean,
+},
+],
+settings: {
+ScreenShotPerHour: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Number, default: 6 },
+individualValue: { type: Number, default: 6 },
+},
+AllowBlur: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Boolean, default: false },
+individualValue: { type: Boolean, default: false },
+},
+AppsAndUrlTracking: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Boolean, default: true },
+individualValue: { type: Boolean, default: true },
+},
+WeeklyTimeLimit: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Number, default: 120 },
+individualValue: { type: Number, default: 120 },
+},
+AutoPause: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Number, default: 4 },
+individualValue: { type: Number, default: 4 },
+},
+OfflineTime: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Boolean, default: false },
+individualValue: { type: Boolean, default: false },
+},
+NotifyUser: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: Boolean, default: false },
+individualValue: { type: Boolean, default: false },
+},
+WeekStart: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: String, default: "Monday" },
+individualValue: { type: String, default: "Monday" },
+},
+CurrencySymbol: {
+isTeamSetting: { type: Boolean, required: true, default: true },
+teamValue: { type: String, default: "$" },
+        individualValue: { type: String, default: "$" },
+},
+},
+days: [
+{
+date: { type: String, default: "0" },
+hours: { type: Number, default: 0 },
+activities: [{ type: mongoose.Types.ObjectId, ref: "Activity" }],
+},
+],
+},
+{ timestamps: true }
+);
+
+```
+
+### Activity Schema
+
+```
+
+const activitySchema = new mongoose.Schema({
+hoursWorked: {
+projectHours: { type: Number, default: 0.0 },
+internalHours: { type: Number, default: 0.0 },
+},
+client: {
+type: mongoose.Schema.Types.ObjectId,
+ref: 'curClientId',
+},
+project: {
+type: mongoose.Schema.Types.ObjectId,
+ref: 'curProjectId',
+},
+task: {
+type: String,
+default: '',
+},
+startTime: {
+type: String,
+default: '',
+},
+endTime: {
+type: String,
+default: '',
+},
+consumeTime: {
+type: String,
+default: '',
+},
+isAccepted: {
+type: Boolean,
+default: true,
+},
+isInternal: { type: Boolean, default: false },
+performanceData: { type: Number, default: 0 },
+screenshots: [{ type: mongoose.Types.ObjectId, ref: 'Screenshot' }],
 });
+
+```
+
+### Screenshot Schema
+
+```
+
+const screenshotSchema = new mongoose.Schema({
+employee: {
+type: mongoose.Schema.Types.ObjectId,
+ref: 'curUserId',
+},
+client: {
+type: mongoose.Schema.Types.ObjectId,
+ref: 'curClientId',
+},
+project: {
+type: mongoose.Schema.Types.ObjectId,
+ref: 'curProjectId',
+},
+task: {
+type: String,
+default: '',
+},
+image: {
+type: String,
+default: '',
+},
+activityAt: {
+type: String,
+},
+activityId: {
+type: mongoose.Schema.Types.ObjectId,
+ref: 'activityId',
+},
+performanceData: {
+type: Number,
+default: 0,
+},
+title: {
+type: String,
+default: 'Default title',
+},
+});
+
 ```
 
 ## Installation

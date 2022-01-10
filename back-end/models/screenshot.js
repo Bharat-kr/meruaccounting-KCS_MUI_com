@@ -4,14 +4,17 @@ const screenshotSchema = new mongoose.Schema({
   employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curUserId',
+    required: true,
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curClientId',
+    required: true,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curProjectId',
+    required: true,
   },
   task: {
     type: String,
@@ -27,6 +30,7 @@ const screenshotSchema = new mongoose.Schema({
   activityId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'activityId',
+    required: true,
   },
   performanceData: {
     type: Number,
