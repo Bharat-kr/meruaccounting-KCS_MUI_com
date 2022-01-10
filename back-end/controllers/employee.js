@@ -86,9 +86,10 @@ const editEmployee = asyncHandler(async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(employeeId, req.body);
     user.save();
+    const updatedUser = await User.findById(employeeId);
     res.json({
       message: 'User Updated',
-      data: user,
+      data: updatedUser,
     });
   } catch (error) {
     throw new Error(error);
