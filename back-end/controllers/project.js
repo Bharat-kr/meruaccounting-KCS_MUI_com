@@ -1,6 +1,5 @@
 import Client from '../models/client.js';
 import Project from '../models/project.js';
-import Team from '../models/team.js';
 import User from '../models/user.js';
 import asyncHandler from 'express-async-handler';
 
@@ -10,67 +9,79 @@ import asyncHandler from 'express-async-handler';
 
 const createProject = asyncHandler(async (req, res) => {
   const manager = req.user;
-
   const { name, clientId } = req.body;
   try {
+    const client = await Client.findById(clientId);
+    if (!client) {
+      res.status(404);
+      throw new Error('Client not found');
+    }
+
     const project = new Project({ name });
+    if (!project) throw new Error('Error creating new project');
+
     project.employees.push(manager._id.toHexString());
     project.createdBy = manager._id;
-    const client = await Client.findById(clientId);
-    if (!client) throw new Error('Client not found');
 
     manager.projects.push(project._id.toHexString());
     await manager.save();
 
-    await project.save();
     client.projects.push(project._id.toHexString());
     await client.save();
+
     project.client = clientId;
     await project.save();
+
     res.status(201).json({
-      messsage: 'Successfully Created Project',
+      status: 'Successfully Created Project',
       data: project,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
 
 // @desc    Get user's all projects
 // @route   GET /project
-// @access  Public
+// @access  Private
 
 const getProject = asyncHandler(async (req, res) => {
-  const { projects } = await User.findById(req.user._id).populate({
-    path: 'projects',
-    model: 'Project',
-    populate: { path: 'employees', select: ['firstName', 'lastName', 'days'] },
-  });
+  try {
+    const { projects } = await User.findById(req.user._id).populate({
+      path: 'projects',
+      model: 'Project',
+      populate: {
+        path: 'employees',
+        select: ['firstName', 'lastName', 'days'],
+      },
+    });
 
-  res.json({
-    msg: 'Success',
-    data: projects,
-  });
+    res.status(200).json({
+      msg: 'Success',
+      data: projects,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
 // @desc    Get project by id
 // @route   GET /project/:id
-// @access  Private
+// @access  Public
 
 const getProjectById = asyncHandler(async (req, res) => {
-  const id = req.params.id;
   try {
+    const { id } = req.params;
     const project = await Project.findById(id);
     if (!project) {
       res.status(404);
-      throw new Error('No projects found');
+      throw new Error(`No project found ${id}`);
     }
     res.status(200).json({
+      status: 'Project fetched successfully',
       data: project,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
@@ -80,21 +91,19 @@ const getProjectById = asyncHandler(async (req, res) => {
 // @access  Private
 
 const editProject = asyncHandler(async (req, res) => {
-  const employee = req.user;
-  const projectId = req.params.id;
   try {
+    const projectId = req.params.id;
     const project = await Project.findByIdAndUpdate(projectId, req.body);
     if (!project) {
       res.status(404);
       throw new Error(`No project found ${projectId}`);
     }
 
-    res.status(202).json({
-      messsage: 'Successfully edited project',
+    res.status(200).json({
+      status: 'Successfully edited project',
       data: project,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
@@ -104,10 +113,9 @@ const editProject = asyncHandler(async (req, res) => {
 // @access  Private
 
 const deleteProject = asyncHandler(async (req, res) => {
-  const employee = req.user;
-  const { projectId } = req.body;
   try {
-    const project = await Project.findByIdAndRemove(projectId);
+    const { projectId } = req.body;
+    const project = await Project.findById(projectId);
     if (!project) {
       res.status(404);
       throw new Error(`No project found ${projectId}`);
@@ -124,24 +132,23 @@ const deleteProject = asyncHandler(async (req, res) => {
 
     // delete project from employees array
     if (project.employees.length > 0) {
-      // project.createdBy;
       for (let i = 0; i < project.employees.length; i++) {
         const emp = await User.findById(project.employees[i]);
-        if (!emp) throw new Error(`Employee ${project.employees[i]} not found`);
-        emp.projects = emp.projects.filter(
-          (id) => id.toHexString() !== projectId
-        );
-        await emp.save();
+        if (emp) {
+          emp.projects = emp.projects.filter(
+            (id) => id.toHexString() !== projectId
+          );
+          await emp.save();
+        }
       }
-      await employee.save();
     }
+    project = await Project.findByIdAndRemove(projectId);
 
     res.status(202).json({
-      messsage: 'Successfully Deleted Project',
-      status: 'success',
+      status: 'Successfully Deleted Project',
+      status: project,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
@@ -151,14 +158,22 @@ const deleteProject = asyncHandler(async (req, res) => {
 // @access  Private
 
 const addMember = asyncHandler(async (req, res) => {
-  const manager = req.user;
   const { employeeMail } = req.body;
   const projectId = req.params.id;
   let alreadyMember = false;
   let alreadyProjectAdded = false;
   try {
     const project = await Project.findById(projectId);
+    if (!project) {
+      res.status(404);
+      throw new Error('Project not found');
+    }
+
     const newEmployee = await User.findOne({ email: employeeMail });
+    if (!newEmployee) {
+      res.status(404);
+      throw new Error('No such employee found');
+    }
     const employeeId = newEmployee._id;
     project.employees.forEach((employee) => {
       if (employee.equals(employeeId)) {
@@ -167,9 +182,9 @@ const addMember = asyncHandler(async (req, res) => {
     });
 
     if (alreadyMember) {
-      return res.json({
-        status: 'Ok',
-        message: 'Already A Member',
+      return res.status(200).json({
+        status: 'Already A Member',
+        data: project,
       });
     }
 
@@ -178,6 +193,7 @@ const addMember = asyncHandler(async (req, res) => {
         alreadyProjectAdded = true;
       }
     });
+
     if (!alreadyProjectAdded) {
       newEmployee.projects.push(projectId);
       await newEmployee.save();
@@ -190,7 +206,6 @@ const addMember = asyncHandler(async (req, res) => {
       data: project,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
@@ -201,14 +216,21 @@ const addMember = asyncHandler(async (req, res) => {
 
 const removeMember = asyncHandler(async (req, res) => {
   try {
-    const manager = req.user;
-    const employeeId = req.body.employeeId;
+    const { employeeId } = req.body;
     const projectId = req.params.id;
     const project = await Project.findById(projectId);
+    if (!project) {
+      res.status(404);
+      throw new Error(`Not found project ${projectId}`);
+    }
     const employee = await User.findById(employeeId);
+    if (!employee) {
+      res.status(404);
+      throw new Error(`Not found employee ${employeeId}`);
+    }
 
     if (project.projectLeader?._id.toHexString() === employeeId) {
-      project.projectLeader = null;
+      project.projectLeader = undefined;
     }
 
     project.employees = project.employees.filter(
@@ -221,30 +243,36 @@ const removeMember = asyncHandler(async (req, res) => {
 
     await employee.save();
     await project.save();
-    res.json({
+    res.status(200).json({
       status: 'success',
       data: project,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
 
-// @desc    Assign project leader to the given id
+// @desc    Assign project leader to the given project id
 // @route   POST /project/projectLeader/:id
 // @access  Private
 
 const assignProjectLeader = asyncHandler(async (req, res) => {
-  const manager = req.user;
-
-  const employeeMail = req.body.employeeMail;
+  const { employeeMail } = req.body;
   const projectId = req.params.id;
   let alreadyMember = false;
   let alreadyProjectAdded = false;
   try {
     const project = await Project.findById(projectId);
+    if (!project) {
+      res.status(404);
+      throw new Error(`Not found project ${projectId}`);
+    }
     const newEmployee = await User.findOne({ email: employeeMail });
+    if (!newEmployee) {
+      res.status(404);
+      throw new Error(`Not found employee ${employeeMail}`);
+    }
+
     const employeeId = newEmployee._id;
     project.employees.forEach((employee) => {
       if (employee.equals(employeeId)) {
@@ -268,13 +296,12 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
     project.projectLeader = employeeId;
     await newEmployee.save();
     await project.save();
-    res.json({
+
+    res.status(200).json({
       status: 'ok',
       data: project,
-      newEmployee,
     });
   } catch (error) {
-    res.status(500);
     throw new Error(error);
   }
 });
@@ -289,49 +316,3 @@ export {
   assignProjectLeader,
   removeMember,
 };
-
-// // @desc    Add team to project
-// // @route   PATCH /project
-// // @access  Private
-// //
-// const projectTeam = asyncHandler(async (req, res) => {
-//   const employee = req.user;
-//   if (employee.role === 'manager') {
-//     const { teamId, projectId } = req.body;
-//     try {
-//       const project = await Project.findById(projectId);
-//       if (!project) {
-//         res.status(404);
-//         throw new Error(`No project found ${projectId}`);
-//       }
-
-//       const team = await Team.findById(teamId).populate('employees');
-//       if (!team) {
-//         res.status(404);
-//         throw new Error(`No team found ${teamId}`);
-//       }
-
-//       for (let i = 0; i < team.employees.length; i++) {
-//         let emp = team.employees[i];
-
-//         emp.projects.push(projectId);
-//         await emp.save();
-//       }
-
-//       project.team.push(teamId);
-//       team.projects.push(projectId);
-//       await project.save();
-//       await team.save();
-//       res.status(201).json({
-//         messsage: 'Successfully Added team to  Project',
-//         data: project,
-//       });
-//     } catch (error) {
-//       res.status(500);
-//       throw new Error(error);
-//     }
-//   } else {
-//     res.status(401);
-//     throw new Error('Unauthorized manager');
-//   }
-// });
