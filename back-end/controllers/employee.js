@@ -138,26 +138,3 @@ const editEmployee = asyncHandler(async (req, res) => {
 });
 
 export { getEmployeeList, getEmployeeById, deleteEmployee, editEmployee };
-
-// delete this function
-// // @desc    Create a new employee
-// // @route   POST /employee
-// // @access  Private
-
-// const createEmployee = asyncHandler(async (req, res) => {
-//   try {
-//     const employee = new User(req.body);
-//     await employee.save();
-//     if (!employee) {
-//       res.status(500);
-//       throw new Error("Employee not created");
-//     }
-//     res.json({
-//       status: "Ok",
-//       data: employee,
-//     });
-//   } catch (error) {
-//     res.status(500);
-//     throw new Error(error);
-//   }
-// });
