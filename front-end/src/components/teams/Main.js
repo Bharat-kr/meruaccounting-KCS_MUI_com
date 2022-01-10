@@ -76,7 +76,7 @@ export default function Main(props) {
   const Labelconfig = function () {
     return (
       <>
-        {currMember?.projects?.map((pro) => (
+        {currMember.projects.map((pro) => (
           <FormControlLabel
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
             control={<Switch checked />}
