@@ -82,7 +82,21 @@ const login = asyncHandler(async (req, res) => {
 
 const commondata = asyncHandler(async (req, res) => {
   try {
-    const user = req.user;
+    const user = await User.findById(req.user._id)
+      .select('-password')
+      .populate({
+        path: 'days',
+        populate: {
+          path: 'activities',
+          model: 'Activity',
+          populate: {
+            path: 'screenshots',
+            model: 'Screenshot',
+            select: ['-employee', '-activityId'],
+          },
+        },
+      });
+
     if (!user) {
       res.status(404);
       throw new Error('No such user found');
