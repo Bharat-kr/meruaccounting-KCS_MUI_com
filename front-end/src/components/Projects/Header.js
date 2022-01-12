@@ -9,7 +9,7 @@ import {
   Button,
   Fab,
 } from "@mui/material";
-
+import EdiText from "react-editext";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 import SearchBar from "../SearchBar";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -23,7 +23,13 @@ import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
 import { getClient, getClientProjects } from "../../api/clients api/clients";
-import { editProject, deleteProject } from "../../api/projects api/projects";
+import {
+  editProject,
+  deleteProject,
+  addProjectLeader,
+  addProjectMember,
+  removeProjectMember,
+} from "../../api/projects api/projects";
 import AddIcon from "@mui/icons-material/Add";
 import { display } from "@mui/material/node_modules/@mui/system";
 import EnhancedTable from "../Projects/ProjectMemers";
@@ -54,10 +60,7 @@ export default function Header(props) {
     setcurrentClient,
     ...other
   } = props;
-  // const [currentClient, setCurrentClient] = useState(currentClient);
-  // const [currentProject, setCurrentProject] = useState(currentProject);
 
-  // console.log(currentClient, currentProject);
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First name", width: 130 },
@@ -81,18 +84,6 @@ export default function Header(props) {
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
-
   const classes = useStyles();
   // to focus edit name of client
   const inputRef = useRef();
@@ -107,25 +98,57 @@ export default function Header(props) {
     dispatchClientDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
-  const { dispatchEditProject, dispatchDeleteProject } =
-    useContext(projectContext);
-  const [mockTeamLeader, setMockTeamLeader] = useState("");
+  const {
+    dispatchEditProject,
+    dispatchDeleteProject,
+    dispatchaddProjectMember,
+    dispatchaddProjectLeader,
+    dispatchremoveProjectMember,
+  } = useContext(projectContext);
+  const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
   const test = useRef(false);
   useEffect(() => {
-    return currentProject
+    currentProject
       ? setprojectName(`${currentProject.name}`)
-      : setprojectName("No Projects In this client");
+      : setprojectName("No Client Select");
+    currentProject.projectLeader
+      ? setProjectLeader(
+          `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
+        )
+      : setProjectLeader("No leader");
   }, [currentClient, currentProject]);
-  const mockEmployeeList = ["Ayush", "Kamal", "Shrey", "Bharat"];
-  const handleSearch = (e, value) => {
-    const employee = mockEmployeeList.filter((emp) =>
-      emp == value ? emp : ""
-    );
-    return setMockTeamLeader(employee[0]);
+  let memberList = [];
+  let membersData = [];
+  console.log(currentProject.employees);
+  currentProject
+    ? currentProject.employees.map((emp) => {
+        membersData.push({
+          dayArray: emp.days,
+          id: emp._id,
+          name: `${emp.firstName} ${emp.lastName}`,
+          email: emp.email,
+          // payRate: emp.payRate,
+        });
+        memberList.push(`${emp.firstName} ${emp.lastName}`);
+      })
+    : memberList.push("");
+  const handleSearch = async (e, value) => {
+    try {
+      const emp = membersData.filter((emp) =>
+        emp.name === value ? emp.id : ""
+      );
+      console.log(emp[0].email);
+      const data = [currentProject._id, emp[0].email];
+      await addProjectLeader(data, dispatchaddProjectLeader);
+      const employee = memberList.filter((emp) => (emp == value ? emp : ""));
+      return setProjectLeader(employee);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   const handleEdit = () => {};
   const handleEditSubmit = async (e) => {
@@ -165,7 +188,6 @@ export default function Header(props) {
     await getClient(dispatchClientDetails);
     console.log(currentClient);
   };
-  const handleClick = function () {};
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
 
@@ -183,7 +205,10 @@ export default function Header(props) {
     }
     console.log("hello");
   };
-  console.log(currentProject);
+  const handleClick = () => {};
+  const handleMemberAdded = (e, value) => {
+    addProjectMember();
+  };
   return (
     <>
       <Box
@@ -271,14 +296,14 @@ export default function Header(props) {
                   mr: 2,
                 }}
               >
-                {mockTeamLeader}
+                {ProjectLeader}
               </Paper>
 
               <SearchBar
                 label="Assign Project Leader"
                 handleSearch={handleSearch}
                 id="combo-box-demo"
-                options={["Ayush", "Shrey", "Kamal", "Bharat"]}
+                options={memberList}
                 sx={{ width: 100 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Select New Team Leader" />
@@ -286,14 +311,44 @@ export default function Header(props) {
               />
             </div>
             <hr />
-            <Paper elevation={2} sx={{ pt: 1 }}>
-              <Typography variant="h5" sx={{ pt: 5 }}>
-                Total Project Hours: <Link>150hr</Link>
-              </Typography>
-              <Typography variant="h5" sx={{ pt: 1 }}>
-                Total Internal Hours:<Link>30hr</Link>
-              </Typography>
-            </Paper>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Paper elevation={2} sx={{ pt: 1 }}>
+                <Typography variant="h6" sx={{ pt: 3 }}>
+                  Total Project Hours: <Link>150hr</Link>
+                </Typography>
+                <Typography variant="h6" sx={{ pt: 1 }}>
+                  Total Internal Hours:<Link>30hr</Link>
+                </Typography>
+              </Paper>
+              <Paper sx={{ pt: 0.9 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ display: "flex", flexDirection: "row", pt: 3 }}
+                >
+                  <p
+                    style={{
+                      display: "inherit",
+                      alignItems: "center",
+                    }}
+                  >
+                    BudgetHours:
+                  </p>
+                  <Link>
+                    <EdiText
+                      sx={{ display: "flex", alignItems: "center" }}
+                      type="number"
+                      value={`${
+                        currentProject.BudgetHours
+                          ? currentProject.BudgetHours
+                          : "Not Assigned"
+                      }`}
+                      onCancel={(v) => console.log("CANCELLED: ", v)}
+                      onSave={(v) => console.log(v)}
+                    />
+                  </Link>
+                </Typography>
+              </Paper>
+            </div>
 
             <Paper elevation={2} sx={{ pt: 1 }}>
               <hr />
@@ -327,10 +382,11 @@ export default function Header(props) {
                     >
                       <TextField
                         // onChange={(e) => setNewTeam(e.target.value)}
-                        // onSubmit={}
+                        onSubmit={handleMemberAdded}
                         required
+                        type={"email"}
                         fullWidth
-                        label="Add new Member"
+                        label="Add member by email"
                         // error={newClientError}
                         sx={{}}
                       />
@@ -355,15 +411,19 @@ export default function Header(props) {
                   <SearchBar
                     label="Search Member"
                     handleSearch={handleSearch}
+                    // ref={memberref}
                     id="combo-box-demo"
-                    options={["Ayush", "Shrey", "Kamal", "Bharat"]}
+                    options={memberList}
                     renderInput={(params) => (
                       <TextField {...params} label="Select New Team Leader" />
                     )}
                   />
                 </div>
               </Box>
-              <EnhancedTable />
+              <EnhancedTable
+                currentClient={currentClient}
+                currentProject={currentProject}
+              />
             </Paper>
           </Box>
         </Paper>

@@ -298,6 +298,16 @@ export const ProjectsContextProvider = (props) => {
         dispatchEditProject,
         deleteProject,
         dispatchDeleteProject,
+        dispatchProjectById,
+        projectById,
+        dispatchaddProjectMember,
+        addProjectLeader,
+        dispatchaddProjectLeader,
+        addProjectLeader,
+        dispatcheditProjectLeader,
+        editProjectLeader,
+        dispatchremoveProjectMember,
+        removeProjectMemberReducer,
       }}
     >
       {props.children}
