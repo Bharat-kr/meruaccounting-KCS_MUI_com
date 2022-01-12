@@ -420,7 +420,10 @@ export default function Header(props) {
                   />
                 </div>
               </Box>
-              <EnhancedTable />
+              <EnhancedTable
+                currentClient={currentClient}
+                currentProject={currentProject}
+              />
             </Paper>
           </Box>
         </Paper>
