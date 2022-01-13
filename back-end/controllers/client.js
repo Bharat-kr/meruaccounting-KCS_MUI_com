@@ -1,7 +1,7 @@
-import Client from '../models/client.js';
-import Project from '../models/project.js';
-import asyncHandler from 'express-async-handler';
-import User from '../models/user.js';
+import Client from "../models/client.js";
+import Project from "../models/project.js";
+import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
 
 // @desc    Create a new client
 // @route   POST /client
@@ -13,7 +13,7 @@ const createClient = asyncHandler(async (req, res) => {
   try {
     const client = new Client({ name });
 
-    if (!client) throw new Error('Error creating a new client');
+    if (!client) throw new Error("Error creating a new client");
 
     client.createdBy = manager._id;
     await client.save();
@@ -22,7 +22,7 @@ const createClient = asyncHandler(async (req, res) => {
     await manager.save();
 
     res.status(201).json({
-      status: 'Successfully Created Client',
+      status: "Successfully Created Client",
       data: client,
     });
   } catch (error) {
@@ -38,32 +38,32 @@ const getClient = asyncHandler(async (req, res) => {
   try {
     const client = await Client.find({ manager: req.user._id })
       .populate({
-        path: 'projects',
+        path: "projects",
         populate: {
-          path: 'projectLeader',
-          select: ['firstName', 'lastName', 'email'],
+          path: "projectLeader",
+          select: ["firstName", "lastName", "email"],
         },
       })
       .populate({
-        path: 'projects',
+        path: "projects",
         populate: {
-          path: 'employees',
-          select: ['firstName', 'lastName', 'days', 'email', 'projects'],
+          path: "employees",
+          select: ["firstName", "lastName", "days", "email", "projects"],
           populate: {
-            path: 'projects',
-            model: 'Project',
-            select: ['name', 'budgetTime'],
+            path: "projects",
+            model: "Project",
+            select: ["name", "budgetTime"],
           },
         },
       });
 
     if (!client) {
       res.status(404);
-      throw new Error('No clients found');
+      throw new Error("No clients found");
     }
 
     res.status(200).json({
-      status: 'Client fetched succesfully',
+      status: "Client fetched succesfully",
       data: client,
     });
   } catch (error) {
@@ -77,14 +77,14 @@ const getClient = asyncHandler(async (req, res) => {
 
 const getClientById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const client = await Client.findById(id).populate('projects');
+  const client = await Client.findById(id).populate("projects");
   try {
     if (!client) {
       res.status(404);
-      throw new Error('Client not found');
+      throw new Error("Client not found");
     }
     res.status(200).json({
-      status: 'Client fetched succesfully',
+      status: "Client fetched succesfully",
       data: client,
     });
   } catch (error) {
@@ -102,11 +102,11 @@ const editClient = asyncHandler(async (req, res) => {
 
     if (!client) {
       res.status(404);
-      throw new Error('Client not found');
+      throw new Error("Client not found");
     }
 
     res.status(200).json({
-      status: 'Successfully Updated Client',
+      status: "Successfully Updated Client",
       data: client,
     });
   } catch (error) {
@@ -127,7 +127,7 @@ const deleteClient = asyncHandler(async (req, res) => {
 
     if (!client) {
       res.status(404);
-      throw new Error('Client not found');
+      throw new Error("Client not found");
     }
 
     const userId = client.createdBy;
@@ -176,7 +176,7 @@ const deleteClient = asyncHandler(async (req, res) => {
     /* ---------------------------- Sending response ---------------------------- */
 
     res.status(202).json({
-      status: 'Successfully Deleted Client',
+      status: "Successfully Deleted Client",
       data: client,
     });
   } catch (error) {

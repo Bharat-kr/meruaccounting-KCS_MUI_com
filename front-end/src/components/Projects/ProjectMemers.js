@@ -22,13 +22,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
-function createData(name, projectHours, internalHours, payrate, totalHours) {
+function createData(name, projectHours, internalHours, payrate) {
   return {
     name,
     projectHours,
     internalHours,
     payrate,
-    totalHours,
   };
 }
 // const mockEmployeeList = [
@@ -38,13 +37,13 @@ function createData(name, projectHours, internalHours, payrate, totalHours) {
 //   ["Bharat"],
 // };
 
-const rows = [
-  createData("Ayush", 13, 16, 29, 30),
-  createData("Kamal", 43, 3, 46, 25),
-  createData("Shrey", 33, 9, 42, 30),
-  createData("Bharat", 159, 6.0, 24, 4.0),
-];
-console.log(rows);
+// const rows = [
+//   createData("Ayush", 13, 16, 29, 30),
+//   createData("Kamal", 43, 3, 46, 25),
+//   createData("Shrey", 33, 9, 42, 30),
+//   createData("Bharat", 159, 6.0, 24, 4.0),
+// ];
+// console.log(rows);
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -101,12 +100,12 @@ const headCells = [
     disablePadding: false,
     label: "payrate",
   },
-  {
-    id: "totalHours",
-    numeric: true,
-    disablePadding: false,
-    label: "Total Hours",
-  },
+  // {
+  //   id: "totalHours",
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: "Total Hours",
+  // },
 ];
 
 function EnhancedTableHead(props) {
@@ -227,14 +226,26 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
+  const { currentProject, currentClient } = props;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("projectHours");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  // const [rows, setRows] = React.useState();
 
+  const rows = [];
+  // React.useEffect(() => {
+  currentProject?.employees?.map((emp) => {
+    console.log(emp);
+    rows.push(
+      createData(`${emp.firstName} ${emp.lastName}`, 0.0, 0.0, emp.payRate)
+    );
+  });
+  // }, [currentProject]);
+  console.log(rows);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
