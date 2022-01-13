@@ -5,6 +5,11 @@ const activitySchema = new mongoose.Schema({
     projectHours: { type: Number, default: 0.0 },
     internalHours: { type: Number, default: 0.0 },
   },
+  employee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'curClientId',
+    required: true,
+  },
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curClientId',

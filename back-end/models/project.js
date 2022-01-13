@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const projectSchema = new mongoose.Schema(
   {
     name: { type: String },
-    consumeTime: { type: String },
+    consumeTime: { type: Number },
     budgetTime: { type: Number },
     projectLeader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
