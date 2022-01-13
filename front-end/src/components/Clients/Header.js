@@ -55,7 +55,39 @@ export default function Header() {
   //   console.log(keyName, keyIndex)
   // );
 
-  return (
+  return currentClient === "" ? (
+    <Box
+      component="div"
+      sx={{
+        width: "70%",
+        flexGrow: "1",
+        overflowX: "hidden",
+        overflowY: "auto",
+        margin: "10px 10px 10px 0",
+      }}
+    >
+      <Paper
+        component="div"
+        elevation={3}
+        sx={{
+          display: "flex",
+          flexGrow: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          ml: 1,
+          overflow: "visible",
+          height: "100%",
+        }}
+      >
+        <Box
+          component="img"
+          src="/svgs/client.svg"
+          sx={{ width: 100, height: 70, backgroundColor: "white" }}
+        />
+        <Typography variant="h5">No Client Selected</Typography>
+      </Paper>
+    </Box>
+  ) : (
     <>
       <Box component="div" sx={{ margin: "10px 10px 10px 0" }}>
         {/* grid container 40 60 */}
