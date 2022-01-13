@@ -1,35 +1,40 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const activitySchema = new mongoose.Schema({
   hoursWorked: {
     projectHours: { type: Number, default: 0.0 },
     internalHours: { type: Number, default: 0.0 },
   },
-  client: {
+  employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'curClientId',
     required: true,
   },
+  client: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "curClientId",
+    required: true,
+  },
   project: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'curProjectId',
+    ref: "curProjectId",
     required: true,
   },
   task: {
     type: String,
-    default: '',
+    default: "",
   },
   startTime: {
     type: String,
-    default: '',
+    default: "",
   },
   endTime: {
     type: String,
-    default: '',
+    default: "",
   },
   consumeTime: {
-    type: String,
-    default: '',
+    type: Number,
+    default: 0.0,
   },
   isAccepted: {
     type: Boolean,
@@ -37,9 +42,9 @@ const activitySchema = new mongoose.Schema({
   },
   isInternal: { type: Boolean, default: false },
   performanceData: { type: Number, default: 0 },
-  screenshots: [{ type: mongoose.Types.ObjectId, ref: 'Screenshot' }],
+  screenshots: [{ type: mongoose.Types.ObjectId, ref: "Screenshot" }],
 });
 
-const Activity = mongoose.model('Activity', activitySchema);
+const Activity = mongoose.model("Activity", activitySchema);
 
 export default Activity;

@@ -48,7 +48,12 @@ const getClient = asyncHandler(async (req, res) => {
         path: 'projects',
         populate: {
           path: 'employees',
-          select: ['firstName', 'lastName', 'days', 'email'],
+          select: ['firstName', 'lastName', 'days', 'email', 'projects'],
+          populate: {
+            path: 'projects',
+            model: 'Project',
+            select: ['name', 'budgetTime'],
+          },
         },
       });
 

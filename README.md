@@ -603,7 +603,6 @@ npm run start
 - [**Kamal**](https://github.com/kamal021099)
 - [**Ayush Garg**](https://github.com/ayush181000)
 - [**Bharat Kumar**](https://github.com/Bharat-kr)
-- [**Prakhar**](https://github.com/Prakhar-tech)
 
 ## License
 
