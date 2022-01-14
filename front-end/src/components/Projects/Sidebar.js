@@ -9,15 +9,14 @@ import {
   Button,
   Divider,
 } from "@mui/material";
+import { TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { TreeItem, TreeView } from "@mui/lab";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
-import Treeview from "../Treeview";
 import SearchBar from "../SearchBar";
 import { getClientProjects, getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
@@ -200,37 +199,67 @@ export default function Sidebar() {
             overflowY: "auto",
           }}
         >
-          {clientsList?.length > 0 &&
-            clientsList.map((client) => (
-              <Treeview
-                parentName={client.name}
-                key={client.name}
-                className={classes.root}
-                sx={{ width: "100%" }}
-                onClick={handleClick}
-                id={client._id}
-              >
-                {client.projects.map((project) => {
-                  return (
-                    <TreeItem
-                      nodeId={`${1 + client.projects.indexOf(project) + 1}`}
-                      key={project.name}
-                      label={
-                        <Typography
-                          data-client={client.name}
-                          data-project={project.name}
-                          onClick={handleProjectClick}
-                          variant="h6"
-                        >
-                          {project.name}
-                        </Typography>
-                      }
-                      id={project._id}
-                    />
-                  );
-                })}
-              </Treeview>
-            ))}
+          <TreeView
+            aria-label="file system navigator"
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+            sx={{
+              height: 240,
+              flexGrow: 1,
+              // maxWidth: 400,
+              overflowY: "auto",
+              width: "100%",
+            }}
+            className={classes.root}
+          >
+            {clientsList?.length > 0 &&
+              clientsList.map((client) => (
+                <TreeItem
+                  nodeId={client._id.toString()}
+                  label={<Typography variant="h4">{client.name}</Typography>}
+                  key={client._id}
+                  onClick={handleClick}
+                  id={client._id}
+                >
+                  {client.projects.map((project) => {
+                    return (
+                      <TreeItem
+                        nodeId={project._id.toString()}
+                        id={project._id}
+                        key={project._id}
+                        label={
+                          <Typography
+                            data-client={client.name}
+                            data-project={project.name}
+                            onClick={handleProjectClick}
+                            variant="h6"
+                          >
+                            {project.name}
+                          </Typography>
+                        }
+                        id={project._id}
+                      />
+                    );
+                  })}
+                </TreeItem>
+              ))}
+          </TreeView>
+          {/* <TreeView
+            aria-label="file system navigator"
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+            sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+          >
+            <TreeItem nodeId="1" label="Applications">
+              <TreeItem nodeId="2" label="Calendar" />
+            </TreeItem>
+            <TreeItem nodeId="5" label="Documents">
+              <TreeItem nodeId="10" label="OSS" />
+              <TreeItem nodeId="6" label="MUI">
+                <TreeItem nodeId="8" label="index.js" />
+              </TreeItem>
+            </TreeItem>
+          </TreeView> */}
         </Box>
 
         {/* INPUT BOX, add validations, connect to context */}

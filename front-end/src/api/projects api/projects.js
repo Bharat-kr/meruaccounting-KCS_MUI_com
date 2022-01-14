@@ -135,7 +135,9 @@ export const getProjectById = async (incomingData, dispatch) => {
 
 export const addProjectMember = async (incomingData, dispatch) => {
   try {
-    const { data } = await axios.post(`/project/addMember/${incomingData}`);
+    const { data } = await axios.post(`/project/addMember/${incomingData[0]}`, {
+      employeeMail: incomingData[1],
+    });
 
     dispatch({ type: ADD_MEMBER_TOPROJECT_SUCCESS, payload: data });
     console.log("member added");

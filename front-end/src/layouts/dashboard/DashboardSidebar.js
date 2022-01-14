@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useContext } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
+// import AnimatedCursor from "react-animated-cursor";
 // material
 import { styled } from "@mui/material/styles";
 import {
@@ -23,7 +24,6 @@ import account from "../../_mocks_/account";
 import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
 import { getFullName } from "src/_helpers/getFullName";
-
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -89,7 +89,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-              {getFullName(loginC.userData.firstName, loginC.userData.lastName)}
+                {getFullName(
+                  loginC.userData.firstName,
+                  loginC.userData.lastName
+                )}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {account.role}
