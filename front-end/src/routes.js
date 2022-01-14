@@ -66,18 +66,6 @@ export default function Router() {
           path: "employeepage/:id",
           element: <PrivateRoute component={EmployeePage} roles={3} />,
         },
-        // { path: 'app', element: <DashboardApp /> },
-        // { path: 'user', element: <User /> },
-        // { path: 'products', element: <Products /> },
-        // { path: 'blog', element: <Blog /> },
-        // { path: 'reports', element: <Reports /> },
-        // { path: 'teams', element: <Teams /> },
-        // { path: 'userdetails', element: <UserDetails /> },
-        // { path: 'clients', element: <Clients /> },
-        // { path: 'projects', element: <Projects /> },
-        // { path: 'settings', element: <Settings /> },
-        // { path: 'usersettings', element: <UserSettings /> },
-        // { path: 'userpage', element: <UserPage /> }
       ],
     },
 
