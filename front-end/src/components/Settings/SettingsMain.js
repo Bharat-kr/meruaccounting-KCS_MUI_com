@@ -23,6 +23,7 @@ import { teamContext } from "src/contexts/TeamsContext";
 import { getTeam } from "src/api/teams api/teams";
 import { getFullName } from "src/_helpers/getFullName";
 import axios from "axios";
+import { convertString } from "../../contexts/UserContext";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,7 +51,14 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function checkheading(index, settings, setSettings, loginC) {
+function checkheading(
+  index,
+  settings,
+  setSettings,
+  id,
+  isTeam,
+  dispatchgetTeam
+) {
   const days = [
     "Sunday",
     "Monday",
@@ -60,26 +68,29 @@ function checkheading(index, settings, setSettings, loginC) {
     "Friday",
     "Saturday",
   ];
-  // const settings = loginC.userData.settings;
 
-  console.log(settings);
-
+  //Common update setting for all functions
   const UpdateSettings = async (data) => {
     // console.log(settings);
     await axios
-      .patch(`/employee/edit/${loginC.userData._id}`, data)
+      .patch(`/employee/edit/${id}`, data)
       .then((res) => {
         console.log(res);
-        setSettings(res.data.data.settings);
+        if (res.data.data.role === "manager") {
+          setSettings(res.data.data.settings);
+        } else {
+          getTeam(dispatchgetTeam);
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  //Screenshot per hour update function
   const changeScreenShotPerHour = async (e) => {
     e.preventDefault();
-    const value = document.querySelector("#screenShotPerHour").value;
+    const value = document.querySelector(`#screenShotPerHour${id}`).value;
     console.log(value);
 
     const data = {
@@ -92,9 +103,26 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
+    const data2 = {
+      settings: {
+        ...settings,
+        ScreenShotPerHour: {
+          isTeamSetting: settings.ScreenShotPerHour.isTeamSetting,
+          individualValue:
+            settings.ScreenShotPerHour.individualValue !== 0 ? 0 : value,
+          teamValue: settings.ScreenShotPerHour.teamValue,
+        },
+      },
+    };
     // console.log(settings);
-    await UpdateSettings(data);
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
+
+  //Apps and url tracking Update function
   const changeAppsAndUrlTracking = async (e) => {
     e.preventDefault();
 
@@ -108,12 +136,28 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
+    const data2 = {
+      settings: {
+        ...settings,
+        AppsAndUrlTracking: {
+          isTeamSetting: settings.AppsAndUrlTracking.isTeamSetting,
+          individualValue: !settings.AppsAndUrlTracking.individualValue,
+          teamValue: settings.AppsAndUrlTracking.teamValue,
+        },
+      },
+    };
     // console.log(settings);
-    await UpdateSettings(data);
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
+
+  //Weekly time Limit Change Function
   const changeWeeklyTimeLimit = async (e) => {
     e.preventDefault();
-    const value = document.querySelector("#weekLimit").value;
+    const value = document.querySelector(`#weekLimit${id}`).value;
     console.log(value);
 
     const data = {
@@ -126,12 +170,29 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
+    const data2 = {
+      settings: {
+        ...settings,
+        WeeklyTimeLimit: {
+          isTeamSetting: settings.WeeklyTimeLimit.isTeamSetting,
+          individualValue:
+            settings.WeeklyTimeLimit.individualValue !== 0 ? 0 : value,
+          teamValue: settings.WeeklyTimeLimit.teamValue,
+        },
+      },
+    };
     // console.log(settings);
-    await UpdateSettings(data);
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
+
+  //AutoPause Update Function
   const changeAutoPause = async (e) => {
     e.preventDefault();
-    const value = document.querySelector("#autoPause").value;
+    const value = document.querySelector(`#autoPause${id}`).value;
     console.log(value);
 
     const data = {
@@ -144,9 +205,25 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
+    const data2 = {
+      settings: {
+        ...settings,
+        AutoPause: {
+          isTeamSetting: settings.AutoPause.isTeamSetting,
+          individualValue: settings.AutoPause.individualValue !== 0 ? 0 : value,
+          teamValue: settings.AutoPause.teamValue,
+        },
+      },
+    };
     // console.log(settings);
-    await UpdateSettings(data);
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
+
+  //Offline Time Update Function
   const changeOfflineTime = async (e) => {
     e.preventDefault();
 
@@ -160,9 +237,25 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
+    const data2 = {
+      settings: {
+        ...settings,
+        OfflineTime: {
+          isTeamSetting: settings.OfflineTime.isTeamSetting,
+          individualValue: !settings.OfflineTime.individualValue,
+          teamValue: settings.OfflineTime.teamValue,
+        },
+      },
+    };
     // console.log(settings);
-    await UpdateSettings(data);
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
+
+  //Notify User update function
   const changeNotifyUser = async (e) => {
     e.preventDefault();
 
@@ -176,10 +269,25 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
+    const data2 = {
+      settings: {
+        ...settings,
+        NotifyUser: {
+          isTeamSetting: settings.NotifyUser.isTeamSetting,
+          individualValue: !settings.NotifyUser.individualValue,
+          teamValue: settings.NotifyUser.teamValue,
+        },
+      },
+    };
     // console.log(settings);
-    await UpdateSettings(data);
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
-  // const [currDay , setCurrDay] =useState(0);
+
+  // WeekStart Update Function
   const changeWeekStart = async (e) => {
     e.preventDefault();
 
@@ -193,12 +301,28 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
-    UpdateSettings(data);
+    const data2 = {
+      settings: {
+        ...settings,
+        WeekStart: {
+          isTeamSetting: settings.WeekStart.isTeamSetting,
+          individualValue: days[e.target.value],
+          teamValue: settings.WeekStart.teamValue,
+        },
+      },
+    };
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
     // setSettings(res.data.data.settings);
   };
+
+  //Currency Symbol update Function
   const changeCurrencySymbol = async (e) => {
     e.preventDefault();
-    const value = document.querySelector("#currencySymbol").value;
+    const value = document.querySelector(`#currencySymbol${id}`).value;
     console.log(value);
 
     const data = {
@@ -211,8 +335,21 @@ function checkheading(index, settings, setSettings, loginC) {
         },
       },
     };
-    // console.log(settings);
-    await UpdateSettings(data);
+    const data2 = {
+      settings: {
+        ...settings,
+        CurrencySymbol: {
+          isTeamSetting: settings.CurrencySymbol.isTeamSetting,
+          individualValue: value,
+          teamValue: settings.CurrencySymbol.teamValue,
+        },
+      },
+    };
+    if (isTeam === "teamValue") {
+      await UpdateSettings(data);
+    } else {
+      await UpdateSettings(data2);
+    }
   };
 
   if (index === 0) {
@@ -223,17 +360,22 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeScreenShotPerHour}
-              checked={settings.ScreenShotPerHour?.teamValue}
+              checked={
+                settings?.ScreenShotPerHour &&
+                settings?.ScreenShotPerHour[isTeam]
+              }
             />
           }
           label="Take"
         />
         <TextField
           sx={{ m: 1.5 }}
-          id="screenShotPerHour"
+          id={`screenShotPerHour${id}`}
           label="Hours per week"
           type="number"
-          defaultValue={settings?.ScreenShotPerHour?.teamValue}
+          defaultValue={
+            settings?.ScreenShotPerHour && settings?.ScreenShotPerHour[isTeam]
+          }
           InputLabelProps={{
             shrink: true,
           }}
@@ -255,7 +397,10 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeScreenShotPerHour}
-              checked={!settings?.ScreenShotPerHour?.teamValue}
+              checked={
+                settings?.ScreenShotPerHour &&
+                !settings?.ScreenShotPerHour[isTeam]
+              }
             />
           }
           label="Do not take"
@@ -263,7 +408,7 @@ function checkheading(index, settings, setSettings, loginC) {
       </>
     );
   }
-  if (index === 1 || index === 2) {
+  if (index === 1) {
     return (
       <>
         <FormControlLabel
@@ -271,7 +416,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeAppsAndUrlTracking}
-              checked={settings.AppsAndUrlTracking.teamValue}
+              checked={settings.AppsAndUrlTracking[isTeam]}
             />
           }
           label="Track"
@@ -281,7 +426,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeAppsAndUrlTracking}
-              checked={!settings.AppsAndUrlTracking.teamValue}
+              checked={!settings.AppsAndUrlTracking[isTeam]}
             />
           }
           label="Do not track"
@@ -289,7 +434,7 @@ function checkheading(index, settings, setSettings, loginC) {
       </>
     );
   }
-  if (index === 3) {
+  if (index === 2) {
     return (
       <>
         <FormControlLabel
@@ -297,7 +442,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeWeeklyTimeLimit}
-              checked={settings.WeeklyTimeLimit.teamValue}
+              checked={settings.WeeklyTimeLimit[isTeam]}
             />
           }
           label="Limit"
@@ -305,10 +450,10 @@ function checkheading(index, settings, setSettings, loginC) {
 
         <TextField
           sx={{ m: 1.5 }}
-          id="weekLimit"
+          id={`weekLimit${id}`}
           label="Hours per week"
           type="number"
-          defaultValue={settings.WeeklyTimeLimit.teamValue}
+          defaultValue={settings.WeeklyTimeLimit[isTeam]}
           InputLabelProps={{
             shrink: true,
           }}
@@ -319,10 +464,49 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeWeeklyTimeLimit}
-              checked={!settings.WeeklyTimeLimit.teamValue}
+              checked={!settings.WeeklyTimeLimit[isTeam]}
             />
           }
           label="Do not limit"
+        />
+      </>
+    );
+  }
+  if (index === 3) {
+    return (
+      <>
+        <FormControlLabel
+          value="Pause"
+          control={
+            <Radio
+              onClick={changeAutoPause}
+              checked={settings.AutoPause[isTeam]}
+            />
+          }
+          label="Pause after"
+        />
+        <TextField
+          sx={{ m: 1.5 }}
+          id={`autoPause${id}`}
+          label="Time limit"
+          type="number"
+          defaultValue={settings.AutoPause[isTeam]}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <Typography sx={{ mt: 3, mr: 2, fontSize: "18px" }}>
+          minutes of user activity
+        </Typography>
+        <FormControlLabel
+          value="Do not pause"
+          control={
+            <Radio
+              onClick={changeAutoPause}
+              checked={!settings.AutoPause[isTeam]}
+            />
+          }
+          label="Do not pause"
         />
       </>
     );
@@ -331,50 +515,11 @@ function checkheading(index, settings, setSettings, loginC) {
     return (
       <>
         <FormControlLabel
-          value="Pause"
-          control={
-            <Radio
-              onClick={changeAutoPause}
-              checked={settings.AutoPause.teamValue}
-            />
-          }
-          label="Pause after"
-        />
-        <TextField
-          sx={{ m: 1.5 }}
-          id="autoPause"
-          label="Time limit"
-          type="number"
-          defaultValue={settings.AutoPause.teamValue}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        <Typography sx={{ mt: 3, mr: 2, fontSize: "20px" }}>
-          minutes of user activity
-        </Typography>
-        <FormControlLabel
-          value="Do not pause"
-          control={
-            <Radio
-              onClick={changeAutoPause}
-              checked={!settings.AutoPause.teamValue}
-            />
-          }
-          label="Do not pause"
-        />
-      </>
-    );
-  }
-  if (index === 5) {
-    return (
-      <>
-        <FormControlLabel
           value="Allow"
           control={
             <Radio
               onClick={changeOfflineTime}
-              checked={settings.OfflineTime.teamValue}
+              checked={settings.OfflineTime[isTeam]}
             />
           }
           label="Allow"
@@ -384,7 +529,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeOfflineTime}
-              checked={!settings.OfflineTime.teamValue}
+              checked={!settings.OfflineTime[isTeam]}
             />
           }
           label="Disallow"
@@ -392,7 +537,7 @@ function checkheading(index, settings, setSettings, loginC) {
       </>
     );
   }
-  if (index === 6) {
+  if (index === 5) {
     return (
       <>
         <FormControlLabel
@@ -400,7 +545,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeNotifyUser}
-              checked={settings.NotifyUser.teamValue}
+              checked={settings.NotifyUser[isTeam]}
             />
           }
           label="Notify"
@@ -410,7 +555,7 @@ function checkheading(index, settings, setSettings, loginC) {
           control={
             <Radio
               onClick={changeNotifyUser}
-              checked={!settings.NotifyUser.teamValue}
+              checked={!settings.NotifyUser[isTeam]}
             />
           }
           label="Do not notify"
@@ -418,16 +563,16 @@ function checkheading(index, settings, setSettings, loginC) {
       </>
     );
   }
-  if (index === 7) {
+  if (index === 6) {
     return (
       <>
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%", mt: 2 }}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Day</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={days.indexOf(settings.WeekStart.teamValue)}
+              value={days.indexOf(settings.WeekStart[isTeam])}
               label="Day"
               onChange={changeWeekStart}
             >
@@ -440,12 +585,12 @@ function checkheading(index, settings, setSettings, loginC) {
       </>
     );
   }
-  if (index === 8) {
+  if (index === 7) {
     return (
       <>
         <TextField
           sx={{ m: 1.5 }}
-          id="currencySymbol"
+          id={`currencySymbol${id}`}
           label="Currency"
           type="text"
           onKeyPress={(e) => {
@@ -453,7 +598,7 @@ function checkheading(index, settings, setSettings, loginC) {
               changeCurrencySymbol(e);
             }
           }}
-          defaultValue={settings.CurrencySymbol.teamValue}
+          defaultValue={settings.CurrencySymbol[isTeam]}
           InputLabelProps={{
             shrink: true,
           }}
@@ -461,10 +606,6 @@ function checkheading(index, settings, setSettings, loginC) {
       </>
     );
   }
-}
-
-function userChange(user) {
-  return <>Hello{user}</>;
 }
 
 export default function SettingsMain(props) {
@@ -484,7 +625,6 @@ export default function SettingsMain(props) {
     // setSettings(loginC.userData.settings);
     const data = [];
     getTeams?.getTeam?.forEach((team) => {
-      console.log("member");
       // eslint-disable-next-line prefer-template
 
       team.members?.map((member) => {
@@ -496,17 +636,44 @@ export default function SettingsMain(props) {
           data.push({
             name: getFullName(member.firstName, member.lastName),
             id: member._id,
+            settings: member.settings,
           });
         }
       });
     });
     setTeamsList(data);
   }, [getTeams]);
+  const userChange = async (user, settings, keyName, e) => {
+    const data = {
+      settings: {
+        ...settings,
+        [keyName]: {
+          isTeamSetting: !e.target.checked,
+          teamValue: settings[keyName].teamValue,
+          individualValue: settings[keyName].individualValue,
+        },
+      },
+    };
+    console.log(data);
+    await axios
+      .patch(`/employee/edit/${user.id}`, data)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          getTeam(dispatchgetTeam);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // console.log(data);
+  };
   useEffect(() => {
     axios
       .get("/commondata")
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setSettings(res.data.user.settings);
       })
       .catch((err) => {
@@ -514,18 +681,19 @@ export default function SettingsMain(props) {
       });
   }, []);
 
-  const effectiveArr = [
-    "Screenshot,Activity Level tracking",
-    "Apps & Urls tracking",
-    "Weekly time limit after",
-    "Auto-pause tracking after",
-    "Allow adding Offline time",
-    "Notify when Screenshot is taken",
-    "Week starts on",
-    "Currency symbol",
-    "Employee desktop application settings",
-  ];
-  const test = false;
+  // const effectiveArr = [
+  //   "Screenshot Per Hour",
+  //   "Apps & Urls tracking",
+  //   "Weekly time limit after",
+  //   "Auto-pause tracking after",
+  //   "Allow adding Offline time",
+  //   "Notify when Screenshot is taken",
+  //   "Week starts on",
+  //   "Currency symbol",
+  //   "Employee desktop application settings",
+  // ];
+  // const test = false;
+
   return (
     <>
       {value === index && (
@@ -538,9 +706,9 @@ export default function SettingsMain(props) {
           aria-labelledby={`vertical-tab-${index}`}
           {...other}
         >
-          <Typography variant="h3">{heading}</Typography>
+          <Typography variant="h3">{convertString(heading)}</Typography>
           <Divider />
-          <Box sx={{ height: "60px", width: "100%", bgcolor: "#bdf2bf" }}>
+          <Box sx={{ height: "auto", width: "100%", bgcolor: "#bdf2bf", p: 1 }}>
             {subheading}
           </Box>
           <Box>
@@ -552,7 +720,14 @@ export default function SettingsMain(props) {
                 aria-label="option"
                 name="row-radio-buttons-group"
               >
-                {checkheading(index, settings, setSettings, loginC)}
+                {checkheading(
+                  index,
+                  settings,
+                  setSettings,
+                  loginC.userData._id,
+                  "teamValue",
+                  dispatchgetTeam
+                )}
               </RadioGroup>
             </FormControl>
           </Box>
@@ -573,20 +748,37 @@ export default function SettingsMain(props) {
                 renderInput={(params) => <TextField {...params} label="User" />}
               />
               {teamsList.map((user) => (
-                <FormGroup>
+                <FormGroup row sx={{ pt: 2 }}>
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={settings?.ScreenShotPerHour?.isTeamSetting}
+                        defaultChecked={!user.settings[heading]?.isTeamSetting}
+                        onChange={(e) => {
+                          userChange(user, user.settings, heading, e);
+                        }}
                       />
                     }
                     label={user.name}
-                    onChange={() => {
-                      userChange(user.name);
-                    }}
                   />
                   {/* {userChange()} */}
-                  {test && <div>hello</div>}
+                  {!user.settings[heading]?.isTeamSetting && (
+                    <FormControl component="fieldset">
+                      <RadioGroup
+                        row
+                        aria-label="option"
+                        name="row-radio-buttons-group"
+                      >
+                        {checkheading(
+                          index,
+                          user.settings,
+                          setSettings,
+                          user.id,
+                          "individualValue",
+                          dispatchgetTeam
+                        )}
+                      </RadioGroup>
+                    </FormControl>
+                  )}
                 </FormGroup>
               ))}
             </Box>

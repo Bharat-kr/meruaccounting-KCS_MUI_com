@@ -1,15 +1,12 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useRef, useEffect, useState } from 'react';
+import React from 'react';
 import { Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
-import TreeItem from '@mui/lab/TreeItem';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { indexOf } from 'lodash-es';
 import SettingsMain from './SettingsMain';
-import { ClientsContext } from '../../contexts/ClientsContext';
 import { convertString } from '../../contexts/UserContext';
 
 function TabPanel(props) {
@@ -68,25 +65,24 @@ export default function Sidebar() {
   // let j = -1;
 
   const effectiveArr = {
-    ScreenshotActivityLevelTracking:
+    ScreenShotPerHour:
       'How frequently screenshots will be taken .This number is an average since screenshots are taken at random intervals',
-    TrackMouseAndKeyboardActivityLevel:
-      'How frequently screenshots will be taken .This number is an average since screenshots are taken at random intervals',
-    AppsAndUrlsTracking:
+      AppsAndUrlTracking:
+      'Track How frequent;y they were using KeyBoard and Mouse.',
+      AppsAndUrlTracking:
       'Track what applications your team members use and what websites they visit.',
-    WeeklyTimeLimitAfter:
+    WeeklyTimeLimit:
       'Number of hours your employees are allowed to work. The tracking will stop when the limit is reached.The time zone for the time limit is always UTC',
-    AutoPauseTrackingAfter:
+    AutoPause:
       'Tracking will automatically pause after the specified period of inactivity and will automatically resume when user becomes active again.',
-    AllowAddingOfflineTime:
+    OfflineTime:
       'Allow user to add time not tracked by the program to their timeline manually. It is often used to account for work away from a computer.',
-    NotifyWhenScreenshotIsTaken:
+    NotifyUser:
       'Every time a screenshot is taken – a small notification will pop up for a couple of seconds next to the system tray saying that a Screenshot was taken.',
-    WeekStartsOn:
+    WeekStart:
       'When does your week start? This will be used when showing totals for a week or setting weekly time limits.',
     CurrencySymbol:
       'The symbol (e.g. $, €, £) will be shown when you set hourly pay rates for your employees and everywhere where money is shown (like total amount spent today or on a specific project).',
-    EmployeeDesktopApplicationSettings: ''
   };
 
   return (
@@ -96,7 +92,7 @@ export default function Sidebar() {
         component="div"
         sx={{
           margin: '10px',
-          maxHeight: '80vh',
+          maxHeight: '60vh',
           height: 'auto'
         }}
       >
@@ -104,7 +100,7 @@ export default function Sidebar() {
           component="div"
           elevation={3}
           sx={{
-            overflowY: 'scroll',
+            overflowY: 'auto',
             height: '100%',
             position: 'relative'
           }}
@@ -156,7 +152,7 @@ export default function Sidebar() {
               <SettingsMain
                 value={value}
                 index={keyIndex}
-                heading={convertString(keyName)}
+                heading={keyName}
                 subheading={effectiveArr[keyName]}
               />
             ))}

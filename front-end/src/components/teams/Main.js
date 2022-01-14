@@ -153,32 +153,34 @@ export default function Main(props) {
                 </Box>
               </Grid>
             </Box>
-            <Box sx={{ mt: 2 }}>
-              <FormControl component="fieldset" sx={{ pt: 2 }}>
-                <Typography variant="h4">Role({currMember.role})</Typography>
-                <RadioGroup
-                  aria-label="Role"
-                  value={currMember.role}
-                  name="radio-buttons-group"
-                >
-                  <FormControlLabel
-                    value="admin"
-                    control={<Radio onChange={updateRole} />}
-                    label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
-                  />
-                  <FormControlLabel
-                    value="manager"
-                    control={<Radio onChange={updateRole} />}
-                    label="Manager - can see selected user's Timeline & Reports (but not rates)"
-                  />
-                  <FormControlLabel
-                    value="employee"
-                    control={<Radio onChange={updateRole} />}
-                    label="Employee - can see their own data only"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Box>
+            {currMember.role === "admin" && (
+              <Box sx={{ mt: 2 }}>
+                <FormControl component="fieldset" sx={{ pt: 2 }}>
+                  <Typography variant="h4">Role({currMember.role})</Typography>
+                  <RadioGroup
+                    aria-label="Role"
+                    value={currMember.role}
+                    name="radio-buttons-group"
+                  >
+                    <FormControlLabel
+                      value="admin"
+                      control={<Radio onChange={updateRole} />}
+                      label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
+                    />
+                    <FormControlLabel
+                      value="manager"
+                      control={<Radio onChange={updateRole} />}
+                      label="Manager - can see selected user's Timeline & Reports (but not rates)"
+                    />
+                    <FormControlLabel
+                      value="employee"
+                      control={<Radio onChange={updateRole} />}
+                      label="Employee - can see their own data only"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Box>
+            )}
             {currMember.role === "admin" && (
               <Box>
                 <Typography variant="h5">Manage for</Typography>
