@@ -213,7 +213,7 @@ export default function Sidebar() {
                 {client.projects.map((project) => {
                   return (
                     <TreeItem
-                      id={project._id}
+                      nodeId={`${1 + client.projects.indexOf(project) + 1}`}
                       key={project.name}
                       label={
                         <Typography
