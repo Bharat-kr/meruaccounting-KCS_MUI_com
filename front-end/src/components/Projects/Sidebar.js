@@ -199,7 +199,6 @@ export default function Sidebar() {
             overflowY: "auto",
           }}
         >
-<<<<<<< HEAD
           <TreeView
             aria-label="file system navigator"
             defaultCollapseIcon={<ExpandMoreIcon />}
@@ -261,39 +260,6 @@ export default function Sidebar() {
               </TreeItem>
             </TreeItem>
           </TreeView> */}
-=======
-          {clientsList?.length > 0 &&
-            clientsList.map((client) => (
-              <Treeview
-                parentName={client.name}
-                key={client.name}
-                className={classes.root}
-                sx={{ width: "100%" }}
-                onClick={handleClick}
-                id={client._id}
-              >
-                {client.projects.map((project) => {
-                  return (
-                    <TreeItem
-                      nodeId={`${1 + client.projects.indexOf(project) + 1}`}
-                      key={project.name}
-                      label={
-                        <Typography
-                          data-client={client.name}
-                          data-project={project.name}
-                          onClick={handleProjectClick}
-                          variant="h6"
-                        >
-                          {project.name}
-                        </Typography>
-                      }
-                      id={project._id}
-                    />
-                  );
-                })}
-              </Treeview>
-            ))}
->>>>>>> 6918cfe7ee29971515942caa3d1786d43c551adc
         </Box>
 
         {/* INPUT BOX, add validations, connect to context */}
