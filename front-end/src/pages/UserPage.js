@@ -18,26 +18,24 @@ export default function UserPage() {
   const [isInternal, setisInternal] = useState(false);
 
   return (
-    <CssBaseline>
-      <Box component="div" sx={{ width: "95%", margin: "auto" }}>
-        <LoginProvider>
-          <CurrentUserContextProvider>
-            <PageHeader title="Hi, Welcome Back!" />
-            <Calendar />
-            <Overview />
-            <Timeline />
-            <IntExt
-              setInternal={(isInt) =>
-                setisInternal((prev) => {
-                  console.log(isInt);
-                  return isInt;
-                })
-              }
-            />
-            <ScreenShots isInternal={isInternal} />
-          </CurrentUserContextProvider>
-        </LoginProvider>
-      </Box>
-    </CssBaseline>
+    <>
+      <CssBaseline>
+        <Box component="div" sx={{ width: "95%", margin: "auto" }}>
+          <PageHeader title="Hi, Welcome Back!" />
+          <Calendar />
+          <Overview />
+          <Timeline />
+          <IntExt
+            setInternal={(isInt) =>
+              setisInternal((prev) => {
+                console.log(isInt);
+                return isInt;
+              })
+            }
+          />
+          <ScreenShots isInternal={isInternal} />
+        </Box>
+      </CssBaseline>
+    </>
   );
 }
