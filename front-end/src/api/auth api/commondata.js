@@ -2,14 +2,14 @@ import axios from "axios";
 import {
   GET_COMMONDATA_SUCCESS,
   GET_COMMONDATA_FAILED,
-} from "../constants/CurrentUserConstants";
+} from "../../constants/CurrentUserConstants";
 const config = {
   headers: {
     Authorization: `Bearer ${localStorage["Bearer Token"]}`,
   },
 };
 
-export const getCommonData = async (data, dispatch) => {
+export const getCommonData = async (dispatch) => {
   try {
     const { data } = await axios.get(`/commondata`, config);
     dispatch({
@@ -21,9 +21,9 @@ export const getCommonData = async (data, dispatch) => {
     dispatch({
       type: GET_COMMONDATA_FAILED,
       payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
     });
   }
 };

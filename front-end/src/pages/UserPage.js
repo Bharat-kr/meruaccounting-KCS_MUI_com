@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { CssBaseline, Box } from "@mui/material";
 import Calendar from "../components/UserPage/Calendar";
 
@@ -13,29 +13,35 @@ import IntExt from "../components/UserPage/IntExt";
 // eslint-disable-next-line import/no-named-as-default
 import CurrentUserContextProvider from "../contexts/CurrentUserContext";
 import { LoginProvider } from "../contexts/LoginContext";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+// import { getCommonData } from "../api/auth api/commondata";
+import { getCommonData } from "../api/auth api/commondata";
 
 export default function UserPage() {
+  const { currentUser, commonData, dispatchCommonData } =
+    useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
 
+  useEffect(() => {
+    getCommonData(dispatchCommonData);
+  }, []);
+
   return (
-    <>
-      <CssBaseline>
-        <Box component="div" sx={{ width: "95%", margin: "auto" }}>
-          <PageHeader title="Hi, Welcome Back!" />
-          <Calendar />
-          <Overview />
-          <Timeline />
-          <IntExt
-            setInternal={(isInt) =>
-              setisInternal((prev) => {
-                console.log(isInt);
-                return isInt;
-              })
-            }
-          />
-          <ScreenShots isInternal={isInternal} />
-        </Box>
-      </CssBaseline>
-    </>
+    <CssBaseline>
+      <Box component="div" sx={{ width: "95%", margin: "auto" }}>
+        <PageHeader title="Hi, Welcome Back!" />
+        <Calendar />
+        <Overview />
+        <Timeline />
+        <IntExt
+          setInternal={(isInt) =>
+            setisInternal((prev) => {
+              return isInt;
+            })
+          }
+        />
+        <ScreenShots isInternal={isInternal} />
+      </Box>
+    </CssBaseline>
   );
 }
