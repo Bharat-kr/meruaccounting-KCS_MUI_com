@@ -1,5 +1,11 @@
-import React from 'react';
-import { Backdrop, Tooltip, Card, CardActionArea, CardMedia } from '@mui/material';
+import React from "react";
+import {
+  Backdrop,
+  Tooltip,
+  Card,
+  CardActionArea,
+  CardMedia,
+} from "@mui/material";
 
 export default function Preview(props) {
   const [open, setOpen] = React.useState(false);
@@ -11,15 +17,24 @@ export default function Preview(props) {
   };
   return (
     <>
-      <Tooltip title="6:53pm" placement="top" followCursor>
+      <Tooltip
+        title={`${props.activityAt}, ${props.performanceData}`}
+        placement="top"
+        followCursor
+      >
         <Card sx={{ maxWidth: 345, m: 1 }}>
           <CardActionArea onClick={handleToggle}>
-            <CardMedia component="img" height="140" image={props.preview} alt="green iguana" />
+            <CardMedia
+              component="img"
+              height="140"
+              image={props.preview}
+              alt="green iguana"
+            />
           </CardActionArea>
         </Card>
       </Tooltip>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
         onClick={handleClose}
       >

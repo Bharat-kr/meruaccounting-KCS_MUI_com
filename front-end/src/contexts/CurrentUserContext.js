@@ -25,7 +25,7 @@ const currentUserReducer = (state, action) => {
       return {
         ...state,
         loader: false,
-        err: action.payload,
+        err: true,
       };
     default:
       return state;
@@ -33,10 +33,11 @@ const currentUserReducer = (state, action) => {
 };
 
 export const CurrentUserContextProvider = (props) => {
-  const [commonData, dispatchCommonData] = useReducer(
-    currentUserReducer,
-    initialValue
-  );
+  const [commonData, dispatchCommonData] = useReducer(currentUserReducer, {
+    commonData: [],
+    loader: true,
+    err: false,
+  });
 
   /////temporary
   const [currentUser, setcurrentUser] = useState({
