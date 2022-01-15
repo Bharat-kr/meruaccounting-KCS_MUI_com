@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Box, Typography, Tooltip } from "@mui/material";
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
-import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import Preview from "./Preview";
 
@@ -27,7 +27,7 @@ export default function Activity({
     percent <= 30 ? (
       <HourglassEmptyIcon sx={{ m: -1 }} />
     ) : percent <= 70 && percent > 30 ? (
-      <HourglassTopIcon sx={{ m: -1 }} />
+      <HourglassBottomIcon sx={{ m: -1 }} />
     ) : (
       <HourglassFullIcon sx={{ m: -1 }} />
     );
@@ -38,14 +38,14 @@ export default function Activity({
       sx={{
         backgroundColor: `${isAccepted === true ? "#c8facd" : "#ffe7d9"}`,
         m: 0.5,
-        pt: 1,
+        pt: 1.5,
         pr: 1,
         pb: 1,
         pl: 0.5,
         borderRadius: 1,
       }}
     >
-      <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
+      <Typography component="span" sx={{ m: 1, fontWeight: "bold", ml: 2.5 }}>
         {timeC(startTime)} -{timeC(endTime)} |
       </Typography>
       <Tooltip title={performanceData} placement="top" followCursor>
