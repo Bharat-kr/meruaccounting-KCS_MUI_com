@@ -12,6 +12,7 @@ import { TeamsProvider } from './contexts/TeamsContext';
 import { ClientsContextProvider } from './contexts/ClientsContext';
 import { EmployeeProvider } from './contexts/EmployeeContext';
 import { ProjectsContextProvider } from './contexts/ProjectsContext';
+import { CurrentUserContextProvider } from './contexts/CurrentUserContext';
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -31,15 +32,17 @@ export default function App() {
         <ScrollToTop />
         <GlobalStyles />
         <BaseOptionChartStyle />
-        <ClientsContextProvider>
-          <ProjectsContextProvider>
-            <EmployeeProvider>
-              <TeamsProvider>
-                <Router />
-              </TeamsProvider>
-            </EmployeeProvider>
-          </ProjectsContextProvider>
-        </ClientsContextProvider>
+        <CurrentUserContextProvider>
+          <ClientsContextProvider>
+            <ProjectsContextProvider>
+              <EmployeeProvider>
+                <TeamsProvider>
+                  <Router />
+                </TeamsProvider>
+              </EmployeeProvider>
+            </ProjectsContextProvider>
+          </ClientsContextProvider>
+        </CurrentUserContextProvider>
       </ThemeConfig>
     </LoginProvider>
   );

@@ -98,6 +98,7 @@ export default function Header(props) {
     dispatchClientDetails,
     dispatchClientProjectDetails,
   } = useContext(ClientsContext);
+  console.log(currentProject);
   const {
     dispatchEditProject,
     dispatchDeleteProject,
@@ -107,6 +108,8 @@ export default function Header(props) {
   } = useContext(projectContext);
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
+  const [input, setInput] = useState("");
+  const outerref = useRef();
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
@@ -123,7 +126,6 @@ export default function Header(props) {
   }, [currentClient, currentProject]);
   let memberList = [];
   let membersData = [];
-  console.log(currentProject.employees);
   currentProject
     ? currentProject.employees.map((emp) => {
         membersData.push({
@@ -131,7 +133,7 @@ export default function Header(props) {
           id: emp._id,
           name: `${emp.firstName} ${emp.lastName}`,
           email: emp.email,
-          // payRate: emp.payRate,
+          payRate: emp.payRate,
         });
         memberList.push(`${emp.firstName} ${emp.lastName}`);
       })
@@ -146,6 +148,7 @@ export default function Header(props) {
       await addProjectLeader(data, dispatchaddProjectLeader);
       const employee = memberList.filter((emp) => (emp == value ? emp : ""));
       return setProjectLeader(employee);
+      setInput("");
     } catch (error) {
       console.log(error.message);
     }
@@ -203,15 +206,16 @@ export default function Header(props) {
       newClient.projects[index].Projectmembers.push(member);
       updateClient(newClient, clients.indexOf(currentClient));
     }
-    console.log("hello");
+    // console.log("hello");
   };
-  const handleClick = () => {};
-  const handleMemberAdded = (e, value) => {
-    addProjectMember();
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
+
   return (
     <>
       <Box
+        ref={outerref}
         component="div"
         sx={{
           width: "70%",
@@ -238,7 +242,6 @@ export default function Header(props) {
             <h3 style={{ backgroundColor: "#fff" }}>
               <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
                 <input
-                  onClick={handleClick}
                   onChange={(e) => setprojectName(e.target.value)}
                   type="text"
                   ref={inputRef}
@@ -360,48 +363,7 @@ export default function Header(props) {
                   pb: 2,
                 }}
               >
-                <div
-                  style={{
-                    display: "flex ",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="h5" sx={{ pt: 1 }}>
-                    Project Members
-                  </Typography>
-                  <FloatingForm
-                    toolTip="Add Member"
-                    color="primary"
-                    icon={<AddIcon />}
-                  >
-                    <form
-                      // onSubmit={handleSubmit}
-                      noValidate
-                      autoComplete="off"
-                      style={{ padding: "10px" }}
-                    >
-                      <TextField
-                        // onChange={(e) => setNewTeam(e.target.value)}
-                        onSubmit={handleMemberAdded}
-                        required
-                        type={"email"}
-                        fullWidth
-                        label="Add member by email"
-                        // error={newClientError}
-                        sx={{}}
-                      />
-                      <Button
-                        fullWidth
-                        type="submit"
-                        variant="contained"
-                        sx={{ mt: 1 }}
-                      >
-                        Submit
-                      </Button>
-                    </form>
-                  </FloatingForm>
-                </div>
-                <div
+                {/* <div
                   style={{
                     display: "inherit",
                     width: "300px",
@@ -409,18 +371,19 @@ export default function Header(props) {
                   }}
                 >
                   <SearchBar
-                    label="Search Member"
+                    label="Search Project Member"
                     handleSearch={handleSearch}
                     // ref={memberref}
                     id="combo-box-demo"
                     options={memberList}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Select New Team Leader" />
-                    )}
+                    //   renderInput={(params) => (
+                    //     <TextField {...params} label="Search Project members" />
+                    //   )}
                   />
-                </div>
+                </div> */}
               </Box>
               <EnhancedTable
+                outerref={outerref}
                 currentClient={currentClient}
                 currentProject={currentProject}
               />

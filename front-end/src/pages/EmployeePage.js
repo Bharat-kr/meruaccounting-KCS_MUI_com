@@ -31,20 +31,14 @@ export default function EmployeePage(props) {
   return (
     <CssBaseline>
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>
-        <LoginProvider>
-          <CurrentUserContextProvider>
-            <PageHeader
-              title={
-                !employee.loader ? employee?.employee?.data?._id : "Employee"
-              }
-            />
-            <Calendar />
-            {/* <Overview /> */}
-            <Overview employee={employee} />
-            <Timeline/>
-            <ScreenShots employee={employee} />
-          </CurrentUserContextProvider>
-        </LoginProvider>
+        <PageHeader
+          title={!employee.loader ? employee?.employee?.data?._id : "Employee"}
+        />
+        <Calendar />
+        {/* <Overview /> */}
+        <Overview employee={employee} />
+        <Timeline />
+        <ScreenShots employee={employee} />
       </Box>
     </CssBaseline>
   );
