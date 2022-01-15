@@ -1,7 +1,7 @@
-import Activity from '../models/activity.js';
-import User from '../models/user.js';
-import Screenshot from '../models/screenshot.js';
-import asyncHandler from 'express-async-handler';
+import Activity from "../models/activity.js";
+import User from "../models/user.js";
+import Screenshot from "../models/screenshot.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -34,13 +34,13 @@ const createScreenShot = asyncHandler(async (req, res) => {
   if (screenshot) {
     const activity = await Activity.findById(activityId);
     if (!activity) {
-      res.status(404).json({ mssg: 'no act found' });
+      res.status(404).json({ mssg: "no act found" });
     }
     activity.screenshots.push(screenshot._id.toHexString());
     await activity.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       screenshot,
     });
   }
@@ -78,7 +78,7 @@ const createActivity = asyncHandler(async (req, res) => {
     let dd = actAt.getDate();
     let mm = actAt.getMonth() + 1;
     let yyyy = actAt.getFullYear();
-    let today = dd + '/' + mm + '/' + yyyy;
+    let today = dd + "/" + mm + "/" + yyyy;
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
@@ -97,13 +97,13 @@ const createActivity = asyncHandler(async (req, res) => {
     }
     await user.save();
     res.status(201).json({
-      status: 'success',
+      status: "success",
       activity,
       days: user.days,
     });
   } else {
     res.status(500);
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
 });
 
@@ -126,7 +126,7 @@ const updateActivity = asyncHandler(async (req, res) => {
     }
 
     res.status(202).json({
-      message: 'Succesfully edited activity',
+      message: "Succesfully edited activity",
       data: activity,
     });
   } catch (error) {
