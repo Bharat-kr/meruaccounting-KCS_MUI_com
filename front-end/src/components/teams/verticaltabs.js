@@ -211,7 +211,6 @@ export default function VerticalTabs() {
           </Box>
           {/* teams and members tree view flex container */}
           <Box
-            component="div"
             sx={{
               display: "flex",
               flexDirection: "row",
@@ -229,7 +228,7 @@ export default function VerticalTabs() {
                 height: 240,
                 flexGrow: 1,
                 // maxWidth: 400,
-                overflowY: "auto",
+                // overflowY: "auto",
                 width: "100%",
               }}
               className={classes.root}

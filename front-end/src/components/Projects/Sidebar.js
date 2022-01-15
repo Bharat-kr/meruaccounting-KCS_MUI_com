@@ -59,16 +59,16 @@ export default function Sidebar() {
   if (clientDetails.loader === false) {
     clientsList = clientDetails?.client?.data;
   }
-  useEffect(() => {
-    try {
-      if (clientDetails !== null) {
-        changeClient(clientDetails?.client?.data[0]);
-        changeProject(clientDetails?.client?.data[0].projects[0]);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, []);
+  // useEffect(() => {
+  //   try {
+  //     if (clientDetails !== null) {
+  //       changeClient(clientDetails?.client?.data[0]);
+  //       changeProject(clientDetails?.client?.data[0].projects[0]);
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // }, []);
   const projectList = [];
   console.log(clientDetails);
   useEffect(() => {
