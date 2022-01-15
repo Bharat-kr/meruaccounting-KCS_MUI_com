@@ -1,6 +1,6 @@
-import Activity from '../models/activity.js';
-import User from '../models/user.js';
-import asyncHandler from 'express-async-handler';
+import Activity from "../models/activity.js";
+import User from "../models/user.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Generate Report
 // @route   GET /activity/screenshot
@@ -29,7 +29,7 @@ const generateReport = asyncHandler(async (req, res) => {
 
     const sum = activity.reduce(reducer);
     res.json({
-      status: 'ok',
+      status: "ok",
       data: sum,
     });
   } catch (error) {
