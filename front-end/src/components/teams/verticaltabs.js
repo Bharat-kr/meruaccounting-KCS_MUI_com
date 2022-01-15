@@ -100,8 +100,8 @@ export default function VerticalTabs() {
   React.useEffect(() => {
     if (getTeams?.getTeam?.length > 0) {
       //setting the current member
-      setCurrTeam(getTeams?.getTeam[0]);
-      setCurrMember(getTeams?.getTeam[0].members[0]);
+      // setCurrTeam(getTeams?.getTeam[0]);
+      // setCurrMember(getTeams?.getTeam[0].members[0]);
     }
   }, [getTeams, setCurrMember]);
 
