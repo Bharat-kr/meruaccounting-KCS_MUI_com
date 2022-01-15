@@ -5,8 +5,6 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton, Button } from '@mui/material';
-// import { Link as RouterLink } from 'react-router-dom';
-// import { } from 'react-router-dom';
 
 // components
 import { MHidden } from '../../components/@material-extend';
@@ -28,22 +26,22 @@ const RootStyle = styled(AppBar)(({ theme }) => ({
   WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
   backgroundColor: alpha(theme.palette.background.default, 0.72),
   [theme.breakpoints.up('lg')]: {
-    width: `calc(100% - ${DRAWER_WIDTH + 1}px)`
-  }
+    width: `calc(100% - ${DRAWER_WIDTH + 1}px)`,
+  },
 }));
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   minHeight: APPBAR_MOBILE,
   [theme.breakpoints.up('lg')]: {
     minHeight: APPBAR_DESKTOP,
-    padding: theme.spacing(0, 5)
-  }
+    padding: theme.spacing(0, 5),
+  },
 }));
 
 // ----------------------------------------------------------------------
 
 DashboardNavbar.propTypes = {
-  onOpenSidebar: PropTypes.func
+  onOpenSidebar: PropTypes.func,
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
@@ -57,7 +55,10 @@ export default function DashboardNavbar({ onOpenSidebar }) {
     <RootStyle>
       <ToolbarStyle>
         <MHidden width="lgUp">
-          <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
+          <IconButton
+            onClick={onOpenSidebar}
+            sx={{ mr: 1, color: 'text.primary' }}
+          >
             <Icon icon={menu2Fill} />
           </IconButton>
         </MHidden>
@@ -65,12 +66,21 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         <Box sx={{ flexGrow: 1 }} />
         {/* <RouterLink to="/login" replace={True}> */}
         <Box sx={{ p: 2, pt: 1.5, color: 'black' }}>
-          <Button fullWidth onClick={ClickHandler} color="inherit" variant="outlined">
+          <Button
+            fullWidth
+            onClick={ClickHandler}
+            color="inherit"
+            variant="outlined"
+          >
             logout
           </Button>
         </Box>
         {/* </RouterLink> */}
-        <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={{ xs: 0.5, sm: 1.5 }}
+        >
           <NotificationsPopover />
           <AccountPopover />
         </Stack>
