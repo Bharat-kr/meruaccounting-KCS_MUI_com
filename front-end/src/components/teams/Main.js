@@ -41,7 +41,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Main(props) {
   const { currTeam, currMember, ...other } = props;
-  const { User } = useContext(UserContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
   const [Checked, setChecked] = useState();
@@ -96,7 +95,40 @@ export default function Main(props) {
     );
   };
 
-  return (
+  return currMember === null ? (
+    <Box
+      component="div"
+      sx={{
+        height: "100%",
+        width: "70%",
+        flexGrow: "1",
+        overflowX: "hidden",
+        overflowY: "auto",
+        margin: "10px 10px 10px 0",
+      }}
+    >
+      <Paper
+        component="div"
+        elevation={3}
+        sx={{
+          display: "flex",
+          flexGrow: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          ml: 1,
+          overflow: "visible",
+          height: "100%",
+        }}
+      >
+        <Box
+          component="img"
+          src="/svgs/member.svg"
+          sx={{ width: 100, height: 70, backgroundColor: "white" }}
+        />
+        <Typography variant="h5">No Member Selected</Typography>
+      </Paper>
+    </Box>
+  ) : (
     <>
       {currMember && (
         <Container
@@ -191,13 +223,13 @@ export default function Main(props) {
                   rates.
                 </Typography>
                 <Typography varinat="h6">
-                  {User.map((user) => (
+                  {/* {User.map((user) => (
                     <FormControlLabel
                       sx={{ pt: 1, fontWeight: 10 }}
                       control={<Switch />}
                       label={user.name}
                     />
-                  ))}
+                  ))} */}
                 </Typography>
               </Box>
             )}

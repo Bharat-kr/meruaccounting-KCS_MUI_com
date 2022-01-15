@@ -27,13 +27,9 @@ import {
   editProject,
   deleteProject,
   addProjectLeader,
-  addProjectMember,
   removeProjectMember,
 } from "../../api/projects api/projects";
-import AddIcon from "@mui/icons-material/Add";
-import { display } from "@mui/material/node_modules/@mui/system";
 import EnhancedTable from "../Projects/ProjectMemers";
-import { indexOf } from "lodash";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -96,13 +92,11 @@ export default function Header(props) {
     updateClient,
     clientDetails,
     dispatchClientDetails,
-    dispatchClientProjectDetails,
   } = useContext(ClientsContext);
   console.log(currentProject);
   const {
     dispatchEditProject,
     dispatchDeleteProject,
-    dispatchaddProjectMember,
     dispatchaddProjectLeader,
     dispatchremoveProjectMember,
   } = useContext(projectContext);
@@ -114,16 +108,16 @@ export default function Header(props) {
     inputRef.current.focus();
   };
   const test = useRef(false);
-  useEffect(() => {
-    currentProject
-      ? setprojectName(`${currentProject.name}`)
-      : setprojectName("No Client Select");
-    currentProject.projectLeader
-      ? setProjectLeader(
-          `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
-        )
-      : setProjectLeader("No leader");
-  }, [currentClient, currentProject]);
+  // useEffect(() => {
+  //   currentProject
+  //     ? setprojectName(`${currentProject.name}`)
+  //     : setprojectName("No Client Select");
+  //   currentProject.projectLeader
+  //     ? setProjectLeader(
+  //         `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
+  //       )
+  //     : setProjectLeader("No leader");
+  // }, [currentClient, currentProject]);
   let memberList = [];
   let membersData = [];
   currentProject
@@ -212,7 +206,39 @@ export default function Header(props) {
     e.preventDefault();
   };
 
-  return (
+  return currentProject === "" ? (
+    <Box
+      component="div"
+      sx={{
+        width: "70%",
+        flexGrow: "1",
+        overflowX: "hidden",
+        overflowY: "auto",
+        margin: "10px 10px 10px 0",
+      }}
+    >
+      <Paper
+        component="div"
+        elevation={3}
+        sx={{
+          display: "flex",
+          flexGrow: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          ml: 1,
+          overflow: "visible",
+          height: "100%",
+        }}
+      >
+        <Box
+          component="img"
+          src="/svgs/project.svg"
+          sx={{ width: 100, height: 70, backgroundColor: "white" }}
+        />
+        <Typography variant="h5">No Project Selected</Typography>
+      </Paper>
+    </Box>
+  ) : (
     <>
       <Box
         ref={outerref}
