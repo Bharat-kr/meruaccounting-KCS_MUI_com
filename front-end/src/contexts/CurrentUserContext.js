@@ -1,32 +1,68 @@
-import { indexOf } from 'lodash-es';
-import React, { createContext, useState } from 'react';
+import { indexOf } from "lodash-es";
+import React, { createContext, useState, useReducer } from "react";
+import {
+  GET_COMMONDATA_SUCCESS,
+  GET_COMMONDATA_FAILED,
+} from "../constants/CurrentUserConstants";
 
 export const CurrentUserContext = createContext();
 
+const initialValue = {
+  commonData: [],
+  loader: true,
+  err: false,
+};
+
+const currentUserReducer = (state, action) => {
+  switch (action.type) {
+    case GET_COMMONDATA_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        commonData: action.payload,
+      };
+    case GET_COMMONDATA_FAILED:
+      return {
+        ...state,
+        loader: false,
+        err: true,
+      };
+    default:
+      return state;
+  }
+};
+
 export const CurrentUserContextProvider = (props) => {
+  const [commonData, dispatchCommonData] = useReducer(currentUserReducer, {
+    commonData: [],
+    loader: true,
+    err: false,
+  });
+
+  /////temporary
   const [currentUser, setcurrentUser] = useState({
-    role: 'User',
-    company: 'Meru Accounting',
-    firstName: 'Kamal',
-    lastName: 'Singh',
-    email: 'kamal021099@gmail.com',
-    password: '12345678',
+    role: "User",
+    company: "Meru Accounting",
+    firstName: "Kamal",
+    lastName: "Singh",
+    email: "kamal021099@gmail.com",
+    password: "12345678",
     day: {
       1638729000: {
         date: `${new Date()}`,
         hours: 50,
         timeRange: [
           {
-            startTime: '6:04pm',
-            endTime: '6:32pm',
+            startTime: "6:04pm",
+            endTime: "6:32pm",
             activityLevel: 50,
-            taskName: 'Development',
+            taskName: "Development",
             screenShots: [
               {
                 activityLevel: 70,
-                url: 'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Docs.max-1100x1100.png',
+                url: "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Docs.max-1100x1100.png",
                 time: new Date(),
-                taskName: 'VELLA',
+                taskName: "VELLA",
               },
             ],
           },
@@ -34,12 +70,13 @@ export const CurrentUserContextProvider = (props) => {
       },
     },
   });
-  // save days as unix timestamps gmt/utc to access as keys by clicking on the calendar.
-  // task name for the timerange as well.
+  /////temporary
 
   return (
     <div>
-      <CurrentUserContext.Provider value={{ currentUser }}>
+      <CurrentUserContext.Provider
+        value={{ currentUser, commonData, dispatchCommonData }}
+      >
         {props.children}
       </CurrentUserContext.Provider>
     </div>
@@ -47,47 +84,3 @@ export const CurrentUserContextProvider = (props) => {
 };
 
 export default CurrentUserContextProvider;
-
-//     role: "User"
-//   company: "Meru Accounting"
-//   fistName: "Kamal"
-//   lastName: "Singh"
-//   email: "kamal021099@gmail.com"
-//   password: "12345678"
-// //   team: {
-// //     type: mongoose.Schema.Types.ObjectId,
-// //     ref: Team,
-// //   },
-// //   Settings: {
-// //     ScreenShotPerHour: Number,
-// //     AllowBlur: Boolean,
-// //     AppsAndUrlTracking: Boolean,
-// //     WeeklyTimeLimit: Number,
-// //     AutoPause: Number,
-// //     OfflineTime: Boolean,
-// //     NotifyUser: Boolean,
-// //     WeekStart: String,
-// //     CurrencySymbol: String,
-// //   },
-// //   pay: Number,
-//   day:[
-//     {
-//       date: `${new Date()}`,
-//       hours: 50,
-//       timeRange: [
-//         {
-//           startTime: new Date(),
-//           endTime: new Date(),
-//           activityLevel: 50,
-//           screenShots: [
-//             {
-//               activityLevel: 70,
-//               url: "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Docs.max-1100x1100.png",
-//               time: new Date(),
-//               taskName: "VELLA"
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//   ]

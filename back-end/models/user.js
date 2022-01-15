@@ -13,10 +13,10 @@ const userSchema = new mongoose.Schema(
     lastActive: { type: String, default: "0" },
     activityStatus: { type: Boolean, default: false },
     accountInfo: {
-      managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-      country: { type: String, default: "India" },
+      // managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       ip: { type: String },
       countryName: { type: String, default: "India" },
+      // add time zone as in mongo aggregation
     },
     projects: [
       {

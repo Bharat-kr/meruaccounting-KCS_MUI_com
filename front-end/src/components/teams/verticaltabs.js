@@ -9,7 +9,10 @@ import Main from "./Main";
 import { teamContext } from "../../contexts/TeamsContext";
 import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
 import Treeview from "../Treeview";
+import { TreeView } from "@mui/lab";
 import { TreeItem } from "@mui/lab";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchBar from "../SearchBar";
 import { getFullName } from "src/_helpers/getFullName";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
@@ -208,39 +211,56 @@ export default function VerticalTabs() {
           </Box>
           {/* teams and members tree view flex container */}
           <Box
-            component="div"
             sx={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
               flexGrow: "1",
-              alignItems: "flex-start",
+              // alignItems: "flex-start",
               overflowY: "auto",
             }}
           >
-            {getTeams?.getTeam?.map((el) => (
-              <Treeview
-                parentName={el.name}
-                key={el.name}
-                onClick={changeCurrTeam}
-              >
-                {el.members.map((member) => (
-                  <TreeItem
-                    nodeId={`${1 + el.members.indexOf(member) + 1}`}
-                    key={member._id}
-                    label={
-                      <Typography
-                        data-client={el.name}
-                        onClick={handleClick}
-                        id={member._id}
-                        variant="h5"
-                      >
-                        {getFullName(member.firstName, member.lastName)}
-                      </Typography>
-                    }
-                  />
-                ))}
-              </Treeview>
-            ))}
+            <TreeView
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              sx={{
+                // display: "flex",
+                // flexDirection: "row",
+                height: 240,
+                flexGrow: 1,
+                // maxWidth: 400,
+                // overflowY: "auto",
+                width: "100%",
+              }}
+              className={classes.root}
+            >
+              {getTeams?.getTeam?.map((el) => (
+                <TreeItem
+                  nodeId={el._id.toString()}
+                  label={<Typography variant="h4">{el.name}</Typography>}
+                  key={el.name}
+                  onClick={changeCurrTeam}
+                >
+                  {el.members.map((member) => {
+                    return (
+                      <TreeItem
+                        nodeId={member._id.toString()}
+                        key={member._id}
+                        label={
+                          <Typography
+                            data-client={el.name}
+                            onClick={handleClick}
+                            id={member._id}
+                            variant="h5"
+                          >
+                            {getFullName(member.firstName, member.lastName)}
+                          </Typography>
+                        }
+                      />
+                    );
+                  })}
+                </TreeItem>
+              ))}
+            </TreeView>
           </Box>
           {/* INPUT BOX, add validations, connect to context */}
           <Box

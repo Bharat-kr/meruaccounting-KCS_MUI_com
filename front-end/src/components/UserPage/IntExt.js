@@ -14,7 +14,7 @@ export default function IntExt({ setInternal }) {
     >
       <Typography variant="h6" sx={{ color: intColor }}>
         {" "}
-        Internal{" "}
+        External{" "}
       </Typography>
       <Switch
         defaultChecked
@@ -26,7 +26,7 @@ export default function IntExt({ setInternal }) {
       />
       <Typography variant="h6" sx={{ color: extColor }}>
         {" "}
-        External{" "}
+        Internal{" "}
       </Typography>
     </Box>
   );
