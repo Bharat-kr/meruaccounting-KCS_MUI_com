@@ -6,7 +6,7 @@ import User from "../models/user.js";
 // @access  Private
 
 const makePause = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId, status } = req.body;
 
   try {
     const employee = await User.findById(userId);
@@ -15,11 +15,8 @@ const makePause = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error(`Employee not found`);
     }
-    if (employee.isPaused == true) {
-      employee.isPaused = false;
-    } else {
-      employee.isPaused = true;
-    }
+    employee.status = status;
+
     await employee.save();
     res.json({
       status: "Success",
