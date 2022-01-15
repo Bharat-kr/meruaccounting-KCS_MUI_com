@@ -211,15 +211,7 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton>
-              <FloatingForm
-                toolTip="Add Member"
-                color="primary"
-                icon={<AddIcon />}
-              ></FloatingForm>
-            </IconButton>
-          </Tooltip>
+          ""
         )}
       </Toolbar>
     </>
@@ -327,12 +319,12 @@ export default function EnhancedTable(props) {
       // const wea = document.querySelector(`#${member[0].id}`);
       // console.log(tableListRef);
       // console.log(tableListRef.current.scrollHeight*teamsList.indexOf(member[0]) );
-      // window.scroll({
-      //   top:
-      //     1100 +
-      //     tableListRef.current.scrollHeight * employeesList.indexOf(member[0]),
-      //   behavior: "smooth",
-      // });
+      window.scroll({
+        // top:
+        //   1100 +
+        //   tableListRef.current.scrollHeight * employeesList.indexOf(member[0]),
+        behavior: "smooth",
+      });
       outerref.current.scrollTop =
         400 +
         tableListRef.current.scrollHeight * employeesList.indexOf(member[0]);
