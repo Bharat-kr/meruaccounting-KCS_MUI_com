@@ -20,7 +20,7 @@ import { getCommonData } from "../api/auth api/commondata";
 export default function UserPage() {
   const { currentUser, commonData, dispatchCommonData } =
     useContext(CurrentUserContext);
-  const [isInternal, setisInternal] = useState(true);
+  const [isInternal, setisInternal] = useState(false);
 
   useEffect(() => {
     getCommonData(dispatchCommonData);

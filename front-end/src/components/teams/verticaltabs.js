@@ -220,18 +220,16 @@ export default function VerticalTabs() {
             }}
           >
             <TreeView
+              aria-label="file system navigator"
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
-                // display: "flex",
-                // flexDirection: "row",
                 height: 240,
                 flexGrow: 1,
                 // maxWidth: 400,
-                // overflowY: "auto",
+                overflowY: "auto",
                 width: "100%",
               }}
-              className={classes.root}
             >
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem
