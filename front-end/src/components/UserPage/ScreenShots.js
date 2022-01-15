@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Grid, Paper } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 // import Activity from "./oldActivity";
 import Activity from "./Activity";
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { divide } from "lodash";
 
 export default function ScreenShots({ isInternal }) {
   // pass this date from calendar, constant for now
-  const date = "14/1/2022";
+  const date = "15/1/2022";
 
   const [activities, setactivities] = useState([]);
   const { commonData } = useContext(CurrentUserContext);
@@ -19,16 +18,30 @@ export default function ScreenShots({ isInternal }) {
       setactivities(
         commonData.commonData.user.days
           .filter((day) => day.date === date)[0]
-          .activities.filter((act) => act.isInternal === isInternal)
+          .activities.filter((act) => {
+            console.log(isInternal);
+            console.log(act.isInternal);
+            return act.isInternal === isInternal;
+          })
       );
     } else {
       return;
     }
   }, [commonData, isInternal]);
+  console.log(activities);
 
   return commonData.loader ? (
     // Put a loader here
-    <div>Hello</div>
+    <Box
+      sx={{
+        display: "flex",
+        flexGrow: "1",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress sx={{ m: 2 }} />
+    </Box>
   ) : (
     <Box component="div" sx={{}}>
       {/* map the time ranges from user data for the particular date */}

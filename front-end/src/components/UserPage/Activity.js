@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { Box, Typography, Tooltip } from "@mui/material";
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import Preview from "./Preview";
 
 // contexts
@@ -19,8 +21,15 @@ export default function Activity({
 }) {
   const { currentUser, commonData, dispatchCommonData } =
     useContext(CurrentUserContext);
-  //   const { loginC } = useContext(loginContext);
-  //   console.log(loginC);
+
+  const percentIcon = (percent) =>
+    percent <= 30 ? (
+      <HourglassEmptyIcon sx={{ m: -1 }} />
+    ) : percent <= 70 && percent > 30 ? (
+      <HourglassTopIcon sx={{ m: -1 }} />
+    ) : (
+      <HourglassFullIcon sx={{ m: -1 }} />
+    );
 
   return (
     <Box component="div" sx={{}}>
@@ -28,7 +37,7 @@ export default function Activity({
         {timeC(startTime)} -{timeC(endTime)} |
       </Typography>
       <Tooltip title={performanceData} placement="top" followCursor>
-        <HourglassFullIcon sx={{ m: -1 }} />
+        {percentIcon(performanceData)}
       </Tooltip>
       <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
         |{proId}
@@ -39,6 +48,7 @@ export default function Activity({
       >
         {screenShots.map((ss, key) => (
           <Preview
+            title={ss.title}
             preview={ss.image}
             key={key}
             performanceData={ss.performanceData}

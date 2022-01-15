@@ -5,6 +5,8 @@ import {
   Card,
   CardActionArea,
   CardMedia,
+  CardContent,
+  Typography,
 } from "@mui/material";
 
 export default function Preview(props) {
@@ -23,6 +25,13 @@ export default function Preview(props) {
         followCursor
       >
         <Card sx={{ maxWidth: 345, m: 1 }}>
+          <CardContent
+            sx={{ mb: -3, mt: -2, ml: -1.5, background: "#c8facd69" }}
+          >
+            <Typography color="text.primary" gutterBottom>
+              {props.title}
+            </Typography>
+          </CardContent>
           <CardActionArea onClick={handleToggle}>
             <CardMedia
               component="img"
