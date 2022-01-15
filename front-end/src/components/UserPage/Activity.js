@@ -13,6 +13,7 @@ import { loginContext } from "../../contexts/LoginContext";
 import timeC from "../../_helpers/timeConverter";
 
 export default function Activity({
+  isAccepted,
   startTime,
   endTime,
   performanceData,
@@ -32,7 +33,18 @@ export default function Activity({
     );
 
   return (
-    <Box component="div" sx={{}}>
+    <Box
+      component="div"
+      sx={{
+        backgroundColor: `${isAccepted === true ? "#c8facd" : "#ffe7d9"}`,
+        m: 0.5,
+        pt: 1,
+        pr: 1,
+        pb: 1,
+        pl: 0.5,
+        borderRadius: 1,
+      }}
+    >
       <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
         {timeC(startTime)} -{timeC(endTime)} |
       </Typography>

@@ -49,6 +49,7 @@ export default function ScreenShots({ isInternal }) {
         ? activities.map((act) => {
             return (
               <Activity
+                isAccepted={act.isAccepted}
                 startTime={act.startTime}
                 endTime={act.endTime}
                 performanceData={act.performanceData}
