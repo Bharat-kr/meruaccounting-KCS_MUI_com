@@ -41,7 +41,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Main(props) {
   const { currTeam, currMember, ...other } = props;
-  const { User } = useContext(UserContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
   const [Checked, setChecked] = useState();
@@ -191,13 +190,13 @@ export default function Main(props) {
                   rates.
                 </Typography>
                 <Typography varinat="h6">
-                  {User.map((user) => (
+                  {/* {User.map((user) => (
                     <FormControlLabel
                       sx={{ pt: 1, fontWeight: 10 }}
                       control={<Switch />}
                       label={user.name}
                     />
-                  ))}
+                  ))} */}
                 </Typography>
               </Box>
             )}

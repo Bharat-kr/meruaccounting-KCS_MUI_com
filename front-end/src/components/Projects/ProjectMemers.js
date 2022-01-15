@@ -30,7 +30,10 @@ import AutoComplete from "@mui/material/Autocomplete";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
 import { getClient } from "../../api/clients api/clients";
-import { addProjectMember } from "../../api/projects api/projects";
+import {
+  addProjectMember,
+  removeProjectMember,
+} from "../../api/projects api/projects";
 
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, payrate, id) {
@@ -169,12 +172,29 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
+  const { numSelected, selected, employeesList, currentProject } = props;
+  const { dispatchremoveProjectMember } = useContext(projectContext);
+  const { dispatchClientDetails } = useContext(ClientsContext);
+  const handleMemberDelete = async () => {
+    const deleteList = [];
+    selected.map((select) => {
+      employeesList.filter((emp) =>
+        emp.name === select ? deleteList.push(emp.id) : ""
+      );
+    });
+    console.log(deleteList);
 
+    deleteList.map(async (id) => {
+      const data = [currentProject._id, id];
+      await removeProjectMember(data, dispatchremoveProjectMember);
+      await getClient(dispatchClientDetails);
+    });
+  };
   return (
     <>
       <Toolbar
         sx={{
+          mt: 3,
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
           ...(numSelected > 0 && {
@@ -206,7 +226,7 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={handleMemberDelete}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -222,33 +242,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-function getWindowDimensions() {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height,
-  };
-}
-
-function useWindowDimensions() {
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowDimensions(getWindowDimensions());
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowDimensions;
-}
-
 export default function EnhancedTable(props) {
-  const { height, width } = useWindowDimensions();
   const { currentProject, currentClient, outerref } = props;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("projectHours");
@@ -311,26 +305,16 @@ export default function EnhancedTable(props) {
       const member = employeesList?.filter((emp) =>
         emp.name === value ? emp : ""
       );
-      console.log(member);
       if (member.length === 0) {
         // eslint-disable-next-line no-useless-return
         return;
       }
-      // const wea = document.querySelector(`#${member[0].id}`);
-      // console.log(tableListRef);
-      // console.log(tableListRef.current.scrollHeight*teamsList.indexOf(member[0]) );
       window.scroll({
-        // top:
-        //   1100 +
-        //   tableListRef.current.scrollHeight * employeesList.indexOf(member[0]),
         behavior: "smooth",
       });
       outerref.current.scrollTop =
         400 +
         tableListRef.current.scrollHeight * employeesList.indexOf(member[0]);
-      // behavior: "smooth";s
-
-      // return setSearchedMember(teamsList.indexOf(member[0]));
     } catch (err) {
       console.log(err);
     }
@@ -378,12 +362,8 @@ export default function EnhancedTable(props) {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  console.log(tableListRef);
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <div>
-        width: {width} ~ height: {height}
-      </div>
       <Paper
         elevation={3}
         sx={{
@@ -446,9 +426,14 @@ export default function EnhancedTable(props) {
           )}
         />
       </Paper>
+      <EnhancedTableToolbar
+        numSelected={selected.length}
+        selected={selected}
+        employeesList={employeesList}
+        currentProject={currentProject}
+      />
       <Box sx={{ width: "100%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar />
           <TableContainer>
             <Table
               // sx={{ minWidth: 750 }}
@@ -517,14 +502,14 @@ export default function EnhancedTable(props) {
             </Table>
           </TableContainer>
           {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        /> */}
+            // rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            // page={page}
+            // onPageChange={handleChangePage}
+            // onRowsPerPageChange={handleChangeRowsPerPage}
+          /> */}
         </Paper>
         <FormControlLabel
           control={<Switch checked={dense} onChange={handleChangeDense} />}
