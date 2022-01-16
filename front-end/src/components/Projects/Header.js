@@ -49,9 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Header(props) {
   const {
-    // newClientValue,
-    currentClient,
-    // currentProject,
+    //  currentClient,
     setcurrentProject,
     setcurrentClient,
     ...other
@@ -86,14 +84,13 @@ export default function Header(props) {
   //context
   const {
     clients,
-    // currentClient,
+    currentClient,
     currentProject,
     changeProject,
     updateClient,
     clientDetails,
     dispatchClientDetails,
   } = useContext(ClientsContext);
-  console.log(currentProject);
   const {
     dispatchEditProject,
     dispatchDeleteProject,
@@ -107,7 +104,9 @@ export default function Header(props) {
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
+  console.log(currentClient);
   const test = useRef(false);
+<<<<<<< Updated upstream
   // useEffect(() => {
   //   currentProject
   //     ? setprojectName(`${currentProject.name}`)
@@ -118,6 +117,7 @@ export default function Header(props) {
   //       )
   //     : setProjectLeader("No leader");
   // }, [currentClient, currentProject]);
+
   let memberList = [];
   let membersData = [];
   currentProject
@@ -137,12 +137,10 @@ export default function Header(props) {
       const emp = membersData.filter((emp) =>
         emp.name === value ? emp.id : ""
       );
-      console.log(emp[0].email);
       const data = [currentProject._id, emp[0].email];
       await addProjectLeader(data, dispatchaddProjectLeader);
       const employee = memberList.filter((emp) => (emp == value ? emp : ""));
       return setProjectLeader(employee);
-      setInput("");
     } catch (error) {
       console.log(error.message);
     }
@@ -150,14 +148,11 @@ export default function Header(props) {
   const handleEdit = () => {};
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    console.log("hello", projectName);
     editProject(currentProject._id, { name: projectName }, dispatchEditProject);
     await getClient(dispatchClientDetails);
     // changeProject(curr);
   };
-  console.log(currentClient);
   const handleProjectDelete = async (e) => {
-    console.log(currentProject._id);
     const data = { projectId: `${currentProject._id}` };
     await deleteProject(currentProject._id, dispatchDeleteProject);
     if (
@@ -183,7 +178,6 @@ export default function Header(props) {
       );
     }
     await getClient(dispatchClientDetails);
-    console.log(currentClient);
   };
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
@@ -200,7 +194,6 @@ export default function Header(props) {
       newClient.projects[index].Projectmembers.push(member);
       updateClient(newClient, clients.indexOf(currentClient));
     }
-    // console.log("hello");
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -367,7 +360,7 @@ export default function Header(props) {
                       sx={{ display: "flex", alignItems: "center" }}
                       type="number"
                       value={`${
-                        currentProject.BudgetHours
+                        currentProject?.BudgetHours
                           ? currentProject.BudgetHours
                           : "Not Assigned"
                       }`}
@@ -409,9 +402,9 @@ export default function Header(props) {
                 </div> */}
               </Box>
               <EnhancedTable
-                outerref={outerref}
-                currentClient={currentClient}
                 currentProject={currentProject}
+                currentClient={currentClient}
+                outerref={outerref}
               />
             </Paper>
           </Box>
