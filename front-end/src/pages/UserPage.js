@@ -19,9 +19,11 @@ import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
 
 export default function UserPage() {
+
   const { dispatchCommonData } = useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
   const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
+
 
   // interval for getting common data each minute
   useEffect(() => {
@@ -31,6 +33,22 @@ export default function UserPage() {
     }, 60000);
     return () => clearInterval(cDataInterval);
   }, []);
+
+  useEffect(() => {
+    if (commonData.loader === false) {
+      setactivities(
+        commonData.commonData.user.days
+          .filter((day) => day.date === date)[0]
+          ?.activities.filter((act) => {
+            console.log(isInternal);
+            console.log(act.isInternal);
+            return act.isInternal === isInternal;
+          })
+      );
+    } else {
+      return;
+    }
+  }, [commonData, isInternal]);
 
   return (
     <CssBaseline>
@@ -45,7 +63,7 @@ export default function UserPage() {
           }
         />
         <Overview />
-        <Timeline />
+        <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>
             setisInternal((prev) => {
@@ -53,7 +71,9 @@ export default function UserPage() {
             })
           }
         />
+
         <ScreenShots isInternal={isInternal} date={date} />
+
       </Box>
     </CssBaseline>
   );

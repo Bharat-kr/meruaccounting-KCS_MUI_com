@@ -8,6 +8,7 @@ import Activity from "./Activity";
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
+
 export default function ScreenShots({ isInternal, date }) {
   // pass this date from calendar, constant for now
   // const tempdate = "16/1/2022";
@@ -43,10 +44,12 @@ export default function ScreenShots({ isInternal, date }) {
   ) : (
     <Box component="div" sx={{}}>
       {/* map the time ranges from user data for the particular date */}
+
       {activities !== undefined && activities.length !== 0 ? (
         activities.map((act) => {
           // dont render if there are not screenshots
           if (act.screenshots.length !== 0) {
+
             return (
               <Activity
                 isAccepted={act.isAccepted}

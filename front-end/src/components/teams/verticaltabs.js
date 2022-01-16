@@ -224,10 +224,12 @@ export default function VerticalTabs() {
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
+
                 height: 240,
                 flexGrow: 1,
                 // maxWidth: 400,
                 overflowY: "auto",
+
                 width: "100%",
               }}
             >
