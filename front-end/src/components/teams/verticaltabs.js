@@ -224,7 +224,6 @@ export default function VerticalTabs() {
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
-
                 height: 240,
                 flexGrow: 1,
                 // maxWidth: 400,
@@ -301,7 +300,7 @@ export default function VerticalTabs() {
       {/* HEADER */}
       <Box
         component="div"
-        sx={{ margin: "10px 10px 10px 0", overflow: "auto" }}
+        sx={{ margin: "10px 10px 10px 0", overflow: "auto", height: "100%" }}
       >
         {/* grid container 40 60 */}
         <Paper
@@ -310,9 +309,16 @@ export default function VerticalTabs() {
           sx={{
             overflow: "visible",
             position: "relative",
+            height: "100%",
+            display: "flex",
           }}
         >
-          <Box>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
             <Main
               currMember={currMember}
               currTeam={currTeam}
