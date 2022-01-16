@@ -174,9 +174,11 @@ export const addProjectLeader = async (incomingData, dispatch) => {
 
 export const removeProjectMember = async (incomingData, dispatch) => {
   try {
-    const { data } = await axios.delete(
-      `/project/removeMember/${incomingData}`
-    );
+    const [projectId, id] = incomingData;
+    console.log(projectId, id);
+    const { data } = await axios.patch(`/project/removeMember/${projectId}`, {
+      employeeId: id,
+    });
     dispatch({ type: REMOVE_MEMBER_FROMRPOJECT_SUCCESS, payload: data });
     console.log("member removed");
   } catch (error) {

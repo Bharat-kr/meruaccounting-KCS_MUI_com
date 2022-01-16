@@ -20,11 +20,31 @@ import { getCommonData } from "../api/auth api/commondata";
 export default function UserPage() {
   const { currentUser, commonData, dispatchCommonData } =
     useContext(CurrentUserContext);
-  const [isInternal, setisInternal] = useState(false);
+  const [isInternal, setisInternal] = useState(true);
+  // pass this date from calendar, constant for now
+  const date = "15/1/2022";
+
+  const [activities, setactivities] = useState([]);
 
   useEffect(() => {
     getCommonData(dispatchCommonData);
   }, []);
+
+  useEffect(() => {
+    if (commonData.loader === false) {
+      setactivities(
+        commonData.commonData.user.days
+          .filter((day) => day.date === date)[0]
+          ?.activities.filter((act) => {
+            console.log(isInternal);
+            console.log(act.isInternal);
+            return act.isInternal === isInternal;
+          })
+      );
+    } else {
+      return;
+    }
+  }, [commonData, isInternal]);
 
   return (
     <CssBaseline>
@@ -32,7 +52,7 @@ export default function UserPage() {
         <PageHeader title="Hi, Welcome Back!" />
         <Calendar />
         <Overview />
-        <Timeline />
+        <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>
             setisInternal((prev) => {
@@ -40,7 +60,7 @@ export default function UserPage() {
             })
           }
         />
-        <ScreenShots isInternal={isInternal} />
+        <ScreenShots activities={activities} />
       </Box>
     </CssBaseline>
   );

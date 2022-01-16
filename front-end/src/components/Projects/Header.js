@@ -27,13 +27,9 @@ import {
   editProject,
   deleteProject,
   addProjectLeader,
-  addProjectMember,
   removeProjectMember,
 } from "../../api/projects api/projects";
-import AddIcon from "@mui/icons-material/Add";
-import { display } from "@mui/material/node_modules/@mui/system";
 import EnhancedTable from "../Projects/ProjectMemers";
-import { indexOf } from "lodash";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -96,13 +92,11 @@ export default function Header(props) {
     updateClient,
     clientDetails,
     dispatchClientDetails,
-    dispatchClientProjectDetails,
   } = useContext(ClientsContext);
   console.log(currentProject);
   const {
     dispatchEditProject,
     dispatchDeleteProject,
-    dispatchaddProjectMember,
     dispatchaddProjectLeader,
     dispatchremoveProjectMember,
   } = useContext(projectContext);

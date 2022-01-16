@@ -41,7 +41,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Main(props) {
   const { currTeam, currMember, ...other } = props;
-  // const { User } = useContext(UserContext);
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
   const [Checked, setChecked] = useState();
