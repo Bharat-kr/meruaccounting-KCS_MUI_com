@@ -132,7 +132,6 @@ export default function Sidebar() {
     changeClient(client[0]);
   };
   const handleProjectClick = (e) => {
-    console.log(e.target.dataset.client);
     const client = clientsList.filter((client) =>
       client.name === e.target.dataset.client ? client : ""
     );
@@ -144,8 +143,6 @@ export default function Sidebar() {
 
     changeProject(project[0]);
   };
-  console.log(newClientValue);
-  console.log(currentProject);
   // add client in submit
   const handleSubmit = async (e) => {
     try {

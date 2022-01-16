@@ -180,15 +180,16 @@ const EnhancedTableToolbar = (props) => {
         emp.name === select ? deleteList.push(emp.id) : ""
       );
     });
+    console.log(deleteList);
     // React.useEffect(() => {
     //   setRowsPerPage(rows.length);
     // }, [rows.length, currentProject, currentClient]);
     deleteList.map(async (id) => {
       const data = [currentProject._id, id];
-      await removeProjectMember(data, dispatchremoveProjectMember);
+      removeProjectMember(data, dispatchremoveProjectMember);
+      await getClient(dispatchClientDetails);
       setSeleceted([]);
     });
-    await getClient(dispatchClientDetails);
   };
   return (
     <>
@@ -283,7 +284,6 @@ export default function EnhancedTable(props) {
       })
     : employeesList.push("");
   const rowPush = [];
-  // console.log(currentClient);
   React.useEffect(() => {
     try {
       let project = [];
@@ -317,8 +317,6 @@ export default function EnhancedTable(props) {
       });
       setRows(rowPush);
       setRowsPerPage(rows.length);
-      // console.log(rows);
-      console.log("effect");
     } catch (err) {
       console.log(err);
     }

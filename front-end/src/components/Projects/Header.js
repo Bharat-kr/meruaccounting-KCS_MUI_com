@@ -104,19 +104,21 @@ export default function Header(props) {
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
-  console.log(currentClient);
   const test = useRef(false);
-<<<<<<< Updated upstream
-  // useEffect(() => {
-  //   currentProject
-  //     ? setprojectName(`${currentProject.name}`)
-  //     : setprojectName("No Client Select");
-  //   currentProject.projectLeader
-  //     ? setProjectLeader(
-  //         `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
-  //       )
-  //     : setProjectLeader("No leader");
-  // }, [currentClient, currentProject]);
+  useEffect(() => {
+    try {
+      currentProject
+        ? setprojectName(`${currentProject.name}`)
+        : setprojectName("No Client Select");
+      currentProject.projectLeader
+        ? setProjectLeader(
+            `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
+          )
+        : setProjectLeader("No leader");
+    } catch (err) {
+      console.log(err);
+    }
+  }, [currentClient, currentProject]);
 
   let memberList = [];
   let membersData = [];
@@ -328,7 +330,11 @@ export default function Header(props) {
                 options={memberList}
                 sx={{ width: 100 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Select New Team Leader" />
+                  <TextField
+                    {...params}
+                    label="Select New Team Leader"
+                    defaultValue={ProjectLeader}
+                  />
                 )}
               />
             </div>
