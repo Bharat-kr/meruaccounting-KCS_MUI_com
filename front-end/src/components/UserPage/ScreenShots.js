@@ -7,27 +7,11 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Activity from "./Activity";
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-
-
-export default function ScreenShots({ isInternal, date }) {
+export default function ScreenShots({ activities }) {
   // pass this date from calendar, constant for now
   // const tempdate = "16/1/2022";
-  const [activities, setactivities] = useState([]);
-  const { commonData } = useContext(CurrentUserContext);
 
-  useEffect(() => {
-    if (commonData.loader === false) {
-      setactivities(
-        commonData?.commonData?.user?.days
-          .filter((day) => day.date === date.replace("/0", "/"))[0]
-          ?.activities.filter((act) => {
-            return act.isInternal === isInternal;
-          })
-      );
-    } else {
-      return;
-    }
-  }, [commonData, isInternal, date]);
+  const { commonData } = useContext(CurrentUserContext);
 
   return commonData.loader ? (
     // Put a loader here
@@ -49,7 +33,6 @@ export default function ScreenShots({ isInternal, date }) {
         activities.map((act) => {
           // dont render if there are not screenshots
           if (act.screenshots.length !== 0) {
-
             return (
               <Activity
                 isAccepted={act.isAccepted}
