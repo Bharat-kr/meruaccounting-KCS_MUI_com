@@ -7,9 +7,9 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import { TablePagination } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -20,12 +20,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
-import SearchBar from "../../layouts/dashboard/Searchbar";
-import { useGridApiRef } from "@mui/x-data-grid-pro";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
-import Searchbar from "../../layouts/dashboard/Searchbar";
 import AutoComplete from "@mui/material/Autocomplete";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
@@ -34,6 +30,7 @@ import {
   addProjectMember,
   removeProjectMember,
 } from "../../api/projects api/projects";
+import { indexOf } from "lodash";
 
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, payrate, id) {
@@ -172,7 +169,8 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selected, employeesList, currentProject } = props;
+  const { numSelected, selected, employeesList, currentProject, setSeleceted } =
+    props;
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const { dispatchClientDetails } = useContext(ClientsContext);
   const handleMemberDelete = async () => {
@@ -183,11 +181,14 @@ const EnhancedTableToolbar = (props) => {
       );
     });
     console.log(deleteList);
-
+    // React.useEffect(() => {
+    //   setRowsPerPage(rows.length);
+    // }, [rows.length, currentProject, currentClient]);
     deleteList.map(async (id) => {
       const data = [currentProject._id, id];
-      await removeProjectMember(data, dispatchremoveProjectMember);
+      removeProjectMember(data, dispatchremoveProjectMember);
       await getClient(dispatchClientDetails);
+      setSeleceted([]);
     });
   };
   return (
@@ -243,7 +244,11 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function EnhancedTable(props) {
-  const { currentProject, currentClient, outerref } = props;
+  const {
+    // currentProject,
+    //  currentClient,
+    outerref,
+  } = props;
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("projectHours");
   const [selected, setSelected] = React.useState([]);
@@ -251,9 +256,17 @@ export default function EnhancedTable(props) {
   const [newMember, setNewMember] = useState("");
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
-  const [coords, setCoords] = React.useState({ rowIndex: 0 });
-  const { dispatchClientDetails } = useContext(ClientsContext);
-  const { dispatchaddProjectMember } = useContext(projectContext);
+  const [rows, setRows] = useState([]);
+  const {
+    dispatchClientDetails,
+    clientDetails,
+    changeProject,
+    changeClient,
+    currentProject,
+    currentClient,
+  } = useContext(ClientsContext);
+  const { dispatchaddProjectMember, ProjectMember } =
+    useContext(projectContext);
 
   const tableListRef = useRef();
   const employeesList = [];
@@ -270,30 +283,54 @@ export default function EnhancedTable(props) {
         employeeNameList.push(`${emp.firstName} ${emp.lastName}`);
       })
     : employeesList.push("");
-
-  const rows = [];
-  currentProject?.employees?.map((emp) => {
-    rows.push(
-      createData(
-        `${emp.firstName} ${emp.lastName}`,
-        0.0,
-        0.0,
-        emp.payRate,
-        emp._id
-      )
-    );
-  });
+  const rowPush = [];
   React.useEffect(() => {
-    setRowsPerPage(rows.length);
-  }, [rows.length, currentProject, currentClient]);
+    try {
+      let project = [];
+      let client = [];
+      if (clientDetails.loader === false && currentClient !== null) {
+        client =
+          clientDetails?.client?.data[
+            clientDetails?.client?.data?.indexOf(currentClient) + 1
+          ];
+        project =
+          client.projects[currentClient?.projects?.indexOf(currentProject)];
+        changeClient(client);
+        changeProject(project);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [clientDetails]);
+  React.useEffect(() => {
+    try {
+      currentProject?.employees?.map((emp) => {
+        rowPush.push(
+          createData(
+            `${emp.firstName} ${emp.lastName}`,
+            0.0,
+            0.0,
+            emp.payRate,
+            emp._id
+          )
+        );
+      });
+      setRows(rowPush);
+      setRowsPerPage(rows.length);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [currentClient, currentProject, clientDetails]);
 
   const handleMemberAdded = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const data = [currentProject._id, newMember];
       await addProjectMember(data, dispatchaddProjectMember);
       await getClient(dispatchClientDetails);
-      // return setProjectLeader(employee);
+      // setRowsPerPage(rows.length + 1);
+
+      // console.log(currentProject);
     } catch (error) {
       console.log(error.message);
     }
@@ -431,6 +468,7 @@ export default function EnhancedTable(props) {
         selected={selected}
         employeesList={employeesList}
         currentProject={currentProject}
+        setSeleceted={setSelected}
       />
       <Box sx={{ width: "100%" }}>
         <Paper sx={{ width: "100%", mb: 2 }}>
@@ -452,7 +490,7 @@ export default function EnhancedTable(props) {
                 {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
                 {stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.name);
                     const labelId = `${row.id}`;

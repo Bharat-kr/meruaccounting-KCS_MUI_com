@@ -24,11 +24,17 @@ export default function Preview(props) {
         placement="top"
         followCursor
       >
-        <Card sx={{ maxWidth: 345, m: 1 }}>
+        <Card sx={{ maxWidth: 260, m: 1.8 }}>
           <CardContent
-            sx={{ mb: -3, mt: -2, ml: -1.5, background: "#c8facd69" }}
+            sx={{
+              mb: -3,
+              mt: -2,
+              ml: -1.5,
+              background: "#c8facd69",
+              maxHeight: 80,
+            }}
           >
-            <Typography color="text.primary" gutterBottom>
+            <Typography color="text.primary" gutterBottom variant="caption">
               {props.title}
             </Typography>
           </CardContent>
