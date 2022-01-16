@@ -241,7 +241,7 @@ const splitActivity = asyncHandler(async (req, res) => {
   try {
     await activity1.save();
     await activity2.save();
-    // await Activity.findByIdAndRemove(activityId)
+    await Activity.findByIdAndRemove(activityId);
   } catch (error) {
     throw new Error("Sorry DataBase is Down");
   }
