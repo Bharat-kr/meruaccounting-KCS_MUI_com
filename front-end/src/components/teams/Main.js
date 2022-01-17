@@ -21,6 +21,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import EdiText from "react-editext";
@@ -42,7 +43,8 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Main(props) {
   const { currTeam, currMember, ...other } = props;
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
-  const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
+  const { dispatchRemoveMember, dispatchgetTeam, updatedMember } =
+    useContext(teamContext);
   const [Checked, setChecked] = useState();
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
@@ -54,8 +56,9 @@ export default function Main(props) {
       payRate: value,
     };
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
-    await getTeam(dispatchgetTeam);
+    // await getTeam(dispatchgetTeam);
   };
+  console.log(updatedMember);
 
   const updateRole = async (e) => {
     const data = {
@@ -151,15 +154,17 @@ export default function Main(props) {
                   </RouterLink>
                   <Divider />
                   <Typography variant="body1">{currMember?.email}</Typography>
-                  <Grid xs={8} sx={{ mt: 2 }}>
-                    <Typography variant="h4">Payrate</Typography>
-                    <EdiText
-                      type="number"
-                      value={`${currMember.payRate}`}
-                      onCancel={(v) => console.log("CANCELLED: ", v)}
-                      onSave={(v) => updatePayrate(v)}
-                    />
-                  </Grid>
+                  {currMember.status !== "archived" && (
+                    <Grid xs={8} sx={{ mt: 2 }}>
+                      <Typography variant="h4">Payrate</Typography>
+                      <EdiText
+                        type="number"
+                        value={`${currMember.payRate}`}
+                        onCancel={(v) => console.log("CANCELLED: ", v)}
+                        onSave={(v) => updatePayrate(v)}
+                      />
+                    </Grid>
+                  )}
                 </Grid>
                 <Box sx={{ padding: 1, display: "flex" }}>
                   <Box>
@@ -177,137 +182,168 @@ export default function Main(props) {
                       {currMember.status}
                     </Typography>
                   </Box>
-                  <Link
-                    sx={{ padding: 1 }}
-                    onClick={(e) => updateStatus("paused")}
-                  >
-                    {currMember.status === "paused" ? (
-                      <>
-                        <PlayArrowIcon sx={{ fontSize: "small" }} />
-                        UnPause
-                      </>
-                    ) : (
-                      <>
-                        <PauseIcon sx={{ fontSize: "small" }} />
-                        Pause
-                      </>
-                    )}
-                  </Link>
-                  <Link sx={{ padding: 1 }} onClick={deleteMember}>
-                    <DeleteIcon sx={{ fontSize: "small" }} /> Delete
-                  </Link>
-                  <Link
-                    sx={{ padding: 1 }}
-                    onClick={(e) => updateStatus("archived")}
-                  >
-                    <ArchiveIcon sx={{ fontSize: "small" }} />
-                    Archive
-                  </Link>
+                  <Box>
+                    <Typography
+                      sx={{ padding: 1 }}
+                      onClick={(e) => updateStatus("paused")}
+                    >
+                      {currMember.status === "paused" ? (
+                        <Link>
+                          <PlayArrowIcon sx={{ fontSize: "small" }} />
+                          UnPause
+                        </Link>
+                      ) : (
+                        <Link>
+                          <PauseIcon sx={{ fontSize: "small" }} />
+                          Pause
+                        </Link>
+                      )}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ padding: 1 }} onClick={deleteMember}>
+                      <Link>
+                        <DeleteIcon sx={{ fontSize: "small" }} /> Delete
+                      </Link>
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{ padding: 1 }}
+                      onClick={(e) => updateStatus("archived")}
+                    >
+                      {currMember.status === "archived" ? (
+                        <Link>
+                          <RestorePageIcon sx={{ fontSize: "small" }} />
+                          Restore
+                        </Link>
+                      ) : (
+                        <Link>
+                          <ArchiveIcon sx={{ fontSize: "small" }} />
+                          Archive
+                        </Link>
+                      )}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
             </Box>
-            {currMember.role === "admin" && (
-              <Box sx={{ mt: 2 }}>
-                <FormControl component="fieldset" sx={{ pt: 2 }}>
-                  <Typography variant="h4">Role({currMember.role})</Typography>
-                  <RadioGroup
-                    aria-label="Role"
-                    value={currMember.role}
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel
-                      value="admin"
-                      control={<Radio onChange={updateRole} />}
-                      label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
-                    />
-                    <FormControlLabel
-                      value="manager"
-                      control={<Radio onChange={updateRole} />}
-                      label="Manager - can see selected user's Timeline & Reports (but not rates)"
-                    />
-                    <FormControlLabel
-                      value="employee"
-                      control={<Radio onChange={updateRole} />}
-                      label="Employee - can see their own data only"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Box>
-            )}
-            {currMember.role === "admin" && (
-              <Box>
-                <Typography variant="h5">Manage for</Typography>
-                <Typography varinat="body2">
-                  If enabled,
-                  {getFullName(currMember.firstName, currMember.lastName)} will
-                  be able to see selected user's Timeline and Reports, but not
-                  rates.
-                </Typography>
-                <Typography varinat="h6">
-                  {/* {User.map((user) => (
+            {currMember.status !== "archived" && (
+              <>
+                {currMember.role === "admin" && (
+                  <Box sx={{ mt: 2 }}>
+                    <FormControl component="fieldset" sx={{ pt: 2 }}>
+                      <Typography variant="h4">
+                        Role({currMember.role})
+                      </Typography>
+                      <RadioGroup
+                        aria-label="Role"
+                        value={currMember.role}
+                        name="radio-buttons-group"
+                      >
+                        <FormControlLabel
+                          value="admin"
+                          control={<Radio onChange={updateRole} />}
+                          label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
+                        />
+                        <FormControlLabel
+                          value="manager"
+                          control={<Radio onChange={updateRole} />}
+                          label="Manager - can see selected user's Timeline & Reports (but not rates)"
+                        />
+                        <FormControlLabel
+                          value="employee"
+                          control={<Radio onChange={updateRole} />}
+                          label="Employee - can see their own data only"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </Box>
+                )}
+                {currMember.role === "admin" && (
+                  <Box>
+                    <Typography variant="h5">Manage for</Typography>
+                    <Typography varinat="body2">
+                      If enabled,
+                      {getFullName(
+                        currMember.firstName,
+                        currMember.lastName
+                      )}{" "}
+                      will be able to see selected user's Timeline and Reports,
+                      but not rates.
+                    </Typography>
+                    <Typography varinat="h6">
+                      {/* {User.map((user) => (
                     <FormControlLabel
                       sx={{ pt: 1, fontWeight: 10 }}
                       control={<Switch />}
                       label={user.name}
                     />
                   ))} */}
-                </Typography>
-              </Box>
+                    </Typography>
+                  </Box>
+                )}
+
+                <Box sx={{ pt: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant="h5">Projects</Typography>
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={currMember.projects}
+                      getOptionLabel={(option) => option.name}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Project" />
+                      )}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                  <Link sx={{ pr: 1 }}>Add all</Link>
+                  <Link sx={{ pl: 1 }}>Remove all</Link>
+                  <Container sx={{ display: "block" }}>
+                    {Labelconfig()}
+                  </Container>
+                </Box>
+                <Box sx={{ pt: 2, fontSize: "20px" }}>
+                  <Typography variant="h4">Effective Settings</Typography>
+                  {currMember.settings &&
+                    Object.keys(currMember.settings).map(
+                      (keyName, keyIndex) => (
+                        <>
+                          <Box
+                            key={keyName}
+                            sx={{ display: "flex", flexDirection: "rows" }}
+                          >
+                            <Typography
+                              varihant="h6"
+                              sx={{ pr: 2, fontSize: "20px", color: "success" }}
+                            >
+                              {convertString(keyName)}
+                              {/* {console.log(index)} */}
+                            </Typography>
+                            <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
+                              {currMember.settings[keyName].isTeamSetting
+                                ? settingsValueToString(
+                                    currMember.settings[keyName].teamValue
+                                  )
+                                : settingsValueToString(
+                                    currMember.settings[keyName].individualValue
+                                  )}
+                            </RouterLink>
+                          </Box>
+                        </>
+                      )
+                    )}
+                </Box>
+              </>
             )}
-            <Box sx={{ pt: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography variant="h5">Projects</Typography>
-                <Autocomplete
-                  id="combo-box-demo"
-                  options={currMember.projects}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ width: 300 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Project" />
-                  )}
-                  onChange={handleChange}
-                />
-              </Box>
-              <Link sx={{ pr: 1 }}>Add all</Link>
-              <Link sx={{ pl: 1 }}>Remove all</Link>
-              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
-            </Box>
-            <Box sx={{ pt: 2, fontSize: "20px" }}>
-              <Typography variant="h4">Effective Settings</Typography>
-              {currMember.settings &&
-                Object.keys(currMember.settings).map((keyName, keyIndex) => (
-                  <>
-                    <Box
-                      key={keyName}
-                      sx={{ display: "flex", flexDirection: "rows" }}
-                    >
-                      <Typography
-                        varihant="h6"
-                        sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                      >
-                        {convertString(keyName)}
-                        {/* {console.log(index)} */}
-                      </Typography>
-                      <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                        {currMember.settings[keyName].isTeamSetting
-                          ? settingsValueToString(
-                              currMember.settings[keyName].teamValue
-                            )
-                          : settingsValueToString(
-                              currMember.settings[keyName].individualValue
-                            )}
-                      </RouterLink>
-                    </Box>
-                  </>
-                ))}
-            </Box>
           </Typography>
         </Container>
       )}

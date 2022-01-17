@@ -30,7 +30,7 @@ export const employeeUpdate = async (_id, data, dispatch) => {
   try {
     const res = await axios.patch(`/employee/edit/${_id}`, data);
 
-    dispatch({ type: EMPLOYEE_UPDATE_SUCCESS, payload: data });
+    dispatch({ type: EMPLOYEE_UPDATE_SUCCESS, payload: res.data.data });
     console.log(`Employee updated `);
     console.log(res);
   } catch (error) {
