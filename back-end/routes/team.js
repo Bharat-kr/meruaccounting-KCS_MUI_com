@@ -10,6 +10,7 @@ import {
   getTeam,
   deleteTeam,
 } from '../controllers/team.js';
+import { makePause } from '../controllers/pause.js';
 
 const router = express.Router();
 
@@ -23,8 +24,8 @@ router.route('/getTeam').get(authPass, getTeam);
 
 router.route('/').delete(authPass, deleteTeam);
 
+router.route('/pause').patch(authPass, managerPass, makePause);
+
 router.route('/getTeam/:id').get(authPass, getTeamById);
 
 export default router;
-
-// router.route('/add/:id').post(authPass, addMember);
