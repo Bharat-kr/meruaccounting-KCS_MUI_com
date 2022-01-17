@@ -1,8 +1,8 @@
-import asyncHandler from "express-async-handler";
-import User from "../models/user.js";
+import asyncHandler from 'express-async-handler';
+import User from '../models/user.js';
 
-// @desc To pause Unpause the employee
-// @route   Patch /
+// @desc    To pause Unpause the employee
+// @route   Patch /team/pause
 // @access  Private
 
 const makePause = asyncHandler(async (req, res) => {
@@ -19,7 +19,7 @@ const makePause = asyncHandler(async (req, res) => {
 
     await employee.save();
     res.json({
-      status: "Success",
+      status: 'Success',
       data: employee,
     });
   } catch (error) {
