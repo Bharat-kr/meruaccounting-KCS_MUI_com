@@ -39,7 +39,7 @@ export default function UserPage() {
     if (commonData.loader === false) {
       setactivities(
         commonData.commonData.user.days
-          .filter((day) => day.date === date.replace("/0","/"))[0]
+          .filter((day) => day.date === date.replace("/0", "/"))[0]
           ?.activities.filter((act) => {
             console.log(isInternal);
             console.log(act.isInternal);
@@ -49,7 +49,7 @@ export default function UserPage() {
     } else {
       return;
     }
-  }, [commonData, isInternal]);
+  }, [commonData, isInternal, date]);
 
   return (
     <CssBaseline>
