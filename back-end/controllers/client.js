@@ -101,7 +101,7 @@ const getClientById = asyncHandler(async (req, res) => {
 
 const editClient = asyncHandler(async (req, res) => {
   try {
-    const client = await Client.findOneAndUpdate(req.params.id, req.body);
+    const client = await Client.findByIdAndUpdate(req.params.id, req.body);
 
     if (!client) {
       res.status(404);

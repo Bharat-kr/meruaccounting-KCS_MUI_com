@@ -1,33 +1,18 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import {
-  Paper,
-  Typography,
-  Divider,
-  Autocomplete,
-  TextField,
-  Link,
-  Button,
-  Fab,
-} from "@mui/material";
+import { Paper, Typography, TextField, Link } from "@mui/material";
 import EdiText from "react-editext";
-import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 import SearchBar from "../SearchBar";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { TreeItem, TreeView } from "@mui/lab";
-import Treeview from "../Treeview";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
-import Switch from "@mui/material/Switch";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
-import { getClient, getClientProjects } from "../../api/clients api/clients";
+import { getClient } from "../../api/clients api/clients";
 import {
   editProject,
   deleteProject,
   addProjectLeader,
-  removeProjectMember,
 } from "../../api/projects api/projects";
 import EnhancedTable from "../Projects/ProjectMemers";
 //---------------------------------------------------------------
@@ -55,29 +40,6 @@ export default function Header(props) {
     ...other
   } = props;
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "firstName", headerName: "First name", width: 130 },
-    { field: "lastName", headerName: "Last name", width: 130 },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 90,
-    },
-    {
-      field: "fullName",
-      headerName: "Full name",
-      description: "This column has a value getter and is not sortable.",
-      sortable: false,
-      width: 160,
-      valueGetter: (params) =>
-        `${params.getValue(params.id, "firstName") || ""} ${
-          params.getValue(params.id, "lastName") || ""
-        }`,
-    },
-  ];
-
   const classes = useStyles();
   // to focus edit name of client
   const inputRef = useRef();
@@ -95,11 +57,9 @@ export default function Header(props) {
     dispatchEditProject,
     dispatchDeleteProject,
     dispatchaddProjectLeader,
-    dispatchremoveProjectMember,
   } = useContext(projectContext);
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
-  const [input, setInput] = useState("");
   const outerref = useRef();
   const handleEditClick = (e) => {
     inputRef.current.focus();
@@ -118,7 +78,7 @@ export default function Header(props) {
     } catch (err) {
       console.log(err);
     }
-  }, [currentClient, currentProject]);
+  }, [clientDetails, currentClient, currentProject]);
 
   let memberList = [];
   let membersData = [];
@@ -150,7 +110,11 @@ export default function Header(props) {
   const handleEdit = () => {};
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    editProject(currentProject._id, { name: projectName }, dispatchEditProject);
+    await editProject(
+      currentProject._id,
+      { name: projectName },
+      dispatchEditProject
+    );
     await getClient(dispatchClientDetails);
     // changeProject(curr);
   };
@@ -200,14 +164,14 @@ export default function Header(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
+  console.log(currentProject);
   return currentProject === "" ? (
     <Box
       component="div"
       sx={{
         width: "70%",
         flexGrow: "1",
-        overflowX: "hidden",
+        overflowX: "auto",
         overflowY: "auto",
         margin: "10px 10px 10px 0",
       }}
@@ -263,6 +227,7 @@ export default function Header(props) {
             <h3 style={{ backgroundColor: "#fff" }}>
               <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
                 <input
+                  defaultValue="cannot be empty"
                   onChange={(e) => setprojectName(e.target.value)}
                   type="text"
                   ref={inputRef}
@@ -333,7 +298,7 @@ export default function Header(props) {
                   <TextField
                     {...params}
                     label="Select New Team Leader"
-                    defaultValue={ProjectLeader}
+                    // defaultValue={ProjectLeader}
                   />
                 )}
               />

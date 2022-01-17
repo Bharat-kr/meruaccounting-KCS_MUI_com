@@ -5,7 +5,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import { ClientsContext } from "../../contexts/ClientsContext";
-import { getClientPro, getClientProjects } from "../../api/clients api/clients";
+import {
+  deleteClient,
+  editClient,
+  getClient,
+} from "../../api/clients api/clients";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -25,6 +29,7 @@ export default function Header() {
   // to focus edit name of client
   // const {getClient,dispatchClientDetails}=useContext(ClientsContext)
   // getClient(dispatchClientDetails);
+  const [clientName, setClientName] = useState("");
 
   const inputRef = useRef();
   const handleEditClick = (e) => {
@@ -35,25 +40,35 @@ export default function Header() {
   const {
     currentClient,
     updateClient,
+    dispatchDeleteClient,
     clientProjectDetails,
     dispatchClientProjectDetails,
+    dispatchEditClient,
+    dispatchClientDetails,
+    clientDetails,
   } = useContext(ClientsContext);
   const id = { clientId: currentClient._id };
-  console.log(id);
   let projectList = [];
-  useEffect(() => {
+  useEffect(async () => {
     // getClientPro(JSON.stringify(id));
-    getClientProjects(id, dispatchClientProjectDetails);
-  }, [currentClient]);
-  if (
-    clientProjectDetails.clientProjectDetails &&
-    clientProjectDetails.loader === false
-  ) {
-    projectList = clientProjectDetails.clientProjectDetails.projects;
+    setClientName(currentClient?.name);
+  }, [currentClient, clientDetails]);
+  if (clientDetails?.loader === false) {
+    projectList = currentClient?.projects;
   }
-  // Object.keys(clientProjectDetails).map((keyName, keyIndex) =>
-  //   console.log(keyName, keyIndex)
-  // );
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(currentClient);
+      if (clientName !== "") {
+        const data = [currentClient._id, { name: clientName }];
+        await editClient(data, dispatchEditClient);
+        await getClient(dispatchClientDetails);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return currentClient === "" ? (
     <Box
@@ -104,12 +119,16 @@ export default function Header() {
         >
           <Box sx={{ m: 1 }}>
             <h1 style={{ backgroundColor: "#fff" }}>
-              <input
-                type="text"
-                ref={inputRef}
-                className={classes.input}
-                value={currentClient.name}
-              />
+              <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
+                <input
+                  defaultValue="cannot be empty"
+                  onChange={(e) => setClientName(e.target.value)}
+                  type="text"
+                  ref={inputRef}
+                  className={classes.input}
+                  value={clientName}
+                />
+              </form>
               <div
                 style={{
                   float: "right",
@@ -144,7 +163,7 @@ export default function Header() {
                 m: 1,
               }}
             >
-              {projectList.map((project) => (
+              {projectList?.map((project) => (
                 <Typography variant="subtitle1" sx={{ width: 1 }}>
                   {project.name}
                   <span style={{ float: "right" }}>{project.rate} rs/hr</span>
