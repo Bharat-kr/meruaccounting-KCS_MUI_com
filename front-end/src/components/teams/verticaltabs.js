@@ -254,7 +254,7 @@ export default function VerticalTabs() {
                   {el.members.map((member) => {
                     return (
                       <TreeItem
-                        nodeId={member._id.toString()}
+                        nodeId={member._id.toString() + el._id.toString()}
                         key={member._id}
                         label={
                           <Typography
@@ -330,7 +330,7 @@ export default function VerticalTabs() {
               width: "100%",
               height: "100%",
               overflow: "auto",
-              paddingBottom:"10px"
+              paddingBottom: "10px",
             }}
           >
             <Main currMember={currMember} currTeam={currTeam} />

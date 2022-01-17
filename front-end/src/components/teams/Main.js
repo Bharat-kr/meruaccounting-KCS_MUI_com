@@ -16,11 +16,11 @@ import {
   Switch,
   TextField,
   Autocomplete,
-  Button,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArchiveIcon from "@mui/icons-material/Archive";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import EdiText from "react-editext";
@@ -65,6 +65,14 @@ export default function Main(props) {
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
+  const updateStatus = async (value) => {
+    const data = {
+      status: value,
+    };
+    console.log(data);
+    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await getTeam(dispatchgetTeam);
+  };
   const deleteMember = async () => {
     const data = {
       employeeId: currMember._id,
@@ -100,12 +108,12 @@ export default function Main(props) {
       component="div"
       sx={{
         height: "100%",
-        width:"100%",
+        width: "100%",
         flexGrow: "1",
         overflow: "hidden",
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Box
@@ -120,7 +128,7 @@ export default function Main(props) {
       {currMember && (
         <Container
           component="div"
-          sx={{ height: "auto",  }}
+          sx={{ height: "auto" }}
           role="tabpanel"
           id={`vertical-tabpanel`}
           aria-labelledby={`vertical-tab`}
@@ -153,19 +161,45 @@ export default function Main(props) {
                     />
                   </Grid>
                 </Grid>
-                <Box sx={{ padding: 1 }}>
+                <Box sx={{ padding: 1, display: "flex" }}>
+                  <Box>
+                    <Typography
+                      sx={{
+                        padding: 1,
+                        backgroundColor: "error.main",
+                        color: "white",
+                        borderRadius: 1,
+                        display: `${
+                          currMember.status === "null" ? "none" : ""
+                        }`,
+                      }}
+                    >
+                      {currMember.status}
+                    </Typography>
+                  </Box>
                   <Link
-                    data-key="1"
                     sx={{ padding: 1 }}
-                    onClick={(e) => console.log(e.currentTarget.dataset.key)}
+                    onClick={(e) => updateStatus("paused")}
                   >
-                    <PauseIcon sx={{ fontSize: "small" }} />
-                    Pause
+                    {currMember.status === "paused" ? (
+                      <>
+                        <PlayArrowIcon sx={{ fontSize: "small" }} />
+                        UnPause
+                      </>
+                    ) : (
+                      <>
+                        <PauseIcon sx={{ fontSize: "small" }} />
+                        Pause
+                      </>
+                    )}
                   </Link>
                   <Link sx={{ padding: 1 }} onClick={deleteMember}>
                     <DeleteIcon sx={{ fontSize: "small" }} /> Delete
                   </Link>
-                  <Link sx={{ padding: 1 }}>
+                  <Link
+                    sx={{ padding: 1 }}
+                    onClick={(e) => updateStatus("archived")}
+                  >
                     <ArchiveIcon sx={{ fontSize: "small" }} />
                     Archive
                   </Link>
