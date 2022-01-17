@@ -7,6 +7,8 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  CardActions,
+  CardHeader,
 } from "@mui/material";
 
 export default function Preview(props) {
@@ -20,11 +22,11 @@ export default function Preview(props) {
   return (
     <>
       <Tooltip
-        title={`${props.activityAt}, ${props.performanceData}`}
+        title={`${props.activityAt}, ${props.performanceData}%`}
         placement="top"
         followCursor
       >
-        <Card sx={{ maxWidth: 260, m: 1.8 }}>
+        <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
           <CardContent
             sx={{
               mb: -3,
@@ -34,7 +36,12 @@ export default function Preview(props) {
               maxHeight: 80,
             }}
           >
-            <Typography color="text.primary" gutterBottom variant="caption">
+            <Typography
+              sx={{ fontWeight: "bold" }}
+              color="text.primary"
+              gutterBottom
+              variant="caption"
+            >
               {props.title}
             </Typography>
           </CardContent>
@@ -46,6 +53,18 @@ export default function Preview(props) {
               alt="green iguana"
             />
           </CardActionArea>
+          <CardContent
+            sx={{
+              mb: -3,
+              mt: -2,
+              ml: -1.5,
+              background: "#c8facd69",
+            }}
+          >
+            <Typography color="text.primary" gutterBottom variant="h6">
+              {`${props.performanceData}%, Taken at = ${props.activityAt}`}
+            </Typography>
+          </CardContent>
         </Card>
       </Tooltip>
       <Backdrop

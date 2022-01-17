@@ -22,7 +22,8 @@ export default function UserPage() {
   const [activities, setactivities] = useState([]);
   const { dispatchCommonData } = useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
-  const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
+  const [date, setdate] = useState("15/01/2022");
+  // const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
   // const date = '15/01/2022'
 
   const { commonData } = useContext(CurrentUserContext);
