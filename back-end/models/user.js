@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema(
         ref: "team",
       },
     ],
+    status: {
+      type: String,
+      default: "null",
+    },
     notifications: [
       {
         id: String,
