@@ -100,8 +100,8 @@ export default function VerticalTabs() {
   React.useEffect(() => {
     if (getTeams?.getTeam?.length > 0) {
       //setting the current member
-      setCurrTeam(getTeams?.getTeam[0]);
-      setCurrMember(getTeams?.getTeam[0].members[0]);
+      // setCurrTeam(getTeams?.getTeam[0]);
+      // setCurrMember(getTeams?.getTeam[0].members[0]);
     }
   }, [getTeams, setCurrMember]);
 
@@ -220,18 +220,18 @@ export default function VerticalTabs() {
             }}
           >
             <TreeView
+              aria-label="file system navigator"
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
-                // display: "flex",
-                // flexDirection: "row",
+
                 height: 240,
                 flexGrow: 1,
                 // maxWidth: 400,
-                // overflowY: "auto",
+                overflowY: "auto",
+
                 width: "100%",
               }}
-              className={classes.root}
             >
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem

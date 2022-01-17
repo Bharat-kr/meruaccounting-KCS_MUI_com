@@ -49,9 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Header(props) {
   const {
-    // newClientValue,
-    currentClient,
-    // currentProject,
+    //  currentClient,
     setcurrentProject,
     setcurrentClient,
     ...other
@@ -86,14 +84,13 @@ export default function Header(props) {
   //context
   const {
     clients,
-    // currentClient,
+    currentClient,
     currentProject,
     changeProject,
     updateClient,
     clientDetails,
     dispatchClientDetails,
   } = useContext(ClientsContext);
-  console.log(currentProject);
   const {
     dispatchEditProject,
     dispatchDeleteProject,
@@ -109,15 +106,20 @@ export default function Header(props) {
   };
   const test = useRef(false);
   useEffect(() => {
-    currentProject
-      ? setprojectName(`${currentProject.name}`)
-      : setprojectName("No Client Select");
-    currentProject.projectLeader
-      ? setProjectLeader(
-          `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
-        )
-      : setProjectLeader("No leader");
+    try {
+      currentProject
+        ? setprojectName(`${currentProject.name}`)
+        : setprojectName("No Client Select");
+      currentProject.projectLeader
+        ? setProjectLeader(
+            `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
+          )
+        : setProjectLeader("No leader");
+    } catch (err) {
+      console.log(err);
+    }
   }, [currentClient, currentProject]);
+
   let memberList = [];
   let membersData = [];
   currentProject
@@ -137,12 +139,10 @@ export default function Header(props) {
       const emp = membersData.filter((emp) =>
         emp.name === value ? emp.id : ""
       );
-      console.log(emp[0].email);
       const data = [currentProject._id, emp[0].email];
       await addProjectLeader(data, dispatchaddProjectLeader);
       const employee = memberList.filter((emp) => (emp == value ? emp : ""));
       return setProjectLeader(employee);
-      setInput("");
     } catch (error) {
       console.log(error.message);
     }
@@ -150,14 +150,11 @@ export default function Header(props) {
   const handleEdit = () => {};
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    console.log("hello", projectName);
     editProject(currentProject._id, { name: projectName }, dispatchEditProject);
     await getClient(dispatchClientDetails);
     // changeProject(curr);
   };
-  console.log(currentClient);
   const handleProjectDelete = async (e) => {
-    console.log(currentProject._id);
     const data = { projectId: `${currentProject._id}` };
     await deleteProject(currentProject._id, dispatchDeleteProject);
     if (
@@ -183,7 +180,6 @@ export default function Header(props) {
       );
     }
     await getClient(dispatchClientDetails);
-    console.log(currentClient);
   };
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
@@ -200,13 +196,44 @@ export default function Header(props) {
       newClient.projects[index].Projectmembers.push(member);
       updateClient(newClient, clients.indexOf(currentClient));
     }
-    // console.log("hello");
   };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
-  return (
+  return currentProject === "" ? (
+    <Box
+      component="div"
+      sx={{
+        width: "70%",
+        flexGrow: "1",
+        overflowX: "hidden",
+        overflowY: "auto",
+        margin: "10px 10px 10px 0",
+      }}
+    >
+      <Paper
+        component="div"
+        elevation={3}
+        sx={{
+          display: "flex",
+          flexGrow: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          ml: 1,
+          overflow: "visible",
+          height: "100%",
+        }}
+      >
+        <Box
+          component="img"
+          src="/svgs/project.svg"
+          sx={{ width: 100, height: 70, backgroundColor: "white" }}
+        />
+        <Typography variant="h5">No Project Selected</Typography>
+      </Paper>
+    </Box>
+  ) : (
     <>
       <Box
         ref={outerref}
@@ -303,7 +330,11 @@ export default function Header(props) {
                 options={memberList}
                 sx={{ width: 100 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Select New Team Leader" />
+                  <TextField
+                    {...params}
+                    label="Select New Team Leader"
+                    defaultValue={ProjectLeader}
+                  />
                 )}
               />
             </div>
@@ -335,7 +366,7 @@ export default function Header(props) {
                       sx={{ display: "flex", alignItems: "center" }}
                       type="number"
                       value={`${
-                        currentProject.BudgetHours
+                        currentProject?.BudgetHours
                           ? currentProject.BudgetHours
                           : "Not Assigned"
                       }`}
@@ -377,9 +408,9 @@ export default function Header(props) {
                 </div> */}
               </Box>
               <EnhancedTable
-                outerref={outerref}
-                currentClient={currentClient}
                 currentProject={currentProject}
+                currentClient={currentClient}
+                outerref={outerref}
               />
             </Paper>
           </Box>

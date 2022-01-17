@@ -158,7 +158,7 @@ const addProjectMemberReducer = (state, action) => {
     case ADD_MEMBER_TOPROJECT_SUCCESS:
       return {
         loader: false,
-        addProjectMember: action.payload,
+        ProjectMember: action.payload,
       };
     case ADD_MEMBER_TOPROJECT_FAILED:
       return {
@@ -167,7 +167,7 @@ const addProjectMemberReducer = (state, action) => {
       };
     case ADD_MEMBER_TOPROJECT_RESET:
       return {
-        addProjectMember: {},
+        ProjectMember: {},
       };
     default:
       return state;
@@ -261,10 +261,10 @@ export const ProjectsContextProvider = (props) => {
   const [projectById, dispatchProjectById] = useReducer(getProjctByIdReducer, {
     projectById: { loader: true },
   });
-  const [addProjectMember, dispatchaddProjectMember] = useReducer(
+  const [ProjectMember, dispatchaddProjectMember] = useReducer(
     addProjectMemberReducer,
     {
-      addProjectMember: { loader: true },
+      ProjectMember: { loader: true },
     }
   );
   const [addProjectLeader, dispatchaddProjectLeader] = useReducer(
@@ -301,7 +301,7 @@ export const ProjectsContextProvider = (props) => {
         dispatchProjectById,
         projectById,
         dispatchaddProjectMember,
-        addProjectLeader,
+        ProjectMember,
         dispatchaddProjectLeader,
         addProjectLeader,
         dispatcheditProjectLeader,

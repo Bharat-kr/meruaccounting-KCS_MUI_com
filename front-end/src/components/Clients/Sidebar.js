@@ -101,8 +101,8 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
-          display:"flex",
-          flexDirection:"column"
+          display: "flex",
+          flexDirection: "column",
           // position: "relative",
         }}
       >
@@ -135,24 +135,22 @@ export default function Sidebar() {
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-start",
-            flexGrow:"1",
-            overflowY:"auto"
+            flexGrow: "1",
+            overflowY: "auto",
           }}
         >
           <TreeView
             fullWidth
             // className={classes.root}
-            sx={{ width: "100%"}}
+            sx={{ width: "100%" }}
           >
             {clientsList.map((client) => (
               <TreeItem
                 onClick={handleClick}
-                nodeId={clients.indexOf(client) + 1}
+                nodeId={client._id}
                 className={classes.treeItem}
                 label={<Typography variant="h4">{client.name}</Typography>}
-              >
-                <Divider variant="fullWidth" light={false} />
-              </TreeItem>
+              ></TreeItem>
             ))}
           </TreeView>
         </Box>

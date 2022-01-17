@@ -184,7 +184,11 @@ export default class Calendar extends React.Component {
         selectedDay: d,
       },
       () => {
-        console.log("SELECTED DAY: ", this.state.selectedDay);
+        console.log(
+          "SELECTED DATE: ",
+          this.state.dateObject.format("DD/MM/YYYY")
+        );
+        this.props.setDate(this.state.dateObject.format("DD/MM/YYYY"));
       }
     );
   };
@@ -223,12 +227,18 @@ export default class Calendar extends React.Component {
           style={{
             borderWidth: "0 1px 0 1px",
             borderStyle: "solid",
-            borderColor:"#C4CDD5",
+            borderColor: "#C4CDD5",
             height: "15px",
-            pointerEvents:"none"
+            pointerEvents: "none",
           }}
         >
-          <div style={{height:"100%", width: `${d*3}%`, backgroundColor: "#007B55" }}></div>
+          <div
+            style={{
+              height: "100%",
+              width: `${d * 3}%`,
+              backgroundColor: "#007B55",
+            }}
+          ></div>
         </td>
       );
     }

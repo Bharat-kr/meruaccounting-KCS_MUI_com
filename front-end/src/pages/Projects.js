@@ -10,6 +10,7 @@ import PageHeader from "../components/PageHeader";
 // contexts
 // eslint-disable-next-line import/no-named-as-default
 import ClientsContextProvider from "../contexts/ClientsContext";
+import { ProjectsContextProvider } from "src/contexts/ProjectsContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +31,12 @@ export default function Projects() {
   return (
     <Box
       component="div"
-      sx={{ width: "95%", margin: "auto", maxHeight: "70vh", height: "70vh" }}
+      sx={{
+        width: "95%",
+        margin: "auto",
+        maxHeight: "70vh",
+        height: "70vh",
+      }}
     >
       <CssBaseline />
       <PageHeader title="Projects" />

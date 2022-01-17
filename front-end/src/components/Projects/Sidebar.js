@@ -65,12 +65,21 @@ export default function Sidebar() {
   //       changeClient(clientDetails?.client?.data[0]);
   //       changeProject(clientDetails?.client?.data[0].projects[0]);
   //     }
+  //     changeClient(
+  //       clientDetails?.client?.data[
+  //         clientDetails.client.data.indexOf(currentClient)
+  //       ]
+  //     );
+  //     changeProject(
+  //       clientDetails?.client?.data[
+  //         clientDetails.client.data.indexOf(currentClient)
+  //       ].projects[currentClient.projects.indexOf(currentProject)]
+  //     );
   //   } catch (error) {
   //     console.log(error.message);
   //   }
-  // }, []);
+  // }, [clientDetails]);
   const projectList = [];
-  console.log(clientDetails);
   useEffect(() => {
     if (clientDetails.loader === false) {
       clientDetails?.client?.data.map((client) => {
@@ -134,8 +143,6 @@ export default function Sidebar() {
 
     changeProject(project[0]);
   };
-  console.log(newClientValue);
-  console.log(currentProject);
   // add client in submit
   const handleSubmit = async (e) => {
     try {
