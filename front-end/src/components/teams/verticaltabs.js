@@ -158,6 +158,7 @@ export default function VerticalTabs() {
         const teams = getTeams.getTeam?.filter((team) =>
           team.name === val[0] ? team : ""
         );
+        setCurrTeam(teams[0]);
         const member = teams[0].members?.filter((member) =>
           getFullName(member.firstName, member.lastName) == val[1] ? member : ""
         );
