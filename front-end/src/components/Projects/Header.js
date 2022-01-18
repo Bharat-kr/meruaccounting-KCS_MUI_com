@@ -65,6 +65,7 @@ export default function Header(props) {
     inputRef.current.focus();
   };
   const test = useRef(false);
+
   useEffect(() => {
     try {
       currentProject
@@ -79,6 +80,7 @@ export default function Header(props) {
       console.log(err);
     }
   }, [clientDetails, currentClient, currentProject]);
+  console.log(currentClient, currentProject);
 
   let memberList = [];
   let membersData = [];
@@ -119,31 +121,34 @@ export default function Header(props) {
     // changeProject(curr);
   };
   const handleProjectDelete = async (e) => {
-    const data = { projectId: `${currentProject._id}` };
-    await deleteProject(currentProject._id, dispatchDeleteProject);
-    if (
-      currentClient.projects[
-        currentClient.projects.indexOf(currentProject) - 1
-      ] === 0
-    ) {
-      setcurrentClient(
-        clientDetails.client.data[
-          clientDetails.client.data.indexOf(currentClient - 1)
-        ]
-      );
-      changeProject(
+    try {
+      const data = { projectId: `${currentProject._id}` };
+      await deleteProject(currentProject._id, dispatchDeleteProject);
+      if (
         currentClient.projects[
-          currentClient.projects.lastIndexOf(currentProject)
-        ]
-      );
-    } else {
-      changeProject(
-        currentClient.projects[
-          currentClient.projects.indexOf(currentProject) - 1
-        ]
-      );
+          currentClient.projects.indexOf(currentProject)
+        ] === 0
+      ) {
+        setcurrentClient(
+          clientDetails.client.data[
+            clientDetails.client.data.indexOf(currentClient)
+          ]
+        );
+
+        changeProject(
+          currentClient.projects[
+            currentClient.projects.lastIndexOf(currentProject)
+          ]
+        );
+      } else {
+        changeProject(
+          currentClient.projects[currentClient.projects.indexOf(currentProject)]
+        );
+      }
+      await getClient(dispatchClientDetails);
+    } catch (err) {
+      console.log(err);
     }
-    await getClient(dispatchClientDetails);
   };
   const handleSwitchChange = (e, client, project, member) => {
     const newClient = client;
@@ -164,7 +169,6 @@ export default function Header(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  console.log(currentProject);
   return currentProject === "" ? (
     <Box
       component="div"
@@ -227,7 +231,6 @@ export default function Header(props) {
             <h3 style={{ backgroundColor: "#fff" }}>
               <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
                 <input
-                  defaultValue="cannot be empty"
                   onChange={(e) => setprojectName(e.target.value)}
                   type="text"
                   ref={inputRef}
