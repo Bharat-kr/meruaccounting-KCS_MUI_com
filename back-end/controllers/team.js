@@ -184,7 +184,7 @@ const getTeam = asyncHandler(async (req, res) => {
             "projects",
             "role",
             "payRate",
-            "status"
+            "status",
           ],
           populate: {
             path: "projects",
