@@ -19,6 +19,7 @@ import TreeItem from "@mui/lab/TreeItem";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
 import SearchBar from "../SearchBar";
+import Header from "./Header";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -84,15 +85,15 @@ export default function Sidebar() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      if (
-        clientsList.filter((cli) =>
-          cli.name === newClientValue ? true : false
-        )
-      ) {
-        setnewClientError(true);
-        return;
-      }
-      setnewClientError(false);
+      // if (
+      //   clientsList.filter((cli) =>
+      //     cli.name === newClientValue ? true : false
+      //   )
+      // ) {
+      //   setnewClientError(true);
+      //   return;
+      // }
+      // setnewClientError(false);
       if (newClientValue !== "") {
         await addClient(newClientValue, dispatchAddClient);
         await getClient(dispatchAddClient);
@@ -176,7 +177,7 @@ export default function Sidebar() {
               width: "100%",
             }}
           >
-            {clientsList.map((client) => (
+            {clientsList?.map((client) => (
               <TreeItem
                 onClick={handleClick}
                 nodeId={client._id}
@@ -202,6 +203,7 @@ export default function Sidebar() {
             style={{ width: "100%" }}
           >
             <TextField
+              sx={{ width: "100%" }}
               inputRef={inputRef}
               onChange={(e) => setnewClientValue(e.target.value)}
               required
@@ -214,6 +216,7 @@ export default function Sidebar() {
           </form>
         </Box>
       </Paper>
+      <Header currentClient={currentClient} clientsList={clientsList} />
     </Box>
   );
 }
