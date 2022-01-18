@@ -85,15 +85,15 @@ export default function Sidebar() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      if (
-        clientsList.filter((cli) =>
-          cli.name === newClientValue ? true : false
-        )
-      ) {
-        setnewClientError(true);
-        return;
-      }
-      setnewClientError(false);
+      // if (
+      //   clientsList.filter((cli) =>
+      //     cli.name === newClientValue ? true : false
+      //   )
+      // ) {
+      //   setnewClientError(true);
+      //   return;
+      // }
+      // setnewClientError(false);
       if (newClientValue !== "") {
         await addClient(newClientValue, dispatchAddClient);
         await getClient(dispatchAddClient);
@@ -177,7 +177,7 @@ export default function Sidebar() {
               width: "100%",
             }}
           >
-            {clientsList.map((client) => (
+            {clientsList?.map((client) => (
               <TreeItem
                 onClick={handleClick}
                 nodeId={client._id}

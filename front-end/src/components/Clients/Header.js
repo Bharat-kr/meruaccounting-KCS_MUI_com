@@ -5,7 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import { ClientsContext } from "../../contexts/ClientsContext";
-import { DataTable } from "./projectList";
+import DataTable from "./projectList";
 import {
   deleteClient,
   editClient,
