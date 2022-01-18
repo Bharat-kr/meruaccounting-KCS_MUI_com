@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Sidebar() {
   const classes = useStyles();
-
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
@@ -96,6 +95,7 @@ export default function Sidebar() {
   //   );
   // }, [checkclientDetails]);
   // change currentclient on search
+  // console.log(currentClient, currentProject);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");
@@ -231,7 +231,7 @@ export default function Sidebar() {
                   {client.projects.map((project) => {
                     return (
                       <TreeItem
-                        nodeId={project._id.toString()}
+                        nodeId={(client._id + project._id).toString()}
                         id={project._id}
                         key={project._id}
                         label={
@@ -251,32 +251,12 @@ export default function Sidebar() {
                 </TreeItem>
               ))}
           </TreeView>
-          {/* <TreeView
-            aria-label="file system navigator"
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
-            sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
-          >
-            <TreeItem nodeId="1" label="Applications">
-              <TreeItem nodeId="2" label="Calendar" />
-            </TreeItem>
-            <TreeItem nodeId="5" label="Documents">
-              <TreeItem nodeId="10" label="OSS" />
-              <TreeItem nodeId="6" label="MUI">
-                <TreeItem nodeId="8" label="index.js" />
-              </TreeItem>
-            </TreeItem>
-          </TreeView> */}
         </Box>
 
-        {/* INPUT BOX, add validations, connect to context */}
         <Box
           sx={{
             boxSizing: "border-box",
             width: "95%",
-            // position: "absolute",
-            // bottom: "0",
-
             "& > :not(style)": { m: 1 },
           }}
         >

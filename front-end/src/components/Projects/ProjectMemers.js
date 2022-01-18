@@ -180,7 +180,7 @@ const EnhancedTableToolbar = (props) => {
         emp.name === select ? deleteList.push(emp.id) : ""
       );
     });
-    console.log(deleteList);
+
     // React.useEffect(() => {
     //   setRowsPerPage(rows.length);
     // }, [rows.length, currentProject, currentClient]);
@@ -284,24 +284,24 @@ export default function EnhancedTable(props) {
       })
     : employeesList.push("");
   const rowPush = [];
-  React.useEffect(() => {
-    try {
-      let project = [];
-      let client = [];
-      if (clientDetails.loader === false && currentClient !== null) {
-        client =
-          clientDetails?.client?.data[
-            clientDetails?.client?.data?.indexOf(currentClient) + 1
-          ];
-        project =
-          client.projects[currentClient?.projects?.indexOf(currentProject)];
-        changeClient(client);
-        changeProject(project);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [clientDetails]);
+  // React.useEffect(() => {
+  //   try {
+  //     let project = [];
+  //     let client = [];
+  //     if (clientDetails.loader === false && currentClient !== null) {
+  //       client =
+  //         clientDetails?.client?.data[
+  //           clientDetails?.client?.data?.indexOf(currentClient) + 1
+  //         ];
+  //       project =
+  //         client.projects[currentClient?.projects?.indexOf(currentProject)];
+  //       changeClient(client);
+  //       changeProject(project);
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, [clientDetails]);
   React.useEffect(() => {
     try {
       currentProject?.employees?.map((emp) => {
@@ -321,6 +321,9 @@ export default function EnhancedTable(props) {
       console.log(err);
     }
   }, [currentClient, currentProject, clientDetails]);
+
+  console.log(currentClient, currentProject);
+  console.log(employeesList, employeeNameList);
 
   const handleMemberAdded = async (e) => {
     e.preventDefault();

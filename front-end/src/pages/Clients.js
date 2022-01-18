@@ -17,8 +17,9 @@ const useStyles = makeStyles((theme) => ({
     height: "70vh",
     width: "100%",
     margin: "auto",
-    display: "grid",
+    display: "flex",
     gridTemplateColumns: "30% 70%",
+    justifyContent: "space-around",
     backgroundColor: "#fdfdff",
   },
 }));
@@ -36,7 +37,6 @@ export default function Clients() {
 
       <div className={classes.root}>
         <Sidebar />
-        <Header />
       </div>
     </Box>
   );
