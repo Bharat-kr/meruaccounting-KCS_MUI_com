@@ -18,6 +18,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem from "@mui/lab/TreeItem";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
+import SearchBar from "../SearchBar";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -29,8 +30,11 @@ export default function Sidebar() {
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
-
+  const [defaultTextValue, setDefaultTextValue] = useState("");
+  const inputRef = useRef();
+  const autocomRef = useRef();
   // contexts
+
   const {
     clients,
     currentClient,
@@ -42,31 +46,32 @@ export default function Sidebar() {
     dispatchClientDetails,
   } = useContext(ClientsContext);
 
+  let clientsList = [];
+  const clientNameList = [];
   useEffect(() => {
     getClient(dispatchClientDetails);
-  }, [dispatchClientDetails]);
+  }, [currentClient]);
 
+  if (clientDetails?.loader === false) {
+    clientsList = clientDetails?.client?.data;
+    clientDetails?.client?.data?.map((cli) => clientNameList.push(cli.name));
+  }
+  console.log(clientNameList);
   // labels for search box(autocomplete)
   // const clientsList = clients.map((client) => client.name);
 
-  let clientsList = [];
-  if (clientDetails.loader === false) {
-    clientsList = clientDetails.client.data;
-  }
-
   // change currentclient on search
   const handleSearch = (e, value) => {
-    const client = clientsList.filter((client) =>
-      client.name === value ? client : ""
-    );
-    if (client.length === 0) {
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-    return changeClient(client[0]);
+    console.log(value);
+    // const client = clientsList.filter((client) =>
+    //   client.name === value ? client : ""
+    // );
+    // if (client.length === 0) {
+    //   // eslint-disable-next-line no-useless-return
+    // }
+    // return changeClient(client[0]);
   };
 
-  // change currenclient on clients name click
   const handleClick = (e) => {
     const client = clientsList.filter((client) =>
       client.name === e.target.textContent ? client : ""
@@ -76,14 +81,33 @@ export default function Sidebar() {
 
   // add client in submit
   // not working properly , add proper validation Dr. Kamal Singh
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setnewClientError(false);
-    if (newClientValue !== "") {
-      // addClient({ name: newClientValue }, dispatchAddClient);
-      setnewClientValue("");
-    } else {
-      setnewClientError(true);
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      if (
+        clientsList.filter((cli) =>
+          cli.name === newClientValue ? true : false
+        )
+      ) {
+        setnewClientError(true);
+        return;
+      }
+      setnewClientError(false);
+      if (newClientValue !== "") {
+        await addClient(newClientValue, dispatchAddClient);
+        await getClient(dispatchAddClient);
+        changeClient(() =>
+          clientDetails.client.data.filter((cli) =>
+            cli.name === newClientValue ? cli : ""
+          )
+        );
+        inputRef.current.value = "";
+        setnewClientValue("");
+      } else {
+        setnewClientError(true);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -92,7 +116,10 @@ export default function Sidebar() {
       component="div"
       sx={{
         margin: "10px",
-        height: "auto",
+        // height: "70vh",
+        flexGrow: "1",
+        display: "flex",
+        flexDirection: "row",
       }}
     >
       <Paper
@@ -108,24 +135,23 @@ export default function Sidebar() {
       >
         {/* search box */}
         <Box
-          sx={{
-            width: "95%",
-            "& .MuiTextField-root": { m: 1, mb: 2 },
-          }}
-          noValidate
-          autoComplete="off"
+          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
         >
-          <div>
-            <Autocomplete
-              onChange={handleSearch}
-              disablePortal
-              id="combo-box-demo"
-              options={clientsList.map((client) => client.name)}
-              renderInput={(params) => (
-                <TextField {...params} fullWidth label="Search client" />
-              )}
-            />
-          </div>
+          {/* <SearchBar
+            // inputRef={autocomRef}
+            handleSearch={handleSearch}
+            label="Search Clients"
+            options={clientNameList}
+          /> */}
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={clientNameList}
+            sx={{ width: 300, m: 0.5 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Search Client" />
+            )}
+          />
         </Box>
 
         {/* clients list flex container */}
@@ -134,15 +160,21 @@ export default function Sidebar() {
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
             flexGrow: "1",
+            alignItems: "flex-start",
             overflowY: "auto",
           }}
         >
           <TreeView
             fullWidth
             // className={classes.root}
-            sx={{ width: "100%" }}
+            sx={{
+              height: 240,
+              flexGrow: 1,
+              // maxWidth: 400,
+              overflowY: "auto",
+              width: "100%",
+            }}
           >
             {clientsList.map((client) => (
               <TreeItem
@@ -170,12 +202,11 @@ export default function Sidebar() {
             style={{ width: "100%" }}
           >
             <TextField
+              inputRef={inputRef}
               onChange={(e) => setnewClientValue(e.target.value)}
               required
-              fullWidth
               label="Add new client"
               error={newClientError}
-              sx={{}}
             />
             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
               Submit
