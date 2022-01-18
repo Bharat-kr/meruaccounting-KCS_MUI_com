@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Sidebar() {
   const classes = useStyles();
-  console.log("hello bitch");
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
@@ -96,6 +95,7 @@ export default function Sidebar() {
   //   );
   // }, [checkclientDetails]);
   // change currentclient on search
+  // console.log(currentClient, currentProject);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");
@@ -231,7 +231,7 @@ export default function Sidebar() {
                   {client.projects.map((project) => {
                     return (
                       <TreeItem
-                        nodeId={project._id.toString()}
+                        nodeId={(client._id + project._id).toString()}
                         id={project._id}
                         key={project._id}
                         label={
