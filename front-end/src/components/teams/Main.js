@@ -25,7 +25,7 @@ import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import EdiText from "react-editext";
-import { UserContext, convertString } from "../../contexts/UserContext";
+import { convertString } from "../../contexts/UserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
@@ -59,9 +59,8 @@ export default function Main(props) {
       payRate: value,
     };
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
-    // await getTeam(dispatchgetTeam);
+    await getTeam(dispatchgetTeam);
   };
-  console.log(updatedMember);
 
   const updateRole = async (e) => {
     const data = {
@@ -103,6 +102,17 @@ export default function Main(props) {
       const id = value._id;
       window.location.href = "#" + id;
     }
+  };
+  const removeAllProject = async () => {
+    for (var i = 0; i < currMember.projects.length; i++) {
+      const data = {
+        id: currMember._id,
+        projectId: currMember.projects[i]._id,
+      };
+      console.log(data);
+      await removeProjectMember(data, dispatchremoveProjectMember);
+    }
+    await getTeam(dispatchgetTeam);
   };
 
   const Labelconfig = function () {
@@ -292,10 +302,7 @@ export default function Main(props) {
                     <Typography variant="h5">Manage for</Typography>
                     <Typography varinat="body2">
                       If enabled,
-                      {getFullName(
-                        currMember.firstName,
-                        currMember.lastName
-                      )}{" "}
+                      {getFullName(currMember.firstName, currMember.lastName)}
                       will be able to see selected user's Timeline and Reports,
                       but not rates.
                     </Typography>
@@ -333,7 +340,9 @@ export default function Main(props) {
                     />
                   </Box>
                   {/* <Link sx={{ pr: 1 }}>Add all</Link> */}
-                  <Link sx={{ pl: 1 }}>Remove all</Link>
+                  <Link sx={{ pl: 1 }} onClick={removeAllProject}>
+                    Remove all
+                  </Link>
                   <Container sx={{ display: "block" }}>
                     {Labelconfig()}
                   </Container>
