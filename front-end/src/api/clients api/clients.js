@@ -82,9 +82,10 @@ export const addClient = async (incomingData, dispatch) => {
   }
 };
 
-export const deleteClient = async (dispatch) => {
+export const deleteClient = async (incomingData, dispatch) => {
   try {
-    const { data } = await axios.delete(`/client`, config);
+    console.log(incomingData);
+    const { data } = await axios.delete(`/client/${incomingData}`, config);
 
     dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });
 
