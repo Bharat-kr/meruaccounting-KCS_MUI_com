@@ -30,8 +30,10 @@ import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
+import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
+import { removeProjectMember } from "src/api/projects api/projects";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -45,6 +47,7 @@ export default function Main(props) {
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam, updatedMember } =
     useContext(teamContext);
+  const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
@@ -76,6 +79,7 @@ export default function Main(props) {
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
+
   const deleteMember = async () => {
     const data = {
       employeeId: currMember._id,
@@ -85,7 +89,15 @@ export default function Main(props) {
     await removeMember(data, dispatchRemoveMember);
     await getTeam(dispatchgetTeam);
   };
-
+  const removeProject = async (value) => {
+    const data = {
+      id: currMember._id,
+      projectId: value,
+    };
+    console.log(data);
+    await removeProjectMember(data, dispatchremoveProjectMember);
+    await getTeam(dispatchgetTeam);
+  };
   const handleChange = (e, value) => {
     if (value) {
       const id = value._id;
@@ -100,7 +112,8 @@ export default function Main(props) {
           <FormControlLabel
             id={`${pro._id}`}
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            control={<Switch checked />}
+            onClick={() => removeProject(pro._id)}
+            control={<Switch defaultChecked />}
             label={`${pro.name}`}
           />
         ))}
@@ -319,7 +332,7 @@ export default function Main(props) {
                       onChange={handleChange}
                     />
                   </Box>
-                  <Link sx={{ pr: 1 }}>Add all</Link>
+                  {/* <Link sx={{ pr: 1 }}>Add all</Link> */}
                   <Link sx={{ pl: 1 }}>Remove all</Link>
                   <Container sx={{ display: "block" }}>
                     {Labelconfig()}
