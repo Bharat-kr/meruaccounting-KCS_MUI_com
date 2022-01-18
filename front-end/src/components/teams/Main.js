@@ -187,7 +187,13 @@ export default function Main(props) {
                   <Box>
                     <Typography
                       sx={{ padding: 1 }}
-                      onClick={(e) => updateStatus("paused")}
+                      onClick={(e) => {
+                        if (currMember.status === "paused") {
+                          updateStatus("null");
+                        } else {
+                          updateStatus("paused");
+                        }
+                      }}
                     >
                       {currMember.status === "paused" ? (
                         <Link>
@@ -212,7 +218,13 @@ export default function Main(props) {
                   <Box>
                     <Typography
                       sx={{ padding: 1 }}
-                      onClick={(e) => updateStatus("archived")}
+                      onClick={(e) => {
+                        if (currMember.status === "archived") {
+                          updateStatus("null");
+                        } else {
+                          updateStatus("archived");
+                        }
+                      }}
                     >
                       {currMember.status === "archived" ? (
                         <Link>
