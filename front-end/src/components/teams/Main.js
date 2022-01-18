@@ -87,8 +87,10 @@ export default function Main(props) {
   };
 
   const handleChange = (e, value) => {
-    const id = value._id;
-    window.location.href = "#" + id;
+    if (value) {
+      const id = value._id;
+      window.location.href = "#" + id;
+    }
   };
 
   const Labelconfig = function () {
