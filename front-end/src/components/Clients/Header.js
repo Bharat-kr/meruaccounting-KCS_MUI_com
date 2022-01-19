@@ -195,7 +195,7 @@ export default function Header(props) {
                   <span style={{ float: "right" }}>{project.rate} rs/hr</span>
                 </Typography>
               ))} */}
-              {/* <DataTable /> */}
+              <DataTable />
             </Box>
           </Box>
         </Paper>

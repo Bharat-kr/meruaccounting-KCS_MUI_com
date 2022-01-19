@@ -175,22 +175,7 @@ export default function Header(props) {
       console.log(err);
     }
   };
-  // const handleSwitchChange = (e, client, project, member) => {
-  //   const newClient = client;
 
-  //   const index = newClient.projects.indexOf(currentProject);
-  //   const members = newClient.projects[index].Projectmembers;
-  //   if (members.includes(member)) {
-  //     newClient.projects[index].Projectmembers.splice(
-  //       members.indexOf(member),
-  //       1
-  //     );
-  //     updateClient(newClient, clients.indexOf(currentClient));
-  //   } else {
-  //     newClient.projects[index].Projectmembers.push(member);
-  //     updateClient(newClient, clients.indexOf(currentClient));
-  //   }
-  // };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
