@@ -186,6 +186,7 @@ export default class Calendar extends React.Component {
       dateObject: dateObject,
     });
     console.log("SELECTED DATE: ", dateObject.format("DD/MM/YYYY"));
+    this.props.setDate(dateObject.format("DD/MM/YYYY"));
   };
   render() {
     let dayofDate = [];
