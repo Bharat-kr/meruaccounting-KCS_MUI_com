@@ -247,6 +247,7 @@ export default function EnhancedTable(props) {
   const {
     // currentProject,
     //  currentClient,
+    clientsList,
     outerref,
   } = props;
   const [order, setOrder] = React.useState("asc");
@@ -284,24 +285,24 @@ export default function EnhancedTable(props) {
       })
     : employeesList.push("");
   const rowPush = [];
-  // React.useEffect(() => {
-  //   try {
-  //     let project = [];
-  //     let client = [];
-  //     if (clientDetails.loader === false && currentClient !== null) {
-  //       client =
-  //         clientDetails?.client?.data[
-  //           clientDetails?.client?.data?.indexOf(currentClient) + 1
-  //         ];
-  //       project =
-  //         client.projects[currentClient?.projects?.indexOf(currentProject)];
-  //       changeClient(client);
-  //       changeProject(project);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [clientDetails]);
+  useEffect(async () => {
+    try {
+      const data = currentClient?._id;
+      const clientIndex = clientsList?.findIndex(
+        (i) => i._id === currentClient?._id
+      );
+      const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+        (i) => i._id === currentProject._id
+      );
+      console.log(projectIndex, clientIndex, "hello");
+      if (projectIndex && clientIndex !== null) {
+        await changeClient(clientsList[clientIndex]);
+        await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [clientDetails]);
   React.useEffect(() => {
     try {
       currentProject?.employees?.map((emp) => {
