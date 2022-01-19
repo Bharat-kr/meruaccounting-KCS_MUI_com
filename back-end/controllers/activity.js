@@ -279,3 +279,29 @@ const updateActivity = asyncHandler(async (req, res) => {
 });
 
 export { createActivity, createScreenShot, updateActivity, splitActivity };
+
+// const updateActivity = asyncHandler(async (req, res) => {
+//   try {
+//     const { _id } = req.user;
+//     const user = await User.findById(_id).update();
+
+//     const activityId = req.params.id;
+//     const unUpdatedactivity = await Activity.findByIdAndUpdate(
+//       activityId,
+//       req.body
+//     );
+//     const activity = await Activity.findById(activityId);
+
+//     if (!unUpdatedactivity) {
+//       res.status(404);
+//       throw new Error(`No activity found ${activityId}`);
+//     }
+
+//     res.status(202).json({
+//       message: 'Succesfully edited activity',
+//       data: activity,
+//     });
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// });
