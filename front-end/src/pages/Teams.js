@@ -3,8 +3,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import VerticalTabs from "../components/teams/verticaltabs";
 import PageHeader from "../components/PageHeader";
-import { UserContextProvider } from "../contexts/UserContext";
-import { ClientsContextProvider } from "../contexts/ClientsContext";
 
 // _______________________________________________________________________________________________________________
 
