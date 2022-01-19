@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -16,6 +16,7 @@ import {
   Switch,
   TextField,
   Autocomplete,
+  Button,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -43,9 +44,16 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Main(props) {
-  const { currTeam, currMember, ...other } = props;
+  const {
+    currTeam,
+    currMember,
+    setMember,
+    setCurrTeam,
+    teamsDetails,
+    ...other
+  } = props;
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
-  const { dispatchRemoveMember, dispatchgetTeam, updatedMember } =
+  const { dispatchRemoveMember, dispatchgetTeam, updatedMember, getTeams } =
     useContext(teamContext);
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
@@ -54,6 +62,22 @@ export default function Main(props) {
     console.log(event.target.checked);
   };
 
+  useEffect(async () => {
+    try {
+      console.log(currTeam?._id, currMember._id);
+      const teamIndex = teamsDetails?.findIndex((i) => i._id === currTeam?._id);
+      const memberIndex = teamsDetails[teamIndex]?.members?.findIndex(
+        (i) => i._id === currMember?._id
+      );
+      console.log(teamIndex, memberIndex, "hello");
+      if (teamsDetails !== null) {
+        await setCurrTeam(teamsDetails[teamIndex]);
+        await setMember(teamsDetails[teamIndex]?.members[memberIndex]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [getTeams]);
   const updatePayrate = async (value) => {
     const data = {
       payRate: value,
@@ -61,7 +85,7 @@ export default function Main(props) {
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
-
+  console.log(currMember);
   const updateRole = async (e) => {
     const data = {
       role: e.target.value,
@@ -153,6 +177,17 @@ export default function Main(props) {
     </Box>
   ) : (
     <>
+      {/* <Button
+        onClick={() => (
+          <>
+            {setMember()}
+            {console.log(currMember)}{" "}
+          </>
+        )}
+      >
+        click me
+      </Button> */}
+
       {currMember && (
         <Container
           component="div"
