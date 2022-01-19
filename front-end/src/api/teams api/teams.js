@@ -80,7 +80,9 @@ export const updateMember = async (incomingData, dispatch) => {
 
 export const removeMember = async (incomingData, dispatch) => {
   try {
-    const { data } = await axios.delete("/team/removeMember", incomingData);
+    const { data } = await axios.delete("/team/removeMember", {
+      data: incomingData,
+    });
 
     dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
     console.log("removed Member");

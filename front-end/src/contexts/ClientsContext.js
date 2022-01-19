@@ -3,20 +3,19 @@ import React, { createContext, useState, useReducer, useEffect } from "react";
 import { ADD_TEAM_PROJECTS_RESET } from "src/constants/ProjectConstants";
 
 import {
-  GET_CLIENT_REQUEST,
   GET_CLIENT_SUCCESS,
   GET_CLIENT_FAILED,
-  ADD_CLIENT_REQUEST,
   ADD_CLIENT_SUCCESS,
   ADD_CLIENT_FAILED,
   ADD_CLIENT_RESET,
-  DELETE_CLIENT_REQUEST,
   DELETE_CLIENT_SUCCESS,
   DELETE_CLIENT_FAILED,
   DELETE_CLIENT_RESET,
   GET_CLIENTPRO_FAILED,
-  GET_CLIENTPRO_REQUEST,
   GET_CLIENTPRO_SUCCESS,
+  EDIT_CLIENT_SUCCESS,
+  EDIT_CLIENT_FAILED,
+  EDIT_CLIENT_RESET,
 } from "../constants/ClientConstants";
 
 export const ClientsContext = createContext();
@@ -93,6 +92,25 @@ const deleteClientReducer = (state, action) => {
   }
 };
 
+const editClientReducer = (state, action) => {
+  switch (action.type) {
+    case EDIT_CLIENT_SUCCESS:
+      return {
+        loader: false,
+        editClient: action.payload,
+      };
+    case EDIT_CLIENT_FAILED:
+      return {
+        loader: false,
+        error: action.payload,
+      };
+    case EDIT_CLIENT_RESET:
+      return { editClient: {} };
+    default:
+      return state;
+  }
+};
+
 export const ClientsContextProvider = (props) => {
   const [clientDetails, dispatchClientDetails] = useReducer(
     clientDetailsReducer,
@@ -108,6 +126,9 @@ export const ClientsContextProvider = (props) => {
     clientProjectDetailsReducer,
     { clientProjectDetails: { loader: true } }
   );
+  const [editClient, dispatchEditClient] = useReducer(editClientReducer, {
+    editClient: { loader: true },
+  });
   const [clients, setClients] = useState([
     {
       id: 1,
@@ -209,6 +230,8 @@ export const ClientsContextProvider = (props) => {
           updateClient,
           clientProjectDetails,
           dispatchClientProjectDetails,
+          editClient,
+          dispatchEditClient,
           // changeProjectmember
         }}
       >
