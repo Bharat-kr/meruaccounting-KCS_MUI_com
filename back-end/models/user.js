@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,35 +10,35 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, length: 6 },
     payRate: { type: Number, default: 100 },
-    lastActive: { type: String, default: "0" },
+    lastActive: { type: String, default: '0' },
     activityStatus: { type: Boolean, default: false },
     accountInfo: {
       // managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       ip: { type: String },
-      countryName: { type: String, default: "India" },
+      countryName: { type: String, default: 'India' },
       // add time zone as in mongo aggregation
     },
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "project",
+        ref: 'project',
       },
     ],
     clients: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "client",
+        ref: 'client',
       },
     ],
     teams: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "team",
+        ref: 'team',
       },
     ],
     status: {
       type: String,
-      default: "null",
+      default: 'null',
     },
     notifications: [
       {
@@ -89,20 +89,20 @@ const userSchema = new mongoose.Schema(
       },
       WeekStart: {
         isTeamSetting: { type: Boolean, required: true, default: true },
-        teamValue: { type: String, default: "Monday" },
-        individualValue: { type: String, default: "Monday" },
+        teamValue: { type: String, default: 'Monday' },
+        individualValue: { type: String, default: 'Monday' },
       },
       CurrencySymbol: {
         isTeamSetting: { type: Boolean, required: true, default: true },
-        teamValue: { type: String, default: "$" },
-        individualValue: { type: String, default: "$" },
+        teamValue: { type: String, default: '$' },
+        individualValue: { type: String, default: '$' },
       },
     },
     days: [
       {
-        date: { type: String, default: "0" },
-        hours: { type: Number, default: 0 },
-        activities: [{ type: mongoose.Types.ObjectId, ref: "Activity" }],
+        date: { type: String, default: '0' },
+        dailyHours: { type: Number, default: 0 },
+        activities: [{ type: mongoose.Types.ObjectId, ref: 'Activity' }],
       },
     ],
   },
@@ -125,14 +125,14 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 export default User;
