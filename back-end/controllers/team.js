@@ -145,9 +145,6 @@ const getTeamById = asyncHandler(async (req, res) => {
     const team = await Team.findById(teamId).populate({
       path: "members",
       model: "User",
-      match: {
-        $or: [{ status: "null" }, { status: "paused" }],
-      },
       select: ["fistName", "lastName", "email", "status"],
     });
 
@@ -179,9 +176,6 @@ const getTeam = asyncHandler(async (req, res) => {
         populate: {
           path: "members",
           model: "User",
-          match: {
-            $or: [{ status: "null" }, { status: "paused" }],
-          },
           select: [
             "firstName",
             "lastName",
@@ -190,6 +184,7 @@ const getTeam = asyncHandler(async (req, res) => {
             "projects",
             "role",
             "payRate",
+            "status",
           ],
           populate: {
             path: "projects",
@@ -204,9 +199,6 @@ const getTeam = asyncHandler(async (req, res) => {
         populate: {
           path: "manager",
           model: "User",
-          match: {
-            $or: [{ status: "null" }, { status: "paused" }],
-          },
           select: ["-password", "-settings"],
           populate: { path: "projects", model: "Project" },
         },

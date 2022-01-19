@@ -16,21 +16,24 @@ import {
   Switch,
   TextField,
   Autocomplete,
-  Button,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArchiveIcon from "@mui/icons-material/Archive";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import RestorePageIcon from "@mui/icons-material/RestorePage";
 import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import EdiText from "react-editext";
-import { UserContext, convertString } from "../../contexts/UserContext";
+import { convertString } from "../../contexts/UserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, removeMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
+import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
+import { removeProjectMember } from "src/api/projects api/projects";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -42,7 +45,9 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Main(props) {
   const { currTeam, currMember, ...other } = props;
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
-  const { dispatchRemoveMember, dispatchgetTeam } = useContext(teamContext);
+  const { dispatchRemoveMember, dispatchgetTeam, updatedMember } =
+    useContext(teamContext);
+  const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
@@ -65,6 +70,15 @@ export default function Main(props) {
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
+  const updateStatus = async (value) => {
+    const data = {
+      status: value,
+    };
+    console.log(data);
+    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await getTeam(dispatchgetTeam);
+  };
+
   const deleteMember = async () => {
     const data = {
       employeeId: currMember._id,
@@ -74,10 +88,31 @@ export default function Main(props) {
     await removeMember(data, dispatchRemoveMember);
     await getTeam(dispatchgetTeam);
   };
-
+  const removeProject = async (value) => {
+    const data = {
+      id: currMember._id,
+      projectId: value,
+    };
+    console.log(data);
+    await removeProjectMember(data, dispatchremoveProjectMember);
+    await getTeam(dispatchgetTeam);
+  };
   const handleChange = (e, value) => {
-    const id = value._id;
-    window.location.href = "#" + id;
+    if (value) {
+      const id = value._id;
+      window.location.href = "#" + id;
+    }
+  };
+  const removeAllProject = async () => {
+    for (var i = 0; i < currMember.projects.length; i++) {
+      const data = {
+        id: currMember._id,
+        projectId: currMember.projects[i]._id,
+      };
+      console.log(data);
+      await removeProjectMember(data, dispatchremoveProjectMember);
+    }
+    await getTeam(dispatchgetTeam);
   };
 
   const Labelconfig = function () {
@@ -87,7 +122,8 @@ export default function Main(props) {
           <FormControlLabel
             id={`${pro._id}`}
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            control={<Switch checked />}
+            onClick={() => removeProject(pro._id)}
+            control={<Switch defaultChecked />}
             label={`${pro.name}`}
           />
         ))}
@@ -100,40 +136,27 @@ export default function Main(props) {
       component="div"
       sx={{
         height: "100%",
-        width: "70%",
+        width: "100%",
         flexGrow: "1",
-        overflowX: "hidden",
-        overflowY: "auto",
-        margin: "10px 10px 10px 0",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <Paper
-        component="div"
-        elevation={3}
-        sx={{
-          display: "flex",
-          flexGrow: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          ml: 1,
-          overflow: "visible",
-          height: "100%",
-        }}
-      >
-        <Box
-          component="img"
-          src="/svgs/member.svg"
-          sx={{ width: 100, height: 70, backgroundColor: "white" }}
-        />
-        <Typography variant="h5">No Member Selected</Typography>
-      </Paper>
+      <Box
+        component="img"
+        src="/svgs/member.svg"
+        sx={{ width: 100, height: 70, backgroundColor: "white" }}
+      />
+      <Typography variant="h5">No Member Selected</Typography>
     </Box>
   ) : (
     <>
       {currMember && (
         <Container
           component="div"
-          sx={{ border: 1, height: "100%", overflow: "auto" }}
+          sx={{ height: "auto" }}
           role="tabpanel"
           id={`vertical-tabpanel`}
           aria-labelledby={`vertical-tab`}
@@ -156,137 +179,207 @@ export default function Main(props) {
                   </RouterLink>
                   <Divider />
                   <Typography variant="body1">{currMember?.email}</Typography>
-                  <Grid xs={8} sx={{ mt: 2 }}>
-                    <Typography variant="h4">Payrate</Typography>
-                    <EdiText
-                      type="number"
-                      value={`${currMember.payRate}`}
-                      onCancel={(v) => console.log("CANCELLED: ", v)}
-                      onSave={(v) => updatePayrate(v)}
-                    />
-                  </Grid>
+                  {currMember.status !== "archived" && (
+                    <Grid xs={8} sx={{ mt: 2 }}>
+                      <Typography variant="h4">Payrate</Typography>
+                      <EdiText
+                        type="number"
+                        value={`${currMember.payRate}`}
+                        onCancel={(v) => console.log("CANCELLED: ", v)}
+                        onSave={(v) => updatePayrate(v)}
+                      />
+                    </Grid>
+                  )}
                 </Grid>
-                <Box sx={{ padding: 1 }}>
-                  <Link
-                    data-key="1"
-                    sx={{ padding: 1 }}
-                    onClick={(e) => console.log(e.currentTarget.dataset.key)}
-                  >
-                    <PauseIcon sx={{ fontSize: "small" }} />
-                    Pause
-                  </Link>
-                  <Link sx={{ padding: 1 }} onClick={deleteMember}>
-                    <DeleteIcon sx={{ fontSize: "small" }} /> Delete
-                  </Link>
-                  <Link sx={{ padding: 1 }}>
-                    <ArchiveIcon sx={{ fontSize: "small" }} />
-                    Archive
-                  </Link>
+                <Box sx={{ padding: 1, display: "flex" }}>
+                  <Box>
+                    <Typography
+                      sx={{
+                        padding: 1,
+                        backgroundColor: "error.main",
+                        color: "white",
+                        borderRadius: 1,
+                        display: `${
+                          currMember.status === "null" ? "none" : ""
+                        }`,
+                      }}
+                    >
+                      {currMember.status}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{ padding: 1 }}
+                      onClick={(e) => {
+                        if (currMember.status === "paused") {
+                          updateStatus("null");
+                        } else {
+                          updateStatus("paused");
+                        }
+                      }}
+                    >
+                      {currMember.status === "paused" ? (
+                        <Link>
+                          <PlayArrowIcon sx={{ fontSize: "small" }} />
+                          UnPause
+                        </Link>
+                      ) : (
+                        <Link>
+                          <PauseIcon sx={{ fontSize: "small" }} />
+                          Pause
+                        </Link>
+                      )}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ padding: 1 }} onClick={deleteMember}>
+                      <Link>
+                        <DeleteIcon sx={{ fontSize: "small" }} /> Delete
+                      </Link>
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{ padding: 1 }}
+                      onClick={(e) => {
+                        if (currMember.status === "archived") {
+                          updateStatus("null");
+                        } else {
+                          updateStatus("archived");
+                        }
+                      }}
+                    >
+                      {currMember.status === "archived" ? (
+                        <Link>
+                          <RestorePageIcon sx={{ fontSize: "small" }} />
+                          Restore
+                        </Link>
+                      ) : (
+                        <Link>
+                          <ArchiveIcon sx={{ fontSize: "small" }} />
+                          Archive
+                        </Link>
+                      )}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
             </Box>
-            {currMember.role === "admin" && (
-              <Box sx={{ mt: 2 }}>
-                <FormControl component="fieldset" sx={{ pt: 2 }}>
-                  <Typography variant="h4">Role({currMember.role})</Typography>
-                  <RadioGroup
-                    aria-label="Role"
-                    value={currMember.role}
-                    name="radio-buttons-group"
-                  >
-                    <FormControlLabel
-                      value="admin"
-                      control={<Radio onChange={updateRole} />}
-                      label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
-                    />
-                    <FormControlLabel
-                      value="manager"
-                      control={<Radio onChange={updateRole} />}
-                      label="Manager - can see selected user's Timeline & Reports (but not rates)"
-                    />
-                    <FormControlLabel
-                      value="employee"
-                      control={<Radio onChange={updateRole} />}
-                      label="Employee - can see their own data only"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Box>
-            )}
-            {currMember.role === "admin" && (
-              <Box>
-                <Typography variant="h5">Manage for</Typography>
-                <Typography varinat="body2">
-                  If enabled,
-                  {getFullName(currMember.firstName, currMember.lastName)} will
-                  be able to see selected user's Timeline and Reports, but not
-                  rates.
-                </Typography>
-                <Typography varinat="h6">
-                  {/* {User.map((user) => (
+            {currMember.status !== "archived" && (
+              <>
+                {currMember.role === "admin" && (
+                  <Box sx={{ mt: 2 }}>
+                    <FormControl component="fieldset" sx={{ pt: 2 }}>
+                      <Typography variant="h4">
+                        Role({currMember.role})
+                      </Typography>
+                      <RadioGroup
+                        aria-label="Role"
+                        value={currMember.role}
+                        name="radio-buttons-group"
+                      >
+                        <FormControlLabel
+                          value="admin"
+                          control={<Radio onChange={updateRole} />}
+                          label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
+                        />
+                        <FormControlLabel
+                          value="manager"
+                          control={<Radio onChange={updateRole} />}
+                          label="Manager - can see selected user's Timeline & Reports (but not rates)"
+                        />
+                        <FormControlLabel
+                          value="employee"
+                          control={<Radio onChange={updateRole} />}
+                          label="Employee - can see their own data only"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </Box>
+                )}
+                {currMember.role === "admin" && (
+                  <Box>
+                    <Typography variant="h5">Manage for</Typography>
+                    <Typography varinat="body2">
+                      If enabled,
+                      {getFullName(currMember.firstName, currMember.lastName)}
+                      will be able to see selected user's Timeline and Reports,
+                      but not rates.
+                    </Typography>
+                    <Typography varinat="h6">
+                      {/* {User.map((user) => (
                     <FormControlLabel
                       sx={{ pt: 1, fontWeight: 10 }}
                       control={<Switch />}
                       label={user.name}
                     />
                   ))} */}
-                </Typography>
-              </Box>
+                    </Typography>
+                  </Box>
+                )}
+
+                <Box sx={{ pt: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant="h5">Projects</Typography>
+                    <Autocomplete
+                      id="combo-box-demo"
+                      options={currMember.projects}
+                      getOptionLabel={(option) => option.name}
+                      sx={{ width: 300 }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Project" />
+                      )}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                  {/* <Link sx={{ pr: 1 }}>Add all</Link> */}
+                  <Link sx={{ pl: 1 }} onClick={removeAllProject}>
+                    Remove all
+                  </Link>
+                  <Container sx={{ display: "block" }}>
+                    {Labelconfig()}
+                  </Container>
+                </Box>
+                <Box sx={{ pt: 2, fontSize: "20px" }}>
+                  <Typography variant="h4">Effective Settings</Typography>
+                  {currMember.settings &&
+                    Object.keys(currMember.settings).map(
+                      (keyName, keyIndex) => (
+                        <>
+                          <Box
+                            key={keyName}
+                            sx={{ display: "flex", flexDirection: "rows" }}
+                          >
+                            <Typography
+                              varihant="h6"
+                              sx={{ pr: 2, fontSize: "20px", color: "success" }}
+                            >
+                              {convertString(keyName)}
+                              {/* {console.log(index)} */}
+                            </Typography>
+                            <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
+                              {currMember.settings[keyName].isTeamSetting
+                                ? settingsValueToString(
+                                    currMember.settings[keyName].teamValue
+                                  )
+                                : settingsValueToString(
+                                    currMember.settings[keyName].individualValue
+                                  )}
+                            </RouterLink>
+                          </Box>
+                        </>
+                      )
+                    )}
+                </Box>
+              </>
             )}
-            <Box sx={{ pt: 2 }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography variant="h5">Projects</Typography>
-                <Autocomplete
-                  id="combo-box-demo"
-                  options={currMember.projects}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ width: 300 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Project" />
-                  )}
-                  onChange={handleChange}
-                />
-              </Box>
-              <Link sx={{ pr: 1 }}>Add all</Link>
-              <Link sx={{ pl: 1 }}>Remove all</Link>
-              <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
-            </Box>
-            <Box sx={{ pt: 2, fontSize: "20px" }}>
-              <Typography variant="h4">Effective Settings</Typography>
-              {currMember.settings &&
-                Object.keys(currMember.settings).map((keyName, keyIndex) => (
-                  <>
-                    <Box
-                      key={keyName}
-                      sx={{ display: "flex", flexDirection: "rows" }}
-                    >
-                      <Typography
-                        varihant="h6"
-                        sx={{ pr: 2, fontSize: "20px", color: "success" }}
-                      >
-                        {convertString(keyName)}
-                        {/* {console.log(index)} */}
-                      </Typography>
-                      <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
-                        {currMember.settings[keyName].isTeamSetting
-                          ? settingsValueToString(
-                              currMember.settings[keyName].teamValue
-                            )
-                          : settingsValueToString(
-                              currMember.settings[keyName].individualValue
-                            )}
-                      </RouterLink>
-                    </Box>
-                  </>
-                ))}
-            </Box>
           </Typography>
         </Container>
       )}

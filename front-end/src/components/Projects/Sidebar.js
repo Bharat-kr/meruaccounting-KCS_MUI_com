@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Sidebar() {
   const classes = useStyles();
-
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
@@ -96,6 +95,7 @@ export default function Sidebar() {
   //   );
   // }, [checkclientDetails]);
   // change currentclient on search
+  // console.log(currentClient, currentProject);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");
@@ -118,6 +118,8 @@ export default function Sidebar() {
           // eslint-disable-next-line no-useless-return
           return;
         }
+        setnewProjectValue(project[0]);
+
         changeProject(project[0]);
       }
     } catch (error) {
@@ -129,6 +131,8 @@ export default function Sidebar() {
     const client = clientsList.filter((client) =>
       client.name === e.target.textContent ? client : ""
     );
+    setnewClientValue(client[0]);
+
     changeClient(client[0]);
   };
   const handleProjectClick = (e) => {
@@ -140,7 +144,7 @@ export default function Sidebar() {
     const project = client[0].projects.filter((project) =>
       project.name === e.target.dataset.project ? project : ""
     );
-
+    setnewProjectValue(project[0]);
     changeProject(project[0]);
   };
   // add client in submit
@@ -231,7 +235,7 @@ export default function Sidebar() {
                   {client.projects.map((project) => {
                     return (
                       <TreeItem
-                        nodeId={project._id.toString()}
+                        nodeId={(client._id + project._id).toString()}
                         id={project._id}
                         key={project._id}
                         label={
@@ -251,32 +255,12 @@ export default function Sidebar() {
                 </TreeItem>
               ))}
           </TreeView>
-          {/* <TreeView
-            aria-label="file system navigator"
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
-            sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
-          >
-            <TreeItem nodeId="1" label="Applications">
-              <TreeItem nodeId="2" label="Calendar" />
-            </TreeItem>
-            <TreeItem nodeId="5" label="Documents">
-              <TreeItem nodeId="10" label="OSS" />
-              <TreeItem nodeId="6" label="MUI">
-                <TreeItem nodeId="8" label="index.js" />
-              </TreeItem>
-            </TreeItem>
-          </TreeView> */}
         </Box>
 
-        {/* INPUT BOX, add validations, connect to context */}
         <Box
           sx={{
             boxSizing: "border-box",
             width: "95%",
-            // position: "absolute",
-            // bottom: "0",
-
             "& > :not(style)": { m: 1 },
           }}
         >
@@ -302,8 +286,9 @@ export default function Sidebar() {
         </Box>
       </Paper>
       <Header
+        clientsList={clientsList}
         currentClient={newClientValue}
-        currentProject={currentProject}
+        currentProject={newProjectValue}
         setcurrClient={changeClient}
         setCurrProjct={changeProject}
       />

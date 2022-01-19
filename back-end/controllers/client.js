@@ -48,9 +48,9 @@ const getClient = asyncHandler(async (req, res) => {
         path: "projects",
         populate: {
           path: "employees",
-          match: {
-            $or: [{ status: "null" }, { status: "paused" }],
-          },
+          // match: {
+          //   $or: [{ status: "null" }, { status: "paused" }],
+          // },
           select: ["firstName", "lastName", "days", "email", "projects"],
           populate: {
             path: "projects",
@@ -101,7 +101,7 @@ const getClientById = asyncHandler(async (req, res) => {
 
 const editClient = asyncHandler(async (req, res) => {
   try {
-    const client = await Client.findOneAndUpdate(req.params.id, req.body);
+    const client = await Client.findByIdAndUpdate(req.params.id, req.body);
 
     if (!client) {
       res.status(404);
