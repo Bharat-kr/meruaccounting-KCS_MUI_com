@@ -34,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Header(props) {
   const {
-    //  currentClient,
+    // currentClient,
+    // currentProject,
+    clientsList,
     setcurrentProject,
     setcurrentClient,
     ...other
@@ -48,6 +50,7 @@ export default function Header(props) {
     clients,
     currentClient,
     currentProject,
+    changeClient,
     changeProject,
     updateClient,
     clientDetails,
@@ -65,7 +68,20 @@ export default function Header(props) {
     inputRef.current.focus();
   };
   const test = useRef(false);
-
+  useEffect(async () => {
+    const data = currentClient?._id;
+    const clientIndex = clientsList?.findIndex(
+      (i) => i._id === currentClient?._id
+    );
+    const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+      (i) => i._id === currentProject?._id
+    );
+    console.log(projectIndex, clientIndex, "hello");
+    if (clientsList !== null) {
+      await changeClient(clientsList[clientIndex]);
+      await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+    }
+  }, [clientDetails]);
   useEffect(() => {
     try {
       currentProject
@@ -103,8 +119,9 @@ export default function Header(props) {
       );
       const data = [currentProject._id, emp[0].email];
       await addProjectLeader(data, dispatchaddProjectLeader);
+      await getClient(dispatchClientDetails);
       const employee = memberList.filter((emp) => (emp == value ? emp : ""));
-      return setProjectLeader(employee);
+      setProjectLeader(employee);
     } catch (error) {
       console.log(error.message);
     }
@@ -122,50 +139,54 @@ export default function Header(props) {
   };
   const handleProjectDelete = async (e) => {
     try {
+      const clientIndex = clientsList?.findIndex(
+        (i) => i._id === currentClient?._id
+      );
+      const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+        (i) => i._id === currentProject._id
+      );
+      const lastIn = clientsList[clientIndex]?.projects?.indexOf(
+        clientsList[clientIndex]?.projects?.slice(-1)[0]
+      )
+        ? clientsList[clientIndex]?.projects?.indexOf(
+            clientsList[clientIndex]?.projects?.slice(-1)[0]
+          )
+        : 0;
       const data = { projectId: `${currentProject._id}` };
-      await deleteProject(currentProject._id, dispatchDeleteProject);
-      if (
-        currentClient.projects[
-          currentClient.projects.indexOf(currentProject)
-        ] === 0
-      ) {
-        setcurrentClient(
-          clientDetails.client.data[
-            clientDetails.client.data.indexOf(currentClient)
-          ]
-        );
 
-        changeProject(
-          currentClient.projects[
-            currentClient.projects.lastIndexOf(currentProject)
-          ]
-        );
+      if (projectIndex === lastIn || projectIndex === 0) {
+        changeClient(clientsList[clientIndex - 1]);
+        changeProject(clientsList[clientIndex - 1].projects.slice(-1)[0]);
+      } else if (clientIndex === 0 && projectIndex === 0) {
+        changeProject(clientsList[clientIndex].projects[projectIndex + 1]);
+      } else if (clientIndex === 0 && projectIndex === lastIn) {
+        changeClient(clientsList[clientIndex + 1]);
+        changeProject(clientsList[clientIndex + 1].projects[0]);
       } else {
-        changeProject(
-          currentClient.projects[currentClient.projects.indexOf(currentProject)]
-        );
+        changeProject(clientsList[clientIndex].projects[projectIndex + 1]);
       }
+      await deleteProject(currentProject._id, dispatchDeleteProject);
       await getClient(dispatchClientDetails);
     } catch (err) {
       console.log(err);
     }
   };
-  const handleSwitchChange = (e, client, project, member) => {
-    const newClient = client;
+  // const handleSwitchChange = (e, client, project, member) => {
+  //   const newClient = client;
 
-    const index = newClient.projects.indexOf(currentProject);
-    const members = newClient.projects[index].Projectmembers;
-    if (members.includes(member)) {
-      newClient.projects[index].Projectmembers.splice(
-        members.indexOf(member),
-        1
-      );
-      updateClient(newClient, clients.indexOf(currentClient));
-    } else {
-      newClient.projects[index].Projectmembers.push(member);
-      updateClient(newClient, clients.indexOf(currentClient));
-    }
-  };
+  //   const index = newClient.projects.indexOf(currentProject);
+  //   const members = newClient.projects[index].Projectmembers;
+  //   if (members.includes(member)) {
+  //     newClient.projects[index].Projectmembers.splice(
+  //       members.indexOf(member),
+  //       1
+  //     );
+  //     updateClient(newClient, clients.indexOf(currentClient));
+  //   } else {
+  //     newClient.projects[index].Projectmembers.push(member);
+  //     updateClient(newClient, clients.indexOf(currentClient));
+  //   }
+  // };
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -376,6 +397,7 @@ export default function Header(props) {
                 </div> */}
               </Box>
               <EnhancedTable
+                clientsList={clientsList}
                 currentProject={currentProject}
                 currentClient={currentClient}
                 outerref={outerref}
