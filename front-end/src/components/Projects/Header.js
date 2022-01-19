@@ -154,11 +154,15 @@ export default function Header(props) {
         : 0;
       const data = { projectId: `${currentProject._id}` };
 
-      if (projectIndex === lastIn || projectIndex === 0) {
+      if (clientIndex === 0 && projectIndex === 0) {
+        changeProject(clientsList[clientIndex].projects[projectIndex + 1]);
+      } else if (
+        projectIndex === lastIn &&
+        projectIndex === 0 &&
+        clientIndex !== 0
+      ) {
         changeClient(clientsList[clientIndex - 1]);
         changeProject(clientsList[clientIndex - 1].projects.slice(-1)[0]);
-      } else if (clientIndex === 0 && projectIndex === 0) {
-        changeProject(clientsList[clientIndex].projects[projectIndex + 1]);
       } else if (clientIndex === 0 && projectIndex === lastIn) {
         changeClient(clientsList[clientIndex + 1]);
         changeProject(clientsList[clientIndex + 1].projects[0]);
