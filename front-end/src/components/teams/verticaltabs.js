@@ -85,8 +85,10 @@ export default function VerticalTabs() {
 
   // labels for search box(autocomplete)
   const teamsList = [];
+  let teamsDetails;
   React.useEffect(() => {
     getTeams?.getTeam?.forEach((team) => {
+      // teamsDetails.push({ ...team });
       // eslint-disable-next-line prefer-template
       team.members?.map((member) =>
         teamsList.push(
@@ -95,8 +97,10 @@ export default function VerticalTabs() {
       );
     });
   }, [getTeams, teamsList]);
+  teamsDetails = getTeams?.getTeam;
 
-  console.log(getTeams);
+  console.log(teamsDetails);
+  console.log(getTeams.getTeam);
   React.useEffect(() => {
     if (getTeams?.getTeam?.length > 0) {
       //setting the current member
@@ -334,7 +338,13 @@ export default function VerticalTabs() {
               paddingBottom: "10px",
             }}
           >
-            <Main currMember={currMember} currTeam={currTeam} />
+            <Main
+              currMember={currMember}
+              currTeam={currTeam}
+              setMember={(member) => setCurrMember(member)}
+              setCurrTeam={(team) => setCurrTeam(team)}
+              teamsDetails={teamsDetails}
+            />
             {/* ))} */}
           </Box>
         </Paper>
