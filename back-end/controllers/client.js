@@ -48,9 +48,9 @@ const getClient = asyncHandler(async (req, res) => {
         path: 'projects',
         populate: {
           path: 'employees',
-          match: {
-            $or: [{ status: 'null' }, { status: 'paused' }],
-          },
+          // match: {
+          //   $or: [{ status: "null" }, { status: "paused" }],
+          // },
           select: ['firstName', 'lastName', 'days', 'email', 'projects'],
           populate: {
             path: 'projects',

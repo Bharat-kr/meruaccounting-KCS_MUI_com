@@ -81,7 +81,9 @@ export default function Header(props) {
       const clientIndex = clientsList.findIndex(
         (i) => i._id === currentClient._id
       );
-      const lastIn = clientsList.indexOf(clientsList.slice(-1)[0]);
+      const lastIn = clientsList.indexOf(clientsList.slice(-1)[0])
+        ? clientsList.indexOf(clientsList.slice(-1)[0])
+        : 0;
       await deleteClient(data, dispatchDeleteClient);
       await getClient(dispatchClientDetails);
       if (clientIndex === lastIn) {
@@ -193,7 +195,7 @@ export default function Header(props) {
                   <span style={{ float: "right" }}>{project.rate} rs/hr</span>
                 </Typography>
               ))} */}
-              <DataTable />
+              {/* <DataTable /> */}
             </Box>
           </Box>
         </Paper>

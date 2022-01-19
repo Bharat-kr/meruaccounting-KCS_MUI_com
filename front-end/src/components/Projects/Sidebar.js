@@ -118,6 +118,8 @@ export default function Sidebar() {
           // eslint-disable-next-line no-useless-return
           return;
         }
+        setnewProjectValue(project[0]);
+
         changeProject(project[0]);
       }
     } catch (error) {
@@ -129,6 +131,8 @@ export default function Sidebar() {
     const client = clientsList.filter((client) =>
       client.name === e.target.textContent ? client : ""
     );
+    setnewClientValue(client[0]);
+
     changeClient(client[0]);
   };
   const handleProjectClick = (e) => {
@@ -140,7 +144,7 @@ export default function Sidebar() {
     const project = client[0].projects.filter((project) =>
       project.name === e.target.dataset.project ? project : ""
     );
-
+    setnewProjectValue(project[0]);
     changeProject(project[0]);
   };
   // add client in submit
@@ -282,8 +286,9 @@ export default function Sidebar() {
         </Box>
       </Paper>
       <Header
+        clientsList={clientsList}
         currentClient={newClientValue}
-        currentProject={currentProject}
+        currentProject={newProjectValue}
         setcurrClient={changeClient}
         setCurrProjct={changeProject}
       />

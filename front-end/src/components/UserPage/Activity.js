@@ -45,14 +45,17 @@ export default function Activity({
         borderRadius: 1,
       }}
     >
-      <Typography component="span" sx={{ m: 1, fontWeight: "bold", ml: 2.5 }}>
-        {timeC(startTime)} -{timeC(endTime)} |
+      <Typography component="span" sx={{ fontWeight: "bold", ml: 2.5 }}>
+        {timeC(startTime)} -{timeC(endTime)} ||
       </Typography>
-      <Tooltip title={performanceData} placement="top" followCursor>
-        {percentIcon(performanceData)}
+      <Tooltip title={`${performanceData}%`} placement="top" followCursor>
+        <Box sx={{ m: 1, fontWeight: "bold" }} component="span">
+          {percentIcon(performanceData)}
+          <span> ({performanceData}%)</span>
+        </Box>
       </Tooltip>
-      <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
-        |{proId}
+      <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
+        || {proId}
       </Typography>
       <Box
         component="div"

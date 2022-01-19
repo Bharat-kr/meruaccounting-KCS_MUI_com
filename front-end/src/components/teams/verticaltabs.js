@@ -105,19 +105,6 @@ export default function VerticalTabs() {
     }
   }, [getTeams, setCurrMember]);
 
-  // change currentclient on search
-  const handleSearch = (e, value) => {
-    const teams = getTeams.getTeam.filter((team) =>
-      team.name === value ? team : ""
-    );
-    if (teams.length === 0) {
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-
-    return setCurrMember(teams[0].members[0]);
-  };
-
   const handleClick = (e) => {
     // console.log(e.target.id);
     const team = getTeams.getTeam.filter((team) =>
@@ -154,6 +141,36 @@ export default function VerticalTabs() {
       dispatchUpdateMember
     );
     await getTeam(dispatchgetTeam);
+  };
+
+  //diffrentiate the listValue
+  const differentiateFunction = (str) => {
+    if (str !== null) {
+      return str.split(":");
+    }
+  };
+
+  //searching the selected name and setting state to it
+  const handleSearch = (e, value) => {
+    try {
+      const val = differentiateFunction(value);
+      if (val !== null) {
+        const teams = getTeams.getTeam?.filter((team) =>
+          team.name === val[0] ? team : ""
+        );
+        setCurrTeam(teams[0]);
+        const member = teams[0].members?.filter((member) =>
+          getFullName(member.firstName, member.lastName) == val[1] ? member : ""
+        );
+        if (teams.length === 0) {
+          // eslint-disable-next-line no-useless-return
+          return;
+        }
+        setCurrMember(member[0]);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -215,7 +232,6 @@ export default function VerticalTabs() {
               display: "flex",
               flexDirection: "row",
               flexGrow: "1",
-              // alignItems: "flex-start",
               overflowY: "auto",
             }}
           >
@@ -224,12 +240,8 @@ export default function VerticalTabs() {
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
-
-                height: 240,
                 flexGrow: 1,
-                // maxWidth: 400,
                 overflowY: "auto",
-
                 width: "100%",
               }}
             >
@@ -243,7 +255,7 @@ export default function VerticalTabs() {
                   {el.members.map((member) => {
                     return (
                       <TreeItem
-                        nodeId={member._id.toString()}
+                        nodeId={member._id.toString() + el._id.toString()}
                         key={member._id}
                         label={
                           <Typography
@@ -301,7 +313,7 @@ export default function VerticalTabs() {
       {/* HEADER */}
       <Box
         component="div"
-        sx={{ margin: "10px 10px 10px 0", overflow: "auto" }}
+        sx={{ padding: "10px 10px 10px 0", overflow: "auto", height: "100%" }}
       >
         {/* grid container 40 60 */}
         <Paper
@@ -310,14 +322,19 @@ export default function VerticalTabs() {
           sx={{
             overflow: "visible",
             position: "relative",
+            height: "100%",
+            display: "flex",
           }}
         >
-          <Box>
-            <Main
-              currMember={currMember}
-              currTeam={currTeam}
-              sx={{ overflow: "hidden" }}
-            />
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              overflow: "auto",
+              paddingBottom: "10px",
+            }}
+          >
+            <Main currMember={currMember} currTeam={currTeam} />
             {/* ))} */}
           </Box>
         </Paper>

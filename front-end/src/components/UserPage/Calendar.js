@@ -179,18 +179,14 @@ export default class Calendar extends React.Component {
     );
   };
   onDayClick = (e, d) => {
-    this.setState(
-      {
-        selectedDay: d,
-      },
-      () => {
-        console.log(
-          "SELECTED DATE: ",
-          this.state.dateObject.format("DD/MM/YYYY")
-        );
-        this.props.setDate(this.state.dateObject.format("DD/MM/YYYY"));
-      }
-    );
+    let dateObject = Object.assign({}, this.state.dateObject);
+    dateObject = moment(dateObject).set("date", d);
+    this.setState({
+      selectedDay: d,
+      dateObject: dateObject,
+    });
+    console.log("SELECTED DATE: ", dateObject.format("DD/MM/YYYY"));
+    this.props.setDate(dateObject.format("DD/MM/YYYY"));
   };
   render() {
     let dayofDate = [];
@@ -209,14 +205,14 @@ export default class Calendar extends React.Component {
     for (let d = 1; d <= this.daysInMonth(); d++) {
       let currentDay = d == this.currentDay() ? "today" : "";
       daysInMonth.push(
-        <td key={d} className={`calendar-day ${currentDay}`}>
-          <span
-            onClick={(e) => {
-              this.onDayClick(e, d);
-            }}
-          >
-            {d}
-          </span>
+        <td
+          key={d}
+          className={`calendar-day ${currentDay}`}
+          onClick={(e) => {
+            this.onDayClick(e, d);
+          }}
+        >
+          <span>{d}</span>
           {/* <div style={{height:"15px", width: "10%", backgroundColor: "#007B55" }}></div> */}
         </td>
       );
