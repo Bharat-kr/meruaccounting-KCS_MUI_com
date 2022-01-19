@@ -575,7 +575,11 @@ default: 'Default title',
 
 ScreenShot Monitoring requires [Node.js](https://nodejs.org/) v14+ and [npm](https://www.npmjs.com/) v6+ to run
 
-**1. Install the dependencies and devDependencies and start the server.**
+**1. Create a `.env` file in the project backend/config folder and copy the format of `.env.sample` file.**
+
+- `.env.sample` file contains all the environment variables required for running the project.
+
+**2. Install the dependencies and devDependencies and start the server.**
 
 ```sh
 cd back-end
@@ -583,17 +587,13 @@ npm i
 npm run dev
 ```
 
-**2. Install the dependencies and devDependencies and start the client.**
+**3. Install the dependencies and devDependencies and start the client.**
 
 ```sh
 cd front-end
 npm i
 npm run start
 ```
-
-**3. Create a `.env` file in the project root folder and copy the format of `.env.sample` file.**
-
-- `.env.sample` file contains all the environment variables required for running the project.
 
 **4. Open your browser and go to `https://localhost:3000`**
 

@@ -100,8 +100,8 @@ const userSchema = new mongoose.Schema(
     },
     days: [
       {
-        // dailyHours: { type: Number, default: 0 },
         date: { type: String, default: "0" },
+        dailyHours: { type: Number, default: 0 },
         activities: [{ type: mongoose.Types.ObjectId, ref: "Activity" }],
       },
     ],
