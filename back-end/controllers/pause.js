@@ -2,7 +2,7 @@ import asyncHandler from 'express-async-handler';
 import User from '../models/user.js';
 
 // @desc    To pause Unpause the employee
-// @route   Patch /team/pause
+// @route   PATCH /team/pause
 // @access  Private
 
 const makePause = asyncHandler(async (req, res) => {
