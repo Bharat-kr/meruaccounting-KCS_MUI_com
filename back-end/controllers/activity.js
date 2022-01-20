@@ -286,6 +286,7 @@ const updateActivity = asyncHandler(async (req, res) => {
       { $inc: { 'days.$[elem].dailyHours': consumeTime } },
       {
         multi: false,
+        // change date to today's date
         arrayFilters: [{ 'elem.date': { $et: '19/1/2022' } }],
       }
     );
