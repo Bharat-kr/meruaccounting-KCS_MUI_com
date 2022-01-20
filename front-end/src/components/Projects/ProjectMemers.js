@@ -318,6 +318,7 @@ export default function EnhancedTable(props) {
       });
       setRows(rowPush);
       setRowsPerPage(rows.length);
+      setSelected([]);
     } catch (err) {
       console.log(err);
     }

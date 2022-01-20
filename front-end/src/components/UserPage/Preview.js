@@ -7,8 +7,6 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  CardActions,
-  CardHeader,
 } from "@mui/material";
 
 export default function Preview(props) {
@@ -19,6 +17,7 @@ export default function Preview(props) {
   const handleToggle = () => {
     setOpen(!open);
   };
+  console.log(props.preview);
   return (
     <>
       <Tooltip
@@ -49,7 +48,7 @@ export default function Preview(props) {
             <CardMedia
               component="img"
               height="140"
-              image={props.preview}
+              image={`http://localhost:8000/${props.preview}`}
               alt="green iguana"
             />
           </CardActionArea>
@@ -72,7 +71,7 @@ export default function Preview(props) {
         open={open}
         onClick={handleClose}
       >
-        <img src={props.preview} alt="hello" />
+        <img src={`http://localhost:8000/${props.preview}`} alt="hello" />
       </Backdrop>
     </>
   );

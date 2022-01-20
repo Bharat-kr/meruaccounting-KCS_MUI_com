@@ -51,7 +51,7 @@ export default function Sidebar() {
   const clientNameList = [];
   useEffect(() => {
     getClient(dispatchClientDetails);
-  }, [currentClient]);
+  }, []);
 
   if (clientDetails?.loader === false) {
     clientsList = clientDetails?.client?.data;
