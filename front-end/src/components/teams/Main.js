@@ -99,7 +99,7 @@ export default function Main(props) {
       status: value,
     };
     console.log(data);
-    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+    await employeeUpdate(currMember?._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
 

@@ -29,8 +29,7 @@ import {
   addProjectMember,
   removeProjectMember,
 } from "../../api/projects api/projects";
-import { indexOf } from "lodash";
-
+import { Link as RouterLink } from "react-router-dom";
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, noOfEmployees, id) {
   return {
@@ -77,7 +76,7 @@ const headCells = [
     id: "name",
     numeric: false,
     disablePadding: true,
-    label: "Name",
+    label: "Project",
   },
   {
     id: "projectHours",
@@ -89,13 +88,13 @@ const headCells = [
     id: "internalHours",
     numeric: true,
     disablePadding: false,
-    label: "internal Hours",
+    label: "Internal Hours",
   },
   {
     id: "noOfEmployees",
     numeric: true,
     disablePadding: false,
-    label: "noOfEmployees",
+    label: "Project Members",
   },
   {
     id: "totalHours",
@@ -168,11 +167,22 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selected, projectsList, currentProject, setSeleceted } =
-    props;
+  const {
+    numSelected,
+    selected,
+    projectsList,
+    currentProject,
+    currentClient,
+    changeClient,
+    changeProject,
+    clientIndex,
+    projectIndex,
+    setSeleceted,
+    clientsList,
+  } = props;
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const { dispatchClientDetails } = useContext(ClientsContext);
-  const handleMemberDelete = async () => {
+  const handleProjectDelete = async () => {
     const deleteList = [];
     selected.map((select) => {
       projectsList.filter((emp) =>
@@ -206,7 +216,31 @@ const EnhancedTableToolbar = (props) => {
           }),
         }}
       >
-        {numSelected > 0 ? (
+        {numSelected === 1 && (
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            <RouterLink
+              // color="primary"
+              to={`/dashboard/projects`}
+              // underline="none"
+              variant="inherit"
+              onClick={async () => {
+                const currproIndex = currentClient.projects.findIndex(
+                  (cli) => cli.name === selected[0]
+                );
+                changeClient(clientsList[clientIndex]);
+                changeProject(clientsList[clientIndex].projects[currproIndex]);
+              }}
+            >
+              <Typography>{selected}</Typography>
+            </RouterLink>
+          </Typography>
+        )}
+        {numSelected > 1 ? (
           <Typography
             sx={{ flex: "1 1 100%" }}
             color="inherit"
@@ -226,7 +260,7 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton onClick={handleMemberDelete}>
+            <IconButton onClick={handleProjectDelete}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -280,20 +314,30 @@ export default function EnhancedTable(props) {
           consumeTime: pro.consumeTime,
           noOfEmployees: pro.employess?.length,
         });
-        projectNameList.push(`${pro.firstName} ${pro.lastName}`);
+        projectNameList.push(`${pro.name}`);
       })
     : projectsList.push("");
   const rowPush = [];
+  const clientIndex = clientsList?.findIndex(
+    (i) => i._id === currentClient?._id
+  );
+  const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+    (i) => i._id === currentProject?._id
+  );
+  // // }
+  // const clientIndex = 0;
+  // const projectIndex = 0;
   useEffect(async () => {
     try {
-      const data = currentClient?._id;
       const clientIndex = clientsList?.findIndex(
         (i) => i._id === currentClient?._id
       );
       const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
-        (i) => i._id === currentProject._id
+        (i) => i._id === currentProject?._id
       );
-      console.log(projectIndex, clientIndex, "hello");
+
+      const data = currentClient?._id;
+
       if (projectIndex && clientIndex !== null) {
         await changeClient(clientsList[clientIndex]);
         await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
@@ -317,13 +361,11 @@ export default function EnhancedTable(props) {
       });
       setRows(rowPush);
       setRowsPerPage(rows.length);
+      setSelected([]);
     } catch (err) {
       console.log(err);
     }
   }, [currentClient, currentProject, clientDetails]);
-
-  console.log(currentClient, currentProject);
-  console.log(projectsList, projectNameList);
 
   const handleMemberAdded = async (e) => {
     e.preventDefault();
@@ -405,64 +447,27 @@ export default function EnhancedTable(props) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Paper
-        elevation={3}
+        // elevation={3}
         sx={{
-          pb: 4,
+          pb: 2,
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
         }}
       >
-        <div
-          style={{
-            display: "flex ",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h5" sx={{ pt: 1 }}>
-            Project Members
-          </Typography>
-          <FloatingForm toolTip="Add Member" color="primary" icon={<AddIcon />}>
-            <form
-              // onSubmit={handleSubmit}
-              onSubmit={handleMemberAdded}
-              noValidate
-              autoComplete="off"
-              style={{ padding: "10px" }}
-            >
-              <TextField
-                onChange={(e) => setNewMember(e.target.value)}
-                required
-                type="email"
-                fullWidth
-                label="Add member by email"
-                // error={newClientError}
-                sx={{}}
-              />
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                sx={{ mt: 1 }}
-              >
-                Submit
-              </Button>
-            </form>
-          </FloatingForm>
-        </div>
         <AutoComplete
           disablePortal
           onChange={handleSearch}
-          id="employee-search"
+          id="project-search"
           options={projectNameList}
           sx={{
             width: 300,
             height: 10,
-            p: 1,
+            pb: 1,
             mb: 4,
           }}
           renderInput={(params) => (
-            <TextField {...params} label="Search Employee" />
+            <TextField {...params} label="Search Projects" />
           )}
         />
       </Paper>
@@ -470,7 +475,13 @@ export default function EnhancedTable(props) {
         numSelected={selected.length}
         selected={selected}
         projectsList={projectsList}
+        clientsList={clientsList}
         currentProject={currentProject}
+        currentClient={currentClient}
+        clientIndex={clientIndex}
+        projectIndex={projectIndex}
+        changeClient={(cli) => changeClient(cli)}
+        changeProject={(pro) => changeProject(pro)}
         setSeleceted={setSelected}
       />
       <Box sx={{ width: "100%" }}>

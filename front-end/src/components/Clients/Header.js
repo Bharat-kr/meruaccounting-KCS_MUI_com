@@ -5,7 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
 import { ClientsContext } from "../../contexts/ClientsContext";
-import DataTable from "./projectList";
+import EnhancedTable from "./projectList";
 import {
   deleteClient,
   editClient,
@@ -36,7 +36,7 @@ export default function Header(props) {
   // const {getClient,dispatchClientDetails}=useContext(ClientsContext)
   // getClient(dispatchClientDetails);
   const [clientName, setClientName] = useState("");
-
+  const outerref = useRef();
   const inputRef = useRef();
   const handleEditClick = (e) => {
     inputRef.current.focus();
@@ -132,6 +132,7 @@ export default function Header(props) {
     <>
       {/* grid container 40 60 */}
       <Box
+        ref={outerref}
         component="div"
         sx={{
           width: "70%",
@@ -195,7 +196,7 @@ export default function Header(props) {
                   <span style={{ float: "right" }}>{project.rate} rs/hr</span>
                 </Typography>
               ))} */}
-              <DataTable />
+              <EnhancedTable clientsList={clientsList} outerref={outerref} />
             </Box>
           </Box>
         </Paper>
