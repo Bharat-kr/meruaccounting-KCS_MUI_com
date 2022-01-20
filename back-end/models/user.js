@@ -14,7 +14,11 @@ const notificationSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-    role: { type: String },
+    role: {
+      type: String,
+      default: 'employee',
+      enum: ['employee', 'admin', 'manager'],
+    },
     isManager: { type: Boolean, default: false },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
