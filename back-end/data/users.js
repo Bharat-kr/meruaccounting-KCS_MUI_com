@@ -292,13 +292,7 @@ const users = [
         individualValue: '₹',
       },
     },
-    days: [
-      {
-        date: '0',
-        hours: '0',
-        activities: [],
-      },
-    ],
+    days: [],
   },
   {
     role: 'employee',
