@@ -282,12 +282,12 @@ const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
 
-    const user = await User.findById(_id).update(
-      { $inc: { 'days.$[elem].dailyHours': consumeTime } },
+    const user = await User.findByIdAndUpdate(
+      { _id },
+      { $inc: { 'days.$[elem].dailyHours': req.body.consumeTime } },
       {
         multi: false,
-        // change date to today's date
-        arrayFilters: [{ 'elem.date': { $et: '19/1/2022' } }],
+        arrayFilters: [{ 'elem.date': { $eq: '19/1/2022' } }],
       }
     );
 
