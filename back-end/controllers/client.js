@@ -38,11 +38,19 @@ const getClient = asyncHandler(async (req, res) => {
   try {
     const client = await Client.find({ manager: req.user._id })
       .populate({
+        path: 'createdBy',
+        select: ['firstName', 'lastName'],
+      })
+      .populate({
         path: 'projects',
         populate: {
           path: 'projectLeader',
           select: ['firstName', 'lastName', 'email'],
         },
+      })
+      .populate({
+        path: 'projects',
+        populate: { path: 'createdBy', select: ['firstName', 'lastName'] },
       })
       .populate({
         path: 'projects',
