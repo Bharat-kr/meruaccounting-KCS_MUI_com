@@ -30,7 +30,7 @@ export const deleteSs = async (incomingData, dispatch) => {
     const { data } = await axios.delete(`/activity/screenshot`, {
       data: { ...incomingData },
     });
-    const newCd = await axios.get(`/commondata`, config);
+    const newCd = await axios.get(`/commondata`);
     dispatch({
       type: DELETE_SS_SUCCESS,
       payload: newCd.data,
