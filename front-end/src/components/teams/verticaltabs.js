@@ -75,6 +75,8 @@ export default function VerticalTabs() {
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
   const [newMemberMail, setNewMemberMail] = React.useState("");
 
+  const newTeamRef = React.useRef("");
+  const addMemberRef = React.useRef("");
   React.useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
@@ -86,6 +88,22 @@ export default function VerticalTabs() {
   // labels for search box(autocomplete)
   const teamsList = [];
   let teamsDetails;
+  React.useEffect(async () => {
+    try {
+      console.log(currTeam?._id, currMember._id);
+      const teamIndex = teamsDetails?.findIndex((i) => i._id === currTeam?._id);
+      const memberIndex = teamsDetails[teamIndex]?.members?.findIndex(
+        (i) => i._id === currMember?._id
+      );
+      console.log(teamIndex, memberIndex, "hello");
+      if (teamsDetails !== null) {
+        setCurrTeam(teamsDetails[teamIndex]);
+        setCurrMember(teamsDetails[teamIndex]?.members[memberIndex]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [getTeams]);
   React.useEffect(() => {
     getTeams?.getTeam?.forEach((team) => {
       // teamsDetails.push({ ...team });
@@ -97,6 +115,7 @@ export default function VerticalTabs() {
       );
     });
   }, [getTeams, teamsList]);
+
   teamsDetails = getTeams?.getTeam;
 
   console.log(teamsDetails);
@@ -123,11 +142,11 @@ export default function VerticalTabs() {
     // console.log("member", member[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(newTeam);
-    createTeam({ name: newTeam }, dispatchTeam);
-    // RestaurantRounded(console.log("hello", e));
+    await createTeam({ name: newTeam }, dispatchTeam);
+    await getTeam(dispatchgetTeam);
   };
   const changeCurrTeam = async (e) => {
     const team = await getTeams.getTeam.filter((team) =>
@@ -138,8 +157,6 @@ export default function VerticalTabs() {
 
   const AddMember = async (e) => {
     e.preventDefault();
-    console.log(newMemberMail);
-    console.log(currTeamToUpdate);
     await updateMember(
       { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
       dispatchUpdateMember
@@ -183,7 +200,8 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: "10px",
-          height: "auto",
+          height: "70vh",
+          scrollbar: "auto",
         }}
       >
         <Paper
@@ -212,6 +230,7 @@ export default function VerticalTabs() {
                 style={{ padding: "10px" }}
               >
                 <TextField
+                  inputRef={newTeamRef}
                   onChange={(e) => setNewTeam(e.target.value)}
                   required
                   fullWidth
@@ -252,7 +271,7 @@ export default function VerticalTabs() {
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem
                   nodeId={el._id.toString()}
-                  label={<Typography variant="h4">{el.name}</Typography>}
+                  label={<Typography variant="h6">{el.name}</Typography>}
                   key={el.name}
                   onClick={changeCurrTeam}
                 >
@@ -266,7 +285,7 @@ export default function VerticalTabs() {
                             data-client={el.name}
                             onClick={handleClick}
                             id={member._id}
-                            variant="h5"
+                            variant="body1"
                           >
                             {getFullName(member.firstName, member.lastName)}
                           </Typography>
@@ -293,6 +312,7 @@ export default function VerticalTabs() {
               style={{ width: "100%" }}
             >
               <TextField
+                inputRef={addMemberRef}
                 onChange={(e) => setNewMemberMail(e.target.value)}
                 required
                 fullWidth

@@ -27,9 +27,11 @@ import { projectContext } from "../../contexts/ProjectsContext";
 import { getClient } from "../../api/clients api/clients";
 import {
   addProjectMember,
+  deleteProject,
   removeProjectMember,
 } from "../../api/projects api/projects";
 import { Link as RouterLink } from "react-router-dom";
+import { setIn } from "formik";
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, noOfEmployees, id) {
   return {
@@ -185,21 +187,32 @@ const EnhancedTableToolbar = (props) => {
   const handleProjectDelete = async () => {
     const deleteList = [];
     selected.map((select) => {
-      projectsList.filter((emp) =>
-        emp.name === select ? deleteList.push(emp.id) : ""
+      projectsList.filter((pro) =>
+        pro.name === select ? deleteList.push(pro.id) : ""
       );
     });
-
+    // const delfunc = () => {
+    //   let i;
+    //   deleteList.map(async (id, index) => {
+    //   });
+    // };
+    // const newfunc = async (id) => {
+    for (let i = 0; i < deleteList.length; i++) {
+      await deleteProject(deleteList[i], dispatchremoveProjectMember);
+    }
+    await getClient(dispatchClientDetails);
+    // };
+    //   const interval = setInterval(newfunc(id), 2000);
+    //   if (index === deleteList.length - 1) {
+    //     clearInterval(interval);
+    //   }
+    // delfunc();
     // React.useEffect(() => {
     //   setRowsPerPage(rows.length);
     // }, [rows.length, currentProject, currentClient]);
-    deleteList.map(async (id) => {
-      const data = [currentProject._id, id];
-      removeProjectMember(data, dispatchremoveProjectMember);
-      await getClient(dispatchClientDetails);
-      setSeleceted([]);
-    });
+    setSeleceted([]);
   };
+
   return (
     <>
       <Toolbar
@@ -224,9 +237,12 @@ const EnhancedTableToolbar = (props) => {
             component="div"
           >
             <RouterLink
-              // color="primary"
+              style={{
+                textDecoration: "none",
+                color: "green",
+                fontWeight: "bold",
+              }}
               to={`/dashboard/projects`}
-              // underline="none"
               variant="inherit"
               onClick={async () => {
                 const currproIndex = currentClient.projects.findIndex(
