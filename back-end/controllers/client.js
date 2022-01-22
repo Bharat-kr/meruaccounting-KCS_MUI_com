@@ -38,15 +38,7 @@ const getClient = asyncHandler(async (req, res) => {
   try {
     const client = await Client.find({ manager: req.user._id })
       .populate({
-<<<<<<< Updated upstream
-        path: 'createdBy',
-        select: ['firstName', 'lastName'],
-      })
-      .populate({
-        path: 'projects',
-=======
         path: "projects",
->>>>>>> Stashed changes
         populate: {
           path: "projectLeader",
           select: ["firstName", "lastName", "email"],
@@ -54,15 +46,7 @@ const getClient = asyncHandler(async (req, res) => {
         populate: { path: "createdBy", select: ["firstName", "lastname"] },
       })
       .populate({
-<<<<<<< Updated upstream
-        path: 'projects',
-        populate: { path: 'createdBy', select: ['firstName', 'lastName'] },
-      })
-      .populate({
-        path: 'projects',
-=======
         path: "projects",
->>>>>>> Stashed changes
         populate: {
           path: "employees",
           // match: {
