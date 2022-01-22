@@ -16,7 +16,6 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 // import { getCommonData } from "../api/auth api/commondata";
 import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
-import { DateSchema } from "yup";
 
 export default function UserPage() {
   const [activities, setactivities] = useState([]);

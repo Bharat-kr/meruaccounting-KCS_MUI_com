@@ -7,7 +7,7 @@ const notificationSchema = new mongoose.Schema(
     description: { type: String, required: true },
     avatar: String,
     type: { type: String, required: true },
-    isUnRead: { type: Boolean, default: false },
+    isUnRead: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
