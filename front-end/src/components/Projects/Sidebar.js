@@ -227,7 +227,7 @@ export default function Sidebar() {
               clientsList.map((client) => (
                 <TreeItem
                   nodeId={client._id.toString()}
-                  label={<Typography variant="h4">{client.name}</Typography>}
+                  label={<Typography variant="h6">{client.name}</Typography>}
                   key={client._id}
                   onClick={handleClick}
                   id={client._id}
@@ -243,7 +243,7 @@ export default function Sidebar() {
                             data-client={client.name}
                             data-project={project.name}
                             onClick={handleProjectClick}
-                            variant="h6"
+                            variant="body1"
                           >
                             {project.name}
                           </Typography>

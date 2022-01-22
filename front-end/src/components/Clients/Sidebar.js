@@ -7,18 +7,14 @@ import {
   Autocomplete,
   Typography,
   Button,
-  Divider,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import TreeView from "@mui/lab/TreeView";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem from "@mui/lab/TreeItem";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
-import SearchBar from "../SearchBar";
 import Header from "./Header";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -32,8 +28,10 @@ export default function Sidebar() {
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
   const [defaultTextValue, setDefaultTextValue] = useState("");
-  const inputRef = useRef();
-  const autocomRef = useRef();
+  const inputRef = useRef("");
+  const autocomRef = useRef("");
+  const sidebarref = useRef("");
+  const clientref = useRef("");
   // contexts
 
   const {
@@ -52,25 +50,44 @@ export default function Sidebar() {
   useEffect(() => {
     getClient(dispatchClientDetails);
   }, []);
+  useEffect(async () => {
+    try {
+      const clientIndex = clientsList?.findIndex(
+        (i) => i._id === currentClient?._id
+      );
+      // const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+      //   (i) => i._id === currentProject?._id
+      // );
 
+      if (clientIndex !== null) {
+        await changeClient(clientsList[clientIndex]);
+        // await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [clientDetails]);
   if (clientDetails?.loader === false) {
     clientsList = clientDetails?.client?.data;
     clientDetails?.client?.data?.map((cli) => clientNameList.push(cli.name));
   }
-  console.log(clientNameList);
   // labels for search box(autocomplete)
   // const clientsList = clients.map((client) => client.name);
 
   // change currentclient on search
   const handleSearch = (e, value) => {
-    console.log(value);
-    // const client = clientsList.filter((client) =>
-    //   client.name === value ? client : ""
-    // );
-    // if (client.length === 0) {
-    //   // eslint-disable-next-line no-useless-return
-    // }
-    // return changeClient(client[0]);
+    const client = clientsList.filter((client) =>
+      client.name === e.target.textContent ? client : ""
+    );
+    if (client.length === 0) {
+      // eslint-disable-next-line no-useless-return
+    }
+    changeClient(client[0]);
+    console.log(sidebarref, clientref);
+
+    // not working
+    // sidebarref.current.scrollTop =
+    //   500 + clientref.current.scrollHeight * clientsList.indexOf(client[0]);
   };
 
   const handleClick = (e) => {
@@ -96,7 +113,7 @@ export default function Sidebar() {
       // setnewClientError(false);
       if (newClientValue !== "") {
         await addClient(newClientValue, dispatchAddClient);
-        await getClient(dispatchAddClient);
+        await getClient(dispatchClientDetails);
         changeClient(() =>
           clientDetails.client.data.filter((cli) =>
             cli.name === newClientValue ? cli : ""
@@ -146,6 +163,7 @@ export default function Sidebar() {
           /> */}
           <Autocomplete
             disablePortal
+            onChange={(e) => handleSearch(e)}
             id="combo-box-demo"
             options={clientNameList}
             sx={{ width: 300, m: 0.5 }}
@@ -157,6 +175,7 @@ export default function Sidebar() {
 
         {/* clients list flex container */}
         <Box
+          ref={sidebarref}
           component="div"
           sx={{
             display: "flex",
@@ -179,10 +198,11 @@ export default function Sidebar() {
           >
             {clientsList?.map((client) => (
               <TreeItem
+                ref={clientref}
                 onClick={handleClick}
                 nodeId={client._id}
                 className={classes.treeItem}
-                label={<Typography variant="h4">{client.name}</Typography>}
+                label={<Typography variant="h6">{client.name}</Typography>}
               ></TreeItem>
             ))}
           </TreeView>

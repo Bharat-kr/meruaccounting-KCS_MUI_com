@@ -11,6 +11,8 @@ import {
   editClient,
   getClient,
 } from "../../api/clients api/clients";
+import { Link as RouterLink } from "react-router-dom";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -58,6 +60,16 @@ export default function Header(props) {
     // getClientPro(JSON.stringify(id));
     setClientName(currentClient?.name);
   }, [currentClient]);
+  const clientIndex = clientsList?.findIndex(
+    (i) => i._id === currentClient?._id
+  );
+
+  useEffect(async () => {
+    if (clientsList !== (null || undefined)) {
+      await changeClient(clientsList[clientIndex]);
+      // await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+    }
+  }, [clientDetails]);
   if (clientDetails?.loader === false) {
     projectList = currentClient?.projects;
   }
@@ -89,14 +101,15 @@ export default function Header(props) {
       if (clientIndex === lastIn) {
         changeClient(clientsList[lastIn - 1]);
       } else {
-        changeClient(clientsList[lastIn + 1]);
+        changeClient(clientsList[clientIndex + 1]);
       }
       console.log(currentClient);
     } catch (err) {
       console.log(err);
     }
   };
-  return currentClient === "" ? (
+  const createdOn = moment(currentClient?.createdAt).format("DD-MM-YYYY");
+  return currentClient === undefined || "" ? (
     <Box
       component="div"
       sx={{
@@ -174,12 +187,71 @@ export default function Header(props) {
               </div>
             </h1>
             <Typography sx={{}} variant="subtitle1">
-              Assign Projects
+              <RouterLink
+                to="/dashboard/projects"
+                style={{
+                  textDecoration: "none",
+                  color: "green",
+                  fontWeight: "bold",
+                }}
+                onClick={() => {
+                  {
+                    console.log(currentClient);
+                  }
+                  changeClient(clientsList[clientIndex]);
+                }}
+              >
+                Assign Projects
+              </RouterLink>
             </Typography>
+            <Box
+              component="div"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                mb: 5,
+                pb: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  // alignItems: "center",
+                }}
+              >
+                <Typography variant="h5">
+                  Created on : {createdOn ? createdOn : ""}
+                </Typography>
+                <Typography
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignContent: "center",
+                  }}
+                  variant="body1"
+                ></Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  // alignItems: "center",
+                }}
+              >
+                <Typography variant="h6">
+                  Created By :{" "}
+                  {`${currentClient?.createdBy?.firstName} ${currentClient?.createdBy?.lastName}`}
+                </Typography>
+                <Typography variant="body1"></Typography>
+              </Box>
+            </Box>
           </Box>
-
-          <Box sx={{ m: 1 }}>
-            <h2 style={{}}>Assigned Projects</h2>
+          <Box sx={{ mt: 4 }}>
             <Box
               component="div"
               sx={{
@@ -190,13 +262,31 @@ export default function Header(props) {
                 m: 1,
               }}
             >
-              {/* {projectList?.map((project) => (
-                <Typography variant="subtitle1" sx={{ width: 1 }}>
-                  {project.name}
-                  <span style={{ float: "right" }}>{project.rate} rs/hr</span>
-                </Typography>
-              ))} */}
-              <EnhancedTable clientsList={clientsList} outerref={outerref} />
+              {currentClient?.projects?.length === 0 ? (
+                <Box>
+                  <Typography variant="h5">
+                    No Projects in this Client
+                  </Typography>
+                  <RouterLink
+                    to="/dashboard/projects"
+                    style={{
+                      textDecoration: "none",
+                      color: "green",
+                      fontWeight: "bold",
+                    }}
+                    onClick={() => {
+                      {
+                        console.log(currentClient);
+                      }
+                      changeClient(clientsList[clientIndex]);
+                    }}
+                  >
+                    Add Project
+                  </RouterLink>
+                </Box>
+              ) : (
+                <EnhancedTable clientsList={clientsList} outerref={outerref} />
+              )}
             </Box>
           </Box>
         </Paper>
