@@ -255,29 +255,6 @@ const splitActivity = asyncHandler(async (req, res) => {
 // @route   PATCH /activity/:id
 // @access  Private
 
-// const updateActivity = asyncHandler(async (req, res) => {
-//   try {
-//     const activityId = req.params.id;
-//     const unUpdatedactivity = await Activity.findByIdAndUpdate(
-//       activityId,
-//       req.body
-//     );
-//     const activity = await Activity.findById(activityId);
-
-//     if (!unUpdatedactivity) {
-//       res.status(404);
-//       throw new Error(`No activity found ${activityId}`);
-//     }
-
-//     res.status(202).json({
-//       message: 'Succesfully edited activity',
-//       data: activity,
-//     });
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// });
-
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
@@ -314,4 +291,47 @@ const updateActivity = asyncHandler(async (req, res) => {
   }
 });
 
-export { createActivity, createScreenShot, updateActivity, splitActivity };
+const deleteScreenshot = asyncHandler(async (req, res) => {
+  try {
+    const screenshotId = req.body.screenshotId;
+    const activityId = req.body.activityId;
+    const employeeId = req.user._id;
+
+    const screenshot = await Screenshot.findById(screenshotId);
+    if (!screenshot) {
+      res.status(404);
+      throw new Error(`${screenshotId} not found`);
+    }
+
+    const activity = await Activity.findById(activityId);
+    if (!screenshot) {
+      res.status(404);
+      throw new Error(`${activityId} not found`);
+    }
+
+    activity.screenshots = activity.screenshots.filter(
+      (_id) => _id.toHexString() !== screenshotId
+    );
+
+    console.log(activity.screenshots);
+
+    await activity.save();
+
+    await Screenshot.findByIdAndDelete(screenshotId);
+
+    res.status(200).json({
+      status: 'ok',
+      activity,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export {
+  createActivity,
+  createScreenShot,
+  updateActivity,
+  splitActivity,
+  deleteScreenshot,
+};
