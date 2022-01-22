@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Box } from "@mui/material";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import { flexbox } from "@mui/material/node_modules/@mui/system";
 
 export default function IntExt({ setInternal }) {
   const [intColor, setintColor] = useState("black");
