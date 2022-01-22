@@ -35,6 +35,7 @@ export default function ScreenShots({ activities }) {
           if (act.screenshots.length !== 0) {
             return (
               <Activity
+                actId={act._id}
                 isAccepted={act.isAccepted}
                 startTime={act.startTime}
                 endTime={act.endTime}

@@ -7,7 +7,9 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  Icon,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Preview(props) {
   const [open, setOpen] = React.useState(false);
@@ -30,16 +32,26 @@ export default function Preview(props) {
               ml: -1.5,
               background: "#c8facd69",
               maxHeight: "50px",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
             }}
           >
             <Typography
-              sx={{ fontWeight: "bold" }}
+              sx={{ fontWeight: "bold", textOverflow: "ellipsis" }}
               color="text.primary"
               gutterBottom
               variant="caption"
             >
               {props.title}
             </Typography>
+            <DeleteIcon
+              sx={{ float: "right" }}
+              fontSize="small"
+              onClick={(e) => {
+                console.log(props.actId, props.ssId);
+              }}
+            />
           </CardContent>
         </Tooltip>
 

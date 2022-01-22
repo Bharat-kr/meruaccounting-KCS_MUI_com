@@ -13,6 +13,7 @@ import { loginContext } from "../../contexts/LoginContext";
 import timeC from "../../_helpers/timeConverter";
 
 export default function Activity({
+  actId,
   isAccepted,
   startTime,
   endTime,
@@ -63,6 +64,8 @@ export default function Activity({
       >
         {screenShots.map((ss, key) => (
           <Preview
+            ssId={ss._id}
+            actId={actId}
             title={ss.title}
             preview={ss.image}
             key={key}
