@@ -1,8 +1,11 @@
 import { indexOf } from "lodash-es";
 import React, { createContext, useState, useReducer } from "react";
+import { sampleTime } from "rxjs";
 import {
   GET_COMMONDATA_SUCCESS,
   GET_COMMONDATA_FAILED,
+  DELETE_SS_FAILED,
+  DELETE_SS_SUCCESS,
 } from "../constants/CurrentUserConstants";
 
 export const CurrentUserContext = createContext();
@@ -26,6 +29,15 @@ const currentUserReducer = (state, action) => {
         ...state,
         loader: false,
         err: true,
+      };
+    case DELETE_SS_SUCCESS:
+      return {
+        ...state,
+        commonData: action.payload,
+      };
+    case DELETE_SS_FAILED:
+      return {
+        ...state,
       };
     default:
       return state;

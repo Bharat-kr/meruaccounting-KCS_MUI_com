@@ -53,7 +53,7 @@ export default function Activity({
         </Box>
       </Tooltip>
       <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
-        || "hello"
+        || {project === null ? "--" : project.name}
       </Typography>
       <Box
         component="div"

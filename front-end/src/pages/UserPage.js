@@ -16,7 +16,6 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 // import { getCommonData } from "../api/auth api/commondata";
 import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
-import { DateSchema } from "yup";
 
 export default function UserPage() {
   const [activities, setactivities] = useState([]);
@@ -36,13 +35,12 @@ export default function UserPage() {
 
   // filter out activities
   useEffect(() => {
+    console.log(commonData);
     if (commonData.loader === false) {
       setactivities(
         commonData.commonData.user.days
           .filter((day) => day.date === date.replace("/0", "/"))[0]
           ?.activities.filter((act) => {
-            console.log(isInternal);
-            console.log(act.isInternal);
             return act.isInternal === isInternal;
           })
       );

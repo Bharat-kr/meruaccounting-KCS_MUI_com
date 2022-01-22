@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
+  Box,
   Backdrop,
   Tooltip,
   Card,
@@ -7,11 +8,14 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  Icon,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+// contexts
+import { deleteSs } from "../../api/auth api/commondata";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 export default function Preview(props) {
+  const { dispatchCommonData } = useContext(CurrentUserContext);
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -19,7 +23,11 @@ export default function Preview(props) {
   const handleToggle = () => {
     setOpen(!open);
   };
-  console.log(props.preview);
+
+  const delSs = async (activityId, screenshotId) => {
+    deleteSs({ activityId, screenshotId }, dispatchCommonData);
+  };
+
   return (
     <>
       <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
@@ -37,19 +45,24 @@ export default function Preview(props) {
               overflow: "hidden",
             }}
           >
-            <Typography
-              sx={{ fontWeight: "bold", textOverflow: "ellipsis" }}
-              color="text.primary"
-              gutterBottom
-              variant="caption"
+            <Box
+              sx={{
+                display: "inline-block",
+                maxWidth: "90%",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                typography: "caption",
+                fontWeight: "bold",
+              }}
             >
               {props.title}
-            </Typography>
+            </Box>
             <DeleteIcon
               sx={{ float: "right" }}
               fontSize="small"
               onClick={(e) => {
-                console.log(props.actId, props.ssId);
+                delSs(props.actId, props.ssId);
               }}
             />
           </CardContent>
@@ -88,7 +101,7 @@ export default function Preview(props) {
         open={open}
         onClick={handleClose}
       >
-        <img src={`http://localhost:8000/${props.preview}`} alt="hello" />
+        <img src={`${props.preview}`} alt="hello" />
       </Backdrop>
     </>
   );
