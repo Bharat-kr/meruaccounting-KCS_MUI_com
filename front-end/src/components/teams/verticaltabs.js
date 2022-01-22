@@ -143,10 +143,15 @@ export default function VerticalTabs() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(newTeam);
-    await createTeam({ name: newTeam }, dispatchTeam);
-    await getTeam(dispatchgetTeam);
+    try {
+      e.preventDefault();
+      console.log(newTeam);
+      await createTeam({ name: newTeam }, dispatchTeam);
+      await getTeam(dispatchgetTeam);
+      newTeamRef.current.value = "";
+    } catch (err) {
+      console.log(err.message);
+    }
   };
   const changeCurrTeam = async (e) => {
     const team = await getTeams.getTeam.filter((team) =>
@@ -154,14 +159,18 @@ export default function VerticalTabs() {
     );
     setCurrTeamToUpdate(team[0]);
   };
-
   const AddMember = async (e) => {
-    e.preventDefault();
-    await updateMember(
-      { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
-      dispatchUpdateMember
-    );
-    await getTeam(dispatchgetTeam);
+    try {
+      e.preventDefault();
+      await updateMember(
+        { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
+        dispatchUpdateMember
+      );
+      await getTeam(dispatchgetTeam);
+      addMemberRef.current.value = "";
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   //diffrentiate the listValue
