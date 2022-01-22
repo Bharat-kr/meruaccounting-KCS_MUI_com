@@ -13,16 +13,14 @@ import { loginContext } from "../../contexts/LoginContext";
 import timeC from "../../_helpers/timeConverter";
 
 export default function Activity({
+  project,
+  actId,
   isAccepted,
   startTime,
   endTime,
   performanceData,
-  proId,
   screenShots,
 }) {
-  const { currentUser, commonData, dispatchCommonData } =
-    useContext(CurrentUserContext);
-
   const percentIcon = (percent) =>
     percent <= 30 ? (
       <HourglassEmptyIcon sx={{ m: -1 }} />
@@ -55,7 +53,7 @@ export default function Activity({
         </Box>
       </Tooltip>
       <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
-        || {proId}
+        || "hello"
       </Typography>
       <Box
         component="div"
@@ -63,6 +61,8 @@ export default function Activity({
       >
         {screenShots.map((ss, key) => (
           <Preview
+            ssId={ss._id}
+            actId={actId}
             title={ss.title}
             preview={ss.image}
             key={key}
