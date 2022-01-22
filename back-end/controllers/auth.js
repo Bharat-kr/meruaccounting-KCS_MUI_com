@@ -86,25 +86,15 @@ const commondata = asyncHandler(async (req, res) => {
       .populate({
         path: 'days',
         populate: {
-          path: 'activities',
-          model: 'Activity',
-          populate: {
-            path: 'screenshots',
-            model: 'Screenshot',
-            select: ['-employee', '-activityId'],
-          },
-        },
-      })
-      .populate({
-        path: 'days',
-        populate: {
-          path: 'activities',
-          model: 'Activity',
-          populate: {
-            path: 'project',
-            model: 'Project',
-            select: ['name'],
-          },
+          path: 'activities ',
+          populate: [
+            { path: 'screenshots', select: ['-employee'] },
+            {
+              path: 'project',
+              model: 'Project',
+              select: ['name'],
+            },
+          ],
         },
       });
 
