@@ -35,13 +35,12 @@ export default function UserPage() {
 
   // filter out activities
   useEffect(() => {
+    console.log(commonData);
     if (commonData.loader === false) {
       setactivities(
         commonData.commonData.user.days
           .filter((day) => day.date === date.replace("/0", "/"))[0]
           ?.activities.filter((act) => {
-            console.log(isInternal);
-            console.log(act.isInternal);
             return act.isInternal === isInternal;
           })
       );
