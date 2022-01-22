@@ -18,6 +18,7 @@ import activityRoutes from './routes/activity.js';
 import reportRoutes from './routes/report.js';
 import uploadRoutes from './routes/upload.js';
 import notificationRoutes from './routes/notify.js';
+import avatarRoutes from './routes/avatar.js';
 
 dotenv.config({ path: './config/config.env' });
 
@@ -44,11 +45,13 @@ app.use('/client', clientRoutes);
 app.use('/project', projectRoutes);
 app.use('/activity', activityRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/avatar', avatarRoutes);
 app.use('/report', reportRoutes);
 app.use('/notify', notificationRoutes);
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/avatar', express.static(path.join(__dirname, '/avatar')));
 
 // Middleware
 app.use(notFound);

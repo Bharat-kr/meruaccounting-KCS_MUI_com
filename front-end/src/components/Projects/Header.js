@@ -15,6 +15,8 @@ import {
   addProjectLeader,
 } from "../../api/projects api/projects";
 import EnhancedTable from "../Projects/ProjectMemers";
+import { Link as RouterLink } from "react-router-dom";
+import moment from "moment";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -68,14 +70,13 @@ export default function Header(props) {
     inputRef.current.focus();
   };
   const test = useRef(false);
+  const clientIndex = clientsList?.findIndex(
+    (i) => i._id === currentClient?._id
+  );
+  const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+    (i) => i._id === currentProject?._id
+  );
   useEffect(async () => {
-    const data = currentClient?._id;
-    const clientIndex = clientsList?.findIndex(
-      (i) => i._id === currentClient?._id
-    );
-    const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
-      (i) => i._id === currentProject?._id
-    );
     console.log(projectIndex, clientIndex, "hello");
     if (clientsList !== null) {
       await changeClient(clientsList[clientIndex]);
@@ -179,7 +180,8 @@ export default function Header(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-  return currentProject === "" ? (
+
+  return currentProject === undefined ? (
     <Box
       component="div"
       sx={{
@@ -287,7 +289,6 @@ export default function Header(props) {
               }}
             >
               <Paper
-                elevation={3}
                 // variant="h4"
                 sx={{
                   textAlign: "center",
@@ -318,12 +319,12 @@ export default function Header(props) {
             </div>
             <hr />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Paper elevation={2} sx={{ pt: 1 }}>
-                <Typography variant="h6" sx={{ pt: 3 }}>
-                  Total Project Hours: <Link>150hr</Link>
+              <Paper elevation={1} sx={{ pt: 1 }}>
+                <Typography variant="h6" sx={{ pt: 3, m: 1 }}>
+                  Total Project Hours : <Link>150hr</Link>
                 </Typography>
-                <Typography variant="h6" sx={{ pt: 1 }}>
-                  Total Internal Hours:<Link>30hr</Link>
+                <Typography variant="h6" sx={{ pt: 1, m: 1 }}>
+                  Total Internal Hours : <Link>30hr</Link>
                 </Typography>
               </Paper>
               <Paper sx={{ pt: 0.9 }}>
@@ -331,27 +332,26 @@ export default function Header(props) {
                   variant="h6"
                   sx={{ display: "flex", flexDirection: "row", pt: 3 }}
                 >
-                  <p
+                  <Typography
+                    variant="h6"
                     style={{
                       display: "inherit",
                       alignItems: "center",
                     }}
                   >
-                    BudgetHours:
-                  </p>
-                  <Link>
-                    <EdiText
-                      sx={{ display: "flex", alignItems: "center" }}
-                      type="number"
-                      value={`${
-                        currentProject?.BudgetHours
-                          ? currentProject.BudgetHours
-                          : "Not Assigned"
-                      }`}
-                      onCancel={(v) => console.log("CANCELLED: ", v)}
-                      onSave={(v) => console.log(v)}
-                    />
-                  </Link>
+                    BudgetHours :{" "}
+                  </Typography>
+                  <EdiText
+                    sx={{ display: "flex", alignItems: "center" }}
+                    type="number"
+                    value={` ${
+                      currentProject?.BudgetHours
+                        ? currentProject.BudgetHours
+                        : "  Not Assigned"
+                    }`}
+                    onCancel={(v) => console.log("CANCELLED: ", v)}
+                    onSave={(v) => console.log(v)}
+                  />
                 </Typography>
               </Paper>
             </div>
@@ -385,6 +385,7 @@ export default function Header(props) {
                   />
                 </div> */}
               </Box>
+
               <EnhancedTable
                 clientsList={clientsList}
                 currentProject={currentProject}

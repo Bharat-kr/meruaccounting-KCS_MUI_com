@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
       default: 'employee',
       enum: ['employee', 'admin', 'manager'],
     },
+    avatar: { type: String, default: 'avatar\\image-1642839181868.jpg' },
     isManager: { type: Boolean, default: false },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },

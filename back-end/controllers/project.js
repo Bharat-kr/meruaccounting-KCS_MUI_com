@@ -47,14 +47,20 @@ const createProject = asyncHandler(async (req, res) => {
 
 const getProject = asyncHandler(async (req, res) => {
   try {
-    const { projects } = await User.findById(req.user._id).populate({
-      path: 'projects',
-      model: 'Project',
-      populate: {
-        path: 'employees',
-        select: ['firstName', 'lastName', 'days'],
-      },
-    });
+    const { projects } = await User.findById(req.user._id)
+      .populate({
+        path: 'projects',
+        model: 'Project',
+        populate: { path: 'client', select: 'name' },
+      })
+      .populate({
+        path: 'projects',
+        model: 'Project',
+        populate: {
+          path: 'employees',
+          select: ['firstName', 'lastName', 'days'],
+        },
+      });
 
     res.status(200).json({
       msg: 'Success',
