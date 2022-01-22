@@ -28,11 +28,12 @@ export default function Preview(props) {
         <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
           <CardContent
             sx={{
-              mb: -3,
+              pb: 0,
+              mb: 0,
               mt: -2,
               ml: -1.5,
               background: "#c8facd69",
-              maxHeight: 80,
+              maxHeight: "50px",
             }}
           >
             <Typography
@@ -48,20 +49,21 @@ export default function Preview(props) {
             <CardMedia
               component="img"
               height="140"
-              image={`http://localhost:8000/${props.preview}`}
+              image={`${props.preview}`}
               alt="green iguana"
             />
           </CardActionArea>
           <CardContent
             sx={{
+              // pt: 0,
               mb: -3,
               mt: -2,
               ml: -1.5,
               background: "#c8facd69",
             }}
           >
-            <Typography color="text.primary" gutterBottom variant="h6">
-              {`${props.performanceData}%, Taken at = ${props.activityAt}`}
+            <Typography color="text.primary" gutterBottom variant="subtitle2">
+              {`${props.performanceData}%, Taken at ${props.activityAt}`}
             </Typography>
           </CardContent>
         </Card>
