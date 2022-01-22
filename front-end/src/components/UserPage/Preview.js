@@ -20,12 +20,8 @@ export default function Preview(props) {
   console.log(props.preview);
   return (
     <>
-      <Tooltip
-        title={`${props.activityAt}, ${props.performanceData}%`}
-        placement="top"
-        followCursor
-      >
-        <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
+      <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
+        <Tooltip title={`${props.title}`} placement="top" followCursor>
           <CardContent
             sx={{
               pb: 0,
@@ -45,6 +41,13 @@ export default function Preview(props) {
               {props.title}
             </Typography>
           </CardContent>
+        </Tooltip>
+
+        <Tooltip
+          title={`${props.activityAt}, ${props.performanceData}%`}
+          placement="top"
+          followCursor
+        >
           <CardActionArea onClick={handleToggle}>
             <CardMedia
               component="img"
@@ -53,21 +56,21 @@ export default function Preview(props) {
               alt="green iguana"
             />
           </CardActionArea>
-          <CardContent
-            sx={{
-              // pt: 0,
-              mb: -3,
-              mt: -2,
-              ml: -1.5,
-              background: "#c8facd69",
-            }}
-          >
-            <Typography color="text.primary" gutterBottom variant="subtitle2">
-              {`${props.performanceData}%, Taken at ${props.activityAt}`}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Tooltip>
+        </Tooltip>
+
+        <CardContent
+          sx={{
+            pt: 0,
+            mb: -3,
+            ml: -1.5,
+            background: "#c8facd69",
+          }}
+        >
+          <Typography color="text.primary" gutterBottom variant="subtitle2">
+            {`${props.performanceData}%, Taken at ${props.activityAt}`}
+          </Typography>
+        </CardContent>
+      </Card>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
