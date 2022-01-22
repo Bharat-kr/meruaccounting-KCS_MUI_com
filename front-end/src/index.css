@@ -1,3 +1,26 @@
 .cursor__dot div {
   z-index: 99999999999999999999999999 !important;
 }
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #637381;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #454F5B;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #454F5B;
+  border-radius: 10px;
+}
