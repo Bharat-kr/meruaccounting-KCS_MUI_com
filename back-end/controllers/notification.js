@@ -1,5 +1,5 @@
-import asyncHandler from "express-async-handler";
-import User from "../models/user.js";
+import asyncHandler from 'express-async-handler';
+import User from '../models/user.js';
 
 // @desc    To send notifications to user
 // @route   POST notify/:id
@@ -10,7 +10,7 @@ const sendNotification = asyncHandler(async (req, res) => {
     const employee = await User.findById(req.params.id);
     if (!employee) {
       res.status(404);
-      throw new Error(`${req.params.id} not found`);
+      throw new Error(`Employee not found`);
     }
 
     const notification = {
@@ -25,7 +25,7 @@ const sendNotification = asyncHandler(async (req, res) => {
     await employee.save();
 
     res.status(201).json({
-      status: "ok",
+      status: 'ok',
       employee,
     });
   } catch (error) {
