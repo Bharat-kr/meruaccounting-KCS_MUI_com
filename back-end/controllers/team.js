@@ -1,6 +1,6 @@
-import Team from "../models/team.js";
-import User from "../models/user.js";
-import asyncHandler from "express-async-handler";
+import Team from '../models/team.js';
+import User from '../models/user.js';
+import asyncHandler from 'express-async-handler';
 
 // @desc    Create a new team
 // @route   POST /team/create
@@ -11,7 +11,7 @@ const createTeam = asyncHandler(async (req, res) => {
     const manager = req.user;
     const teamName = req.body.name;
     const team = await Team.create({ name: teamName });
-    if (!team) throw new Error("Error creating new team");
+    if (!team) throw new Error('Error creating new team');
 
     team.members.push(manager._id);
     team.manager = manager._id;
@@ -21,7 +21,7 @@ const createTeam = asyncHandler(async (req, res) => {
     await manager.save();
 
     res.status(201).json({
-      status: "New team created",
+      status: 'New team created',
       data: team,
     });
   } catch (error) {
@@ -60,7 +60,7 @@ const updateMember = asyncHandler(async (req, res) => {
     });
     if (alreadyMember) {
       return res.status(200).json({
-        status: "Already A Member",
+        status: 'Already A Member',
         data: team,
       });
     }
@@ -69,7 +69,7 @@ const updateMember = asyncHandler(async (req, res) => {
     await team.save();
 
     res.status(200).json({
-      status: "ok",
+      status: 'ok',
       data: team,
     });
   } catch (error) {
@@ -117,7 +117,7 @@ const removeMember = asyncHandler(async (req, res) => {
 
     if (alreadyMember == false) {
       return res.status(200).json({
-        status: "No Member Found",
+        status: 'No Member Found',
         data: team,
       });
     }
@@ -126,7 +126,7 @@ const removeMember = asyncHandler(async (req, res) => {
     await employee.save();
 
     res.status(200).json({
-      status: "Ok",
+      status: 'Ok',
       data: team,
     });
   } catch (error) {
@@ -143,9 +143,9 @@ const getTeamById = asyncHandler(async (req, res) => {
   try {
     const teamId = req.params.id;
     const team = await Team.findById(teamId).populate({
-      path: "members",
-      model: "User",
-      select: ["fistName", "lastName", "email", "status"],
+      path: 'members',
+      model: 'User',
+      select: ['fistName', 'lastName', 'email', 'status'],
     });
 
     if (!team) {
@@ -154,7 +154,7 @@ const getTeamById = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json({
-      status: "Success",
+      status: 'Success',
       data: team,
     });
   } catch (error) {
@@ -171,41 +171,41 @@ const getTeam = asyncHandler(async (req, res) => {
   try {
     const { teams } = await User.findById(req.user._id)
       .populate({
-        path: "teams",
-        model: "Team",
+        path: 'teams',
+        model: 'Team',
         populate: {
-          path: "members",
-          model: "User",
+          path: 'members',
+          model: 'User',
           select: [
-            "firstName",
-            "lastName",
-            "email",
-            "settings",
-            "projects",
-            "role",
-            "payRate",
-            "status",
+            'firstName',
+            'lastName',
+            'email',
+            'settings',
+            'projects',
+            'role',
+            'payRate',
+            'status',
           ],
           populate: {
-            path: "projects",
-            model: "Project",
-            select: ["name"],
+            path: 'projects',
+            model: 'Project',
+            select: ['name'],
           },
         },
       })
       .populate({
-        path: "teams",
-        model: "Team",
+        path: 'teams',
+        model: 'Team',
         populate: {
-          path: "manager",
-          model: "User",
-          select: ["-password", "-settings"],
-          populate: { path: "projects", model: "Project" },
+          path: 'manager',
+          model: 'User',
+          select: ['-password', '-settings'],
+          populate: { path: 'projects', model: 'Project' },
         },
       });
 
     res.json({
-      status: "Success",
+      status: 'Success',
       data: teams,
     });
   } catch (error) {
@@ -222,15 +222,15 @@ const deleteTeam = asyncHandler(async (req, res) => {
   const { teamId } = req.body;
   try {
     const team = await Team.findByIdAndRemove(teamId);
-    if (!team) throw new Error("No team found");
+    if (!team) throw new Error('No team found');
 
     const teamMembers = team.members;
     const managerId = team.manager;
 
-    if (!managerId === manager._id) {
+    if (!managerId === manager._id.toHexString()) {
       res.status(401);
       throw new Error(
-        "You are not a manager assigned to this team. Please contact administrator"
+        'You are not a manager assigned to this team. Please contact administrator'
       );
     }
 
@@ -255,7 +255,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     }
 
     res.status(202).json({
-      status: "Deleted Team",
+      status: 'Deleted Team',
       data: team,
     });
   } catch (error) {

@@ -291,37 +291,39 @@ const updateActivity = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete the screenshot
+// @route   PATCH /activity/screenshot
+// @access  Private
+
 const deleteScreenshot = asyncHandler(async (req, res) => {
   try {
-    const screenshotId = req.body.screenshotId;
-    const activityId = req.body.activityId;
-    const employeeId = req.user._id;
+    const array = req.body.data;
+    for (let i = 0; i < array.lenght; i++) {
+      const screenshotId = array[i].screenshotId;
+      const activityId = array[i].activityId;
 
-    const screenshot = await Screenshot.findById(screenshotId);
-    if (!screenshot) {
-      res.status(404);
-      throw new Error(`${screenshotId} not found`);
+      const screenshot = await Screenshot.findById(screenshotId);
+      if (!screenshot) {
+        res.status(404);
+        throw new Error(`${screenshotId} not found`);
+      }
+
+      const activity = await Activity.findById(activityId);
+      if (!screenshot) {
+        res.status(404);
+        throw new Error(`${activityId} not found`);
+      }
+
+      activity.screenshots = activity.screenshots.filter(
+        (_id) => _id.toHexString() !== screenshotId
+      );
+
+      await activity.save();
+
+      await Screenshot.findByIdAndDelete(screenshotId);
     }
-
-    const activity = await Activity.findById(activityId);
-    if (!screenshot) {
-      res.status(404);
-      throw new Error(`${activityId} not found`);
-    }
-
-    activity.screenshots = activity.screenshots.filter(
-      (_id) => _id.toHexString() !== screenshotId
-    );
-
-    console.log(activity.screenshots);
-
-    await activity.save();
-
-    await Screenshot.findByIdAndDelete(screenshotId);
-
     res.status(200).json({
       status: 'ok',
-      activity,
     });
   } catch (error) {
     throw new Error(error);
