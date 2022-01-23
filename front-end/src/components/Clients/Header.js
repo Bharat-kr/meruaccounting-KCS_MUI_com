@@ -65,7 +65,7 @@ export default function Header(props) {
   );
 
   useEffect(async () => {
-    if (clientsList !== (null || undefined)) {
+    if (clientsList !== null) {
       await changeClient(clientsList[clientIndex]);
       // await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
     }
