@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, CardContent, Card } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import moment from "moment";
@@ -15,8 +15,21 @@ import {
 
 // contexts
 
-export default function Overview(props) {
+export default function Overview({ date, days }) {
   const [value, setValue] = React.useState("1");
+  const [todaysHours, setTodaysHours] = useState(0);
+
+  useEffect(() => {
+    let Data = [];
+    Data = days?.filter((day) => {
+      return day.date === date.replace("/0", "/");
+    });
+    if (Data && Data.length > 0) {
+      setTodaysHours(Data[0].dailyHours);
+    } else {
+      setTodaysHours(0);
+    }
+  }, [date]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -48,10 +61,10 @@ export default function Overview(props) {
           justifyContent: "space-evenly",
         }}
       >
-        <AppItemOrders />
-        <Weeklyhours />
-        <Monthlyhours />
-        <AppBugReports />
+        <AppItemOrders Total={(todaysHours / (60 * 60)).toFixed(2)} />
+        <Weeklyhours Total="65" />
+        <Monthlyhours Total="95" />
+        <AppBugReports Total="255" />
       </Box>
       <Box
         sx={{
@@ -73,9 +86,9 @@ export default function Overview(props) {
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Typography
-                  sx={{ fontSize: 14 }}
                   color="text.primary"
                   sx={{
+                    fontSize: 14,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",

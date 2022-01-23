@@ -30,16 +30,13 @@ const IconWrapperStyle = styled("div")(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
-
-const TOTAL = 68.6;
-
-export default function Monthlyhours() {
+export default function Monthlyhours({ Total }) {
   return (
     <RootStyle>
       {/* <IconWrapperStyle>
         <Icon icon={androidFilled} width={24} height={24} />
       </IconWrapperStyle> */}
-      <Typography variant="h3">{TOTAL} Hr</Typography>
+      <Typography variant="h3">{Total} Hr</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         MONTH
       </Typography>
