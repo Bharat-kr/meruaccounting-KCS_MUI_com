@@ -32,20 +32,19 @@ export default function ScreenShots({ activities }) {
       {activities !== undefined && activities.length !== 0 ? (
         activities.map((act) => {
           // dont render if there are not screenshots
-          if (act.screenshots.length !== 0) {
-            return (
-              <Activity
-                project={act.project}
-                actId={act._id}
-                isAccepted={act.isAccepted}
-                startTime={act.startTime}
-                endTime={act.endTime}
-                performanceData={act.performanceData}
-                proId={act.project}
-                screenShots={act.screenshots}
-              ></Activity>
-            );
-          }
+
+          return (
+            <Activity
+              project={act.project}
+              actId={act._id}
+              isAccepted={act.isAccepted}
+              startTime={act.startTime}
+              endTime={act.endTime}
+              performanceData={act.performanceData}
+              proId={act.project}
+              screenShots={act.screenshots}
+            ></Activity>
+          );
         })
       ) : (
         <Alert severity="info">

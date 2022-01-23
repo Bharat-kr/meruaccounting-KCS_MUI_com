@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Box, Typography, Tooltip } from "@mui/material";
+import { Box, Typography, Tooltip, Alert, AlertTitle } from "@mui/material";
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
@@ -46,30 +46,46 @@ export default function Activity({
       <Typography component="span" sx={{ fontWeight: "bold", ml: 2.5 }}>
         {timeC(startTime)} -{timeC(endTime)} ||
       </Typography>
-      <Tooltip title={`${performanceData}%`} placement="top" followCursor>
+      <Tooltip
+        title={`${Math.ceil(performanceData)}%`}
+        placement="top"
+        followCursor
+      >
         <Box sx={{ m: 1, fontWeight: "bold" }} component="span">
           {percentIcon(performanceData)}
-          <span> ({performanceData}%)</span>
+          <span> ({Math.ceil(performanceData)}%)</span>
         </Box>
       </Tooltip>
       <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
-        || {project === null ? "--" : project.name}
+        || {project === null ? `Project was deleted, OOF :")` : project.name}
       </Typography>
       <Box
         component="div"
         sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
       >
-        {screenShots.map((ss, key) => (
-          <Preview
-            ssId={ss._id}
-            actId={actId}
-            title={ss.title}
-            preview={ss.image}
-            key={key}
-            performanceData={ss.performanceData}
-            activityAt={timeC(ss.activityAt)}
-          />
-        ))}
+        {screenShots.length !== 0 ? (
+          screenShots.map((ss, key) => (
+            <Preview
+              ssId={ss._id}
+              actId={actId}
+              title={ss.title}
+              preview={ss.image}
+              key={key}
+              performanceData={ss.performanceData}
+              activityAt={timeC(ss.activityAt)}
+            />
+          ))
+        ) : (
+          <Alert
+            fullWidth
+            severity="info"
+            sx={{ m: 2, width: "100%" }}
+            variant="string"
+          >
+            <AlertTitle>No Screenshots</AlertTitle>
+            Evidence was deleted — <strong>{`OOF :")`}</strong>
+          </Alert>
+        )}
       </Box>
     </Box>
   );

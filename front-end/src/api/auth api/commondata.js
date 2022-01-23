@@ -28,8 +28,9 @@ export const getCommonData = async (dispatch) => {
 export const deleteSs = async (incomingData, dispatch) => {
   try {
     const { data } = await axios.delete(`/activity/screenshot`, {
-      data: { ...incomingData },
+      data: [...incomingData],
     });
+    console.log(data);
     const newCd = await axios.get(`/commondata`);
     dispatch({
       type: DELETE_SS_SUCCESS,

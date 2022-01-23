@@ -27,7 +27,7 @@ export default function Preview(props) {
   };
 
   const delSs = async (activityId, screenshotId) => {
-    deleteSs({ activityId, screenshotId }, dispatchCommonData);
+    deleteSs([{ activityId, screenshotId }], dispatchCommonData);
   };
 
   return (
@@ -75,7 +75,7 @@ export default function Preview(props) {
         </Tooltip>
 
         <Tooltip
-          title={`${props.activityAt}, ${props.performanceData}%`}
+          title={`${props.activityAt}, ${Math.ceil(props.performanceData)}%`}
           placement="top"
           followCursor
         >
@@ -98,7 +98,9 @@ export default function Preview(props) {
           }}
         >
           <Typography color="text.primary" gutterBottom variant="subtitle2">
-            {`${props.performanceData}%, Taken at ${props.activityAt}`}
+            {`${Math.ceil(props.performanceData)}%, Taken at ${
+              props.activityAt
+            }`}
           </Typography>
         </CardContent>
       </Card>
