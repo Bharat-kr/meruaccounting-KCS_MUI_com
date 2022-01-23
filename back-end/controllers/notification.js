@@ -20,7 +20,11 @@ const sendNotification = asyncHandler(async (req, res) => {
       type: req.body.type,
     };
 
-    employee.notifications.push(notification);
+    let newArr = [];
+    newArr.push(notification);
+    let prevArr = employee.notifications;
+    let finalArr = newArr.concat(prevArr);
+    employee.notifications = finalArr;
 
     await employee.save();
 
