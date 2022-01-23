@@ -44,6 +44,14 @@ export default function Sidebar() {
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
 
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds);
+  };
+
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
+
   useEffect(async () => {
     await getClient(dispatchClientDetails);
   }, []);
@@ -220,6 +228,8 @@ export default function Sidebar() {
             className={classes.root}
             expanded={expanded}
             selected={selected}
+            onNodeToggle={handleToggle}
+            onNodeSelect={handleSelect}
           >
             {clientsList?.length > 0 &&
               clientsList.map((client) => (

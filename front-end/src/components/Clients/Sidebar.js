@@ -33,6 +33,11 @@ export default function Sidebar() {
   const autocomRef = useRef("");
   const sidebarref = useRef("");
   const clientref = useRef("");
+
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
+
   // contexts
 
   const {
@@ -198,6 +203,7 @@ export default function Sidebar() {
               width: "100%",
             }}
             selected={selected}
+            onNodeSelect={handleSelect}
           >
             {clientsList?.map((client) => (
               <TreeItem

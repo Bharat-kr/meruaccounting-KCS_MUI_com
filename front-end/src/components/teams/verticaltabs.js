@@ -78,13 +78,13 @@ export default function VerticalTabs() {
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
 
-  // const handleToggle = (event, nodeIds) => {
-  //   setExpanded(nodeIds);
-  // };
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds);
+  };
 
-  // const handleSelect = (event, nodeIds) => {
-  //   setSelected(nodeIds);
-  // };
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
 
   // const handleExpandClick = () => {
   //   setExpanded((oldExpanded) =>
@@ -302,6 +302,8 @@ export default function VerticalTabs() {
               }}
               expanded={expanded}
               selected={selected}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
             >
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem
