@@ -2,7 +2,8 @@
   z-index: 99999999999999999999999999 !important;
 }
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {

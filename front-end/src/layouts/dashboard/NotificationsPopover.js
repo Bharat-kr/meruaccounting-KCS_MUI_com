@@ -210,7 +210,12 @@ export default function NotificationsPopover() {
         open={open}
         onClose={handleClose}
         anchorEl={anchorRef.current}
-        sx={{ width: 360, height: "80%", overflowY: "scroll" }}
+        sx={{
+          width: 360,
+          height: "auto",
+          maxHeight: "80%",
+          overflowY: "scroll",
+        }}
       >
         {notifications.map((notification) => {
           return (
@@ -221,7 +226,11 @@ export default function NotificationsPopover() {
             />
           );
         })}
-        {notifications.length === 0 && "No Notifications"}
+        {notifications.length === 0 && (
+          <Typography variant="h6" sx={{ p: 1 , textAlign:"center"}}>
+            No Notifications Here
+          </Typography>
+        )}
       </MenuPopover>
     </>
   );
