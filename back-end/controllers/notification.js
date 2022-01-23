@@ -19,18 +19,13 @@ const sendNotification = asyncHandler(async (req, res) => {
       avatar: req.body.avatar,
       type: req.body.type,
     };
-
-    let newArr = [];
-    newArr.push(notification);
-    let prevArr = employee.notifications;
-    let finalArr = newArr.concat(prevArr);
-    employee.notifications = finalArr;
+    employee.notifications = [notification, ...employee.notifications];
 
     await employee.save();
 
     res.status(201).json({
       status: "ok",
-      employee,
+      data: employee.notifications,
     });
   } catch (error) {
     throw new Error(error);
