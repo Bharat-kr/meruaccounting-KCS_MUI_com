@@ -144,22 +144,29 @@ export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState([]);
   const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
 
+  //Fetching common data
   useEffect(() => {
     getCommonData(dispatchCommonData);
   }, []);
+
+  //Setting the State of Notifications
   useEffect(() => {
     if (commonData?.commonData?.user?.notifications) {
       setNotifications(commonData?.commonData?.user?.notifications);
     }
   }, [commonData]);
+
+  //calculating the Total Uread Notifications
   const totalUnRead = notifications.filter(
     (item) => item.isUnRead === true
   ).length;
 
+  //Open PopOver
   const handleOpen = () => {
     setOpen(true);
   };
 
+  //close Popover
   const handleClose = () => {
     setOpen(false);
   };
@@ -173,6 +180,7 @@ export default function NotificationsPopover() {
     );
   };
 
+  //Mark As Read function for Notification
   const markAsRead = async (id) => {
     await axios
       .patch(`/notify/${id}`)
@@ -210,7 +218,12 @@ export default function NotificationsPopover() {
         open={open}
         onClose={handleClose}
         anchorEl={anchorRef.current}
-        sx={{ width: 360, height: "80%", overflowY: "scroll" }}
+        sx={{
+          width: 360,
+          height: "auto",
+          maxHeight: "80%",
+          overflowY: "scroll",
+        }}
       >
         {notifications.map((notification) => {
           return (
@@ -221,7 +234,11 @@ export default function NotificationsPopover() {
             />
           );
         })}
-        {notifications.length === 0 && "No Notifications"}
+        {notifications.length === 0 && (
+          <Typography variant="h6" sx={{ p: 1, textAlign: "center" }}>
+            No Notifications Here
+          </Typography>
+        )}
       </MenuPopover>
     </>
   );

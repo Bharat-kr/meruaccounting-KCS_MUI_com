@@ -32,12 +32,10 @@ const IconWrapperStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 234;
-
-export default function AppBugReports() {
+export default function AppBugReports({ Total }) {
   return (
     <RootStyle>
-      <Typography variant="h3">{TOTAL} Hr</Typography>
+      <Typography variant="h3">{Total} Hr</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Total Hours
       </Typography>

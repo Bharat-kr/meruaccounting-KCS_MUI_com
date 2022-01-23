@@ -54,6 +54,7 @@ export default function UserPage() {
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>
         <PageHeader title="Hi, Welcome Back!" />
         <Calendar
+          days={commonData?.commonData?.user?.days}
           setDate={(date) =>
             setdate((prev) => {
               console.log(date);
@@ -61,7 +62,7 @@ export default function UserPage() {
             })
           }
         />
-        <Overview />
+        <Overview date={date} days={commonData?.commonData?.user?.days} />
         <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>
@@ -70,7 +71,6 @@ export default function UserPage() {
             })
           }
         />
-
         <ScreenShots activities={activities} date={date} />
       </Box>
     </CssBaseline>

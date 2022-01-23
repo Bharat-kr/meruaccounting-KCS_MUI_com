@@ -28,10 +28,16 @@ export default function Sidebar() {
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
   const [defaultTextValue, setDefaultTextValue] = useState("");
+  const [selected, setSelected] = React.useState([]);
   const inputRef = useRef("");
   const autocomRef = useRef("");
   const sidebarref = useRef("");
   const clientref = useRef("");
+
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
+
   // contexts
 
   const {
@@ -83,6 +89,7 @@ export default function Sidebar() {
       // eslint-disable-next-line no-useless-return
     }
     changeClient(client[0]);
+    setSelected((oldSelected) => [`${client[0]._id}`]);
     console.log(sidebarref, clientref);
 
     // not working
@@ -195,6 +202,8 @@ export default function Sidebar() {
               overflowY: "auto",
               width: "100%",
             }}
+            selected={selected}
+            onNodeSelect={handleSelect}
           >
             {clientsList?.map((client) => (
               <TreeItem
