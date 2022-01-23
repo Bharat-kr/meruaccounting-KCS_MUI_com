@@ -8,6 +8,8 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  Checkbox,
+  Container,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 // contexts
@@ -45,19 +47,23 @@ export default function Preview(props) {
               overflow: "hidden",
             }}
           >
-            <Box
-              sx={{
-                display: "inline-block",
-                maxWidth: "90%",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                typography: "caption",
-                fontWeight: "bold",
-              }}
-            >
-              {props.title}
-            </Box>
+            <span>
+              <Checkbox sx={{ pt: 0, pl: 0, pr: 0.5 }} />
+              <Box
+                sx={{
+                  width: "75%",
+                  display: "inline-block",
+                  maxWidth: "90%",
+                  typography: "caption",
+                  fontWeight: "bold",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                }}
+              >
+                {props.title}
+              </Box>
+            </span>
             <DeleteIcon
               sx={{ float: "right" }}
               fontSize="small"
