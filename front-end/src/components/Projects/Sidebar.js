@@ -1,14 +1,6 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useRef, useEffect, useState } from "react";
-import {
-  Grid,
-  List,
-  Paper,
-  Autocomplete,
-  Typography,
-  Button,
-  Divider,
-} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { Paper, Typography, Button } from "@mui/material";
 import { TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -49,6 +41,8 @@ export default function Sidebar() {
   // const [currentClient, changeClient] = useState("");
   // const [currentProject, changeProject] = useState("");
   const { dispatchCreateProject } = useContext(projectContext);
+  const [expanded, setExpanded] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
 
   useEffect(async () => {
     await getClient(dispatchClientDetails);
@@ -111,6 +105,7 @@ export default function Sidebar() {
         const client = clientsList?.filter((client) =>
           client.name === val[0] ? client : ""
         );
+        setExpanded((oldExpanded) => [`${client[0]._id}`]);
         const project = client[0].projects?.filter((pro) =>
           pro.name == val[1] ? pro : ""
         );
@@ -121,6 +116,7 @@ export default function Sidebar() {
         setnewProjectValue(project[0]);
 
         changeProject(project[0]);
+        setSelected((oldSelected) => [`${project[0]._id + client[0]._id}`]);
       }
     } catch (error) {
       console.log(error.message);
@@ -222,6 +218,8 @@ export default function Sidebar() {
               width: "100%",
             }}
             className={classes.root}
+            expanded={expanded}
+            selected={selected}
           >
             {clientsList?.length > 0 &&
               clientsList.map((client) => (
@@ -235,7 +233,7 @@ export default function Sidebar() {
                   {client.projects.map((project) => {
                     return (
                       <TreeItem
-                        nodeId={(client._id + project._id).toString()}
+                        nodeId={(project._id + client._id).toString()}
                         id={project._id}
                         key={project._id}
                         label={
