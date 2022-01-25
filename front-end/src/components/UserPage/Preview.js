@@ -10,6 +10,7 @@ import {
   Typography,
   Checkbox,
   Container,
+  FormControlLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 // contexts
@@ -29,16 +30,9 @@ export default function Preview(props) {
   const delSs = async (activityId, screenshotId) => {
     deleteSs([{ activityId, screenshotId }], dispatchCommonData);
   };
-
-  // const runThis = (isCheck, actId, ssId) => {
-  //   const ssDetails = { actId, ssId };
-  //   if (isCheck) {
-  //     setselectedSs((prev) => [...prev, ssDetails]);
-  //   } else {
-  //     setselectedSs((prev) =>
-  //       selectedSs.filter((pre) => pre.ssId !== ssDetails.ssId)
-  //     );
-  //   }
+  // console.log(props.selectedSs);
+  // const isChecked = (e) => {
+  //   return !props.selectedSs.indexOf(e.target.value) !== -1;
   // };
 
   return (
@@ -61,15 +55,15 @@ export default function Preview(props) {
             {/* use ref to checkbox, perform onClick */}
             <span>
               <Checkbox
+                value={props.ssId}
+                aria-labelledby={props.ssId}
+                checked={props.selectedSs.indexOf(props.ssId) !== -1}
                 sx={{ pt: 0, pl: 0, pr: 0.5 }}
                 onChange={(e) => {
-                  return props.setSelectedSs(
-                    e.target.checked,
-                    props.actId,
-                    props.ssId
-                  );
+                  return props.setSelectedSs(e.target.checked, props.ssId);
                 }}
               />
+
               <Box
                 sx={{
                   width: "75%",
