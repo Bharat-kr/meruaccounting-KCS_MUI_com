@@ -9,7 +9,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { TablePagination } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -30,7 +29,6 @@ import {
   addProjectMember,
   removeProjectMember,
 } from "../../api/projects api/projects";
-import { indexOf } from "lodash";
 
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, payrate, id) {
@@ -195,6 +193,7 @@ const EnhancedTableToolbar = (props) => {
     <>
       <Toolbar
         sx={{
+          display: "none",
           mt: 3,
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
@@ -204,6 +203,7 @@ const EnhancedTableToolbar = (props) => {
                 theme.palette.primary.main,
                 theme.palette.action.activatedOpacity
               ),
+            display: "flex",
           }),
         }}
       >
@@ -266,8 +266,7 @@ export default function EnhancedTable(props) {
     currentProject,
     currentClient,
   } = useContext(ClientsContext);
-  const { dispatchaddProjectMember, ProjectMember } =
-    useContext(projectContext);
+  const { dispatchaddProjectMember } = useContext(projectContext);
 
   const tableListRef = useRef();
   const employeesList = [];
