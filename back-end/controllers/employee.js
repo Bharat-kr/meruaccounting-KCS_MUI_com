@@ -1,8 +1,8 @@
-import User from '../models/user.js';
-import Client from '../models/client.js';
-import Project from '../models/project.js';
-import Team from '../models/team.js';
-import asyncHandler from 'express-async-handler';
+import User from "../models/user.js";
+import Client from "../models/client.js";
+import Project from "../models/project.js";
+import Team from "../models/team.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Get employee details by ID
 // @route   GET /employee/:id
@@ -11,13 +11,28 @@ import asyncHandler from 'express-async-handler';
 const getEmployeeById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
-    const employee = await User.findById(id);
+    const employee = await User.findById(id)
+      .select("-password")
+      .populate({
+        path: "days",
+        populate: {
+          path: "activities ",
+          populate: [
+            { path: "screenshots", select: ["-employee"] },
+            {
+              path: "project",
+              model: "Project",
+              select: ["name"],
+            },
+          ],
+        },
+      });
     if (!employee) {
       res.status(404);
       throw new Error(`Employee not found `);
     }
     res.status(200).json({
-      status: 'Ok',
+      status: "Ok",
       data: employee,
     });
   } catch (error) {
@@ -32,17 +47,17 @@ const getEmployeeById = asyncHandler(async (req, res) => {
 const getEmployeeList = asyncHandler(async (req, res) => {
   try {
     const { teams } = await User.findById(req.user._id).populate({
-      path: 'teams',
-      model: 'Team',
+      path: "teams",
+      model: "Team",
       populate: {
-        path: 'members',
-        model: 'User',
-        select: ['firstName', 'lastName', 'email'],
+        path: "members",
+        model: "User",
+        select: ["firstName", "lastName", "email"],
       },
     });
 
     res.status(200).json({
-      messsage: 'Success',
+      messsage: "Success",
       data: teams,
     });
   } catch (error) {
@@ -63,7 +78,7 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 
     if (employee) {
       res.status(404);
-      throw new Error('Employee to be deleted not found');
+      throw new Error("Employee to be deleted not found");
     }
 
     /* ------ finding employee clients and removing createdBy field ----- */
@@ -110,7 +125,7 @@ const deleteEmployee = asyncHandler(async (req, res) => {
     await User.findByIdAndRemove(id);
 
     res.json({
-      status: 'Employee Deleted',
+      status: "Employee Deleted",
       data: employee,
     });
   } catch (error) {
@@ -129,7 +144,7 @@ const editEmployee = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(employeeId, req.body);
     user.save();
     res.json({
-      message: 'User Updated',
+      message: "User Updated",
       data: user,
     });
   } catch (error) {

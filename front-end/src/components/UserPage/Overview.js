@@ -22,7 +22,7 @@ export default function Overview({ date, days }) {
   useEffect(() => {
     let Data = [];
     Data = days?.filter((day) => {
-      return day.date === date.replace("/0", "/");
+      return day.date === date;
     });
     if (Data && Data.length > 0) {
       setTodaysHours(Data[0].dailyHours);

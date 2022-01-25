@@ -1,13 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Box, Typography, Tooltip } from "@mui/material";
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import Preview from "./Preview";
-
-// contexts
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { loginContext } from "../../contexts/LoginContext";
 
 // helpers
 import timeC from "../../_helpers/timeConverter";

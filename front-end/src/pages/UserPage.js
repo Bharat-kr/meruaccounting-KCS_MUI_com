@@ -39,7 +39,7 @@ export default function UserPage() {
     if (commonData.loader === false) {
       setactivities(
         commonData.commonData.user.days
-          .filter((day) => day.date === date.replace("/0", "/"))[0]
+          .filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
           })
