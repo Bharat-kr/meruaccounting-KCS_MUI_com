@@ -4,6 +4,8 @@ import {
   GET_COMMONDATA_FAILED,
   DELETE_SS_SUCCESS,
   DELETE_SS_FAILED,
+  DELETE_ACT_FAILED,
+  DELETE_ACT_SUCCESS,
 } from "../../constants/CurrentUserConstants";
 
 export const getCommonData = async (dispatch) => {
@@ -39,6 +41,27 @@ export const deleteSs = async (incomingData, dispatch) => {
   } catch (err) {
     dispatch({
       type: DELETE_SS_FAILED,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+export const deleteAct = async (activityId, incomingDate, dispatch) => {
+  try {
+    const { data } = await axios.delete(`/activity`, {
+      data: { activityId, incomingDate },
+    });
+    console.log(data);
+    const newCd = await axios.get(`/commondata`);
+    dispatch({
+      type: DELETE_ACT_SUCCESS,
+      payload: newCd.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: DELETE_ACT_FAILED,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

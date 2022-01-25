@@ -7,7 +7,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Activity from "./Activity";
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-export default function ScreenShots({ activities }) {
+export default function ScreenShots({ activities, date }) {
   // pass this date from calendar, constant for now
   // const tempdate = "16/1/2022";
 
@@ -32,9 +32,9 @@ export default function ScreenShots({ activities }) {
       {activities !== undefined && activities.length !== 0 ? (
         activities.map((act) => {
           // dont render if there are not screenshots
-
           return (
             <Activity
+              date={date}
               project={act.project}
               actId={act._id}
               isAccepted={act.isAccepted}
