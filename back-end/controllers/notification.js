@@ -1,5 +1,5 @@
-import asyncHandler from 'express-async-handler';
-import User from '../models/user.js';
+import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
 
 // @desc    To send notifications to user
 // @route   POST notify/:id
