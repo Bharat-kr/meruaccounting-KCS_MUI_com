@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Box,
   Typography,
@@ -19,6 +19,7 @@ import Preview from "./Preview";
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { loginContext } from "../../contexts/LoginContext";
+import { deleteSs } from "../../api/auth api/commondata";
 
 // helpers
 import timeC from "../../_helpers/timeConverter";
@@ -32,7 +33,10 @@ export default function Activity({
   performanceData,
   screenShots,
 }) {
+  const { dispatchCommonData } = useContext(CurrentUserContext);
   const [selectedSs, setselectedSs] = useState([]);
+
+  // performance data icons
   const percentIcon = (percent) =>
     percent <= 30 ? (
       <HourglassEmptyIcon sx={{ m: -1 }} />
@@ -41,6 +45,11 @@ export default function Activity({
     ) : (
       <HourglassFullIcon sx={{ m: -1 }} />
     );
+
+  const delSs = async (selectedSs) => {
+    await deleteSs(selectedSs, dispatchCommonData);
+    setselectedSs([]);
+  };
 
   return (
     <Box
@@ -75,7 +84,7 @@ export default function Activity({
         sx={{
           // use this for dynamic display none
           display: "none",
-          ...(selectedSs > 0 && {
+          ...(selectedSs.length > 0 && {
             bgcolor: (theme) =>
               alpha(
                 theme.palette.primary.main,
@@ -87,7 +96,13 @@ export default function Activity({
       >
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon />
+            <DeleteIcon
+              sx={{ float: "right" }}
+              fontSize="small"
+              onClick={(e) => {
+                delSs(selectedSs);
+              }}
+            />
           </IconButton>
         </Tooltip>
 
@@ -107,8 +122,15 @@ export default function Activity({
         {screenShots.length !== 0 ? (
           screenShots.map((ss, key) => (
             <Preview
-              setSelectedSs={(actId, ssId) => {
-                setselectedSs((prev) => [...prev, { actId, ssId }]);
+              setSelectedSs={(isCheck, activityId, screenshotId) => {
+                const ssDetails = { activityId, screenshotId };
+                if (isCheck) {
+                  setselectedSs((prev) => [...prev, ssDetails]);
+                } else {
+                  setselectedSs((prev) =>
+                    selectedSs.filter((pre) => pre.ssId !== ssDetails.ssId)
+                  );
+                }
               }}
               ssId={ss._id}
               actId={actId}

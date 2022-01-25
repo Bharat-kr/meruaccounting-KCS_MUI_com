@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Backdrop,
@@ -30,6 +30,17 @@ export default function Preview(props) {
     deleteSs([{ activityId, screenshotId }], dispatchCommonData);
   };
 
+  // const runThis = (isCheck, actId, ssId) => {
+  //   const ssDetails = { actId, ssId };
+  //   if (isCheck) {
+  //     setselectedSs((prev) => [...prev, ssDetails]);
+  //   } else {
+  //     setselectedSs((prev) =>
+  //       selectedSs.filter((pre) => pre.ssId !== ssDetails.ssId)
+  //     );
+  //   }
+  // };
+
   return (
     <>
       <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
@@ -47,8 +58,18 @@ export default function Preview(props) {
               overflow: "hidden",
             }}
           >
-            <span onClick={props.setSelectedSs.bind(props.actId, props.ssId)}>
-              <Checkbox sx={{ pt: 0, pl: 0, pr: 0.5 }} />
+            {/* use ref to checkbox, perform onClick */}
+            <span>
+              <Checkbox
+                sx={{ pt: 0, pl: 0, pr: 0.5 }}
+                onChange={(e) => {
+                  return props.setSelectedSs(
+                    e.target.checked,
+                    props.actId,
+                    props.ssId
+                  );
+                }}
+              />
               <Box
                 sx={{
                   width: "75%",
@@ -69,6 +90,7 @@ export default function Preview(props) {
               fontSize="small"
               onClick={(e) => {
                 delSs(props.actId, props.ssId);
+                props.setSelectedSs(false, props.actId, props.ssId);
               }}
             />
           </CardContent>
