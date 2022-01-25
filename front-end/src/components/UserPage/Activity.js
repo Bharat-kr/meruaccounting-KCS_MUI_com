@@ -19,12 +19,13 @@ import Preview from "./Preview";
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { loginContext } from "../../contexts/LoginContext";
-import { deleteSs } from "../../api/auth api/commondata";
+import { deleteSs, deleteAct } from "../../api/auth api/commondata";
 
 // helpers
 import timeC from "../../_helpers/timeConverter";
 
 export default function Activity({
+  date,
   project,
   actId,
   isAccepted,
@@ -49,6 +50,10 @@ export default function Activity({
   const delSs = async (selectedSs) => {
     await deleteSs(selectedSs, dispatchCommonData);
     setselectedSs([]);
+  };
+
+  const delAct = async (actId) => {
+    await deleteAct(actId, date, dispatchCommonData);
   };
 
   return (
@@ -80,6 +85,13 @@ export default function Activity({
       <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
         || {project === null ? `Project was deleted, OOF :")` : project.name}
       </Typography>
+      <DeleteIcon
+        sx={{ float: "right" }}
+        onClick={(e) => {
+          delAct(actId);
+        }}
+      />
+
       <Toolbar
         sx={{
           // use this for dynamic display none

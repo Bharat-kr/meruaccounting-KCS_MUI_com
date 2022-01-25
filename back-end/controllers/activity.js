@@ -321,7 +321,7 @@ const deleteScreenshot = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Delete the screenshot
+// @desc    Delete the activity
 // @route   DELETE /activity
 // @access  Private
 
@@ -348,7 +348,6 @@ const deleteActivity = asyncHandler(async (req, res) => {
 
     for (let j = 0; j < activity.screenshots.length; j++) {
       const ss = await Screenshot.findByIdAndDelete(activity.screenshots[j]);
-      console.log(ss);
     }
 
     activity = await Activity.findByIdAndDelete(activityId);
