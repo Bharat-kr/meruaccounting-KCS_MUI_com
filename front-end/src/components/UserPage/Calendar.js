@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import "./calendar.css";
+import Tooltip from "@mui/material/Tooltip";
 export default class Calendar extends React.Component {
   weekdayshort = moment.weekdaysShort();
 
@@ -213,15 +214,24 @@ export default class Calendar extends React.Component {
       let currentDay = d == this.currentDay() ? "today" : "";
       console.log(currentDay);
       daysInMonth.push(
-        <td
-          key={d}
-          className={`calendar-day ${currentDay}`}
-          onClick={(e) => {
-            this.onDayClick(e, d);
-          }}
+        <Tooltip
+          title={`${
+            this.getHours(d) ? (this.getHours(d).dailyHours / (60 * 60)).toFixed(2) : 0
+          } Hrs`}
+          arrow
+          followCursor
+          placement="top"
         >
-          <span>{d}</span>
-        </td>
+          <td
+            key={d}
+            className={`calendar-day ${currentDay}`}
+            onClick={(e) => {
+              this.onDayClick(e, d);
+            }}
+          >
+            <span>{d}</span>
+          </td>
+        </Tooltip>
       );
       // let day = this.getHours(d);
       trackingData.push(
