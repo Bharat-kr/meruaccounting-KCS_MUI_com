@@ -75,7 +75,6 @@ const createActivity = asyncHandler(async (req, res) => {
 
   if (activity) {
     const user = await User.findById(req.user._id);
-
     let today = dayjs().format("DD/MM/YYYY");
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
@@ -188,6 +187,7 @@ const splitActivity = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
 
     let today = dayjs().format("DD/MM/YYYY");
+
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
@@ -250,15 +250,6 @@ const splitActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
-
-    // const user = await User.findByIdAndUpdate(
-    //   { _id },
-    //   { $inc: { "days.$[elem].dailyHours": req.body.consumeTime } },
-    //   {
-    //     multi: false,
-    //     arrayFilters: [{ "elem.date": { $eq: "19/1/2022" } }],
-    //   }
-    // );
     const user = await User.findByIdAndUpdate(
       { _id },
       { $inc: { "days.$[elem].dailyHours": req.body.consumeTime } },
@@ -292,16 +283,13 @@ const updateActivity = asyncHandler(async (req, res) => {
 });
 
 // @desc    Delete the screenshot
-// @route   PATCH /activity/screenshot
+// @route   DELETE /activity/screenshot
 // @access  Private
 
 const deleteScreenshot = asyncHandler(async (req, res) => {
   try {
     const array = req.body;
-    // console.log(array);
-
     for (let i = 0; i < array.length; i++) {
-      console.log(array[i]);
       const screenshotId = array[i].screenshotId;
       const activityId = array[i].activityId;
 
@@ -333,10 +321,52 @@ const deleteScreenshot = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Delete the screenshot
+// @route   DELETE /activity
+// @access  Private
+
+const deleteActivity = asyncHandler(async (req, res) => {
+  try {
+    const { incomingDate, activityId } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user._id, days: { $elemMatch: { date: incomingDate } } },
+      {
+        $pull: {
+          "days.$.activities": activityId,
+        },
+      },
+      { new: true, safe: true, upsert: true }
+    );
+
+    let activity = await Activity.findById(activityId);
+
+    if (!activity) {
+      res.status(404);
+      throw new Error("No activity found");
+    }
+
+    for (let j = 0; j < activity.screenshots.length; j++) {
+      const ss = await Screenshot.findByIdAndDelete(activity.screenshots[j]);
+      console.log(ss);
+    }
+
+    activity = await Activity.findByIdAndDelete(activityId);
+
+    res.status(200).json({
+      status: "ok",
+      data: user.days,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
   createActivity,
   createScreenShot,
   updateActivity,
   splitActivity,
   deleteScreenshot,
+  deleteActivity,
 };
