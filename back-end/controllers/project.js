@@ -1,7 +1,7 @@
-import Client from '../models/client.js';
-import Project from '../models/project.js';
-import User from '../models/user.js';
-import asyncHandler from 'express-async-handler';
+import Client from "../models/client.js";
+import Project from "../models/project.js";
+import User from "../models/user.js";
+import asyncHandler from "express-async-handler";
 
 // @desc    Create a new project
 // @route   POST /project
@@ -14,11 +14,11 @@ const createProject = asyncHandler(async (req, res) => {
     const client = await Client.findById(clientId);
     if (!client) {
       res.status(404);
-      throw new Error('Client not found');
+      throw new Error("Client not found");
     }
 
     const project = new Project({ name });
-    if (!project) throw new Error('Error creating new project');
+    if (!project) throw new Error("Error creating new project");
 
     project.employees.push(manager._id.toHexString());
     project.createdBy = manager._id;
@@ -33,7 +33,7 @@ const createProject = asyncHandler(async (req, res) => {
     await project.save();
 
     res.status(201).json({
-      status: 'Successfully Created Project',
+      status: "Successfully Created Project",
       data: project,
     });
   } catch (error) {
@@ -49,21 +49,21 @@ const getProject = asyncHandler(async (req, res) => {
   try {
     const { projects } = await User.findById(req.user._id)
       .populate({
-        path: 'projects',
-        model: 'Project',
-        populate: { path: 'client', select: 'name' },
+        path: "projects",
+        model: "Project",
+        populate: { path: "client", select: "name" },
       })
       .populate({
-        path: 'projects',
-        model: 'Project',
+        path: "projects",
+        model: "Project",
         populate: {
-          path: 'employees',
-          select: ['firstName', 'lastName', 'days'],
+          path: "employees",
+          select: ["firstName", "lastName", "days"],
         },
       });
 
     res.status(200).json({
-      msg: 'Success',
+      msg: "Success",
       data: projects,
     });
   } catch (error) {
@@ -84,7 +84,7 @@ const getProjectById = asyncHandler(async (req, res) => {
       throw new Error(`No project found ${id}`);
     }
     res.status(200).json({
-      status: 'Project fetched successfully',
+      status: "Project fetched successfully",
       data: project,
     });
   } catch (error) {
@@ -106,7 +106,7 @@ const editProject = asyncHandler(async (req, res) => {
     }
 
     res.status(200).json({
-      status: 'Successfully edited project',
+      status: "Successfully edited project",
       data: project,
     });
   } catch (error) {
@@ -151,7 +151,7 @@ const deleteProject = asyncHandler(async (req, res) => {
     project = await Project.findByIdAndRemove(projectId);
 
     res.status(202).json({
-      status: 'Successfully Deleted Project',
+      status: "Successfully Deleted Project",
       status: project,
     });
   } catch (error) {
@@ -172,13 +172,13 @@ const addMember = asyncHandler(async (req, res) => {
     const project = await Project.findById(projectId);
     if (!project) {
       res.status(404);
-      throw new Error('Project not found');
+      throw new Error("Project not found");
     }
 
     const newEmployee = await User.findOne({ email: employeeMail });
     if (!newEmployee) {
       res.status(404);
-      throw new Error('No such employee found');
+      throw new Error("No such employee found");
     }
     const employeeId = newEmployee._id;
     project.employees.forEach((employee) => {
@@ -189,7 +189,7 @@ const addMember = asyncHandler(async (req, res) => {
 
     if (alreadyMember) {
       return res.status(200).json({
-        status: 'Already A Member',
+        status: "Already A Member",
         data: project,
       });
     }
@@ -208,7 +208,7 @@ const addMember = asyncHandler(async (req, res) => {
     project.employees.push(employeeId);
     await project.save();
     res.status(201).json({
-      status: 'ok',
+      status: "ok",
       data: project,
     });
   } catch (error) {
@@ -250,7 +250,7 @@ const removeMember = asyncHandler(async (req, res) => {
     await employee.save();
     await project.save();
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: project,
     });
   } catch (error) {
@@ -304,7 +304,7 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
     await project.save();
 
     res.status(200).json({
-      status: 'ok',
+      status: "ok",
       data: project,
     });
   } catch (error) {
