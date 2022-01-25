@@ -1,5 +1,5 @@
-import asyncHandler from 'express-async-handler';
-import User from '../models/user.js';
+import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
 
 // @desc
 // @route   GET /
@@ -23,13 +23,13 @@ const abc = asyncHandler(async (req, res) => {
       throw new Error(`Employee not found`);
     }
     const day = {
-      date: moment('1-12-1995', 'DD-MM-YYYY'),
+      date: moment("1-12-1995", "DD-MM-YYYY"),
       hours: hours,
       screenShots: [
         {
           activityLevel: activityLevel,
           url: url,
-          time: moment(time, 'DD MM YYYY hh:mm:ss', true),
+          time: moment(time, "DD MM YYYY hh:mm:ss", true),
           taskName: taskName,
         },
       ],
@@ -37,7 +37,7 @@ const abc = asyncHandler(async (req, res) => {
     employee.day.push(day);
     await employee.save();
     res.json({
-      status: 'Success',
+      status: "Success",
       data: employee,
     });
   } catch (error) {

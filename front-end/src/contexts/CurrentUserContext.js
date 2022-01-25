@@ -4,6 +4,8 @@ import {
   GET_COMMONDATA_FAILED,
   DELETE_SS_FAILED,
   DELETE_SS_SUCCESS,
+  DELETE_ACT_FAILED,
+  DELETE_ACT_SUCCESS,
 } from "../constants/CurrentUserConstants";
 
 export const CurrentUserContext = createContext();
@@ -34,6 +36,15 @@ const currentUserReducer = (state, action) => {
         commonData: action.payload,
       };
     case DELETE_SS_FAILED:
+      return {
+        ...state,
+      };
+    case DELETE_ACT_SUCCESS:
+      return {
+        ...state,
+        commonData: action.payload,
+      };
+    case DELETE_ACT_FAILED:
       return {
         ...state,
       };

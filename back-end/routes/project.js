@@ -1,5 +1,5 @@
-import express from 'express';
-import { authPass } from '../middleware/authMiddleware.js';
+import express from "express";
+import { authPass } from "../middleware/authMiddleware.js";
 import {
   createProject,
   deleteProject,
@@ -9,22 +9,22 @@ import {
   addMember,
   removeMember,
   assignProjectLeader,
-} from '../controllers/project.js';
+} from "../controllers/project.js";
 
 const router = express.Router();
 
 router
-  .route('/')
+  .route("/")
   .get(authPass, getProject)
   .post(authPass, createProject)
   .delete(authPass, deleteProject);
 
-router.route('/addMember/:id').post(authPass, addMember);
+router.route("/addMember/:id").post(authPass, addMember);
 
-router.route('/removeMember/:id').patch(authPass, removeMember);
+router.route("/removeMember/:id").patch(authPass, removeMember);
 
-router.route('/projectLeader/:id').post(authPass, assignProjectLeader);
+router.route("/projectLeader/:id").post(authPass, assignProjectLeader);
 
-router.route('/:id').get(authPass, getProjectById).patch(authPass, editProject);
+router.route("/:id").get(authPass, getProjectById).patch(authPass, editProject);
 
 export default router;

@@ -1,7 +1,8 @@
-import Activity from '../models/activity.js';
-import User from '../models/user.js';
-import Screenshot from '../models/screenshot.js';
-import asyncHandler from 'express-async-handler';
+import Activity from "../models/activity.js";
+import User from "../models/user.js";
+import Screenshot from "../models/screenshot.js";
+import asyncHandler from "express-async-handler";
+import dayjs from "dayjs";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -34,13 +35,13 @@ const createScreenShot = asyncHandler(async (req, res) => {
   if (screenshot) {
     const activity = await Activity.findById(activityId);
     if (!activity) {
-      res.status(404).json({ status: 'no act found' });
+      res.status(404).json({ status: "no act found" });
     }
     activity.screenshots.push(screenshot._id.toHexString());
     await activity.save();
 
     res.status(201).json({
-      status: 'success',
+      status: "success",
       screenshot,
     });
   }
@@ -74,11 +75,7 @@ const createActivity = asyncHandler(async (req, res) => {
 
   if (activity) {
     const user = await User.findById(req.user._id);
-    let actAt = new Date(startTime);
-    let dd = actAt.getDate();
-    let mm = actAt.getMonth() + 1;
-    let yyyy = actAt.getFullYear();
-    let today = dd + '/' + mm + '/' + yyyy;
+    let today = dayjs().format("DD/MM/YYYY");
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
@@ -97,12 +94,12 @@ const createActivity = asyncHandler(async (req, res) => {
     }
     await user.save();
     res.status(201).json({
-      status: 'success',
+      status: "success",
       activity,
       days: user.days,
     });
   } else {
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
 });
 
@@ -124,14 +121,14 @@ const splitActivity = asyncHandler(async (req, res) => {
   } = req.body;
 
   const intialActivity = await Activity.findById(activityId).populate(
-    'screenshots'
+    "screenshots"
   );
-  console.log('These are intitialActivity', intialActivity);
+  console.log("These are intitialActivity", intialActivity);
 
   const intitialActivityTime = parseInt(intialActivity.startTime);
   const finalActivityTime = intialActivity.endTime;
   const screenShots = intialActivity.screenshots;
-  console.log('These are screenShots', screenShots);
+  console.log("These are screenShots", screenShots);
 
   const activity1 = await Activity.create({
     employee: req.user._id,
@@ -154,23 +151,20 @@ const splitActivity = asyncHandler(async (req, res) => {
     isInternal,
   });
 
-  console.log('This is activity 1', activity1);
-  console.log('This is activity 2', activity2);
+  console.log("This is activity 1", activity1);
+  console.log("This is activity 2", activity2);
 
   if (activity1) {
     const user = await User.findById(req.user._id);
     console.log(user);
 
-    let actAt = new Date(intitialActivityTime);
-    let dd = actAt.getDate();
-    let mm = actAt.getMonth() + 1;
-    let yyyy = actAt.getFullYear();
-    let today = dd + '/' + mm + '/' + yyyy;
-    console.log('Date of activity1', today);
+    let today = dayjs().format("DD/MM/YYYY");
+
+    console.log("Date of activity1", today);
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
-      console.log(' for activity1', day.date, today);
+      console.log(" for activity1", day.date, today);
       if (day.date == today) {
         found = true;
         day.activities.push(activity1);
@@ -178,7 +172,7 @@ const splitActivity = asyncHandler(async (req, res) => {
       }
     }
     if (found == false) {
-      console.log('Found False for activity1');
+      console.log("Found False for activity1");
       const day = {
         date: today,
         activities: [activity1],
@@ -187,29 +181,27 @@ const splitActivity = asyncHandler(async (req, res) => {
     }
     await user.save();
   } else {
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
   if (activity2) {
     const user = await User.findById(req.user._id);
-    let actAt = new Date(splitTime);
-    let dd = actAt.getDate();
-    let mm = actAt.getMonth() + 1;
-    let yyyy = actAt.getFullYear();
-    let today = dd + '/' + mm + '/' + yyyy;
+
+    let today = dayjs().format("DD/MM/YYYY");
+
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
-      console.log(' for activity2', day.date, today);
+      console.log(" for activity2", day.date, today);
 
       if (day.date == today) {
-        console.log('Found true for activity2', day.date, today);
+        console.log("Found true for activity2", day.date, today);
         found = true;
         day.activities.push(activity2);
         break;
       }
     }
     if (found == false) {
-      console.log('Found False for activity1');
+      console.log("Found False for activity1");
       const day = {
         date: today,
         activities: [activity2],
@@ -218,21 +210,21 @@ const splitActivity = asyncHandler(async (req, res) => {
     }
     await user.save();
   } else {
-    throw new Error('Internal server error');
+    throw new Error("Internal server error");
   }
   screenShots.forEach((screenShot) => {
-    console.log('These are Screenshots', screenShot);
+    console.log("These are Screenshots", screenShot);
     const time = parseInt(screenShot.activityAt);
     let screenShotTime = new Date(time);
     let EndTime = parseInt(activity1.endTime);
     let endTime = new Date(EndTime);
     if (screenShotTime <= endTime) {
-      console.log('Inside if');
-      console.log('This is time and endTime', screenShotTime, endTime);
+      console.log("Inside if");
+      console.log("This is time and endTime", screenShotTime, endTime);
       activity1.screenshots.push(screenShot._id);
     } else {
-      console.log('Inside else');
-      console.log('This is time and endTime', screenShotTime, endTime);
+      console.log("Inside else");
+      console.log("This is time and endTime", screenShotTime, endTime);
       activity2.screenshots.push(screenShot._id);
     }
   });
@@ -241,11 +233,11 @@ const splitActivity = asyncHandler(async (req, res) => {
     await activity2.save();
     await Activity.findByIdAndRemove(activityId);
   } catch (error) {
-    throw new Error('Sorry DataBase is Down');
+    throw new Error("Sorry DataBase is Down");
   }
 
   res.status(200).json({
-    status: 'Activity Splitted Successfully',
+    status: "Activity Splitted Successfully",
     // activity1,
     // activity2,
   });
@@ -258,13 +250,12 @@ const splitActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
-
     const user = await User.findByIdAndUpdate(
       { _id },
-      { $inc: { 'days.$[elem].dailyHours': req.body.consumeTime } },
+      { $inc: { "days.$[elem].dailyHours": req.body.consumeTime } },
       {
         multi: false,
-        arrayFilters: [{ 'elem.date': { $eq: '19/1/2022' } }],
+        arrayFilters: [{ "elem.date": { $eq: dayjs().format("DD/MM/YYYY") } }],
       }
     );
 
@@ -283,7 +274,7 @@ const updateActivity = asyncHandler(async (req, res) => {
     await user.save();
 
     res.status(202).json({
-      message: 'Succesfully edited activity',
+      message: "Succesfully edited activity",
       data: activity,
     });
   } catch (error) {
@@ -292,13 +283,13 @@ const updateActivity = asyncHandler(async (req, res) => {
 });
 
 // @desc    Delete the screenshot
-// @route   PATCH /activity/screenshot
+// @route   DELETE /activity/screenshot
 // @access  Private
 
 const deleteScreenshot = asyncHandler(async (req, res) => {
   try {
-    const array = req.body.data;
-    for (let i = 0; i < array.lenght; i++) {
+    const array = req.body;
+    for (let i = 0; i < array.length; i++) {
       const screenshotId = array[i].screenshotId;
       const activityId = array[i].activityId;
 
@@ -323,7 +314,47 @@ const deleteScreenshot = asyncHandler(async (req, res) => {
       await Screenshot.findByIdAndDelete(screenshotId);
     }
     res.status(200).json({
-      status: 'ok',
+      status: "ok",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// @desc    Delete the activity
+// @route   DELETE /activity
+// @access  Private
+
+const deleteActivity = asyncHandler(async (req, res) => {
+  try {
+    const { incomingDate, activityId } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user._id, days: { $elemMatch: { date: incomingDate } } },
+      {
+        $pull: {
+          "days.$.activities": activityId,
+        },
+      },
+      { new: true, safe: true, upsert: true }
+    );
+
+    let activity = await Activity.findById(activityId);
+
+    if (!activity) {
+      res.status(404);
+      throw new Error("No activity found");
+    }
+
+    for (let j = 0; j < activity.screenshots.length; j++) {
+      const ss = await Screenshot.findByIdAndDelete(activity.screenshots[j]);
+    }
+
+    activity = await Activity.findByIdAndDelete(activityId);
+
+    res.status(200).json({
+      status: "ok",
+      data: user.days,
     });
   } catch (error) {
     throw new Error(error);
@@ -336,4 +367,5 @@ export {
   updateActivity,
   splitActivity,
   deleteScreenshot,
+  deleteActivity,
 };

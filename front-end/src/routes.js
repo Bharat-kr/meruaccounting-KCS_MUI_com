@@ -29,39 +29,48 @@ export default function Router() {
 
       children: [
         { element: <Navigate to="/dashboard/app" replace /> },
+        // all
         {
           path: "app",
           element: <PrivateRoute component={DashboardApp} roles={4} />,
         },
+        // all
         {
           path: "reports",
           element: <PrivateRoute component={Reports} roles={4} />,
         },
+        // till manager
         {
           path: "teams",
           element: <PrivateRoute component={Teams} roles={2} />,
         },
         // eslint-disable-next-line jsx-a11y/aria-role
+        // till teamLeader
         {
           path: "clients",
           element: <PrivateRoute component={Clients} roles={3} />,
         },
+        // till teamLeader
         {
           path: "projects",
           element: <PrivateRoute component={Projects} roles={3} />,
         },
+        // all
         {
           path: "settings",
           element: <PrivateRoute component={Settings} roles={4} />,
         },
+        // all
         {
           path: "usersettings",
           element: <PrivateRoute component={UserSettings} roles={4} />,
         },
+        // all
         {
           path: "userpage",
           element: <PrivateRoute component={UserPage} roles={4} />,
         },
+        // till teamLeader
         {
           path: "employeepage/:id",
           element: <PrivateRoute component={EmployeePage} roles={3} />,

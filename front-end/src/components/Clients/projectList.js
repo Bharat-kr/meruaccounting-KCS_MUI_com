@@ -217,6 +217,7 @@ const EnhancedTableToolbar = (props) => {
     <>
       <Toolbar
         sx={{
+          display: "none",
           mt: 3,
           pl: { sm: 2 },
           pr: { xs: 1, sm: 1 },
@@ -226,6 +227,7 @@ const EnhancedTableToolbar = (props) => {
                 theme.palette.primary.main,
                 theme.palette.action.activatedOpacity
               ),
+            display: "flex",
           }),
         }}
       >
