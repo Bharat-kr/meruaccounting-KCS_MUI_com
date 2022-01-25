@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import "./calendar.css";
+import { Tooltip } from "@mui/material";
 export default class Calendar extends React.Component {
   weekdayshort = moment.weekdaysShort();
 
@@ -179,19 +180,26 @@ export default class Calendar extends React.Component {
     );
   };
   onDayClick = (e, d) => {
-    this.setState(
-      {
-        selectedDay: d,
-      },
-      () => {
-        console.log("SELECTED DAY: ", this.state.selectedDay);
-      }
-    );
+    let dateObject = Object.assign({}, this.state.dateObject);
+    dateObject = moment(dateObject).set("date", d);
+    this.setState({
+      selectedDay: d,
+      dateObject: dateObject,
+    });
+    console.log("SELECTED DATE: ", dateObject.format("DD/MM/YYYY"));
+    this.props.setDate(dateObject.format("DD/MM/YYYY"));
+  };
+  getHours = (d) => {
+    let date = `${d}/${this.state.dateObject.format("MM")}/${this.year()}`;
+    let day = this.props.days?.filter((el) => {
+      return el.date === date;
+    })[0];
+    return day;
   };
   render() {
     let dayofDate = [];
     for (let d = 1; d <= this.daysInMonth(); d++) {
-      let currentDay = d == this.currentDay() ? "today" : "";
+      let currentDay = d === this.currentDay() ? "today" : "";
       dayofDate.push(
         <th key={d} className={`calendar-day ${currentDay}`}>
           {moment(`${this.year()}-${this.month()}-${d}`, "YYYY-MMMM-DD")
@@ -204,18 +212,30 @@ export default class Calendar extends React.Component {
     let trackingData = [];
     for (let d = 1; d <= this.daysInMonth(); d++) {
       let currentDay = d == this.currentDay() ? "today" : "";
+      console.log(currentDay);
       daysInMonth.push(
-        <td key={d} className={`calendar-day ${currentDay}`}>
-          <span
+        <Tooltip
+          title={`${
+            this.getHours(d)
+              ? (this.getHours(d).dailyHours / (60 * 60)).toFixed(2)
+              : 0
+          } Hrs`}
+          arrow
+          followCursor
+          placement="top"
+        >
+          <td
+            key={d}
+            className={`calendar-day ${currentDay}`}
             onClick={(e) => {
               this.onDayClick(e, d);
             }}
           >
-            {d}
-          </span>
-          {/* <div style={{height:"15px", width: "10%", backgroundColor: "#007B55" }}></div> */}
-        </td>
+            <span>{d}</span>
+          </td>
+        </Tooltip>
       );
+      // let day = this.getHours(d);
       trackingData.push(
         <td
           className="hoursCells"
@@ -223,12 +243,20 @@ export default class Calendar extends React.Component {
           style={{
             borderWidth: "0 1px 0 1px",
             borderStyle: "solid",
-            borderColor:"#C4CDD5",
+            borderColor: "#C4CDD5",
             height: "15px",
-            pointerEvents:"none"
+            pointerEvents: "none",
           }}
         >
-          <div style={{height:"100%", width: `${d*3}%`, backgroundColor: "#007B55" }}></div>
+          {this.getHours(d) && (
+            <div
+              style={{
+                height: "100%",
+                width: `${this.getHours(d).dailyHours / (60 * 60 * 5)}%`,
+                backgroundColor: "#007B55",
+              }}
+            ></div>
+          )}
         </td>
       );
     }

@@ -11,7 +11,22 @@ import asyncHandler from "express-async-handler";
 const getEmployeeById = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
-    const employee = await User.findById(id);
+    const employee = await User.findById(id)
+      .select("-password")
+      .populate({
+        path: "days",
+        populate: {
+          path: "activities ",
+          populate: [
+            { path: "screenshots", select: ["-employee"] },
+            {
+              path: "project",
+              model: "Project",
+              select: ["name"],
+            },
+          ],
+        },
+      });
     if (!employee) {
       res.status(404);
       throw new Error(`Employee not found `);
