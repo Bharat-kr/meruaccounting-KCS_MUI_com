@@ -298,7 +298,6 @@ const updateActivity = asyncHandler(async (req, res) => {
 const deleteScreenshot = asyncHandler(async (req, res) => {
   try {
     const array = req.body;
-    // console.log(array);
 
     for (let i = 0; i < array.length; i++) {
       console.log(array[i]);
