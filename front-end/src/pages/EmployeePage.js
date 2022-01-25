@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { CssBaseline, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import Calendar from "../components/EmployeePage/Calendar";
@@ -10,24 +10,15 @@ import Timeline from "../components/EmployeePage/Timeline";
 import PageHeader from "../components/PageHeader";
 import IntExt from "../components/EmployeePage/IntExt";
 
-// contexts
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
-
-// eslint-disable-next-line import/no-named-as-default
-// import { getCommonData } from "../api/auth api/commondata";
-import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
-import axios from "axios";
 import { getFullName } from "src/_helpers/getFullName";
-import { TrendingUpRounded } from "@material-ui/icons";
+import axios from "axios";
 
 export default function EmployeePage() {
   const { id } = useParams();
   const [activities, setactivities] = useState([]);
-  const { dispatchCommonData } = useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
   const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
-  // const { commonData } = useContext(CurrentUserContext);
   const [commonData, setCommonData] = useState(null);
 
   const getUserData = async () => {
@@ -43,9 +34,7 @@ export default function EmployeePage() {
   // interval for getting common data each minute
   useEffect(() => {
     getUserData();
-    // getCommonData(dispatchCommonData);
     let cDataInterval = setInterval(() => {
-      // getCommonData(dispatchCommonData);
       getUserData();
     }, 60000);
     return () => clearInterval(cDataInterval);

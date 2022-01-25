@@ -43,11 +43,11 @@ const Timeline = ({ activities }) => {
   useEffect(() => {
     let arr = [];
     activities?.forEach((activity) => {
-      let date_obj = new Date(new Number(activity.startTime));
+      let date_obj = new Date(Number(activity.startTime));
       const hrs = date_obj.getHours();
       const mins = date_obj.getMinutes();
       const seconds = date_obj.getSeconds();
-      let end_date_obj = new Date(new Number(activity.endTime));
+      let end_date_obj = new Date(Number(activity.endTime));
       const end_hrs = end_date_obj.getHours();
       const end_mins = end_date_obj.getMinutes();
       const end_seconds = end_date_obj.getSeconds();
