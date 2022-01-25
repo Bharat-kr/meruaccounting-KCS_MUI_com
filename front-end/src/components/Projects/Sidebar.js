@@ -256,7 +256,6 @@ export default function Sidebar() {
                             {project.name}
                           </Typography>
                         }
-                        id={project._id}
                       />
                     );
                   })}
