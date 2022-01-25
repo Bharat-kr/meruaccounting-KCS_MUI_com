@@ -1,5 +1,16 @@
-import React, { useContext } from "react";
-import { Box, Typography, Tooltip, Alert, AlertTitle } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  Tooltip,
+  Alert,
+  AlertTitle,
+  Toolbar,
+  IconButton,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
@@ -21,6 +32,7 @@ export default function Activity({
   performanceData,
   screenShots,
 }) {
+  const [selectedSs, setselectedSs] = useState([]);
   const percentIcon = (percent) =>
     percent <= 30 ? (
       <HourglassEmptyIcon sx={{ m: -1 }} />
@@ -59,6 +71,35 @@ export default function Activity({
       <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
         || {project === null ? `Project was deleted, OOF :")` : project.name}
       </Typography>
+      <Toolbar
+        sx={{
+          // use this for dynamic display none
+          display: "none",
+          ...(selectedSs > 0 && {
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.action.activatedOpacity
+              ),
+            display: "flex",
+          }),
+        }}
+      >
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Typography
+          sx={{ flex: "1 1 100%" }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          Delete {selectedSs.length} selected screenshots?
+        </Typography>
+      </Toolbar>
       <Box
         component="div"
         sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
@@ -66,6 +107,9 @@ export default function Activity({
         {screenShots.length !== 0 ? (
           screenShots.map((ss, key) => (
             <Preview
+              setSelectedSs={(actId, ssId) => {
+                setselectedSs((prev) => [...prev, { actId, ssId }]);
+              }}
               ssId={ss._id}
               actId={actId}
               title={ss.title}

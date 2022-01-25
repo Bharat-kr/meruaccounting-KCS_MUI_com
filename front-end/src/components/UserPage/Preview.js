@@ -47,7 +47,7 @@ export default function Preview(props) {
               overflow: "hidden",
             }}
           >
-            <span>
+            <span onClick={props.setSelectedSs.bind(props.actId, props.ssId)}>
               <Checkbox sx={{ pt: 0, pl: 0, pr: 0.5 }} />
               <Box
                 sx={{
