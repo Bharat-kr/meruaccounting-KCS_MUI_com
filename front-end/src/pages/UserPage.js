@@ -11,6 +11,7 @@ import IntExt from "../components/UserPage/IntExt";
 
 // contexts
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { loginContext } from "../contexts/LoginContext";
 
 // eslint-disable-next-line import/no-named-as-default
 // import { getCommonData } from "../api/auth api/commondata";
@@ -18,6 +19,9 @@ import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
 
 export default function UserPage() {
+  const { loginC } = useContext(loginContext);
+  console.table(loginC);
+
   const [activities, setactivities] = useState([]);
   const { dispatchCommonData } = useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
