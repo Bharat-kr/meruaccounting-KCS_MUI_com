@@ -48,7 +48,10 @@ export default function Activity({
     );
 
   const delSs = async (selectedSs) => {
-    await deleteSs(selectedSs, dispatchCommonData);
+    const array = selectedSs.map((ss) => {
+      return { activityId: actId, screenshotId: ss };
+    });
+    await deleteSs(array, dispatchCommonData);
     setselectedSs([]);
   };
 
@@ -134,16 +137,16 @@ export default function Activity({
         {screenShots.length !== 0 ? (
           screenShots.map((ss, key) => (
             <Preview
-              setSelectedSs={(isCheck, activityId, screenshotId) => {
-                const ssDetails = { activityId, screenshotId };
+              setSelectedSs={(isCheck, screenshotId) => {
                 if (isCheck) {
-                  setselectedSs((prev) => [...prev, ssDetails]);
+                  setselectedSs((prev) => [...prev, screenshotId]);
                 } else {
                   setselectedSs((prev) =>
-                    selectedSs.filter((pre) => pre.ssId !== ssDetails.ssId)
+                    selectedSs.filter((pre) => screenshotId !== pre)
                   );
                 }
               }}
+              selectedSs={selectedSs}
               ssId={ss._id}
               actId={actId}
               title={ss.title}
