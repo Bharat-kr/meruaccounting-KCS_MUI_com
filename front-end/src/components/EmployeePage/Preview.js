@@ -12,11 +12,13 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 // contexts
-import { deleteSs } from "../../api/auth api/commondata";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { deleteSs } from "../../api/employee api/employeePage";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
+import { useParams } from "react-router-dom";
 
 export default function Preview(props) {
-  const { dispatchCommonData } = useContext(CurrentUserContext);
+  const { dispatchCommonData } = useContext(EmployeePageContext);
+  const { id } = useParams();
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -26,7 +28,7 @@ export default function Preview(props) {
   };
 
   const delSs = async (activityId, screenshotId) => {
-    deleteSs({ activityId, screenshotId }, dispatchCommonData);
+    deleteSs({ activityId, screenshotId }, dispatchCommonData, id);
   };
 
   return (

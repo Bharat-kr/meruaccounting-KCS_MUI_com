@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Backdrop,
@@ -9,10 +9,9 @@ import {
   CardContent,
   Typography,
   Checkbox,
-  Container,
-  FormControlLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 // contexts
 import { deleteSs } from "../../api/auth api/commondata";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
