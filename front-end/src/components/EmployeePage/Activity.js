@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   Typography,
@@ -9,22 +9,22 @@ import {
   IconButton,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useParams } from "react-router-dom";
 
+import DeleteIcon from "@mui/icons-material/Delete";
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import Preview from "./Preview";
 
 // contexts
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { loginContext } from "../../contexts/LoginContext";
-import { deleteSs, deleteAct } from "../../api/employee api/employeePage";
 import { EmployeePageContext } from "src/contexts/EmployeePageContext";
+
+//api
+import { deleteSs, deleteAct } from "../../api/employee api/employeePage";
 
 // helpers
 import timeC from "../../_helpers/timeConverter";
-import { useParams } from "react-router-dom";
 
 export default function Activity({
   date,

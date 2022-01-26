@@ -1,11 +1,11 @@
-import { Icon } from '@iconify/react';
-import { useContext, useRef, useState } from 'react';
-import homeFill from '@iconify/icons-eva/home-fill';
-import personFill from '@iconify/icons-eva/person-fill';
-import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Icon } from "@iconify/react";
+import { useContext, useRef, useState } from "react";
+import homeFill from "@iconify/icons-eva/home-fill";
+import personFill from "@iconify/icons-eva/person-fill";
+import settings2Fill from "@iconify/icons-eva/settings-2-fill";
+import { Link as RouterLink} from "react-router-dom";
 // material
-import { alpha } from '@mui/material/styles';
+import { alpha } from "@mui/material/styles";
 import {
   Box,
   Divider,
@@ -13,31 +13,32 @@ import {
   Typography,
   Avatar,
   IconButton,
-} from '@mui/material';
-import { loginContext } from 'src/contexts/LoginContext';
+} from "@mui/material";
+import { loginContext } from "src/contexts/LoginContext";
 // components
-import MenuPopover from '../../components/MenuPopover';
+import MenuPopover from "../../components/MenuPopover";
 //
-import account from '../../_mocks_/account';
-import { getFullName } from 'src/_helpers/getFullName';
+import account from "../../_mocks_/account";
+import { getFullName } from "src/_helpers/getFullName";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
   {
-    label: 'Home',
+    label: "Home",
     icon: homeFill,
-    linkTo: '/dashboard/userpage',
+    linkTo: "/dashboard/userpage",
   },
   {
-    label: 'Profile',
+    label: "Profile",
     icon: personFill,
-    linkTo: '#',
+    linkTo: "#",
   },
   {
-    label: 'Settings',
+    label: "Settings",
     icon: settings2Fill,
-    linkTo: '/dashboard/usersettings',
+    linkTo: "/dashboard/usersettings",
   },
 ];
 
@@ -46,8 +47,7 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
-  const { loginC } = useContext(loginContext);
+  const { commonData } = useContext(CurrentUserContext);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -65,19 +65,22 @@ export default function AccountPopover() {
           width: 44,
           height: 44,
           ...(open && {
-            '&:before': {
+            "&:before": {
               zIndex: 1,
               content: "''",
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              position: 'absolute',
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+              position: "absolute",
               bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
             },
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar
+          src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
+          alt="photoURL"
+        />
       </IconButton>
 
       <MenuPopover
@@ -88,10 +91,13 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {getFullName(loginC.userData.firstName, loginC.userData.lastName)}
+            {getFullName(
+              commonData?.commonData?.user?.firstName,
+              commonData?.commonData?.user?.lastName
+            )}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {loginC.userData.email}
+          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
+            {commonData?.commonData?.user?.email}
           </Typography>
         </Box>
 
@@ -103,7 +109,7 @@ export default function AccountPopover() {
             to={option.linkTo}
             component={RouterLink}
             onClick={handleClose}
-            sx={{ typography: 'body2', py: 1, px: 2.5 }}
+            sx={{ typography: "body2", py: 1, px: 2.5 }}
           >
             <Box
               component={Icon}

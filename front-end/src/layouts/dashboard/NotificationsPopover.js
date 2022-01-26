@@ -53,36 +53,60 @@ function renderContent(notification) {
 
   if (notification.type === "teams") {
     return {
-      avatar: <AdminPanelSettingsIcon color="primary" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "primary.main" }}>
+          <AdminPanelSettingsIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "projects") {
     return {
-      avatar: <Description color="warning" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "warning.main" }}>
+          <Description />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "clients") {
     return {
-      avatar: <GroupIcon color="error" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "error.main" }}>
+          <GroupIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "settings") {
     return {
-      avatar: <SettingsIcon color="secondary" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "secondary.main" }}>
+          <SettingsIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "reports") {
     return {
-      avatar: <NoteIcon color="info" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "info.main" }}>
+          <NoteIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   return {
-    avatar: <HomeIcon color="primary" />,
+    avatar: (
+      <Avatar sx={{ bgcolor: "primary.main" }}>
+        <HomeIcon />
+      </Avatar>
+    ),
     title,
   };
 }
@@ -110,9 +134,7 @@ function NotificationItem({ notification, markAsRead }) {
         }),
       }}
     >
-      <ListItemAvatar>
-        <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
-      </ListItemAvatar>
+      <ListItemAvatar>{avatar}</ListItemAvatar>
       <ListItemText
         primary={title}
         secondary={
