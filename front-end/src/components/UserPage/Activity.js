@@ -63,7 +63,7 @@ export default function Activity({
     <Box
       component="div"
       sx={{
-        backgroundColor: `${isAccepted === true ? "#c8facd" : "#ffe7d9"}`,
+        backgroundColor: `${isAccepted === true ? "primary.lighter" : "#ffe7d9"}`,
         m: 0.5,
         pt: 1.5,
         pr: 1,
@@ -99,12 +99,15 @@ export default function Activity({
         sx={{
           // use this for dynamic display none
           display: "none",
+          mb:1,
+          position: "fixed",
+          borderRadius:1,
+          bottom: "0",
+          width: "70%",
+          zIndex: "10",
+          backgroundColor: "#ebf8f2",
           ...(selectedSs.length > 0 && {
-            bgcolor: (theme) =>
-              alpha(
-                theme.palette.primary.main,
-                theme.palette.action.activatedOpacity
-              ),
+            // bgcolor: (theme) => alpha(theme.palette.primary.main),
             display: "flex",
           }),
         }}

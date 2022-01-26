@@ -27,7 +27,7 @@ export default function Overview({ date, days }) {
     } else {
       setTodaysHours(0);
     }
-  }, [date, days]);
+  }, [date]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
