@@ -1,16 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-// import Activity from "./oldActivity";
 import Activity from "./Activity";
+
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 export default function ScreenShots({ activities, date }) {
-  // pass this date from calendar, constant for now
-  // const tempdate = "16/1/2022";
-
   const { commonData } = useContext(CurrentUserContext);
 
   return commonData.loader ? (

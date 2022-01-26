@@ -13,6 +13,7 @@ import { ClientsContextProvider } from "./contexts/ClientsContext";
 import { EmployeeProvider } from "./contexts/EmployeeContext";
 import { ProjectsContextProvider } from "./contexts/ProjectsContext";
 import { CurrentUserContextProvider } from "./contexts/CurrentUserContext";
+import EmployeePageContextProvider from "./contexts/EmployeePageContext";
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -36,9 +37,11 @@ export default function App() {
           <ClientsContextProvider>
             <ProjectsContextProvider>
               <EmployeeProvider>
-                <TeamsProvider>
-                  <Router />
-                </TeamsProvider>
+                <EmployeePageContextProvider>
+                  <TeamsProvider>
+                    <Router />
+                  </TeamsProvider>
+                </EmployeePageContextProvider>
               </EmployeeProvider>
             </ProjectsContextProvider>
           </ClientsContextProvider>
