@@ -102,12 +102,15 @@ export default function Activity({
         sx={{
           // use this for dynamic display none
           display: "none",
+          mb: 1,
+          position: "fixed",
+          borderRadius: 1,
+          bottom: "0",
+          width: "70%",
+          zIndex: "10",
+          backgroundColor: "#ebf8f2",
           ...(selectedSs.length > 0 && {
-            bgcolor: (theme) =>
-              alpha(
-                theme.palette.primary.main,
-                theme.palette.action.activatedOpacity
-              ),
+            // bgcolor: (theme) => alpha(theme.palette.primary.main),
             display: "flex",
           }),
         }}
@@ -142,8 +145,10 @@ export default function Activity({
             <Preview
               setSelectedSs={(isCheck, screenshotId) => {
                 if (isCheck) {
+                  console.log(selectedSs);
                   setselectedSs((prev) => [...prev, screenshotId]);
                 } else {
+                  console.log(selectedSs);
                   setselectedSs((prev) =>
                     selectedSs.filter((pre) => screenshotId !== pre)
                   );

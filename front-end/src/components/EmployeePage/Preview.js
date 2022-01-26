@@ -11,15 +11,16 @@ import {
   Checkbox,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 // contexts
 import { deleteSs } from "../../api/employee api/employeePage";
-import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 import { useParams } from "react-router-dom";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 
 export default function Preview(props) {
   const { dispatchCommonData } = useContext(EmployeePageContext);
-  const { id } = useParams();
   const [open, setOpen] = React.useState(false);
+  const { id } = useParams();
   const handleClose = () => {
     setOpen(false);
   };
@@ -28,8 +29,12 @@ export default function Preview(props) {
   };
 
   const delSs = async (activityId, screenshotId) => {
-    deleteSs({ activityId, screenshotId }, dispatchCommonData, id);
+    deleteSs([{ activityId, screenshotId }], dispatchCommonData, id);
   };
+  // console.log(props.selectedSs);
+  // const isChecked = (e) => {
+  //   return !props.selectedSs.indexOf(e.target.value) !== -1;
+  // };
 
   return (
     <>
@@ -48,8 +53,18 @@ export default function Preview(props) {
               overflow: "hidden",
             }}
           >
+            {/* use ref to checkbox, perform onClick */}
             <span>
-              <Checkbox sx={{ pt: 0, pl: 0, pr: 0.5 }} />
+              <Checkbox
+                value={props.ssId}
+                aria-labelledby={props.ssId}
+                checked={props.selectedSs.indexOf(props.ssId) !== -1}
+                sx={{ pt: 0, pl: 0, pr: 0.5 }}
+                onChange={(e) => {
+                  return props.setSelectedSs(e.target.checked, props.ssId);
+                }}
+              />
+
               <Box
                 sx={{
                   width: "75%",
@@ -70,13 +85,14 @@ export default function Preview(props) {
               fontSize="small"
               onClick={(e) => {
                 delSs(props.actId, props.ssId);
+                props.setSelectedSs(false, props.actId, props.ssId);
               }}
             />
           </CardContent>
         </Tooltip>
 
         <Tooltip
-          title={`${props.activityAt}, ${props.performanceData}%`}
+          title={`${props.activityAt}, ${Math.ceil(props.performanceData)}%`}
           placement="top"
           followCursor
         >
@@ -85,7 +101,7 @@ export default function Preview(props) {
               component="img"
               height="140"
               image={`${props.preview}`}
-              alt="green iguana"
+              alt={props.ssId}
             />
           </CardActionArea>
         </Tooltip>
@@ -99,7 +115,9 @@ export default function Preview(props) {
           }}
         >
           <Typography color="text.primary" gutterBottom variant="subtitle2">
-            {`${props.performanceData}%, Taken at ${props.activityAt}`}
+            {`${Math.ceil(props.performanceData)}%, Taken at ${
+              props.activityAt
+            }`}
           </Typography>
         </CardContent>
       </Card>
