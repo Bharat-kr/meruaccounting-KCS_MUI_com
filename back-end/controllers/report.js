@@ -38,6 +38,7 @@ const generateReport = asyncHandler(async (req, res) => {
         $group: {
           _id: user._id,
           totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
           docCount: { $sum: 1 },
         },
       },
