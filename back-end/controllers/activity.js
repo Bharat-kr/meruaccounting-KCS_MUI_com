@@ -1,5 +1,6 @@
 import Activity from "../models/activity.js";
 import User from "../models/user.js";
+import Project from "../models/project.js";
 import Screenshot from "../models/screenshot.js";
 import asyncHandler from "express-async-handler";
 import dayjs from "dayjs";
@@ -250,6 +251,18 @@ const splitActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
+    const { projectId } = req.body;
+    console.log(req.body);
+    const project = await Project.findByIdAndUpdate(
+      { _id: projectId },
+      { $inc: { consumeTime: req.body.consumeTime } },
+      { multi: false }
+    );
+    console.log(
+      "🚀 ~ file: activity.js ~ line 261 ~ updateActivity ~ project",
+      project
+    );
+
     const user = await User.findByIdAndUpdate(
       { _id },
       { $inc: { "days.$[elem].dailyHours": req.body.consumeTime } },
@@ -258,6 +271,8 @@ const updateActivity = asyncHandler(async (req, res) => {
         arrayFilters: [{ "elem.date": { $eq: dayjs().format("DD/MM/YYYY") } }],
       }
     );
+
+    console.log(project);
 
     const activityId = req.params.id;
     const unUpdatedactivity = await Activity.findByIdAndUpdate(

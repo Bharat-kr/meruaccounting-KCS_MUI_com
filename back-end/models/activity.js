@@ -7,7 +7,7 @@ const activitySchema = new mongoose.Schema({
   },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "curClientId",
+    ref: "employeeId",
     required: true,
   },
   client: {
