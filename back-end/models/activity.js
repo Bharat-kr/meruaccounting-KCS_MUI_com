@@ -7,7 +7,7 @@ const activitySchema = new mongoose.Schema({
   },
   employee: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "curClientId",
+    ref: "employeeId",
     required: true,
   },
   client: {
@@ -19,6 +19,10 @@ const activitySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "curProjectId",
     required: true,
+  },
+  activityOn: {
+    type: String,
+    default: "",
   },
   task: {
     type: String,
