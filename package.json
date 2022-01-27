@@ -4,7 +4,7 @@
   "description": "![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg?style=flat-square)&nbsp;![License](https://img.shields.io/badge/license-MIT-brightgreen)&nbsp;![Made with Love in India](https://madewithlove.org.in/badge.svg)",
   "main": "backend/index.js",
   "scripts": {
-    "start": "nodemon backend/app.js --app"
+    "start": "nodemon back-end/app.js --app"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "homepage": "https://github.com/kamal021099/meruaccounting-KCS_MUI_com#readme",
   "engines": {
     "node": "16.x"
+  },
+  "dependencies": {
+    "nodemon": "^2.0.15"
   }
 }

@@ -20,7 +20,8 @@ import uploadRoutes from "./routes/upload.js";
 import notificationRoutes from "./routes/notify.js";
 import avatarRoutes from "./routes/avatar.js";
 
-dotenv.config({ path: "../.env" });
+const __dirname = path.resolve();
+dotenv.config({ path: path.join(__dirname, "/.env") });
 
 connectDB();
 
@@ -34,10 +35,9 @@ app.use(express.json());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-
-const swaggerDocs = YAML.load("./api.yaml");
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
+app.get("/", (req, res) => {
+  res.send("api running");
+});
 app.use("/employee", employeeRoutes);
 app.use("/", authRoutes);
 app.use("/team", teamRoutes);
@@ -49,7 +49,6 @@ app.use("/avatar", avatarRoutes);
 app.use("/report", reportRoutes);
 app.use("/notify", notificationRoutes);
 
-const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/avatar", express.static(path.join(__dirname, "/avatar")));
 
