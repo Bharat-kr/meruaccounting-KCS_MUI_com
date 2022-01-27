@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    const { clientId, projectId, userId } = req.body;
+    const { clientId, projectId, userId, dateOne, dateTwo } = req.body;
     let user;
     if (userId) user = await User.findById(userId);
     else user = req.user;
@@ -27,6 +27,9 @@ const generateReport = asyncHandler(async (req, res) => {
             },
             {
               employee: { $eq: user._id },
+            },
+            {
+              activityOn: { $gte: dateOne, $lte: dateTwo },
             },
           ],
         },

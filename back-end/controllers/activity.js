@@ -63,6 +63,8 @@ const createActivity = asyncHandler(async (req, res) => {
     isInternal,
   } = req.body;
 
+  let today = dayjs().format("DD/MM/YYYY");
+
   const activity = await Activity.create({
     employee: req.user._id,
     client: clientId,
@@ -72,11 +74,11 @@ const createActivity = asyncHandler(async (req, res) => {
     startTime,
     endTime,
     isInternal,
+    activityOn: today,
   });
 
   if (activity) {
     const user = await User.findById(req.user._id);
-    let today = dayjs().format("DD/MM/YYYY");
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];

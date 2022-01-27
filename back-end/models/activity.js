@@ -20,6 +20,10 @@ const activitySchema = new mongoose.Schema({
     ref: "curProjectId",
     required: true,
   },
+  activityOn: {
+    type: String,
+    default: "",
+  },
   task: {
     type: String,
     default: "",
