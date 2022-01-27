@@ -1,0 +1,22 @@
+{
+  "name": "meruaccounting-kcs_mui_com",
+  "version": "1.0.0",
+  "description": "![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg?style=flat-square)&nbsp;![License](https://img.shields.io/badge/license-MIT-brightgreen)&nbsp;![Made with Love in India](https://madewithlove.org.in/badge.svg)",
+  "main": "backend/index.js",
+  "scripts": {
+    "start": "nodemon backend/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamal021099/meruaccounting-KCS_MUI_com.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kamal021099/meruaccounting-KCS_MUI_com/issues"
+  },
+  "homepage": "https://github.com/kamal021099/meruaccounting-KCS_MUI_com#readme",
+  "engines": {
+    "node": "16.x"
+  }
+}
