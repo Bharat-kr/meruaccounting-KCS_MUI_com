@@ -1,45 +1,50 @@
-import * as Yup from 'yup';
-import { useState } from 'react';
-import { Icon } from '@iconify/react';
-import { useFormik, Form, FormikProvider } from 'formik';
-import eyeFill from '@iconify/icons-eva/eye-fill';
-import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
-import { useNavigate } from 'react-router-dom';
+import * as Yup from "yup";
+import { useState } from "react";
+import { Icon } from "@iconify/react";
+import { useFormik, Form, FormikProvider } from "formik";
+import eyeFill from "@iconify/icons-eva/eye-fill";
+import eyeOffFill from "@iconify/icons-eva/eye-off-fill";
+import { useNavigate } from "react-router-dom";
 // material
-import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import axios from 'axios';
-import { func } from 'prop-types';
+import { Stack, TextField, IconButton, InputAdornment } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import axios from "axios";
+import { func } from "prop-types";
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [resstatus, setRestatus] = useState(null);
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('First name required'),
-    lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required')
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("First name required"),
+    lastName: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Last name required"),
+    email: Yup.string()
+      .email("Email must be a valid email address")
+      .required("Email is required"),
+    password: Yup.string().required("Password is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: ''
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
-    }
+      navigate("/dashboard", { replace: true });
+    },
   });
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
@@ -49,23 +54,23 @@ export default function RegisterForm() {
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
     try {
       console.log(
-        { ...getFieldProps('firstName') }.value,
-        { ...getFieldProps('lastName') }.value,
-        { ...getFieldProps('email') }.value,
-        { ...getFieldProps('password') }.value
+        { ...getFieldProps("firstName") }.value,
+        { ...getFieldProps("lastName") }.value,
+        { ...getFieldProps("email") }.value,
+        { ...getFieldProps("password") }.value
       );
       const res = await axios({
-        method: 'post',
-        url: 'http://localhost:8000/register',
+        method: "post",
+        url: "https://ssmonitor-backend.herokuapp.com//register",
         data: {
-          role: 'manager',
-          firstName: { ...getFieldProps('firstName') }.value,
-          lastName: { ...getFieldProps('lastName') }.value,
-          email: { ...getFieldProps('email') }.value,
-          password: { ...getFieldProps('password') }.value
-        }
+          role: "manager",
+          firstName: { ...getFieldProps("firstName") }.value,
+          lastName: { ...getFieldProps("lastName") }.value,
+          email: { ...getFieldProps("email") }.value,
+          password: { ...getFieldProps("password") }.value,
+        },
       });
-      setMessage('');
+      setMessage("");
       console.log(res);
     } catch (error) {
       if (error.response) {
@@ -82,12 +87,12 @@ export default function RegisterForm() {
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmitAxios}>
         <Stack spacing={3}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <TextField
               id="firstName"
               fullWidth
               label="First name"
-              {...getFieldProps('firstName')}
+              {...getFieldProps("firstName")}
               error={resstatus}
               helperText={message}
             />
@@ -96,7 +101,7 @@ export default function RegisterForm() {
               id="lastName"
               fullWidth
               label="Last name"
-              {...getFieldProps('lastName')}
+              {...getFieldProps("lastName")}
               error={message}
               helperText={message}
             />
@@ -108,7 +113,7 @@ export default function RegisterForm() {
             autoComplete="username"
             type="email"
             label="Email address"
-            {...getFieldProps('email')}
+            {...getFieldProps("email")}
             error={resstatus}
             helperText={message}
           />
@@ -117,19 +122,22 @@ export default function RegisterForm() {
             id="password"
             fullWidth
             autoComplete="current-password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             label="Password"
             error={resstatus}
             helperText={message}
-            {...getFieldProps('password')}
+            {...getFieldProps("password")}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
+                  <IconButton
+                    edge="end"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
                     <Icon icon={showPassword ? eyeFill : eyeOffFill} />
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
 
