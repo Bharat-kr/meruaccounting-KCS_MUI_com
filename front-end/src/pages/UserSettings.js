@@ -80,7 +80,9 @@ export default function UserDetails() {
   //for getting intitial profile url
   useEffect(() => {
     if (commonData.loader === false) {
-      setimageUrl(`http://localhost:8000/${commonData.commonData.user.avatar}`);
+      setimageUrl(
+        `https://ssmonitor-backend.herokuapp.com/${commonData.commonData.user.avatar}`
+      );
     }
   }, [commonData]);
 

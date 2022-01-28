@@ -1,5 +1,6 @@
 import Activity from "../models/activity.js";
 import User from "../models/user.js";
+import Project from "../models/project.js";
 import Screenshot from "../models/screenshot.js";
 import asyncHandler from "express-async-handler";
 import dayjs from "dayjs";
@@ -62,6 +63,8 @@ const createActivity = asyncHandler(async (req, res) => {
     isInternal,
   } = req.body;
 
+  let today = dayjs().format("DD/MM/YYYY");
+
   const activity = await Activity.create({
     employee: req.user._id,
     client: clientId,
@@ -71,11 +74,11 @@ const createActivity = asyncHandler(async (req, res) => {
     startTime,
     endTime,
     isInternal,
+    activityOn: today,
   });
 
   if (activity) {
     const user = await User.findById(req.user._id);
-    let today = dayjs().format("DD/MM/YYYY");
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
@@ -250,14 +253,28 @@ const splitActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
+    const { projectId } = req.body;
+    console.log(req.body);
+    const project = await Project.findByIdAndUpdate(
+      { _id: projectId },
+      { $inc: { consumeTime: req.body.newProjectHours } },
+      { multi: false }
+    );
+    console.log(
+      "🚀 ~ file: activity.js ~ line 261 ~ updateActivity ~ project",
+      project
+    );
+
     const user = await User.findByIdAndUpdate(
       { _id },
-      { $inc: { "days.$[elem].dailyHours": req.body.consumeTime } },
+      { $inc: { "days.$[elem].dailyHours": req.body.newDailyHours } },
       {
         multi: false,
         arrayFilters: [{ "elem.date": { $eq: dayjs().format("DD/MM/YYYY") } }],
       }
     );
+
+    console.log(project);
 
     const activityId = req.params.id;
     const unUpdatedactivity = await Activity.findByIdAndUpdate(
