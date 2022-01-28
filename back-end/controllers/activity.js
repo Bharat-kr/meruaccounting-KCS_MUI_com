@@ -257,7 +257,7 @@ const updateActivity = asyncHandler(async (req, res) => {
     console.log(req.body);
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
-      { $inc: { consumeTime: req.body.consumeTime } },
+      { $inc: { consumeTime: req.body.newProjectHours } },
       { multi: false }
     );
     console.log(
@@ -267,7 +267,7 @@ const updateActivity = asyncHandler(async (req, res) => {
 
     const user = await User.findByIdAndUpdate(
       { _id },
-      { $inc: { "days.$[elem].dailyHours": req.body.consumeTime } },
+      { $inc: { "days.$[elem].dailyHours": req.body.newDailyHours } },
       {
         multi: false,
         arrayFilters: [{ "elem.date": { $eq: dayjs().format("DD/MM/YYYY") } }],
