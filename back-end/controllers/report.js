@@ -9,11 +9,15 @@ import mongoose from "mongoose";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    const { clientId, projectId, userId, dateOne, dateTwo } = req.body;
+    let { clientId, projectId, userId, dateOne, dateTwo } = req.body;
+    if (!clientId) clientId = null;
+    if (!dateOne) dateOne = null;
+    if (!projectId) projectId = null;
+    if (!dateTwo) dateTwo = null;
+
     let user;
     if (userId) user = await User.findById(userId);
     else user = req.user;
-    console.log(user._id);
 
     const activity = await Activity.aggregate([
       {
