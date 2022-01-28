@@ -19,9 +19,7 @@ export const loginApi = (data, dispatch) => {
       }
     })
     .catch((err) => {
-
       console.log(err);
       dispatch({ type: "LOGIN_ERR" });
-
     });
 };

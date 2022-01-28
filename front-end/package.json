@@ -1,6 +1,6 @@
 {
   "name": "@minimal/material-kit-react",
-  "proxy": "http://127.0.0.1:8000",
+  "proxy": "https://ssmonitor-backend.herokuapp.com",
   "author": "minimals.cc",
   "licence": "MIT",
   "version": "1.2.0",

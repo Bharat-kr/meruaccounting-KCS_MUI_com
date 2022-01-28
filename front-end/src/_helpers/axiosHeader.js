@@ -1,1 +1,2 @@
-export const ReqHeader = (header) => `http://localhost:8000/${header}`;
+export const ReqHeader = (header) =>
+  `https://ssmonitor-backend.herokuapp.com/${header}`;
