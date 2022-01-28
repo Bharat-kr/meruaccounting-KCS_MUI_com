@@ -21,9 +21,10 @@ import notificationRoutes from "./routes/notify.js";
 import avatarRoutes from "./routes/avatar.js";
 
 const __dirname = path.resolve();
-dotenv.config({ path: path.join(__dirname, "../.env") }); //local
 
-// dotenv.config({ path: path.join(__dirname, "./.env") }); //heroku
+// dotenv.config({ path: path.join(__dirname, "../.env") }); //local
+
+dotenv.config({ path: path.join(__dirname, "./.env") }); //heroku
 
 connectDB();
 
