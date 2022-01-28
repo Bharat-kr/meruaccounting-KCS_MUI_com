@@ -21,7 +21,7 @@ import notificationRoutes from "./routes/notify.js";
 import avatarRoutes from "./routes/avatar.js";
 
 const __dirname = path.resolve();
-dotenv.config({ path: path.join(__dirname, "/.env") });
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 connectDB();
 
