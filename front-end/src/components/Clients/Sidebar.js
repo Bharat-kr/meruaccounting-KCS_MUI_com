@@ -1,13 +1,6 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useRef, useEffect, useState } from "react";
-import {
-  Grid,
-  List,
-  Paper,
-  Autocomplete,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Paper, Autocomplete, Typography, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -19,6 +12,16 @@ import Header from "./Header";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
+  treeItem: {
+    margin: "0",
+    fontWeight: "700",
+    lineHeight: "1.5555555555555556",
+    fontSize: "1.0625=rem",
+    fontFamily: "Public Sans,sans-serif",
+    textAlign: "left",
+    width: "100%",
+    display: "block",
+  },
 }));
 
 export default function Sidebar() {
@@ -211,7 +214,11 @@ export default function Sidebar() {
                 onClick={handleClick}
                 nodeId={client._id}
                 className={classes.treeItem}
-                label={<Typography variant="h6">{client.name}</Typography>}
+                label={
+                  <Typography className={classes.treeItem} variant="h6">
+                    {client.name}
+                  </Typography>
+                }
               ></TreeItem>
             ))}
           </TreeView>
