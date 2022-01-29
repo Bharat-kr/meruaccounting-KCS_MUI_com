@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 // import './UserDetails.css';
 import {
-  CssBaseline,
   Box,
   Typography,
   Divider,
@@ -14,9 +13,6 @@ import {
   Card,
   CardActionArea,
   CardMedia,
-  CardActions,
-  Input,
-  Chip,
   Modal,
   Backdrop,
 } from "@mui/material";
@@ -45,9 +41,9 @@ const style = {
   alignItems: "center",
   justifyContent: "space-between",
   p: 3,
-  '@media (max-width: 600px)' : {
-    width: '80%'
-  }
+  "@media (max-width: 600px)": {
+    width: "80%",
+  },
 };
 
 const getBlob = (canvas) => {
@@ -183,9 +179,9 @@ export default function UserDetails() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-around",
-              '@media (max-width: 700px)' : {
+              "@media (max-width: 700px)": {
                 flexDirection: "column-reverse",
-              }
+              },
             }}
           >
             <FormControl sx={{ m: 1 }}>
@@ -343,7 +339,7 @@ export default function UserDetails() {
           <Typography id="modal-modal-title" variant="h5">
             Edit your Avatar for upload
           </Typography>
-          <Divider/>
+          <Divider />
           <div style={{ margin: "10px" }}>
             {image && (
               <AvatarEditor
@@ -358,12 +354,15 @@ export default function UserDetails() {
               />
             )}
           </div>
-          <label for="scale" style={{
-          display:"flex",
-          alignItems:"center",
-          width:"80%",
-          justifyContent:"space-evenly"
-          }}>
+          <label
+            for="scale"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "80%",
+              justifyContent: "space-evenly",
+            }}
+          >
             Zoom Image :
             <input
               type="range"

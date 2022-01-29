@@ -1,16 +1,10 @@
 import React from "react";
-import { CssBaseline, Box, Typography } from "@mui/material";
+import { CssBaseline, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 // components
-import Header from "../components/Projects/Header";
 import Sidebar from "../components/Projects/Sidebar";
 import PageHeader from "../components/PageHeader";
-
-// contexts
-// eslint-disable-next-line import/no-named-as-default
-import ClientsContextProvider from "../contexts/ClientsContext";
-import { ProjectsContextProvider } from "src/contexts/ProjectsContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
