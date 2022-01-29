@@ -11,7 +11,8 @@ import App from "./App";
 import axios from "axios";
 
 // ----------------------------------------------------------------------
-axios.defaults.baseURL = "https://ssmonitor-backend.herokuapp.com/";
+// axios.defaults.baseURL = "https://ssmonitor-backend.herokuapp.com/";
+axios.defaults.baseURL = "http://localhost:8000/";
 axios.defaults.headers.common[
   "Authorization"
 ] = `Bearer ${localStorage["Bearer Token"]}`;

@@ -1,13 +1,12 @@
 {
   "name": "@minimal/material-kit-react",
-  "proxy": "https://ssmonitor-backend.herokuapp.com",
   "author": "minimals.cc",
   "licence": "MIT",
   "version": "1.2.0",
   "private": false,
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build", 
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
