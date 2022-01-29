@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 // import './UserDetails.css';
 import {
-  CssBaseline,
   Box,
   Typography,
   Divider,
@@ -14,9 +13,6 @@ import {
   Card,
   CardActionArea,
   CardMedia,
-  CardActions,
-  Input,
-  Chip,
   Modal,
   Backdrop,
 } from "@mui/material";

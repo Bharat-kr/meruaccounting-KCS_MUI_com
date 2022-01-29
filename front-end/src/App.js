@@ -19,7 +19,7 @@ import EmployeePageContextProvider from "./contexts/EmployeePageContext";
 export default function App() {
   return (
     <LoginProvider>
-      <div className="cursor__dot">
+      {/* <div className="cursor__dot">
         <AnimatedCursor
           innerSize={8}
           outerSize={24}
@@ -28,7 +28,7 @@ export default function App() {
           innerScale={0.8}
           outerScale={1.6}
         />
-      </div>
+      </div> */}
       <ThemeConfig>
         <ScrollToTop />
         <GlobalStyles />
