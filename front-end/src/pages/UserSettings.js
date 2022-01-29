@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 // import './UserDetails.css';
 import {
   CssBaseline,
@@ -16,19 +16,62 @@ import {
   CardMedia,
   CardActions,
   Input,
+  Chip,
+  Modal,
+  Backdrop,
 } from "@mui/material";
+import AvatarEditor from "react-avatar-editor";
 import PageHeader from "../components/PageHeader";
+import EditIcon from "@mui/icons-material/Edit";
 
 import Page from "../components/Page";
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { getCommonData } from "src/api/auth api/commondata";
-import { Opacity } from "@material-ui/icons";
 import axios from "axios";
+import { employeeUpdate } from "src/api/employee api/employee";
+import { employeeContext } from "src/contexts/EmployeeContext";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "#fff",
+  borderRadius: 4,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "space-between",
+  p: 3,
+  '@media (max-width: 600px)' : {
+    width: '80%'
+  }
+};
+
+const getBlob = (canvas) => {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error("File Process Error"));
+      }
+    });
+  });
+};
 
 export default function UserDetails() {
   const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
+  const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const [imageUrl, setimageUrl] = useState("");
+  const [open, setOpen] = useState(false);
+  const [scale, setScale] = useState(1);
+  const [backdropOpen, setBackdropOpen] = useState(false);
+  const [image, setImg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const avatarEditorRef = useRef();
 
   useEffect(() => {
     getCommonData(dispatchCommonData);
@@ -44,20 +87,77 @@ export default function UserDetails() {
   }, [commonData]);
 
   //handling Image Select
-  const handleImageSelect = (e) => {
-    console.log(e.target.files);
-    const files = e.target.files[0];
-    if (files) {
+  const handleImageSelect = async (e) => {
+    const currFiles = e.target.files;
+    if (currFiles.length === 1) {
+      const file = currFiles[0];
+      if (file) {
+        setImg(file);
+        setOpen(true);
+      } else {
+        console.log("Select a file");
+      }
+    }
+  };
+
+  //uploading image
+  const onUploadClick = async () => {
+    const canvas = avatarEditorRef.current.getImageScaledToCanvas();
+    setIsLoading(true);
+    try {
+      //getting canvas blob
+      const blob = await getBlob(canvas);
+      let file = null;
+      file = new File([blob], "avatar.png", { type: "image/png" });
+
+      //setting new image in card
       const fileReader = new FileReader();
-      fileReader.readAsDataURL(files);
+      fileReader.readAsDataURL(file);
       fileReader.addEventListener("load", function () {
         setimageUrl(this.result);
-        // axios
-        //   .post("/avatar", files[0])
-        //   .then((res) => console.log(res))
-        //   .catch((err) => console.log(err));
       });
+
+      //sending image
+      let data = new FormData();
+      data.append("image", file, file.name);
+      console.log(data);
+
+      //uploading image
+      await axios
+        .post("/avatar", data, {
+          headers: {
+            "Content-Type": `multipart/form-data`,
+          },
+        })
+        .then(async (response) => {
+          //handle success
+          console.log(response);
+          if (response.status === 200) {
+            //updating user
+            await employeeUpdate(
+              commonData.commonData.user._id,
+              {
+                avatar: response.data.path,
+              },
+              dispatchEmployeeUpdate
+            );
+          }
+        })
+        .catch((error) => {
+          //handle error
+          console.log(error);
+        });
+
+      setIsLoading(false);
+      setOpen(false);
+    } catch (err) {
+      setIsLoading(false);
     }
+  };
+
+  //closing the modal
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return commonData.loader ? (
@@ -83,6 +183,9 @@ export default function UserDetails() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-around",
+              '@media (max-width: 700px)' : {
+                flexDirection: "column-reverse",
+              }
             }}
           >
             <FormControl sx={{ m: 1 }}>
@@ -110,13 +213,6 @@ export default function UserDetails() {
                 disabled
                 value={commonData?.commonData?.user?.email}
               />
-              {/* <TextField
-              sx={{ mt: 3 }}
-              required
-              id="filled-required"
-              label="Company"
-              defaultValue="Company"
-            /> */}
               <Autocomplete
                 disablePortal
                 id="TimeZone"
@@ -159,50 +255,139 @@ export default function UserDetails() {
                 display: "flex",
                 alignItems: "flex-start",
                 justifyContent: "center",
+                position: "relative",
               }}
             >
               <Card
                 sx={{
-                  width: 300,
-                  height: 300,
+                  width: 250,
+                  height: 250,
                   mt: 3,
+                  position: "relative",
                   borderRadius: "50%",
+                  // overflow: "visible",
                 }}
               >
                 <CardActionArea
-                  sx={{
-                    position: "relative",
-                  }}
+                  onClick={() => setBackdropOpen(true)}
+                  sx={{ position: "relative" }}
                 >
-                  <input
-                    type="file"
-                    name="ProfileImage"
-                    onChange={handleImageSelect}
-                    accept="image/*"
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      left: "0",
-                      width: "100%",
-                      height: "100%",
-                      zIndex: "5",
-                      cursor: "pointer",
-                      opacity: "0",
-                    }}
-                  />
                   <CardMedia
                     component="img"
                     width="100%"
                     height="100%"
                     image={imageUrl}
                     alt="profile image"
+                    sx={{
+                      borderRadius: "50%",
+                    }}
                   />
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: "10%",
+                      top: "10%",
+                      zIndex: "10",
+                      backgroundColor: "#5BE584",
+                      borderRadius: 15,
+                      padding: 2,
+                    }}
+                  >
+                    <label
+                      htmlFor="avatar-upload"
+                      style={{
+                        color: "white",
+                        width: 30,
+                        height: 30,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <EditIcon />
+                      <input
+                        id="avatar-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                  </div>
                 </CardActionArea>
               </Card>
+              <Backdrop
+                sx={{
+                  color: "#fff",
+                  zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={backdropOpen}
+                onClick={() => setBackdropOpen(false)}
+              >
+                <img src={`${imageUrl}`} alt="hello" />
+              </Backdrop>
             </Box>
           </Box>
         </Paper>
       </Box>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{
+          border: "none",
+        }}
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h5">
+            Edit your Avatar for upload
+          </Typography>
+          <Divider/>
+          <div style={{ margin: "10px" }}>
+            {image && (
+              <AvatarEditor
+                ref={avatarEditorRef}
+                image={image}
+                width={250}
+                height={250}
+                border={10}
+                borderRadius={125}
+                scale={scale}
+                rotate={0}
+              />
+            )}
+          </div>
+          <label for="scale" style={{
+          display:"flex",
+          alignItems:"center",
+          width:"80%",
+          justifyContent:"space-evenly"
+          }}>
+            Zoom Image :
+            <input
+              type="range"
+              id="scale"
+              name="scale"
+              value={scale}
+              min="1"
+              max="5"
+              step="0.1"
+              onChange={(e) => setScale(e.target.value)}
+            />
+          </label>
+
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 1 }}
+            onClick={onUploadClick}
+            disabled={isLoading}
+          >
+            Upload new Avatar
+          </Button>
+        </Box>
+      </Modal>
     </Page>
   );
 }
