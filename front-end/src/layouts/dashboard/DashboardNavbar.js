@@ -1,11 +1,7 @@
 import PropTypes from "prop-types";
 import { Icon } from "@iconify/react";
 import menu2Fill from "@iconify/icons-eva/menu-2-fill";
-<<<<<<< HEAD
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-=======
 import { useNavigate } from "react-router-dom";
->>>>>>> 896f4cf5d3835893ac24feb71fc693aaed2fadad
 // material
 import { alpha, styled } from "@mui/material/styles";
 import { Box, Stack, AppBar, Toolbar, IconButton, Button } from "@mui/material";
