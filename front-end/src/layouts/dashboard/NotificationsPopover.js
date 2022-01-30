@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from "react";
-import faker from "faker";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { noCase } from "change-case";
 import { useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { set, sub, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 //icons
 import { Icon } from "@iconify/react";
