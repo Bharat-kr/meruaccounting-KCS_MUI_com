@@ -192,15 +192,6 @@ export default function NotificationsPopover() {
     setOpen(false);
   };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isUnRead: false,
-      }))
-    );
-  };
-
   //Mark As Read function for Notification
   const markAsRead = async (id) => {
     await axios
