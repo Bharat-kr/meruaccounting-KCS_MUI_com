@@ -67,7 +67,8 @@ export default function Overview({ date, days }) {
         <AppItemOrders Total={(todaysHours / (60 * 60)).toFixed(2)} />
         <Weeklyhours
           Total={
-            commonData?.commonData?.weeklyTime
+            commonData?.commonData?.weeklyTime &&
+            commonData?.commonData?.weeklyTime.length > 0
               ? (
                   commonData?.commonData?.weeklyTime[0].totalHours /
                   (60 * 60)
@@ -77,7 +78,8 @@ export default function Overview({ date, days }) {
         />
         <Monthlyhours
           Total={
-            commonData?.commonData?.monthlyTime
+            commonData?.commonData?.monthlyTime &&
+            commonData?.commonData?.monthlyTime.length > 0
               ? (
                   commonData?.commonData?.monthlyTime[0].totalHours /
                   (60 * 60)
@@ -87,9 +89,10 @@ export default function Overview({ date, days }) {
         />
         <AppBugReports
           Total={
-            commonData?.commonData?.totalTime
+            commonData?.commonData?.totalTime &&
+            commonData?.commonData?.totalTime.length > 0
               ? (
-                  commonData?.commonData?.totalTime[0].totalHours /
+                  commonData?.commonData?.totalTime[0]?.totalHours /
                   (60 * 60)
                 ).toFixed(2)
               : 0

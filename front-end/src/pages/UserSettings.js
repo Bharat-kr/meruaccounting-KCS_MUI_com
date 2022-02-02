@@ -253,74 +253,77 @@ export default function UserDetails() {
                 position: "relative",
               }}
             >
-              <Card
+              <Box
                 sx={{
-                  width: 250,
-                  height: 250,
+                  width: "auto",
                   mt: 3,
                   position: "relative",
-                  borderRadius: "50%",
-                  // overflow: "visible",
                 }}
               >
-                <CardActionArea
-                  onClick={() => setBackdropOpen(true)}
-                  sx={{ position: "relative" }}
+                <div
+                  style={{
+                    position: "absolute",
+                    right: "10%",
+                    top: "10%",
+                    zIndex: "10",
+                    backgroundColor: "#5BE584",
+                    borderRadius: 15,
+                    padding: 2,
+                  }}
                 >
-                  <CardMedia
-                    component="img"
-                    width="100%"
-                    height="100%"
-                    image={imageUrl}
-                    alt="profile image"
-                    sx={{
-                      borderRadius: "50%",
-                    }}
-                  />
-                  <div
+                  <label
+                    htmlFor="avatar-upload"
                     style={{
-                      position: "absolute",
-                      right: "10%",
-                      top: "10%",
-                      zIndex: "10",
-                      backgroundColor: "#5BE584",
-                      borderRadius: 15,
-                      padding: 2,
+                      color: "white",
+                      width: 30,
+                      height: 30,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
                     }}
                   >
-                    <label
-                      htmlFor="avatar-upload"
-                      style={{
-                        color: "white",
-                        width: 30,
-                        height: 30,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                    <EditIcon />
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                </div>
+                <Card
+                  sx={{
+                    width: 250,
+                    height: 250,
+                    borderRadius: "50%",
+                  }}
+                >
+                  <CardActionArea onClick={() => setBackdropOpen(true)}>
+                    <CardMedia
+                      component="img"
+                      width="100%"
+                      height="100%"
+                      image={imageUrl}
+                      alt="profile image"
+                      sx={{
+                        borderRadius: "50%",
                       }}
-                    >
-                      <EditIcon />
-                      <input
-                        id="avatar-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageSelect}
-                        style={{ display: "none" }}
-                      />
-                    </label>
-                  </div>
-                </CardActionArea>
-              </Card>
-              <Backdrop
-                sx={{
-                  color: "#fff",
-                  zIndex: (theme) => theme.zIndex.drawer + 1,
-                }}
-                open={backdropOpen}
-                onClick={() => setBackdropOpen(false)}
-              >
-                <img src={`${imageUrl}`} alt="hello" />
-              </Backdrop>
+                    />
+                  </CardActionArea>
+                </Card>
+                <Backdrop
+                  sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                  }}
+                  open={backdropOpen}
+                  onClick={() => setBackdropOpen(false)}
+                >
+                  <img src={`${imageUrl}`} alt="hello" />
+                </Backdrop>
+              </Box>
             </Box>
           </Box>
         </Paper>

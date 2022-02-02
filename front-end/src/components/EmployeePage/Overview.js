@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, CardContent, Card } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import moment from "moment";
@@ -12,8 +12,10 @@ import {
   AppItemOrders,
   AppBugReports,
 } from "../_dashboard/app";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 
 export default function Overview({ date, days }) {
+  const { commonData } = useContext(EmployeePageContext);
   const [value, setValue] = React.useState("1");
   const [todaysHours, setTodaysHours] = useState(0);
 
@@ -60,9 +62,30 @@ export default function Overview({ date, days }) {
         }}
       >
         <AppItemOrders Total={(todaysHours / (60 * 60)).toFixed(2)} />
-        <Weeklyhours Total="65" />
-        <Monthlyhours Total="95" />
-        <AppBugReports Total="255" />
+        <Weeklyhours Total={
+            commonData?.commonData?.weeklyTime
+              ? (
+                  commonData?.commonData?.weeklyTime[0].totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          }/>
+        <Monthlyhours Total={
+            commonData?.commonData?.monthlyTime
+              ? (
+                  commonData?.commonData?.monthlyTime[0].totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          } />
+        <AppBugReports Total={
+            commonData?.commonData?.totalTime
+              ? (
+                  commonData?.commonData?.totalTime[0].totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          }/>
       </Box>
       <Box
         sx={{
