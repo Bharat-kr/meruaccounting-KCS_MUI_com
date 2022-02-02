@@ -8,7 +8,6 @@ import {
   Toolbar,
   IconButton,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
@@ -18,7 +17,6 @@ import Preview from "./Preview";
 
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { loginContext } from "../../contexts/LoginContext";
 import { deleteSs, deleteAct } from "../../api/auth api/commondata";
 
 // helpers

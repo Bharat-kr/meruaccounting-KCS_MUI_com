@@ -78,6 +78,8 @@ export default function Main(props) {
       console.log(err);
     }
   }, [getTeams]);
+
+  //Updating payrate of an employee
   const updatePayrate = async (value) => {
     const data = {
       payRate: value,
@@ -85,7 +87,8 @@ export default function Main(props) {
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
-  console.log(currMember);
+  
+  //Updating role of Employee
   const updateRole = async (e) => {
     const data = {
       role: e.target.value,
@@ -94,6 +97,8 @@ export default function Main(props) {
     await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
     await getTeam(dispatchgetTeam);
   };
+
+  //Changing status of an employee
   const updateStatus = async (value) => {
     const data = {
       status: value,
@@ -103,6 +108,7 @@ export default function Main(props) {
     await getTeam(dispatchgetTeam);
   };
 
+  //Deleting a member from a team
   const deleteMember = async () => {
     const data = {
       employeeId: currMember._id,
@@ -112,6 +118,8 @@ export default function Main(props) {
     await removeMember(data, dispatchRemoveMember);
     await getTeam(dispatchgetTeam);
   };
+
+  //Removing employee from a project
   const removeProject = async (value) => {
     const data = {
       id: currMember._id,
@@ -121,12 +129,16 @@ export default function Main(props) {
     await removeProjectMember(data, dispatchremoveProjectMember);
     await getTeam(dispatchgetTeam);
   };
+
+  //Searching a project
   const handleChange = (e, value) => {
     if (value) {
       const id = value._id;
       window.location.href = "#" + id;
     }
   };
+
+  //Remove employee from all projects
   const removeAllProject = async () => {
     for (var i = 0; i < currMember.projects.length; i++) {
       const data = {
