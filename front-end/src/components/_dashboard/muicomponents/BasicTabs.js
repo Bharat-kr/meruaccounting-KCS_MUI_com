@@ -1,14 +1,16 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { Tabs, Container, Link, Grid, Divider, Button } from '@mui/material';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import DatePicker from './DatePicker';
-import MultipleSelect from './MultipleSelect';
-import BarChart from './BarChart';
-import PieChart from './PieChart';
-import TreeView from './TreeView';
+import * as React from "react";
+import PropTypes from "prop-types";
+import { Tabs, Container, Link, Grid, Divider, Button } from "@mui/material";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import DatePicker from "./DatePicker";
+import SelectEmployees from "./MultipleSelect";
+import BarChart from "./BarChart";
+import PieChart from "./PieChart";
+import TreeView from "./TreeView";
+// contexts
+import { teamContext } from "../../../contexts/TeamsContext";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -33,17 +35,22 @@ function TabPanel(props) {
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired
+  value: PropTypes.number.isRequired,
 };
 
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
+//////////////////////////panelllllll
 export default function BasicTabs() {
+  const { getTeams } = React.useContext(teamContext);
+  console.log(getTeams);
+  // variable for date
+  const [date, setdate] = React.useState([]);
   const [value, setValue] = React.useState(0);
   const [value2, setValue2] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -53,10 +60,16 @@ export default function BasicTabs() {
     setValue2(newValue2);
   };
 
+  // // variable for employee names, get from contexts
+
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
           <Tab label="Summary" {...a11yProps(0)} />
           <Tab label="Details" {...a11yProps(1)} />
           <Tab label="Weekly Report" {...a11yProps(2)} />
@@ -65,10 +78,14 @@ export default function BasicTabs() {
       </Box>
       <TabPanel value={value} index={0}>
         <Container>
-          <Box sx={{ flexGrow: 1 }}>
+          <DatePicker
+            setDate={(newValue) => {
+              setdate(newValue);
+            }}
+          />
+          {/* <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
               <Grid item xs={4}>
-                <DatePicker />
               </Grid>
               <Grid item xs={2}>
                 <Link sx={{ fontSize: 15 }} href="" underline="hover">
@@ -107,8 +124,8 @@ export default function BasicTabs() {
                 </Link>
               </Grid>
             </Grid>
-          </Box>
-          <MultipleSelect />
+          </Box> */}
+          <SelectEmployees />
           <Box sx={{ m: 1.5, flexGrow: 1, fontSize: 12 }}>
             <Grid container spacing={2}>
               <Grid item xs={2}>
@@ -128,7 +145,12 @@ export default function BasicTabs() {
               </Grid>
             </Grid>
             <Container
-              sx={{ m: 3, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+              sx={{
+                m: 3,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
             >
               <Button variant="outlined">Excel</Button>
               <Button variant="outlined">Pdf</Button>
@@ -138,9 +160,13 @@ export default function BasicTabs() {
             </Container>
             <Divider />
           </Box>
-          <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={value2} onChange={handleSecChange} aria-label="secondary tabs example">
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value2}
+                onChange={handleSecChange}
+                aria-label="secondary tabs example"
+              >
                 <Tab label="Timeline" {...a11yProps(0)} />
                 <Tab label="Employee" {...a11yProps(1)} />
                 <Tab label="Project" {...a11yProps(3)} />
@@ -150,11 +176,13 @@ export default function BasicTabs() {
               </Tabs>
             </Box>
             <TabPanel value={value2} index={0}>
-              <Container sx={{ m: '3', hieght: '50', width: '400' }}>
+              <Container sx={{ m: "3", hieght: "50", width: "400" }}>
                 <BarChart />
               </Container>
               <Divider />
-              <Typography sx={{ height: '10', width: '30' }}>Details about employee</Typography>
+              <Typography sx={{ height: "10", width: "30" }}>
+                Details about employee
+              </Typography>
             </TabPanel>
             <TabPanel value={value2} index={1}>
               <BarChart />
@@ -182,11 +210,11 @@ export default function BasicTabs() {
         hello
       </TabPanel>
       <TabPanel value={value} index={2}>
-        {' '}
+        {" "}
         hello
       </TabPanel>
       <TabPanel value={value} index={3}>
-        {' '}
+        {" "}
         hello
       </TabPanel>
     </Box>
