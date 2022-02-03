@@ -1,21 +1,14 @@
 import { useContext } from "react";
 
 // material
-import { Box, Grid, Container, Typography } from "@mui/material";
+import { Grid, Container } from "@mui/material";
 
 // contexts
-import { TeamsProvider } from "../contexts/TeamsContext";
 import { loginContext } from "../contexts/LoginContext";
 
 // components
 import Page from "../components/Page";
-import {
-  Monthlyhours,
-  AppBugReports,
-  AppItemOrders,
-  Weeklyhours,
-  SimpleContainer,
-} from "../components/_dashboard/app";
+import { SimpleContainer } from "../components/_dashboard/app";
 import EmployeeContainer from "../components/_dashboard/employee/EmployeeContainer";
 import PageHeader from "../components/PageHeader";
 import { Role } from "../_helpers/role";

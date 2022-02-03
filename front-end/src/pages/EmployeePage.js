@@ -1,44 +1,84 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { CssBaseline, Box } from "@mui/material";
+import moment from "moment";
 import { useParams } from "react-router-dom";
 
 // components
+import Calendar from "../components/UserPage/Calendar";
 import Overview from "../components/EmployeePage/Overview";
 import ScreenShots from "../components/EmployeePage/ScreenShots";
-import PageHeader from "../components/PageHeader";
 import Timeline from "../components/EmployeePage/Timeline";
+import PageHeader from "../components/PageHeader";
+import IntExt from "../components/EmployeePage/IntExt";
 
 // contexts
-// eslint-disable-next-line import/no-named-as-default
-import CurrentUserContextProvider from "../contexts/CurrentUserContext";
-import { employeeContext } from "../contexts/EmployeeContext";
-import { LoginProvider } from "../contexts/LoginContext";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 
-// apis
-import { getEmployeeDetails } from "../api/employee api/employee";
-import Calendar from "src/components/UserPage/Calendar";
+//api
+import { getCommonData } from "../api/employee api/employeePage";
+import { getFullName } from "src/_helpers/getFullName";
 
-export default function EmployeePage(props) {
-  const { employee, dispatchEmployeeDetails } = useContext(employeeContext);
+export default function UserPage() {
+  const [activities, setactivities] = useState([]);
+  const { dispatchCommonData } = useContext(EmployeePageContext);
+  const [isInternal, setisInternal] = useState(false);
+  const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
+  const { commonData } = useContext(EmployeePageContext);
   const { id } = useParams();
 
+  // interval for getting common data each minute
   useEffect(() => {
-    getEmployeeDetails(id, dispatchEmployeeDetails);
+    getCommonData(id, dispatchCommonData);
+    let cDataInterval = setInterval(() => {
+      getCommonData(id, dispatchCommonData);
+    }, 60000);
+    return () => clearInterval(cDataInterval);
   }, []);
 
-  console.log(employee);
+  // filter out activities
+  useEffect(() => {
+    console.log(commonData);
+    if (commonData.loader === false) {
+      setactivities(
+        commonData.commonData.data.days
+          .filter((day) => day.date === date)[0]
+          ?.activities.filter((act) => {
+            return act.isInternal === isInternal;
+          })
+      );
+    } else {
+      return;
+    }
+  }, [commonData, isInternal, date]);
 
   return (
     <CssBaseline>
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>
         <PageHeader
-          title={!employee.loader ? employee?.employee?.data?._id : "Employee"}
+          title={getFullName(
+            commonData?.commonData?.data?.firstName,
+            commonData?.commonData?.data?.lastName
+          )}
         />
-        <Calendar />
-        {/* <Overview /> */}
-        <Overview employee={employee} />
-        <Timeline />
-        <ScreenShots employee={employee} />
+        <Calendar
+          days={commonData?.commonData?.data?.days}
+          setDate={(date) =>
+            setdate((prev) => {
+              console.log(date);
+              return date;
+            })
+          }
+        />
+        <Overview date={date} days={commonData?.commonData?.data?.days} />
+        <Timeline activities={activities} />
+        <IntExt
+          setInternal={(isInt) =>
+            setisInternal((prev) => {
+              return isInt;
+            })
+          }
+        />
+        <ScreenShots activities={activities} date={date} />
       </Box>
     </CssBaseline>
   );

@@ -9,9 +9,9 @@ import {
   CardContent,
   Typography,
   Checkbox,
-  Container,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 // contexts
 import { deleteSs } from "../../api/auth api/commondata";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
@@ -27,8 +27,12 @@ export default function Preview(props) {
   };
 
   const delSs = async (activityId, screenshotId) => {
-    deleteSs({ activityId, screenshotId }, dispatchCommonData);
+    deleteSs([{ activityId, screenshotId }], dispatchCommonData);
   };
+  // console.log(props.selectedSs);
+  // const isChecked = (e) => {
+  //   return !props.selectedSs.indexOf(e.target.value) !== -1;
+  // };
 
   return (
     <>
@@ -47,8 +51,18 @@ export default function Preview(props) {
               overflow: "hidden",
             }}
           >
+            {/* use ref to checkbox, perform onClick */}
             <span>
-              <Checkbox sx={{ pt: 0, pl: 0, pr: 0.5 }} />
+              <Checkbox
+                value={props.ssId}
+                aria-labelledby={props.ssId}
+                checked={props.selectedSs.indexOf(props.ssId) !== -1}
+                sx={{ pt: 0, pl: 0, pr: 0.5 }}
+                onChange={(e) => {
+                  return props.setSelectedSs(e.target.checked, props.ssId);
+                }}
+              />
+
               <Box
                 sx={{
                   width: "75%",
@@ -69,13 +83,14 @@ export default function Preview(props) {
               fontSize="small"
               onClick={(e) => {
                 delSs(props.actId, props.ssId);
+                props.setSelectedSs(false, props.actId, props.ssId);
               }}
             />
           </CardContent>
         </Tooltip>
 
         <Tooltip
-          title={`${props.activityAt}, ${props.performanceData}%`}
+          title={`${props.activityAt}, ${Math.ceil(props.performanceData)}%`}
           placement="top"
           followCursor
         >
@@ -98,7 +113,9 @@ export default function Preview(props) {
           }}
         >
           <Typography color="text.primary" gutterBottom variant="subtitle2">
-            {`${props.performanceData}%, Taken at ${props.activityAt}`}
+            {`${Math.ceil(props.performanceData)}%, Taken at ${
+              props.activityAt
+            }`}
           </Typography>
         </CardContent>
       </Card>

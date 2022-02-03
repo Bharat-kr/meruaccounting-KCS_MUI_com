@@ -51,14 +51,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function checkheading(
-  index,
-  settings,
-  setSettings,
-  id,
-  isTeam,
-  dispatchgetTeam
-) {
+function checkheading(index, settings, id, isTeam, dispatchgetTeam) {
   const days = [
     "Sunday",
     "Monday",
@@ -76,11 +69,7 @@ function checkheading(
       .patch(`/employee/edit/${id}`, data)
       .then((res) => {
         console.log(res);
-        if (res.data.data.role === "manager") {
-          setSettings(res.data.data.settings);
-        } else {
-          getTeam(dispatchgetTeam);
-        }
+        getTeam(dispatchgetTeam);
       })
       .catch((err) => {
         console.log(err);
@@ -92,18 +81,7 @@ function checkheading(
     e.preventDefault();
     const value = document.querySelector(`#screenShotPerHour${id}`).value;
     console.log(value);
-
     const data = {
-      settings: {
-        ...settings,
-        ScreenShotPerHour: {
-          isTeamSetting: settings.ScreenShotPerHour.isTeamSetting,
-          teamValue: settings.ScreenShotPerHour.teamValue !== 0 ? 0 : value,
-          individualValue: settings.ScreenShotPerHour.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         ScreenShotPerHour: {
@@ -114,29 +92,13 @@ function checkheading(
         },
       },
     };
-    // console.log(settings);
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   //Apps and url tracking Update function
   const changeAppsAndUrlTracking = async (e) => {
     e.preventDefault();
-
     const data = {
-      settings: {
-        ...settings,
-        AppsAndUrlTracking: {
-          isTeamSetting: settings.AppsAndUrlTracking.isTeamSetting,
-          teamValue: !settings.AppsAndUrlTracking.teamValue,
-          individualValue: settings.AppsAndUrlTracking.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         AppsAndUrlTracking: {
@@ -146,12 +108,7 @@ function checkheading(
         },
       },
     };
-    // console.log(settings);
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   //Weekly time Limit Change Function
@@ -159,18 +116,7 @@ function checkheading(
     e.preventDefault();
     const value = document.querySelector(`#weekLimit${id}`).value;
     console.log(value);
-
     const data = {
-      settings: {
-        ...settings,
-        WeeklyTimeLimit: {
-          isTeamSetting: settings.WeeklyTimeLimit.isTeamSetting,
-          teamValue: settings.WeeklyTimeLimit.teamValue !== 0 ? 0 : value,
-          individualValue: settings.WeeklyTimeLimit.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         WeeklyTimeLimit: {
@@ -181,12 +127,7 @@ function checkheading(
         },
       },
     };
-    // console.log(settings);
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   //AutoPause Update Function
@@ -194,18 +135,7 @@ function checkheading(
     e.preventDefault();
     const value = document.querySelector(`#autoPause${id}`).value;
     console.log(value);
-
     const data = {
-      settings: {
-        ...settings,
-        AutoPause: {
-          isTeamSetting: settings.AutoPause.isTeamSetting,
-          teamValue: settings.AutoPause.teamValue !== 0 ? 0 : value,
-          individualValue: settings.AutoPause.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         AutoPause: {
@@ -215,29 +145,13 @@ function checkheading(
         },
       },
     };
-    // console.log(settings);
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   //Offline Time Update Function
   const changeOfflineTime = async (e) => {
     e.preventDefault();
-
     const data = {
-      settings: {
-        ...settings,
-        OfflineTime: {
-          isTeamSetting: settings.OfflineTime.isTeamSetting,
-          teamValue: !settings.OfflineTime.teamValue,
-          individualValue: settings.OfflineTime.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         OfflineTime: {
@@ -247,29 +161,13 @@ function checkheading(
         },
       },
     };
-    // console.log(settings);
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   //Notify User update function
   const changeNotifyUser = async (e) => {
     e.preventDefault();
-
     const data = {
-      settings: {
-        ...settings,
-        NotifyUser: {
-          isTeamSetting: settings.NotifyUser.isTeamSetting,
-          teamValue: !settings.NotifyUser.teamValue,
-          individualValue: settings.NotifyUser.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         NotifyUser: {
@@ -279,29 +177,13 @@ function checkheading(
         },
       },
     };
-    // console.log(settings);
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   // WeekStart Update Function
   const changeWeekStart = async (e) => {
     e.preventDefault();
-
     const data = {
-      settings: {
-        ...settings,
-        WeekStart: {
-          isTeamSetting: settings.WeekStart.isTeamSetting,
-          teamValue: days[e.target.value],
-          individualValue: settings.WeekStart.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         WeekStart: {
@@ -311,12 +193,7 @@ function checkheading(
         },
       },
     };
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
-    // setSettings(res.data.data.settings);
+    await UpdateSettings(data);
   };
 
   //Currency Symbol update Function
@@ -324,18 +201,7 @@ function checkheading(
     e.preventDefault();
     const value = document.querySelector(`#currencySymbol${id}`).value;
     console.log(value);
-
     const data = {
-      settings: {
-        ...settings,
-        CurrencySymbol: {
-          isTeamSetting: settings.CurrencySymbol.isTeamSetting,
-          teamValue: value,
-          individualValue: settings.CurrencySymbol.individualValue,
-        },
-      },
-    };
-    const data2 = {
       settings: {
         ...settings,
         CurrencySymbol: {
@@ -345,11 +211,7 @@ function checkheading(
         },
       },
     };
-    if (isTeam === "teamValue") {
-      await UpdateSettings(data);
-    } else {
-      await UpdateSettings(data2);
-    }
+    await UpdateSettings(data);
   };
 
   if (index === 0) {
@@ -380,18 +242,6 @@ function checkheading(
             shrink: true,
           }}
         />
-        {/* <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={["Allow Blur", "Blur All", "Disallow"]}
-          sx={{ width: 240, margin: "2px 10px 2px 10px" }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={settings?.AllowBlur?.teamValue ? "Allow blur" : "Disallow"}
-            />
-          )}
-        /> */}
         <FormControlLabel
           value="Do not take"
           control={
@@ -447,7 +297,6 @@ function checkheading(
           }
           label="Limit"
         />
-
         <TextField
           sx={{ m: 1.5 }}
           id={`weekLimit${id}`}
@@ -458,7 +307,6 @@ function checkheading(
             shrink: true,
           }}
         />
-
         <FormControlLabel
           value="Do not limit"
           control={
@@ -681,19 +529,6 @@ export default function SettingsMain(props) {
       });
   }, []);
 
-  // const effectiveArr = [
-  //   "Screenshot Per Hour",
-  //   "Apps & Urls tracking",
-  //   "Weekly time limit after",
-  //   "Auto-pause tracking after",
-  //   "Allow adding Offline time",
-  //   "Notify when Screenshot is taken",
-  //   "Week starts on",
-  //   "Currency symbol",
-  //   "Employee desktop application settings",
-  // ];
-  // const test = false;
-
   return (
     <>
       {value === index && (
@@ -710,26 +545,6 @@ export default function SettingsMain(props) {
           <Divider />
           <Box sx={{ height: "auto", width: "100%", bgcolor: "#bdf2bf", p: 1 }}>
             {subheading}
-          </Box>
-          <Box>
-            {/* <FormLabel component="legend">Gender</FormLabel> */}
-
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                aria-label="option"
-                name="row-radio-buttons-group"
-              >
-                {checkheading(
-                  index,
-                  settings,
-                  setSettings,
-                  loginC.userData._id,
-                  "teamValue",
-                  dispatchgetTeam
-                )}
-              </RadioGroup>
-            </FormControl>
           </Box>
           <Box sx={{ mt: 3 }}>
             <Typography varinat="h3" sx={{ fontWeight: "bold" }}>
@@ -771,7 +586,6 @@ export default function SettingsMain(props) {
                         {checkheading(
                           index,
                           user.settings,
-                          setSettings,
                           user.id,
                           "individualValue",
                           dispatchgetTeam

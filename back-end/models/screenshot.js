@@ -1,35 +1,35 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const screenshotSchema = new mongoose.Schema({
   employee: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'curUserId',
+    ref: "curUserId",
     required: true,
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'curClientId',
+    ref: "curClientId",
     required: true,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'curProjectId',
+    ref: "curProjectId",
     required: true,
   },
   task: {
     type: String,
-    default: '',
+    default: "",
   },
   image: {
     type: String,
-    default: '',
+    default: "",
   },
   activityAt: {
     type: String,
   },
   activityId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'activityId',
+    ref: "activityId",
     required: true,
   },
   performanceData: {
@@ -38,10 +38,10 @@ const screenshotSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    default: 'Default title',
+    default: "Default title",
   },
 });
 
-const Screenshot = mongoose.model('Screenshot', screenshotSchema);
+const Screenshot = mongoose.model("Screenshot", screenshotSchema);
 
 export default Screenshot;

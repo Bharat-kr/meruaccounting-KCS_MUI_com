@@ -9,7 +9,7 @@ export default function IntExt({ setInternal }) {
       sx={{ display: "flex", flexDirection: "row", alignItems: "center", p: 1 }}
     >
       <Typography variant="h6" sx={{ color: intColor }}>
-        Show Interal Activites{" "}
+        Show Interal Activites
       </Typography>
       <Switch
         onClick={(e) => {

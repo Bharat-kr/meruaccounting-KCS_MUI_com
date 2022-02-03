@@ -11,6 +11,7 @@ import IntExt from "../components/UserPage/IntExt";
 
 // contexts
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { loginContext } from "../contexts/LoginContext";
 
 // eslint-disable-next-line import/no-named-as-default
 // import { getCommonData } from "../api/auth api/commondata";
@@ -18,6 +19,9 @@ import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
 
 export default function UserPage() {
+  const { loginC } = useContext(loginContext);
+  console.table(loginC);
+
   const [activities, setactivities] = useState([]);
   const { dispatchCommonData } = useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
@@ -39,7 +43,7 @@ export default function UserPage() {
     if (commonData.loader === false) {
       setactivities(
         commonData.commonData.user.days
-          .filter((day) => day.date === date.replace("/0", "/"))[0]
+          .filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
           })
@@ -54,6 +58,7 @@ export default function UserPage() {
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>
         <PageHeader title="Hi, Welcome Back!" />
         <Calendar
+          days={commonData?.commonData?.user?.days}
           setDate={(date) =>
             setdate((prev) => {
               console.log(date);
@@ -61,7 +66,7 @@ export default function UserPage() {
             })
           }
         />
-        <Overview />
+        <Overview date={date} days={commonData?.commonData?.user?.days} />
         <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>
@@ -70,7 +75,6 @@ export default function UserPage() {
             })
           }
         />
-
         <ScreenShots activities={activities} date={date} />
       </Box>
     </CssBaseline>

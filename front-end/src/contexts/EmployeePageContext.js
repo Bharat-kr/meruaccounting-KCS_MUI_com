@@ -8,7 +8,7 @@ import {
   DELETE_ACT_SUCCESS,
 } from "../constants/CurrentUserConstants";
 
-export const CurrentUserContext = createContext();
+export const EmployeePageContext = createContext();
 
 const initialValue = {
   commonData: [],
@@ -53,55 +53,20 @@ const currentUserReducer = (state, action) => {
   }
 };
 
-export const CurrentUserContextProvider = (props) => {
+export const EmployeePageContextProvider = (props) => {
   const [commonData, dispatchCommonData] = useReducer(currentUserReducer, {
     commonData: [],
     loader: true,
     err: false,
   });
 
-  // /////temporary
-  // const [currentUser, setcurrentUser] = useState({
-  //   role: "User",
-  //   company: "Meru Accounting",
-  //   firstName: "Kamal",
-  //   lastName: "Singh",
-  //   email: "kamal021099@gmail.com",
-  //   password: "12345678",
-  //   day: {
-  //     1638729000: {
-  //       date: `${new Date()}`,
-  //       hours: 50,
-  //       timeRange: [
-  //         {
-  //           startTime: "6:04pm",
-  //           endTime: "6:32pm",
-  //           activityLevel: 50,
-  //           taskName: "Development",
-  //           screenShots: [
-  //             {
-  //               activityLevel: 70,
-  //               url: "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Google_Docs.max-1100x1100.png",
-  //               time: new Date(),
-  //               taskName: "VELLA",
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     },
-  //   },
-  // });
-  // /////temporary
-
   return (
     <div>
-      <CurrentUserContext.Provider
-        value={{ commonData, dispatchCommonData }}
-      >
+      <EmployeePageContext.Provider value={{ commonData, dispatchCommonData }}>
         {props.children}
-      </CurrentUserContext.Provider>
+      </EmployeePageContext.Provider>
     </div>
   );
 };
 
-export default CurrentUserContextProvider;
+export default EmployeePageContextProvider;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, CardContent, Card } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import moment from "moment";
@@ -12,16 +12,32 @@ import {
   AppItemOrders,
   AppBugReports,
 } from "../_dashboard/app";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
 // contexts
 
-export default function Overview(props) {
+export default function Overview({ date, days }) {
+  const { commonData } = useContext(CurrentUserContext);
   const [value, setValue] = React.useState("1");
+  const [todaysHours, setTodaysHours] = useState(0);
 
+  //getting DailyHours
+  useEffect(() => {
+    let Data = [];
+    Data = days?.filter((day) => {
+      return day.date === date;
+    });
+    if (Data && Data.length > 0) {
+      setTodaysHours(Data[0].dailyHours);
+    } else {
+      setTodaysHours(0);
+    }
+  }, [date]);
+
+  //toggling tasks and apps
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   return (
     <Box
       component="div"
@@ -48,10 +64,40 @@ export default function Overview(props) {
           justifyContent: "space-evenly",
         }}
       >
-        <AppItemOrders />
-        <Weeklyhours />
-        <Monthlyhours />
-        <AppBugReports />
+        <AppItemOrders Total={(todaysHours / (60 * 60)).toFixed(2)} />
+        <Weeklyhours
+          Total={
+            commonData?.commonData?.weeklyTime &&
+            commonData?.commonData?.weeklyTime.length > 0
+              ? (
+                  commonData?.commonData?.weeklyTime[0].totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          }
+        />
+        <Monthlyhours
+          Total={
+            commonData?.commonData?.monthlyTime &&
+            commonData?.commonData?.monthlyTime.length > 0
+              ? (
+                  commonData?.commonData?.monthlyTime[0].totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          }
+        />
+        <AppBugReports
+          Total={
+            commonData?.commonData?.totalTime &&
+            commonData?.commonData?.totalTime.length > 0
+              ? (
+                  commonData?.commonData?.totalTime[0]?.totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          }
+        />
       </Box>
       <Box
         sx={{
@@ -73,9 +119,9 @@ export default function Overview(props) {
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Typography
-                  sx={{ fontSize: 14 }}
                   color="text.primary"
                   sx={{
+                    fontSize: 14,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",

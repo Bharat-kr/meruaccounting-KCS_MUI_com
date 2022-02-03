@@ -13,33 +13,12 @@ const RootStyle = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.warning.lighter,
 }));
 
-const IconWrapperStyle = styled("div")(({ theme }) => ({
-  margin: "auto",
-  display: "flex",
-  borderRadius: "50%",
-  alignItems: "center",
-  width: theme.spacing(8),
-  height: theme.spacing(8),
-  justifyContent: "center",
-  marginBottom: theme.spacing(3),
-  color: theme.palette.warning.dark,
-  backgroundImage: `linear-gradient(135deg, ${alpha(
-    theme.palette.warning.dark,
-    0
-  )} 0%, ${alpha(theme.palette.warning.dark, 0.24)} 100%)`,
-}));
-
 // ----------------------------------------------------------------------
 
-const TOTAL = 3.7;
-
-export default function AppItemOrders(props) {
+export default function AppItemOrders({ Total }) {
   return (
     <RootStyle>
-      {/* <IconWrapperStyle>
-        <Icon icon={windowsFilled} width={24} height={24} />
-      </IconWrapperStyle> */}
-      <Typography variant="h3">{TOTAL} Hr</Typography>
+      <Typography variant="h3">{Total} Hr</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         TODAY
       </Typography>

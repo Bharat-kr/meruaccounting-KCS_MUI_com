@@ -1,20 +1,20 @@
-import jwt from 'jsonwebtoken';
-import asyncHandler from 'express-async-handler';
-import User from '../models/user.js';
+import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
 
 const authPass = asyncHandler(async (req, res, next) => {
   try {
     let token;
     if (
       req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
+      req.headers.authorization.startsWith("Bearer")
     ) {
-      token = req.headers.authorization.split(' ')[1];
+      token = req.headers.authorization.split(" ")[1];
     } else if (req.cookies.jwt) {
       token = req.cookies.jwt;
     } else {
       res.status(400);
-      throw new Error('No token passed in');
+      throw new Error("No token passed in");
     }
 
     if (!token) {
@@ -26,11 +26,11 @@ const authPass = asyncHandler(async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded) {
       res.status(400);
-      throw new Error('Incorrect JWT');
+      throw new Error("Incorrect JWT");
     }
 
     // 3) Check if user still exists
-    const currentUser = await User.findById(decoded.id).select('-password');
+    const currentUser = await User.findById(decoded.id).select("-password");
     if (!currentUser) {
       res.status(404);
       throw new Error("You arent't logged in ");

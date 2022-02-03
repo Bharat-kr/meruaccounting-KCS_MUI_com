@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from "react";
-import faker from "faker";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { noCase } from "change-case";
 import { useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { set, sub, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 
 //icons
 import { Icon } from "@iconify/react";
@@ -53,36 +52,60 @@ function renderContent(notification) {
 
   if (notification.type === "teams") {
     return {
-      avatar: <AdminPanelSettingsIcon color="primary" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "primary.main" }}>
+          <AdminPanelSettingsIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "projects") {
     return {
-      avatar: <Description color="warning" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "warning.main" }}>
+          <Description />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "clients") {
     return {
-      avatar: <GroupIcon color="error" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "error.main" }}>
+          <GroupIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "settings") {
     return {
-      avatar: <SettingsIcon color="secondary" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "secondary.main" }}>
+          <SettingsIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   if (notification.type === "reports") {
     return {
-      avatar: <NoteIcon color="info" />,
+      avatar: (
+        <Avatar sx={{ bgcolor: "info.main" }}>
+          <NoteIcon />
+        </Avatar>
+      ),
       title,
     };
   }
   return {
-    avatar: <HomeIcon color="primary" />,
+    avatar: (
+      <Avatar sx={{ bgcolor: "primary.main" }}>
+        <HomeIcon />
+      </Avatar>
+    ),
     title,
   };
 }
@@ -110,9 +133,7 @@ function NotificationItem({ notification, markAsRead }) {
         }),
       }}
     >
-      <ListItemAvatar>
-        <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
-      </ListItemAvatar>
+      <ListItemAvatar>{avatar}</ListItemAvatar>
       <ListItemText
         primary={title}
         secondary={
@@ -144,35 +165,34 @@ export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState([]);
   const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
 
+  //Fetching common data
   useEffect(() => {
     getCommonData(dispatchCommonData);
   }, []);
+
+  //Setting the State of Notifications
   useEffect(() => {
     if (commonData?.commonData?.user?.notifications) {
       setNotifications(commonData?.commonData?.user?.notifications);
     }
   }, [commonData]);
+
+  //calculating the Total Uread Notifications
   const totalUnRead = notifications.filter(
     (item) => item.isUnRead === true
   ).length;
 
+  //Open PopOver
   const handleOpen = () => {
     setOpen(true);
   };
 
+  //close Popover
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isUnRead: false,
-      }))
-    );
-  };
-
+  //Mark As Read function for Notification
   const markAsRead = async (id) => {
     await axios
       .patch(`/notify/${id}`)
@@ -210,7 +230,12 @@ export default function NotificationsPopover() {
         open={open}
         onClose={handleClose}
         anchorEl={anchorRef.current}
-        sx={{ width: 360, height: "80%", overflowY: "scroll" }}
+        sx={{
+          width: 360,
+          height: "auto",
+          maxHeight: "80%",
+          overflowY: "scroll",
+        }}
       >
         {notifications.map((notification) => {
           return (
@@ -221,7 +246,11 @@ export default function NotificationsPopover() {
             />
           );
         })}
-        {notifications.length === 0 && "No Notifications"}
+        {notifications.length === 0 && (
+          <Typography variant="h6" sx={{ p: 1, textAlign: "center" }}>
+            No Notifications Here
+          </Typography>
+        )}
       </MenuPopover>
     </>
   );

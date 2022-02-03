@@ -13,12 +13,13 @@ import { ClientsContextProvider } from "./contexts/ClientsContext";
 import { EmployeeProvider } from "./contexts/EmployeeContext";
 import { ProjectsContextProvider } from "./contexts/ProjectsContext";
 import { CurrentUserContextProvider } from "./contexts/CurrentUserContext";
+import EmployeePageContextProvider from "./contexts/EmployeePageContext";
 // ----------------------------------------------------------------------
 
 export default function App() {
   return (
     <LoginProvider>
-      <div className="cursor__dot">
+      {/* <div className="cursor__dot">
         <AnimatedCursor
           innerSize={8}
           outerSize={24}
@@ -27,7 +28,7 @@ export default function App() {
           innerScale={0.8}
           outerScale={1.6}
         />
-      </div>
+      </div> */}
       <ThemeConfig>
         <ScrollToTop />
         <GlobalStyles />
@@ -36,9 +37,11 @@ export default function App() {
           <ClientsContextProvider>
             <ProjectsContextProvider>
               <EmployeeProvider>
-                <TeamsProvider>
-                  <Router />
-                </TeamsProvider>
+                <EmployeePageContextProvider>
+                  <TeamsProvider>
+                    <Router />
+                  </TeamsProvider>
+                </EmployeePageContextProvider>
               </EmployeeProvider>
             </ProjectsContextProvider>
           </ClientsContextProvider>

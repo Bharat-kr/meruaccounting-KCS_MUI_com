@@ -8,9 +8,9 @@ import {
   DELETE_ACT_SUCCESS,
 } from "../../constants/CurrentUserConstants";
 
-export const getCommonData = async (dispatch) => {
+export const getCommonData = async (id, dispatch) => {
   try {
-    const { data } = await axios.get(`/commondata`);
+    const { data } = await axios.get(`/employee/${id}`);
     dispatch({
       type: GET_COMMONDATA_SUCCESS,
       payload: data,
@@ -27,13 +27,13 @@ export const getCommonData = async (dispatch) => {
   }
 };
 
-export const deleteSs = async (incomingData, dispatch) => {
+export const deleteSs = async (incomingData, dispatch, id) => {
   try {
     const { data } = await axios.delete(`/activity/screenshot`, {
       data: [...incomingData],
     });
     console.log(data);
-    const newCd = await axios.get(`/commondata`);
+    const newCd = await axios.get(`/employee/${id}`);
     dispatch({
       type: DELETE_SS_SUCCESS,
       payload: newCd.data,
@@ -48,13 +48,13 @@ export const deleteSs = async (incomingData, dispatch) => {
     });
   }
 };
-export const deleteAct = async (activityId, incomingDate, dispatch) => {
+export const deleteAct = async (activityId, incomingDate, dispatch, id) => {
   try {
     const { data } = await axios.delete(`/activity`, {
       data: { activityId, incomingDate },
     });
     console.log(data);
-    const newCd = await axios.get(`/commondata`);
+    const newCd = await axios.get(`/employee/${id}`);
     dispatch({
       type: DELETE_ACT_SUCCESS,
       payload: newCd.data,

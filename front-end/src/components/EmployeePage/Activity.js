@@ -1,47 +1,180 @@
-import React, { useContext } from "react";
-import { Box, Typography, Tooltip } from "@mui/material";
+import React, { useState, useContext } from "react";
+import {
+  Box,
+  Typography,
+  Tooltip,
+  Alert,
+  AlertTitle,
+  Toolbar,
+  IconButton,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { useParams } from "react-router-dom";
+
+import DeleteIcon from "@mui/icons-material/Delete";
 import HourglassFullIcon from "@mui/icons-material/HourglassFull";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import Preview from "./Preview";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { loginContext } from "../../contexts/LoginContext";
 
-const previews = [
-  "https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg",
-  "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-  "https://images.unsplash.com/photo-1485550409059-9afb054cada4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-  "https://appsprobox.com/wp-content/uploads/2021/05/Google-Photos-trick-discover-random-images-with-the-Im-going.jpg",
-  "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
-];
+// contexts
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 
-export default function Activity(props) {
-  const { currentUser } = useContext(CurrentUserContext);
-  const { loginC } = useContext(loginContext);
-  // console.log(loginC.userData.days);
+//api
+import { deleteSs, deleteAct } from "../../api/employee api/employeePage";
+
+// helpers
+import timeC from "../../_helpers/timeConverter";
+
+export default function Activity({
+  date,
+  project,
+  actId,
+  isAccepted,
+  startTime,
+  endTime,
+  performanceData,
+  screenShots,
+}) {
+  const { dispatchCommonData } = useContext(EmployeePageContext);
+  const [selectedSs, setselectedSs] = useState([]);
+  const { id } = useParams();
+
+  // performance data icons
+  const percentIcon = (percent) =>
+    percent <= 30 ? (
+      <HourglassEmptyIcon sx={{ m: -1 }} />
+    ) : percent <= 70 && percent > 30 ? (
+      <HourglassBottomIcon sx={{ m: -1 }} />
+    ) : (
+      <HourglassFullIcon sx={{ m: -1 }} />
+    );
+
+  const delSs = async (selectedSs) => {
+    const array = selectedSs.map((ss) => {
+      return { activityId: actId, screenshotId: ss };
+    });
+    await deleteSs(array, dispatchCommonData, id);
+    setselectedSs([]);
+  };
+
+  const delAct = async (actId) => {
+    await deleteAct(actId, date, dispatchCommonData, id);
+  };
 
   return (
-    <Box component="div" sx={{}}>
-      <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
-        {currentUser.day[1638729000].timeRange[0].startTime} -
-        {currentUser.day[1638729000].timeRange[0].endTime} |
+    <Box
+      component="div"
+      sx={{
+        backgroundColor: `${isAccepted === true ? "#c8facd" : "#ffe7d9"}`,
+        m: 0.5,
+        pt: 1.5,
+        pr: 1,
+        pb: 1,
+        pl: 0.5,
+        borderRadius: 1,
+      }}
+    >
+      <Typography component="span" sx={{ fontWeight: "bold", ml: 2.5 }}>
+        {timeC(startTime)} -{timeC(endTime)} ||
       </Typography>
-      <Tooltip title="100%" placement="top" followCursor>
-        <HourglassFullIcon sx={{ m: -1 }} />
+      <Tooltip
+        title={`${Math.ceil(performanceData)}%`}
+        placement="top"
+        followCursor
+      >
+        <Box sx={{ m: 1, fontWeight: "bold" }} component="span">
+          {percentIcon(performanceData)}
+          <span> ({Math.ceil(performanceData)}%)</span>
+        </Box>
       </Tooltip>
-      <Typography component="span" sx={{ m: 1, fontWeight: "bold" }}>
-        |{currentUser.day[1638729000].timeRange[0].taskName}
+      <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
+        || {project === null ? `Project was deleted, OOF :")` : project.name}
       </Typography>
+      <DeleteIcon
+        sx={{ float: "right" }}
+        onClick={(e) => {
+          delAct(actId);
+        }}
+      />
 
+      <Toolbar
+        sx={{
+          // use this for dynamic display none
+          display: "none",
+          mb: 1,
+          position: "fixed",
+          borderRadius: 1,
+          bottom: "0",
+          width: "70%",
+          zIndex: "10",
+          backgroundColor: "#ebf8f2",
+          ...(selectedSs.length > 0 && {
+            // bgcolor: (theme) => alpha(theme.palette.primary.main),
+            display: "flex",
+          }),
+        }}
+      >
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon
+              sx={{ float: "right" }}
+              fontSize="small"
+              onClick={(e) => {
+                delSs(selectedSs);
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+
+        <Typography
+          sx={{ flex: "1 1 100%" }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          Delete {selectedSs.length} selected screenshots?
+        </Typography>
+      </Toolbar>
       <Box
         component="div"
         sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
       >
-        {previews.map((preview) => (
-          <>
-            <Preview preview={preview} />
-          </>
-        ))}
-
-        {/* screenshots here flex wrap rowwise justify center */}
+        {screenShots.length !== 0 ? (
+          screenShots.map((ss, key) => (
+            <Preview
+              setSelectedSs={(isCheck, screenshotId) => {
+                if (isCheck) {
+                  console.log(selectedSs);
+                  setselectedSs((prev) => [...prev, screenshotId]);
+                } else {
+                  console.log(selectedSs);
+                  setselectedSs((prev) =>
+                    selectedSs.filter((pre) => screenshotId !== pre)
+                  );
+                }
+              }}
+              selectedSs={selectedSs}
+              ssId={ss._id}
+              actId={actId}
+              title={ss.title}
+              preview={ss.image}
+              key={key}
+              performanceData={ss.performanceData}
+              activityAt={timeC(ss.activityAt)}
+            />
+          ))
+        ) : (
+          <Alert
+            fullWidth
+            severity="info"
+            sx={{ m: 2, width: "100%" }}
+            variant="string"
+          >
+            <AlertTitle>No Screenshots</AlertTitle>
+            Evidence was deleted — <strong>{`OOF :")`}</strong>
+          </Alert>
+        )}
       </Box>
     </Box>
   );

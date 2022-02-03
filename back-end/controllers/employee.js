@@ -78,7 +78,10 @@ const deleteEmployee = asyncHandler(async (req, res) => {
     try {
       /* ---------------------------- finding employee ---------------------------- */
 
-      const employee = await User.findById(id);
+      if (employee) {
+        res.status(404);
+        throw new Error("Employee to be deleted not found");
+      }
 
       if (employee) {
         res.status(404);

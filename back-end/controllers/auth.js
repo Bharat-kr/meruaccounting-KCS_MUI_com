@@ -1,6 +1,8 @@
-import User from '../models/user.js';
-import generateToken from '../utils/generateToken.js';
-import asyncHandler from 'express-async-handler';
+import User from "../models/user.js";
+import Activity from "../models/activity.js";
+import generateToken from "../utils/generateToken.js";
+import asyncHandler from "express-async-handler";
+import dayjs from "dayjs";
 
 // @desc    Register new user
 // @route   POST /register
@@ -11,7 +13,7 @@ const register = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists');
+    throw new Error("User already exists");
   }
 
   const user = await User.create({
@@ -25,7 +27,7 @@ const register = asyncHandler(async (req, res) => {
 
   if (user) {
     res.status(201).json({
-      status: 'success',
+      status: "success",
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -38,7 +40,7 @@ const register = asyncHandler(async (req, res) => {
     });
   } else {
     throw new Error(
-      'There was a problem in creating a new account. Please contact administrator'
+      "There was a problem in creating a new account. Please contact administrator"
     );
   }
 });
@@ -52,14 +54,14 @@ const login = asyncHandler(async (req, res) => {
 
   if (!email || !password) {
     res.status(401);
-    throw new Error('Missing credentials');
+    throw new Error("Missing credentials");
   }
 
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
     res.status(200).json({
-      status: 'success',
+      status: "success",
       user: {
         _id: user._id,
         firstName: user.firstName,
@@ -71,7 +73,7 @@ const login = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error('Invalid email or password');
+    throw new Error("Invalid email or password");
   }
 });
 
@@ -82,30 +84,131 @@ const login = asyncHandler(async (req, res) => {
 const commondata = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
-      .select('-password')
+      .select("-password")
       .populate({
-        path: 'days',
+        path: "days",
         populate: {
-          path: 'activities ',
+          path: "activities ",
           populate: [
-            { path: 'screenshots', select: ['-employee'] },
+            { path: "screenshots", select: ["-employee"] },
             {
-              path: 'project',
-              model: 'Project',
-              select: ['name'],
+              path: "project",
+              model: "Project",
+              select: ["name"],
             },
           ],
         },
       });
 
+    const dailyHours = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+            {
+              activityOn: {
+                $eq: dayjs().format("DD/MM/YYYY"),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const weeklyTime = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+            {
+              activityOn: {
+                $gte: dayjs().startOf("week").format("DD/MM/YYYY"),
+                $lte: dayjs().format("DD/MM/YYYY"),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const monthlyTime = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+            {
+              activityOn: {
+                $gte: dayjs().startOf("month").format("DD/MM/YYYY"),
+                $lte: dayjs().format("DD/MM/YYYY"),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const totalTime = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
     if (!user) {
       res.status(404);
-      throw new Error('No such user found');
+      throw new Error("No such user found");
     }
 
     res.status(200).json({
-      status: 'Fetched common data',
+      status: "Fetched common data",
       user,
+      dailyHours,
+      weeklyTime,
+      monthlyTime,
+      totalTime,
     });
   } catch (error) {
     throw new Error(error);

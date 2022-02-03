@@ -1,13 +1,12 @@
 {
   "name": "@minimal/material-kit-react",
-  "proxy": "http://127.0.0.1:8000",
   "author": "minimals.cc",
   "licence": "MIT",
   "version": "1.2.0",
   "private": false,
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build", 
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx ./src",
@@ -72,6 +71,7 @@
     "react": "^17.0.2",
     "react-animated-cursor": "^2.2.0",
     "react-apexcharts": "^1.3.9",
+    "react-avatar-editor": "^12.0.0",
     "react-chartjs-2": "^3.3.0",
     "react-dom": "^17.0.2",
     "react-editext": "^4.2.1",

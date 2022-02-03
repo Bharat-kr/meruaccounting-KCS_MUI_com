@@ -1,19 +1,19 @@
-import dotenv from 'dotenv';
-import colors from 'colors';
-import asyncHandler from 'express-async-handler';
-import connectDB from './config/db.js';
+import dotenv from "dotenv";
+import colors from "colors";
+import asyncHandler from "express-async-handler";
+import connectDB from "./config/db.js";
 
 // import data
-import users from './data/users.js';
+import users from "./data/users.js";
 
-import User from './models/user.js';
-import Team from './models/team.js';
-import Client from './models/client.js';
-import Project from './models/project.js';
-import Activity from './models/activity.js';
-import Screenshot from './models/screenshot.js';
+import User from "./models/user.js";
+import Team from "./models/team.js";
+import Client from "./models/client.js";
+import Project from "./models/project.js";
+import Activity from "./models/activity.js";
+import Screenshot from "./models/screenshot.js";
 
-dotenv.config({ path: './config/config.env' });
+dotenv.config({ path: "./config/config.env" });
 
 connectDB();
 
@@ -46,4 +46,4 @@ const destroyData = asyncHandler(async () => {
   }
 });
 
-process.argv[2] === '-d' ? destroyData() : importData();
+process.argv[2] === "-d" ? destroyData() : importData();

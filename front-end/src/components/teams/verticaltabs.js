@@ -75,6 +75,31 @@ export default function VerticalTabs() {
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
   const [newMemberMail, setNewMemberMail] = React.useState("");
 
+  const [expanded, setExpanded] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
+
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds);
+  };
+
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
+
+  // const handleExpandClick = () => {
+  //   setExpanded((oldExpanded) =>
+  //     oldExpanded.length === 0 ? ["1", "5", "6", "7"] : []
+  //   );
+  // };
+
+  // const handleSelectClick = () => {
+  //   setSelected((oldSelected) =>
+  //     oldSelected.length === 0
+  //       ? ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  //       : []
+  //   );
+  // };
+
   const newTeamRef = React.useRef("");
   const addMemberRef = React.useRef("");
   React.useEffect(() => {
@@ -118,16 +143,7 @@ export default function VerticalTabs() {
 
   teamsDetails = getTeams?.getTeam;
 
-  console.log(teamsDetails);
-  console.log(getTeams.getTeam);
-  React.useEffect(() => {
-    if (getTeams?.getTeam?.length > 0) {
-      //setting the current member
-      // setCurrTeam(getTeams?.getTeam[0]);
-      // setCurrMember(getTeams?.getTeam[0].members[0]);
-    }
-  }, [getTeams, setCurrMember]);
-
+  //Click Handler for Tree Items0
   const handleClick = (e) => {
     // console.log(e.target.id);
     const team = getTeams.getTeam.filter((team) =>
@@ -142,6 +158,7 @@ export default function VerticalTabs() {
     // console.log("member", member[0]);
   };
 
+  //Creating New Team
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -153,12 +170,16 @@ export default function VerticalTabs() {
       console.log(err.message);
     }
   };
+
+  //Changing Curr Team
   const changeCurrTeam = async (e) => {
     const team = await getTeams.getTeam.filter((team) =>
       team.name === e.target.textContent ? team : ""
     );
     setCurrTeamToUpdate(team[0]);
   };
+
+  //Add Member to a Team
   const AddMember = async (e) => {
     try {
       e.preventDefault();
@@ -189,6 +210,8 @@ export default function VerticalTabs() {
           team.name === val[0] ? team : ""
         );
         setCurrTeam(teams[0]);
+        setExpanded((oldExpanded) => [`${teams[0]._id}`]);
+
         const member = teams[0].members?.filter((member) =>
           getFullName(member.firstName, member.lastName) == val[1] ? member : ""
         );
@@ -197,6 +220,7 @@ export default function VerticalTabs() {
           return;
         }
         setCurrMember(member[0]);
+        setSelected((oldSelected) => [`${member[0]._id + teams[0]._id}`]);
       }
     } catch (error) {
       console.log(error.message);
@@ -276,6 +300,10 @@ export default function VerticalTabs() {
                 overflowY: "auto",
                 width: "100%",
               }}
+              expanded={expanded}
+              selected={selected}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
             >
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem
