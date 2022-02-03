@@ -4124,7 +4124,7 @@
     "kind-of" "^6.0.2"
     "shallow-clone" "^3.0.0"
 
-"clsx@^1.0.4", "clsx@^1.1.1":
+"clsx@^1.0.4", "clsx@^1.1.0", "clsx@^1.1.1":
   "integrity" "sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA=="
   "resolved" "https://registry.npmjs.org/clsx/-/clsx-1.1.1.tgz"
   "version" "1.1.1"
@@ -8758,6 +8758,14 @@
     "prepend-http" "^1.0.0"
     "query-string" "^4.1.0"
     "sort-keys" "^1.0.0"
+
+"notistack@^2.0.3":
+  "integrity" "sha512-krmVFtTO9kEY1Pa4NrbyexrjiRcV6TqBM2xLx8nuDea1g96Z/OZfkvVLmYKkTvoSJ3jyQntWK16z86ssW5kt4A=="
+  "resolved" "https://registry.npmjs.org/notistack/-/notistack-2.0.3.tgz"
+  "version" "2.0.3"
+  dependencies:
+    "clsx" "^1.1.0"
+    "hoist-non-react-statics" "^3.3.0"
 
 "npm-run-path@^2.0.0":
   "integrity" "sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8="

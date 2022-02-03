@@ -17,6 +17,7 @@ import {
 import EnhancedTable from "../Projects/ProjectMemers";
 import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
+import { useSnackbar } from "notistack";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -62,10 +63,17 @@ export default function Header(props) {
     dispatchEditProject,
     dispatchDeleteProject,
     dispatchaddProjectLeader,
+    editedProject,
   } = useContext(projectContext);
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
+  const [budgetTime, setbudgetTime] = useState(
+    ` ${currentProject?.budgetTime ? currentProject.budgetTime : 0}`
+  );
   const outerref = useRef();
+  const proInputRef = useRef("");
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
@@ -75,9 +83,12 @@ export default function Header(props) {
   );
   const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
     (i) => i._id === currentProject?._id
-  );
+  )
+    ? clientsList[clientIndex]?.projects?.findIndex(
+        (i) => i._id === currentProject?._id
+      )
+    : "";
   useEffect(async () => {
-    console.log(projectIndex, clientIndex, "hello");
     if (clientsList !== null || undefined) {
       await changeClient(clientsList[clientIndex]);
       await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
@@ -88,16 +99,15 @@ export default function Header(props) {
       currentProject
         ? setprojectName(`${currentProject.name}`)
         : setprojectName("No Client Select");
-      currentProject.projectLeader
+      currentProject?.projectLeader
         ? setProjectLeader(
-            `${currentProject.projectLeader?.firstName} ${currentProject.projectLeader?.lastName}`
+            `${currentProject?.projectLeader?.firstName} ${currentProject?.projectLeader?.lastName}`
           )
         : setProjectLeader("No leader");
     } catch (err) {
       console.log(err);
     }
   }, [clientDetails, currentClient, currentProject]);
-  console.log(currentClient, currentProject);
 
   let memberList = [];
   let membersData = [];
@@ -115,28 +125,39 @@ export default function Header(props) {
     : memberList.push("");
   const handleSearch = async (e, value) => {
     try {
+      e.preventDefault();
       const emp = membersData.filter((emp) =>
         emp.name === value ? emp.id : ""
       );
       const data = [currentProject._id, emp[0].email];
       await addProjectLeader(data, dispatchaddProjectLeader);
       await getClient(dispatchClientDetails);
-      const employee = memberList.filter((emp) => (emp == value ? emp : ""));
+      const employee = memberList.filter((emp) => (emp === value ? emp : ""));
       setProjectLeader(employee);
+      proInputRef.current.value = "";
+
+      enqueueSnackbar("Project Leader changed", { variant: "success" });
     } catch (error) {
       console.log(error.message);
+      enqueueSnackbar(error.message, { variant: "warning" });
     }
   };
   const handleEdit = () => {};
   const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    await editProject(
-      currentProject._id,
-      { name: projectName },
-      dispatchEditProject
-    );
-    await getClient(dispatchClientDetails);
-    // changeProject(curr);
+    try {
+      e.preventDefault();
+      await editProject(
+        currentProject._id,
+        { name: projectName },
+        dispatchEditProject
+      );
+      await getClient(dispatchClientDetails);
+      // changeProject(curr);
+      enqueueSnackbar("Project name changed", { variant: "success" });
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar(error.message, { variant: "warning" });
+    }
   };
   const handleProjectDelete = async (e) => {
     try {
@@ -172,13 +193,31 @@ export default function Header(props) {
       }
       await deleteProject(currentProject._id, dispatchDeleteProject);
       await getClient(dispatchClientDetails);
+      enqueueSnackbar("Project deleted", { variant: "success" });
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "warning" });
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  };
+  console.log(currentProject);
+  const handleSave = async (e) => {
+    try {
+      await editProject(
+        currentProject._id,
+        { budgetTime: budgetTime },
+        dispatchEditProject
+      );
+      await getClient(dispatchClientDetails);
+      // changeProject(curr);
+      enqueueSnackbar("Budget time changed", { variant: "success" });
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar(error.message, { variant: "warning" });
+    }
   };
 
   return currentProject === undefined ? (
@@ -310,6 +349,7 @@ export default function Header(props) {
                 sx={{ width: 100 }}
                 renderInput={(params) => (
                   <TextField
+                    inputRef={proInputRef}
                     {...params}
                     label="Select New Team Leader"
                     // defaultValue={ProjectLeader}
@@ -342,15 +382,12 @@ export default function Header(props) {
                     BudgetHours :{" "}
                   </Typography>
                   <EdiText
-                    sx={{ display: "flex", alignItems: "center" }}
+                    onChange={(e) => setbudgetTime(e.target.value)}
+                    sx={{ display: "flex", alignItems: "center", pl: 1 }}
                     type="number"
-                    value={` ${
-                      currentProject?.BudgetHours
-                        ? currentProject.BudgetHours
-                        : "  Not Assigned"
-                    }`}
+                    value={budgetTime}
                     onCancel={(v) => console.log("CANCELLED: ", v)}
-                    onSave={(v) => console.log(v)}
+                    onSave={handleSave}
                   />
                 </Typography>
               </Paper>
