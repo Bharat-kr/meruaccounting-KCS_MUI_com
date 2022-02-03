@@ -5,7 +5,7 @@ import "./index.css";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-
+import { SnackbarProvider } from "notistack";
 //
 import App from "./App";
 import axios from "axios";
@@ -18,10 +18,12 @@ axios.defaults.headers.common[
 ] = `Bearer ${localStorage["Bearer Token"]}`;
 
 ReactDOM.render(
-  <HelmetProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </HelmetProvider>,
+  <SnackbarProvider maxSnack={3}>
+    <HelmetProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </HelmetProvider>
+  </SnackbarProvider>,
   document.getElementById("root")
 );

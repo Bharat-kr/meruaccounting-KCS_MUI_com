@@ -182,12 +182,12 @@ const EnhancedTableToolbar = (props) => {
     // React.useEffect(() => {
     //   setRowsPerPage(rows.length);
     // }, [rows.length, currentProject, currentClient]);
-    deleteList.map(async (id) => {
-      const data = [currentProject._id, id];
-      removeProjectMember(data, dispatchremoveProjectMember);
-      await getClient(dispatchClientDetails);
-      setSeleceted([]);
-    });
+    for (let i = 0; i < deleteList.length; i++) {
+      let data = [currentProject._id, deleteList[i]];
+      await removeProjectMember(data, dispatchremoveProjectMember);
+    }
+    await getClient(dispatchClientDetails);
+    setSeleceted([]);
   };
   return (
     <>
@@ -293,7 +293,6 @@ export default function EnhancedTable(props) {
       const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
         (i) => i._id === currentProject._id
       );
-      console.log(projectIndex, clientIndex, "hello");
       if (projectIndex && clientIndex !== null) {
         await changeClient(clientsList[clientIndex]);
         await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
@@ -322,9 +321,6 @@ export default function EnhancedTable(props) {
       console.log(err);
     }
   }, [currentClient, currentProject, clientDetails]);
-
-  console.log(currentClient, currentProject);
-  console.log(employeesList, employeeNameList);
 
   const handleMemberAdded = async (e) => {
     e.preventDefault();

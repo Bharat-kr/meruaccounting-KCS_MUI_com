@@ -93,7 +93,6 @@ export default function Sidebar() {
     }
     changeClient(client[0]);
     setSelected((oldSelected) => [`${client[0]._id}`]);
-    console.log(sidebarref, clientref);
 
     // not working
     // sidebarref.current.scrollTop =
@@ -215,7 +214,17 @@ export default function Sidebar() {
                 nodeId={client._id}
                 className={classes.treeItem}
                 label={
-                  <Typography className={classes.treeItem} variant="h6">
+                  // <Typography className={classes.treeItem} variant="h6">
+                  //   {client.name}
+                  // </Typography>
+                  <Typography
+                    sx={{
+                      textAlign: "left",
+                      width: "100%",
+                      fontWeight: "Bold",
+                    }}
+                    variant="h6"
+                  >
                     {client.name}
                   </Typography>
                 }
@@ -247,7 +256,7 @@ export default function Sidebar() {
               error={newClientError}
             />
             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
-              Submit
+              Add Client
             </Button>
           </form>
         </Box>
