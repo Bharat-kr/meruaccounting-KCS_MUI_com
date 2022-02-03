@@ -2,6 +2,12 @@ import Client from "../models/client.js";
 import Project from "../models/project.js";
 import asyncHandler from "express-async-handler";
 import User from "../models/user.js";
+import { AccessControl } from "accesscontrol";
+import { grantsObject } from "../utils/permissions.js";
+
+const ac = new AccessControl(grantsObject);
+
+/* -------------------------------------------------------------------------- */
 
 // @desc    Create a new client
 // @route   POST /client
