@@ -56,7 +56,7 @@ const createProjectsReducer = (state, action) => {
     case CREATE_PROJECTS_SUCCESS:
       return {
         loader: false,
-        createProject: action.payload,
+        createdProject: action.payload,
       };
     case CREATE_PROJECTS_FAILED:
       return {
@@ -64,7 +64,7 @@ const createProjectsReducer = (state, action) => {
         error: action.payload,
       };
     case CREATE_PROJECTS_RESET:
-      return { createProject: {} };
+      return { createdProject: {} };
     default:
       return state;
   }
@@ -94,7 +94,7 @@ const editProjectsReducer = (state, action) => {
     case EDIT_PROJECTS_SUCCESS:
       return {
         loader: false,
-        editProject: action.payload,
+        editedProject: action.payload,
       };
     case EDIT_PROJECTS_FAILED:
       return {
@@ -102,7 +102,7 @@ const editProjectsReducer = (state, action) => {
         error: action.payload,
       };
     case EDIT_PROJECTS_RESET:
-      return { editProject: {} };
+      return { editedProject: {} };
     default:
       return state;
   }
@@ -235,16 +235,16 @@ export const ProjectsContextProvider = (props) => {
       projectDetails: { loader: true },
     }
   );
-  const [createProject, dispatchCreateProject] = useReducer(
+  const [createdProject, dispatchCreateProject] = useReducer(
     createProjectsReducer,
-    { createProject: { loader: true } }
+    { createdProject: { loader: true } }
   );
   const [addTeamProject, dispatchAddTeamProject] = useReducer(
     addTeamToProjectsReducer,
     { addTeamProject: { loader: true } }
   );
-  const [editProject, dispatchEditProject] = useReducer(editProjectsReducer, {
-    editProject: { loader: true },
+  const [editedProject, dispatchEditProject] = useReducer(editProjectsReducer, {
+    editedProject: { loader: true },
   });
   const [deleteProject, dispatchDeleteProject] = useReducer(
     deleteProjectsReducer,
@@ -284,11 +284,11 @@ export const ProjectsContextProvider = (props) => {
       value={{
         projectDetails,
         dispatchProjectDetails,
-        createProject,
+        createdProject,
         dispatchCreateProject,
         addTeamProject,
         dispatchAddTeamProject,
-        editProject,
+        editedProject,
         dispatchEditProject,
         deleteProject,
         dispatchDeleteProject,

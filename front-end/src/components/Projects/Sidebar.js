@@ -13,6 +13,9 @@ import SearchBar from "../SearchBar";
 import { getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
 import Header from "./Header";
+import Snackbars from "../../_helpers/snackBar";
+import zIndex from "@mui/material/styles/zIndex";
+import { useSnackbar } from "notistack";
 //-------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -40,9 +43,11 @@ export default function Sidebar() {
   } = useContext(ClientsContext);
   // const [currentClient, changeClient] = useState("");
   // const [currentProject, changeProject] = useState("");
-  const { dispatchCreateProject } = useContext(projectContext);
+  const { dispatchCreateProject, createdProject } = useContext(projectContext);
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -155,18 +160,25 @@ export default function Sidebar() {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      setOpen(true);
       setnewClientError(false);
       if (newProjectValue === "" || currentClient === null) {
         setnewClientError(true);
-        return;
       }
       if (currentClient !== null) {
         const data = { name: newProjectValue, clientId: currentClient._id };
         await createProject(data, dispatchCreateProject);
         await getClient(dispatchClientDetails);
+        console.log(createdProject);
       }
+      if (createdProject.status === "Successfully Created Project") {
+        enqueueSnackbar("Successfully Created Project", { varinat: "success" });
+      } else enqueueSnackbar(createdProject.error, "info");
     } catch (error) {
-      console.log("Choose A client ,to be display in popup");
+      console.log(error);
+      if (currentClient === null || "") {
+        enqueueSnackbar("Choose A client", { varinat: "info" });
+      } else enqueueSnackbar(error.message, { varinat: "warning" });
     }
   };
 
@@ -287,7 +299,7 @@ export default function Sidebar() {
             />
 
             <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
-              Add
+              Add Project
             </Button>
           </form>
         </Box>
@@ -300,5 +312,17 @@ export default function Sidebar() {
         setCurrProjct={changeProject}
       />
     </Box>
+    /* {open === true ? (
+        <Snackbars
+          sx={{ display: "none", position: "absolute", zIndex: -10000 }}
+          message={"hello"}
+          open={open}
+          setOpen={(val) => {
+            setOpen(val);
+          }}
+        />
+      ) : (
+        ""
+      )} */
   );
 }

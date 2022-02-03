@@ -1,4 +1,4 @@
-import React, { createContext, useState, useReducer } from "react";
+import React, { createContext, useReducer } from "react";
 import {
   GET_COMMONDATA_SUCCESS,
   GET_COMMONDATA_FAILED,

@@ -1,4 +1,3 @@
-import { indexOf } from "lodash-es";
 import React, { createContext, useState, useReducer, useEffect } from "react";
 import { ADD_TEAM_PROJECTS_RESET } from "src/constants/ProjectConstants";
 
