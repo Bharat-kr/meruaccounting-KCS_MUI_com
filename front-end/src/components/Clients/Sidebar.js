@@ -1,6 +1,12 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useRef, useEffect, useState } from "react";
-import { Paper, Autocomplete, Typography, Button } from "@mui/material";
+import {
+  Paper,
+  Autocomplete,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -188,55 +194,70 @@ export default function Sidebar() {
           />
         </Box>
 
-        {/* clients list flex container */}
-        <Box
-          ref={sidebarref}
-          component="div"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: "1",
-            alignItems: "flex-start",
-            overflowY: "auto",
-          }}
-        >
-          <TreeView
-            fullWidth
-            // className={classes.root}
+        {clientDetails.loader && (
+          <Box
             sx={{
-              height: 240,
-              flexGrow: 1,
-              // maxWidth: 400,
-              overflowY: "auto",
-              width: "100%",
+              display: "flex",
+              flexGrow: "1",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            selected={selected}
-            onNodeSelect={handleSelect}
           >
-            {clientsList?.map((client) => (
-              <TreeItem
-                ref={clientref}
-                onClick={handleClick}
-                nodeId={client._id}
-                className={classes.treeItem}
-                label={
-                  // <Typography className={classes.treeItem} variant="h6">
-                  //   {client.name}
-                  // </Typography>
-                  <Typography
-                    sx={{
-                      color: "#637381",
-                      fontSize: "1.5rem",
-                      fontWeight: "700",
-                    }}
-                  >
-                    {client.name}
-                  </Typography>
-                }
-              ></TreeItem>
-            ))}
-          </TreeView>
-        </Box>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {/* clients list flex container */}
+        {!clientDetails.loader && (
+          <Box
+            ref={sidebarref}
+            component="div"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: "1",
+              alignItems: "flex-start",
+              overflowY: "auto",
+            }}
+          >
+            <TreeView
+              fullWidth
+              // className={classes.root}
+              sx={{
+                height: 240,
+                flexGrow: 1,
+                // maxWidth: 400,
+                overflowY: "auto",
+                width: "100%",
+              }}
+              selected={selected}
+              onNodeSelect={handleSelect}
+            >
+              {clientsList?.map((client) => (
+                <TreeItem
+                  ref={clientref}
+                  onClick={handleClick}
+                  nodeId={client._id}
+                  className={classes.treeItem}
+                  label={
+                    // <Typography className={classes.treeItem} variant="h6">
+                    //   {client.name}
+                    // </Typography>
+                    <Typography
+                      sx={{
+                        color: "#637381",
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {client.name}
+                    </Typography>
+                  }
+                ></TreeItem>
+              ))}
+            </TreeView>
+          </Box>
+        )}
 
         {/* INPUT BOX, add validations, connect to context */}
         <Box

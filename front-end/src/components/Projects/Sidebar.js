@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { Paper, Typography, Button } from "@mui/material";
+import { Paper, Typography, Button, CircularProgress } from "@mui/material";
 import { TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -215,81 +215,95 @@ export default function Sidebar() {
             options={projectList}
           />
         </Box>
+        {clientDetails.loader && (
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: "1",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
 
         {/* clients and project tree view flex container */}
-        <Box
-          component="div"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: "1",
-            alignItems: "flex-start",
-            overflowY: "auto",
-          }}
-        >
-          <TreeView
-            aria-label="file system navigator"
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
+        {!clientDetails.loader && (
+          <Box
+            component="div"
             sx={{
-              height: 240,
-              flexGrow: 1,
-              // maxWidth: 400,
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: "1",
+              alignItems: "flex-start",
               overflowY: "auto",
-              width: "100%",
             }}
-            className={classes.root}
-            expanded={expanded}
-            selected={selected}
-            onNodeToggle={handleToggle}
-            onNodeSelect={handleSelect}
           >
-            {clientsList?.length > 0 &&
-              clientsList.map((client) => (
-                <TreeItem
-                  nodeId={client._id.toString()}
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#637381",
-                        fontSize: "1.5rem",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {client.name}
-                    </Typography>
-                  }
-                  key={client._id}
-                  onClick={handleClick}
-                  id={client._id}
-                >
-                  {client.projects.map((project) => {
-                    return (
-                      <TreeItem
-                        nodeId={(project._id + client._id).toString()}
-                        id={project._id}
-                        key={project._id}
-                        label={
-                          <Typography
-                            sx={{
-                              color: "#2a3641",
-                              fontSize: "1.2rem",
-                              fontWeight: "700",
-                            }}
-                            data-client={client.name}
-                            data-project={project.name}
-                            onClick={handleProjectClick}
-                          >
-                            {project.name}
-                          </Typography>
-                        }
-                      />
-                    );
-                  })}
-                </TreeItem>
-              ))}
-          </TreeView>
-        </Box>
+            <TreeView
+              aria-label="file system navigator"
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              sx={{
+                height: 240,
+                flexGrow: 1,
+                // maxWidth: 400,
+                overflowY: "auto",
+                width: "100%",
+              }}
+              className={classes.root}
+              expanded={expanded}
+              selected={selected}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
+            >
+              {clientsList?.length > 0 &&
+                clientsList.map((client) => (
+                  <TreeItem
+                    nodeId={client._id.toString()}
+                    label={
+                      <Typography
+                        sx={{
+                          color: "#637381",
+                          fontSize: "1.5rem",
+                          fontWeight: "700",
+                        }}
+                      >
+                        {client.name}
+                      </Typography>
+                    }
+                    key={client._id}
+                    onClick={handleClick}
+                    id={client._id}
+                  >
+                    {client.projects.map((project) => {
+                      return (
+                        <TreeItem
+                          nodeId={(project._id + client._id).toString()}
+                          id={project._id}
+                          key={project._id}
+                          label={
+                            <Typography
+                              sx={{
+                                color: "#2a3641",
+                                fontSize: "1.2rem",
+                                fontWeight: "700",
+                              }}
+                              data-client={client.name}
+                              data-project={project.name}
+                              onClick={handleProjectClick}
+                            >
+                              {project.name}
+                            </Typography>
+                          }
+                        />
+                      );
+                    })}
+                  </TreeItem>
+                ))}
+            </TreeView>
+          </Box>
+        )}
 
         <Box
           sx={{

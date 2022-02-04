@@ -3,7 +3,7 @@ import { useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
-import { Box, Paper, TextField, Button } from "@mui/material";
+import { Box, Paper, TextField, Button, CircularProgress } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Main from "./Main";
 import { teamContext } from "../../contexts/TeamsContext";
@@ -295,74 +295,88 @@ export default function VerticalTabs() {
             </FloatingForm>
           </Box>
           {/* teams and members tree view flex container */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexGrow: "1",
-              alignItems: "flex-start",
-              overflowY: "auto",
-            }}
-          >
-            <TreeView
-              aria-label="file system navigator"
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
+          {getTeams.loader && (
+            <Box
               sx={{
-                height: 240,
-                flexGrow: 1,
-                // maxWidth: 400,
-                overflowY: "auto",
-                width: "100%",
+                display: "flex",
+                flexGrow: "1",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
-              onNodeSelect={handleSelect}
             >
-              {getTeams?.getTeam?.map((el) => (
-                <TreeItem
-                  nodeId={el._id.toString()}
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#637381",
-                        fontSize: "1.5rem",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {el.name}
-                    </Typography>
-                  }
-                  key={el.name}
-                  onClick={changeCurrTeam}
-                >
-                  {el.members.map((member) => {
-                    return (
-                      <TreeItem
-                        nodeId={member._id.toString() + el._id.toString()}
-                        key={member._id}
-                        label={
-                          <Typography
-                            sx={{
-                              color: "#2a3641",
-                              fontSize: "1.2rem",
-                              fontWeight: "700",
-                            }}
-                            data-client={el.name}
-                            onClick={handleClick}
-                            id={member._id}
-                          >
-                            {getFullName(member.firstName, member.lastName)}
-                          </Typography>
-                        }
-                      />
-                    );
-                  })}
-                </TreeItem>
-              ))}
-            </TreeView>
-          </Box>
+              <CircularProgress />
+            </Box>
+          )}
+          {!getTeams.loader && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: "1",
+                alignItems: "flex-start",
+                overflowY: "auto",
+              }}
+            >
+              <TreeView
+                aria-label="file system navigator"
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+                sx={{
+                  height: 240,
+                  flexGrow: 1,
+                  // maxWidth: 400,
+                  overflowY: "auto",
+                  width: "100%",
+                }}
+                expanded={expanded}
+                selected={selected}
+                onNodeToggle={handleToggle}
+                onNodeSelect={handleSelect}
+              >
+                {getTeams?.getTeam?.map((el) => (
+                  <TreeItem
+                    nodeId={el._id.toString()}
+                    label={
+                      <Typography
+                        sx={{
+                          color: "#637381",
+                          fontSize: "1.5rem",
+                          fontWeight: "700",
+                        }}
+                      >
+                        {el.name}
+                      </Typography>
+                    }
+                    key={el.name}
+                    onClick={changeCurrTeam}
+                  >
+                    {el.members.map((member) => {
+                      return (
+                        <TreeItem
+                          nodeId={member._id.toString() + el._id.toString()}
+                          key={member._id}
+                          label={
+                            <Typography
+                              sx={{
+                                color: "#2a3641",
+                                fontSize: "1.2rem",
+                                fontWeight: "700",
+                              }}
+                              data-client={el.name}
+                              onClick={handleClick}
+                              id={member._id}
+                            >
+                              {getFullName(member.firstName, member.lastName)}
+                            </Typography>
+                          }
+                        />
+                      );
+                    })}
+                  </TreeItem>
+                ))}
+              </TreeView>
+            </Box>
+          )}
           {/* INPUT BOX, add validations, connect to context */}
           <Box
             sx={{
