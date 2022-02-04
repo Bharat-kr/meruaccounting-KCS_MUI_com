@@ -35,6 +35,7 @@ import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 import { removeProjectMember } from "src/api/projects api/projects";
+import { useSnackbar } from "notistack";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -57,6 +58,9 @@ export default function Main(props) {
     useContext(teamContext);
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
     console.log(event.target.checked);
@@ -81,53 +85,83 @@ export default function Main(props) {
 
   //Updating payrate of an employee
   const updatePayrate = async (value) => {
-    const data = {
-      payRate: value,
-    };
-    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
-    await getTeam(dispatchgetTeam);
+    try {
+      const data = {
+        payRate: value,
+      };
+      await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+      await getTeam(dispatchgetTeam);
+      enqueueSnackbar("Payrate updated", { variant: "success" });
+    } catch (err) {
+      enqueueSnackbar(err.message, { variant: "info" });
+      console.log(err);
+    }
   };
-  
+
   //Updating role of Employee
   const updateRole = async (e) => {
-    const data = {
-      role: e.target.value,
-    };
-    console.log(data);
-    await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
-    await getTeam(dispatchgetTeam);
+    try {
+      const data = {
+        role: e.target.value,
+      };
+      console.log(data);
+      await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
+      await getTeam(dispatchgetTeam);
+      enqueueSnackbar("Role updated", { variant: "success" });
+    } catch (err) {
+      enqueueSnackbar(err.message, { variant: "info" });
+      console.log(err);
+    }
   };
 
   //Changing status of an employee
   const updateStatus = async (value) => {
-    const data = {
-      status: value,
-    };
-    console.log(data);
-    await employeeUpdate(currMember?._id, data, dispatchEmployeeUpdate);
-    await getTeam(dispatchgetTeam);
+    try {
+      const data = {
+        status: value,
+      };
+      console.log(data);
+      await employeeUpdate(currMember?._id, data, dispatchEmployeeUpdate);
+      await getTeam(dispatchgetTeam);
+      enqueueSnackbar("Employee updated", { variant: "success" });
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
+    }
   };
 
   //Deleting a member from a team
   const deleteMember = async () => {
-    const data = {
-      employeeId: currMember._id,
-      teamId: currTeam._id,
-    };
-    console.log(data);
-    await removeMember(data, dispatchRemoveMember);
-    await getTeam(dispatchgetTeam);
+    try {
+      const data = {
+        employeeId: currMember._id,
+        teamId: currTeam._id,
+      };
+      console.log(data);
+      await removeMember(data, dispatchRemoveMember);
+      await getTeam(dispatchgetTeam);
+      enqueueSnackbar("Member removed", { variant: "success" });
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
+    }
   };
 
   //Removing employee from a project
   const removeProject = async (value) => {
-    const data = {
-      id: currMember._id,
-      projectId: value,
-    };
-    console.log(data);
-    await removeProjectMember(data, dispatchremoveProjectMember);
-    await getTeam(dispatchgetTeam);
+    try {
+      const data = {
+        id: currMember._id,
+        projectId: value,
+      };
+      console.log(data);
+      await removeProjectMember(data, dispatchremoveProjectMember);
+      await getTeam(dispatchgetTeam);
+      enqueueSnackbar("Project removed ", { variant: "success" });
+    } catch (err) {
+      enqueueSnackbar(err.message, { variant: "info" });
+      console.log(err);
+    }
   };
 
   //Searching a project
@@ -140,15 +174,22 @@ export default function Main(props) {
 
   //Remove employee from all projects
   const removeAllProject = async () => {
-    for (var i = 0; i < currMember.projects.length; i++) {
-      const data = {
-        id: currMember._id,
-        projectId: currMember.projects[i]._id,
-      };
-      console.log(data);
-      await removeProjectMember(data, dispatchremoveProjectMember);
+    try {
+      for (var i = 0; i < currMember.projects.length; i++) {
+        const data = {
+          id: currMember._id,
+          projectId: currMember.projects[i]._id,
+        };
+        console.log(data);
+        await removeProjectMember(data, dispatchremoveProjectMember);
+      }
+      await getTeam(dispatchgetTeam);
+
+      enqueueSnackbar("All project removed ", { variant: "success" });
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    await getTeam(dispatchgetTeam);
   };
 
   const Labelconfig = function () {

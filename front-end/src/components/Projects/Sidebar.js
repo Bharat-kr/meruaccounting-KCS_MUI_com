@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { Paper, Typography, Button } from "@mui/material";
 import { TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -48,7 +48,7 @@ export default function Sidebar() {
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
-
+  const searchRef = useRef("");
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
   };
@@ -169,11 +169,10 @@ export default function Sidebar() {
         const data = { name: newProjectValue, clientId: currentClient._id };
         await createProject(data, dispatchCreateProject);
         await getClient(dispatchClientDetails);
-        console.log(createdProject);
       }
-      if (createdProject.status === "Successfully Created Project") {
-        enqueueSnackbar("Successfully Created Project", { varinat: "success" });
-      } else enqueueSnackbar(createdProject.error, "info");
+      searchRef.current.value = "";
+
+      enqueueSnackbar("Successfully Created Project", { varinat: "success" });
     } catch (error) {
       console.log(error);
       if (currentClient === null || "") {
@@ -191,6 +190,7 @@ export default function Sidebar() {
         flexGrow: "1",
         display: "flex",
         flexDirection: "row",
+        scrollbar: "auto",
       }}
     >
       <Paper
@@ -199,6 +199,7 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
+          width: "28.5%",
           display: "flex",
           flexDirection: "column",
           // position: "relative",
@@ -247,7 +248,17 @@ export default function Sidebar() {
               clientsList.map((client) => (
                 <TreeItem
                   nodeId={client._id.toString()}
-                  label={<Typography variant="h6">{client.name}</Typography>}
+                  label={
+                    <Typography
+                      sx={{
+                        color: "#637381",
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {client.name}
+                    </Typography>
+                  }
                   key={client._id}
                   onClick={handleClick}
                   id={client._id}
@@ -260,10 +271,14 @@ export default function Sidebar() {
                         key={project._id}
                         label={
                           <Typography
+                            sx={{
+                              color: "#2a3641",
+                              fontSize: "1.2rem",
+                              fontWeight: "700",
+                            }}
                             data-client={client.name}
                             data-project={project.name}
                             onClick={handleProjectClick}
-                            variant="body1"
                           >
                             {project.name}
                           </Typography>
@@ -290,6 +305,7 @@ export default function Sidebar() {
             style={{ width: "100%" }}
           >
             <TextField
+              inputRef={searchRef}
               onChange={(e) => setnewProjectValue(e.target.value)}
               required
               fullWidth

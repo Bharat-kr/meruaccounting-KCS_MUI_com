@@ -16,6 +16,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchBar from "../SearchBar";
 import { getFullName } from "src/_helpers/getFullName";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
+import { useSnackbar } from "notistack";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -77,6 +78,8 @@ export default function VerticalTabs() {
 
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -166,8 +169,10 @@ export default function VerticalTabs() {
       await createTeam({ name: newTeam }, dispatchTeam);
       await getTeam(dispatchgetTeam);
       newTeamRef.current.value = "";
+      enqueueSnackbar("Team created", { variant: "success" });
     } catch (err) {
-      console.log(err.message);
+      enqueueSnackbar(err.message, { variant: "info" });
+      console.log(err);
     }
   };
 
@@ -189,8 +194,10 @@ export default function VerticalTabs() {
       );
       await getTeam(dispatchgetTeam);
       addMemberRef.current.value = "";
+      enqueueSnackbar("Member added", { variant: "success" });
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
   };
 
@@ -233,15 +240,20 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: "10px",
-          height: "70vh",
+          // height: "70vh",
           scrollbar: "auto",
+          flexGrow: "1",
+          display: "flex",
+          flexDirection: "row",
         }}
       >
         <Paper
           component="div"
           elevation={3}
           sx={{
+            overflow: "hidden",
             height: "100%",
+            width: "100%",
             display: "flex",
             flexDirection: "column",
           }}
@@ -286,8 +298,9 @@ export default function VerticalTabs() {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               flexGrow: "1",
+              alignItems: "flex-start",
               overflowY: "auto",
             }}
           >
@@ -296,7 +309,9 @@ export default function VerticalTabs() {
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
+                height: 240,
                 flexGrow: 1,
+                // maxWidth: 400,
                 overflowY: "auto",
                 width: "100%",
               }}
@@ -308,7 +323,17 @@ export default function VerticalTabs() {
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem
                   nodeId={el._id.toString()}
-                  label={<Typography variant="h6">{el.name}</Typography>}
+                  label={
+                    <Typography
+                      sx={{
+                        color: "#637381",
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {el.name}
+                    </Typography>
+                  }
                   key={el.name}
                   onClick={changeCurrTeam}
                 >
@@ -319,10 +344,14 @@ export default function VerticalTabs() {
                         key={member._id}
                         label={
                           <Typography
+                            sx={{
+                              color: "#2a3641",
+                              fontSize: "1.2rem",
+                              fontWeight: "700",
+                            }}
                             data-client={el.name}
                             onClick={handleClick}
                             id={member._id}
-                            variant="body1"
                           >
                             {getFullName(member.firstName, member.lastName)}
                           </Typography>
