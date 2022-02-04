@@ -2,6 +2,9 @@ import React from "react";
 import { Autocomplete, Box, TextField } from "@mui/material";
 
 export default function SearchBar(props) {
+  const inputref = React.useRef();
+  const [value, setValue] = React.useState();
+  console.log(props.inputRef);
   return (
     <Box
       sx={{
@@ -15,12 +18,19 @@ export default function SearchBar(props) {
     >
       <div>
         <Autocomplete
+          onClose={() => (inputref.current.value = "")}
           onChange={props.handleSearch}
           disablePortal
           id="combo-box-demo"
           options={props.options}
           renderInput={(params) => (
-            <TextField {...params} fullWidth label={props.label} />
+            <TextField
+              ref={inputref}
+              inputRef={props.inputRef}
+              {...params}
+              fullWidth
+              label={props.label}
+            />
           )}
         />
       </div>

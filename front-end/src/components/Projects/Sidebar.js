@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { Paper, Typography, Button } from "@mui/material";
 import { TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -48,7 +48,7 @@ export default function Sidebar() {
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
-
+  const searchRef = useRef("");
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
   };
@@ -169,11 +169,10 @@ export default function Sidebar() {
         const data = { name: newProjectValue, clientId: currentClient._id };
         await createProject(data, dispatchCreateProject);
         await getClient(dispatchClientDetails);
-        console.log(createdProject);
       }
-      if (createdProject.status === "Successfully Created Project") {
-        enqueueSnackbar("Successfully Created Project", { varinat: "success" });
-      } else enqueueSnackbar(createdProject.error, "info");
+      searchRef.current.value = "";
+
+      enqueueSnackbar("Successfully Created Project", { varinat: "success" });
     } catch (error) {
       console.log(error);
       if (currentClient === null || "") {
@@ -290,6 +289,7 @@ export default function Sidebar() {
             style={{ width: "100%" }}
           >
             <TextField
+              inputRef={searchRef}
               onChange={(e) => setnewProjectValue(e.target.value)}
               required
               fullWidth

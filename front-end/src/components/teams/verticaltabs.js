@@ -16,6 +16,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SearchBar from "../SearchBar";
 import { getFullName } from "src/_helpers/getFullName";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
+import { useSnackbar } from "notistack";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -77,6 +78,8 @@ export default function VerticalTabs() {
 
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -166,8 +169,10 @@ export default function VerticalTabs() {
       await createTeam({ name: newTeam }, dispatchTeam);
       await getTeam(dispatchgetTeam);
       newTeamRef.current.value = "";
+      enqueueSnackbar("Team created", { variant: "success" });
     } catch (err) {
-      console.log(err.message);
+      enqueueSnackbar(err.message, { variant: "info" });
+      console.log(err);
     }
   };
 
@@ -189,8 +194,10 @@ export default function VerticalTabs() {
       );
       await getTeam(dispatchgetTeam);
       addMemberRef.current.value = "";
+      enqueueSnackbar("Member added", { variant: "success" });
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
   };
 
