@@ -263,7 +263,7 @@ export default function Header(props) {
           flexGrow: "1",
           overflowX: "hidden",
           overflowY: "auto",
-          margin: "10px 10px 10px 0",
+          m: 1,
         }}
       >
         {/* grid container 40 60 */}
@@ -332,7 +332,7 @@ export default function Header(props) {
                 // variant="h4"
                 sx={{
                   textAlign: "center",
-                  color: "red",
+                  color: "primary.darker",
                   fontSize: "25px",
                   width: 150,
                   mt: 2,
