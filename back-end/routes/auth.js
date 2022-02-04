@@ -17,6 +17,6 @@ router
 
 router.route("/login").post(login);
 
-router.route("/commondata").get(authPass, commondata);
+router.route("/commondata").post(authPass, commondata);
 
 export default router;

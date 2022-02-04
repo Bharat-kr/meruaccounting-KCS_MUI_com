@@ -1,6 +1,12 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useRef, useEffect, useState } from "react";
-import { Paper, Autocomplete, Typography, Button } from "@mui/material";
+import {
+  Paper,
+  Autocomplete,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -10,6 +16,7 @@ import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
 import Header from "./Header";
 import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -31,7 +38,7 @@ export default function Sidebar() {
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
-  const [defaultTextValue, setDefaultTextValue] = useState("");
+  const [loaderAddClient, setLoaderAddClient] = useState(false);
   const [selected, setSelected] = React.useState([]);
   const inputRef = useRef("");
   const autocomRef = useRef("");
@@ -111,6 +118,7 @@ export default function Sidebar() {
   // add client in submit
   // not working properly , add proper validation Dr. Kamal Singh
   const handleSubmit = async (e) => {
+    setLoaderAddClient(true);
     try {
       e.preventDefault();
       // if (
@@ -125,6 +133,7 @@ export default function Sidebar() {
       if (newClientValue !== "") {
         await addClient(newClientValue, dispatchAddClient);
         await getClient(dispatchClientDetails);
+
         changeClient(() =>
           clientDetails.client.data.filter((cli) =>
             cli.name === newClientValue ? cli : ""
@@ -135,9 +144,12 @@ export default function Sidebar() {
       } else {
         setnewClientError(true);
       }
+      setLoaderAddClient(false);
       enqueueSnackbar("Client added ", { variant: "success" });
     } catch (err) {
       console.log(err);
+      setLoaderAddClient(false);
+
       enqueueSnackbar(err.message, { variant: "info" });
     }
   };
@@ -188,55 +200,70 @@ export default function Sidebar() {
           />
         </Box>
 
-        {/* clients list flex container */}
-        <Box
-          ref={sidebarref}
-          component="div"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: "1",
-            alignItems: "flex-start",
-            overflowY: "auto",
-          }}
-        >
-          <TreeView
-            fullWidth
-            // className={classes.root}
+        {clientDetails.loader && (
+          <Box
             sx={{
-              height: 240,
-              flexGrow: 1,
-              // maxWidth: 400,
-              overflowY: "auto",
-              width: "100%",
+              display: "flex",
+              flexGrow: "1",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            selected={selected}
-            onNodeSelect={handleSelect}
           >
-            {clientsList?.map((client) => (
-              <TreeItem
-                ref={clientref}
-                onClick={handleClick}
-                nodeId={client._id}
-                className={classes.treeItem}
-                label={
-                  // <Typography className={classes.treeItem} variant="h6">
-                  //   {client.name}
-                  // </Typography>
-                  <Typography
-                    sx={{
-                      color: "#637381",
-                      fontSize: "1.5rem",
-                      fontWeight: "700",
-                    }}
-                  >
-                    {client.name}
-                  </Typography>
-                }
-              ></TreeItem>
-            ))}
-          </TreeView>
-        </Box>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {/* clients list flex container */}
+        {!clientDetails.loader && (
+          <Box
+            ref={sidebarref}
+            component="div"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: "1",
+              alignItems: "flex-start",
+              overflowY: "auto",
+            }}
+          >
+            <TreeView
+              fullWidth
+              // className={classes.root}
+              sx={{
+                height: 240,
+                flexGrow: 1,
+                // maxWidth: 400,
+                overflowY: "auto",
+                width: "100%",
+              }}
+              selected={selected}
+              onNodeSelect={handleSelect}
+            >
+              {clientsList?.map((client) => (
+                <TreeItem
+                  ref={clientref}
+                  onClick={handleClick}
+                  nodeId={client._id}
+                  className={classes.treeItem}
+                  label={
+                    // <Typography className={classes.treeItem} variant="h6">
+                    //   {client.name}
+                    // </Typography>
+                    <Typography
+                      sx={{
+                        color: "#637381",
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {client.name}
+                    </Typography>
+                  }
+                ></TreeItem>
+              ))}
+            </TreeView>
+          </Box>
+        )}
 
         {/* INPUT BOX, add validations, connect to context */}
         <Box
@@ -260,9 +287,16 @@ export default function Sidebar() {
               label="Add new client"
               error={newClientError}
             />
-            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
+            <LoadingButton
+              fullWidth
+              type="submit"
+              loading={loaderAddClient}
+              loadingPosition="end"
+              variant="contained"
+              sx={{ mt: 1 }}
+            >
               Add Client
-            </Button>
+            </LoadingButton>
           </form>
         </Box>
       </Paper>

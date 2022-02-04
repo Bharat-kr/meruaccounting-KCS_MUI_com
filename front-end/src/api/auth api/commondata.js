@@ -10,7 +10,7 @@ import {
 
 export const getCommonData = async (dispatch) => {
   try {
-    const { data } = await axios.get(`/commondata`);
+    const { data } = await axios.post(`/commondata`);
     dispatch({
       type: GET_COMMONDATA_SUCCESS,
       payload: data,
@@ -33,7 +33,7 @@ export const deleteSs = async (incomingData, dispatch) => {
       data: [...incomingData],
     });
     console.log(data);
-    const newCd = await axios.get(`/commondata`);
+    const newCd = await axios.post(`/commondata`);
     dispatch({
       type: DELETE_SS_SUCCESS,
       payload: newCd.data,
@@ -54,7 +54,7 @@ export const deleteAct = async (activityId, incomingDate, dispatch) => {
       data: { activityId, incomingDate },
     });
     console.log(data);
-    const newCd = await axios.get(`/commondata`);
+    const newCd = await axios.post(`/commondata`);
     dispatch({
       type: DELETE_ACT_SUCCESS,
       payload: newCd.data,

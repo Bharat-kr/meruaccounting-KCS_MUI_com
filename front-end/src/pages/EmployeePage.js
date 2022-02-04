@@ -40,8 +40,8 @@ export default function UserPage() {
     console.log(commonData);
     if (commonData.loader === false) {
       setactivities(
-        commonData.commonData.data.days
-          .filter((day) => day.date === date)[0]
+        commonData.commonData.user?.days
+          ?.filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
           })
@@ -56,12 +56,12 @@ export default function UserPage() {
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>
         <PageHeader
           title={getFullName(
-            commonData?.commonData?.data?.firstName,
-            commonData?.commonData?.data?.lastName
+            commonData?.commonData?.user?.firstName,
+            commonData?.commonData?.user?.lastName
           )}
         />
         <Calendar
-          days={commonData?.commonData?.data?.days}
+          days={commonData?.commonData?.user?.days}
           setDate={(date) =>
             setdate((prev) => {
               console.log(date);
@@ -69,7 +69,7 @@ export default function UserPage() {
             })
           }
         />
-        <Overview date={date} days={commonData?.commonData?.data?.days} />
+        <Overview date={date} days={commonData?.commonData?.user?.days} />
         <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>

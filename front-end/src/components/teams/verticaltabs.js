@@ -2,14 +2,14 @@ import * as React from "react";
 import { useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
-import { Box, Paper, TextField, Button } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import { Box, Paper, TextField, Button, CircularProgress } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Main from "./Main";
 import { teamContext } from "../../contexts/TeamsContext";
 import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
 import Treeview from "../Treeview";
-import { TreeView } from "@mui/lab";
+import { LoadingButton, TreeView } from "@mui/lab";
 import { TreeItem } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -72,6 +72,8 @@ export default function VerticalTabs() {
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
+  const [loaderAddMember, setLoaderAddMember] = React.useState(false);
+  const [loaderAddTeam, setLoaderAddTeam] = React.useState(false);
 
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
   const [newMemberMail, setNewMemberMail] = React.useState("");
@@ -163,15 +165,18 @@ export default function VerticalTabs() {
 
   //Creating New Team
   const handleSubmit = async (e) => {
+    setLoaderAddTeam(true);
     try {
       e.preventDefault();
       console.log(newTeam);
       await createTeam({ name: newTeam }, dispatchTeam);
       await getTeam(dispatchgetTeam);
+      setLoaderAddTeam(false);
       newTeamRef.current.value = "";
       enqueueSnackbar("Team created", { variant: "success" });
     } catch (err) {
       enqueueSnackbar(err.message, { variant: "info" });
+      setLoaderAddTeam(false);
       console.log(err);
     }
   };
@@ -186,6 +191,7 @@ export default function VerticalTabs() {
 
   //Add Member to a Team
   const AddMember = async (e) => {
+    setLoaderAddMember(true);
     try {
       e.preventDefault();
       await updateMember(
@@ -193,10 +199,12 @@ export default function VerticalTabs() {
         dispatchUpdateMember
       );
       await getTeam(dispatchgetTeam);
+      setLoaderAddMember(false);
       addMemberRef.current.value = "";
       enqueueSnackbar("Member added", { variant: "success" });
     } catch (err) {
       console.log(err);
+      setLoaderAddMember(false);
       enqueueSnackbar(err.message, { variant: "info" });
     }
   };
@@ -283,86 +291,102 @@ export default function VerticalTabs() {
                   // error={newClientError}
                   sx={{}}
                 />
-                <Button
+                <LoadingButton
                   fullWidth
                   type="submit"
+                  loading={loaderAddTeam}
+                  loadingPosition="end"
                   variant="contained"
                   sx={{ mt: 1 }}
                 >
-                  Submit
-                </Button>
+                  Add Team
+                </LoadingButton>
               </form>
             </FloatingForm>
           </Box>
           {/* teams and members tree view flex container */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              flexGrow: "1",
-              alignItems: "flex-start",
-              overflowY: "auto",
-            }}
-          >
-            <TreeView
-              aria-label="file system navigator"
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
+          {getTeams.loader && (
+            <Box
               sx={{
-                height: 240,
-                flexGrow: 1,
-                // maxWidth: 400,
-                overflowY: "auto",
-                width: "100%",
+                display: "flex",
+                flexGrow: "1",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
-              onNodeSelect={handleSelect}
             >
-              {getTeams?.getTeam?.map((el) => (
-                <TreeItem
-                  nodeId={el._id.toString()}
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#637381",
-                        fontSize: "1.5rem",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {el.name}
-                    </Typography>
-                  }
-                  key={el.name}
-                  onClick={changeCurrTeam}
-                >
-                  {el.members.map((member) => {
-                    return (
-                      <TreeItem
-                        nodeId={member._id.toString() + el._id.toString()}
-                        key={member._id}
-                        label={
-                          <Typography
-                            sx={{
-                              color: "#2a3641",
-                              fontSize: "1.2rem",
-                              fontWeight: "700",
-                            }}
-                            data-client={el.name}
-                            onClick={handleClick}
-                            id={member._id}
-                          >
-                            {getFullName(member.firstName, member.lastName)}
-                          </Typography>
-                        }
-                      />
-                    );
-                  })}
-                </TreeItem>
-              ))}
-            </TreeView>
-          </Box>
+              <CircularProgress />
+            </Box>
+          )}
+          {!getTeams.loader && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: "1",
+                alignItems: "flex-start",
+                overflowY: "auto",
+              }}
+            >
+              <TreeView
+                aria-label="file system navigator"
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+                sx={{
+                  height: 240,
+                  flexGrow: 1,
+                  // maxWidth: 400,
+                  overflowY: "auto",
+                  width: "100%",
+                }}
+                expanded={expanded}
+                selected={selected}
+                onNodeToggle={handleToggle}
+                onNodeSelect={handleSelect}
+              >
+                {getTeams?.getTeam?.map((el) => (
+                  <TreeItem
+                    nodeId={el._id.toString()}
+                    label={
+                      <Typography
+                        sx={{
+                          color: "#637381",
+                          fontSize: "1.5rem",
+                          fontWeight: "700",
+                        }}
+                      >
+                        {el.name}
+                      </Typography>
+                    }
+                    key={el.name}
+                    onClick={changeCurrTeam}
+                  >
+                    {el.members.map((member) => {
+                      return (
+                        <TreeItem
+                          nodeId={member._id.toString() + el._id.toString()}
+                          key={member._id}
+                          label={
+                            <Typography
+                              sx={{
+                                color: "#2a3641",
+                                fontSize: "1.2rem",
+                                fontWeight: "700",
+                              }}
+                              data-client={el.name}
+                              onClick={handleClick}
+                              id={member._id}
+                            >
+                              {getFullName(member.firstName, member.lastName)}
+                            </Typography>
+                          }
+                        />
+                      );
+                    })}
+                  </TreeItem>
+                ))}
+              </TreeView>
+            </Box>
+          )}
           {/* INPUT BOX, add validations, connect to context */}
           <Box
             sx={{
@@ -386,15 +410,16 @@ export default function VerticalTabs() {
                 // error={newClientError}
                 sx={{}}
               />
-
-              <Button
+              <LoadingButton
                 fullWidth
                 type="submit"
+                loading={loaderAddMember}
+                loadingPosition="end"
                 variant="contained"
                 sx={{ mt: 1 }}
               >
-                Submit
-              </Button>
+                Add Member
+              </LoadingButton>
             </form>
           </Box>
         </Paper>

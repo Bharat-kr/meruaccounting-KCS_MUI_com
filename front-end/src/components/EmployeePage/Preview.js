@@ -46,7 +46,7 @@ export default function Preview(props) {
               mb: 0,
               mt: -2,
               ml: -1.5,
-              background: "#c8facd69",
+              background: "#A5B9D9",
               maxHeight: "50px",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -111,7 +111,7 @@ export default function Preview(props) {
             pt: 0,
             mb: -3,
             ml: -1.5,
-            background: "#c8facd69",
+            background: "#A5B9D9",
           }}
         >
           <Typography color="text.primary" gutterBottom variant="subtitle2">

@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { Paper, Typography, Button } from "@mui/material";
-import { TreeItem, TreeView } from "@mui/lab";
+import { Paper, Typography, Button, CircularProgress } from "@mui/material";
+import { LoadingButton, TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { makeStyles } from "@mui/styles";
@@ -47,6 +47,7 @@ export default function Sidebar() {
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [loaderAddProject, setLoaderAddProject] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const searchRef = useRef("");
   const handleToggle = (event, nodeIds) => {
@@ -158,6 +159,7 @@ export default function Sidebar() {
   };
   // add client in submit
   const handleSubmit = async (e) => {
+    setLoaderAddProject(true);
     try {
       e.preventDefault();
       setOpen(true);
@@ -171,13 +173,14 @@ export default function Sidebar() {
         await getClient(dispatchClientDetails);
       }
       searchRef.current.value = "";
-
+      setLoaderAddProject(false);
       enqueueSnackbar("Successfully Created Project", { varinat: "success" });
     } catch (error) {
       console.log(error);
       if (currentClient === null || "") {
         enqueueSnackbar("Choose A client", { varinat: "info" });
       } else enqueueSnackbar(error.message, { varinat: "warning" });
+      setLoaderAddProject(false);
     }
   };
 
@@ -215,81 +218,95 @@ export default function Sidebar() {
             options={projectList}
           />
         </Box>
+        {clientDetails.loader && (
+          <Box
+            sx={{
+              display: "flex",
+              flexGrow: "1",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
 
         {/* clients and project tree view flex container */}
-        <Box
-          component="div"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: "1",
-            alignItems: "flex-start",
-            overflowY: "auto",
-          }}
-        >
-          <TreeView
-            aria-label="file system navigator"
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
+        {!clientDetails.loader && (
+          <Box
+            component="div"
             sx={{
-              height: 240,
-              flexGrow: 1,
-              // maxWidth: 400,
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: "1",
+              alignItems: "flex-start",
               overflowY: "auto",
-              width: "100%",
             }}
-            className={classes.root}
-            expanded={expanded}
-            selected={selected}
-            onNodeToggle={handleToggle}
-            onNodeSelect={handleSelect}
           >
-            {clientsList?.length > 0 &&
-              clientsList.map((client) => (
-                <TreeItem
-                  nodeId={client._id.toString()}
-                  label={
-                    <Typography
-                      sx={{
-                        color: "#637381",
-                        fontSize: "1.5rem",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {client.name}
-                    </Typography>
-                  }
-                  key={client._id}
-                  onClick={handleClick}
-                  id={client._id}
-                >
-                  {client.projects.map((project) => {
-                    return (
-                      <TreeItem
-                        nodeId={(project._id + client._id).toString()}
-                        id={project._id}
-                        key={project._id}
-                        label={
-                          <Typography
-                            sx={{
-                              color: "#2a3641",
-                              fontSize: "1.2rem",
-                              fontWeight: "700",
-                            }}
-                            data-client={client.name}
-                            data-project={project.name}
-                            onClick={handleProjectClick}
-                          >
-                            {project.name}
-                          </Typography>
-                        }
-                      />
-                    );
-                  })}
-                </TreeItem>
-              ))}
-          </TreeView>
-        </Box>
+            <TreeView
+              aria-label="file system navigator"
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              sx={{
+                height: 240,
+                flexGrow: 1,
+                // maxWidth: 400,
+                overflowY: "auto",
+                width: "100%",
+              }}
+              className={classes.root}
+              expanded={expanded}
+              selected={selected}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
+            >
+              {clientsList?.length > 0 &&
+                clientsList.map((client) => (
+                  <TreeItem
+                    nodeId={client._id.toString()}
+                    label={
+                      <Typography
+                        sx={{
+                          color: "#637381",
+                          fontSize: "1.5rem",
+                          fontWeight: "700",
+                        }}
+                      >
+                        {client.name}
+                      </Typography>
+                    }
+                    key={client._id}
+                    onClick={handleClick}
+                    id={client._id}
+                  >
+                    {client.projects.map((project) => {
+                      return (
+                        <TreeItem
+                          nodeId={(project._id + client._id).toString()}
+                          id={project._id}
+                          key={project._id}
+                          label={
+                            <Typography
+                              sx={{
+                                color: "#2a3641",
+                                fontSize: "1.2rem",
+                                fontWeight: "700",
+                              }}
+                              data-client={client.name}
+                              data-project={project.name}
+                              onClick={handleProjectClick}
+                            >
+                              {project.name}
+                            </Typography>
+                          }
+                        />
+                      );
+                    })}
+                  </TreeItem>
+                ))}
+            </TreeView>
+          </Box>
+        )}
 
         <Box
           sx={{
@@ -314,9 +331,16 @@ export default function Sidebar() {
               sx={{}}
             />
 
-            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
+            <LoadingButton
+              fullWidth
+              type="submit"
+              loading={loaderAddProject}
+              loadingPosition="end"
+              variant="contained"
+              sx={{ mt: 1 }}
+            >
               Add Project
-            </Button>
+            </LoadingButton>
           </form>
         </Box>
       </Paper>

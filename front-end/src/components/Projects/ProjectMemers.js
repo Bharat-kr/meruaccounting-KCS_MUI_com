@@ -30,6 +30,7 @@ import {
   removeProjectMember,
 } from "../../api/projects api/projects";
 import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, payrate, id) {
   return {
@@ -266,6 +267,7 @@ export default function EnhancedTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
+  const [loaderAddMember, setLoaderAddMember] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const {
     dispatchClientDetails,
@@ -333,14 +335,17 @@ export default function EnhancedTable(props) {
 
   const handleMemberAdded = async (e) => {
     e.preventDefault();
+    setLoaderAddMember(true);
     try {
       const data = [currentProject._id, newMember];
       await addProjectMember(data, dispatchaddProjectMember);
       await getClient(dispatchClientDetails);
+      setLoaderAddMember(false);
       // setRowsPerPage(rows.length + 1);
       enqueueSnackbar("Member added", { variant: "success" });
       // console.log(currentProject);
     } catch (error) {
+      setLoaderAddMember(false);
       enqueueSnackbar(error.message, { variant: "info" });
       console.log(error.message);
     }
@@ -446,14 +451,16 @@ export default function EnhancedTable(props) {
                 // error={newClientError}
                 sx={{}}
               />
-              <Button
+              <LoadingButton
                 fullWidth
                 type="submit"
+                loading={loaderAddMember}
+                loadingPosition="end"
                 variant="contained"
                 sx={{ mt: 1 }}
               >
-                Submit
-              </Button>
+                Add Member
+              </LoadingButton>
             </form>
           </FloatingForm>
         </div>
