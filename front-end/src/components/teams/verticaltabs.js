@@ -240,15 +240,20 @@ export default function VerticalTabs() {
         component="div"
         sx={{
           margin: "10px",
-          height: "70vh",
+          // height: "70vh",
           scrollbar: "auto",
+          flexGrow: "1",
+          display: "flex",
+          flexDirection: "row",
         }}
       >
         <Paper
           component="div"
           elevation={3}
           sx={{
+            overflow: "hidden",
             height: "100%",
+            width: "100%",
             display: "flex",
             flexDirection: "column",
           }}
@@ -293,8 +298,9 @@ export default function VerticalTabs() {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               flexGrow: "1",
+              alignItems: "flex-start",
               overflowY: "auto",
             }}
           >
@@ -303,7 +309,9 @@ export default function VerticalTabs() {
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
               sx={{
+                height: 240,
                 flexGrow: 1,
+                // maxWidth: 400,
                 overflowY: "auto",
                 width: "100%",
               }}
@@ -315,7 +323,17 @@ export default function VerticalTabs() {
               {getTeams?.getTeam?.map((el) => (
                 <TreeItem
                   nodeId={el._id.toString()}
-                  label={<Typography variant="h6">{el.name}</Typography>}
+                  label={
+                    <Typography
+                      sx={{
+                        color: "#637381",
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {el.name}
+                    </Typography>
+                  }
                   key={el.name}
                   onClick={changeCurrTeam}
                 >
@@ -326,10 +344,14 @@ export default function VerticalTabs() {
                         key={member._id}
                         label={
                           <Typography
+                            sx={{
+                              color: "#2a3641",
+                              fontSize: "1.2rem",
+                              fontWeight: "700",
+                            }}
                             data-client={el.name}
                             onClick={handleClick}
                             id={member._id}
-                            variant="body1"
                           >
                             {getFullName(member.firstName, member.lastName)}
                           </Typography>

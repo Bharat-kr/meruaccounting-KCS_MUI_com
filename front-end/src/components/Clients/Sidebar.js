@@ -151,6 +151,7 @@ export default function Sidebar() {
         flexGrow: "1",
         display: "flex",
         flexDirection: "row",
+        scrollbar: "auto",
       }}
     >
       <Paper
@@ -159,6 +160,7 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
+          width: "28.5%",
           display: "flex",
           flexDirection: "column",
           // position: "relative",
@@ -223,11 +225,10 @@ export default function Sidebar() {
                   // </Typography>
                   <Typography
                     sx={{
-                      textAlign: "left",
-                      width: "100%",
-                      fontWeight: "Bold",
+                      color: "#637381",
+                      fontSize: "1.5rem",
+                      fontWeight: "700",
                     }}
-                    variant="h6"
                   >
                     {client.name}
                   </Typography>

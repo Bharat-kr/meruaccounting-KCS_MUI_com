@@ -190,6 +190,7 @@ export default function Sidebar() {
         flexGrow: "1",
         display: "flex",
         flexDirection: "row",
+        scrollbar: "auto",
       }}
     >
       <Paper
@@ -198,6 +199,7 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
+          width: "28.5%",
           display: "flex",
           flexDirection: "column",
           // position: "relative",
@@ -246,7 +248,17 @@ export default function Sidebar() {
               clientsList.map((client) => (
                 <TreeItem
                   nodeId={client._id.toString()}
-                  label={<Typography variant="h6">{client.name}</Typography>}
+                  label={
+                    <Typography
+                      sx={{
+                        color: "#637381",
+                        fontSize: "1.5rem",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {client.name}
+                    </Typography>
+                  }
                   key={client._id}
                   onClick={handleClick}
                   id={client._id}
@@ -259,10 +271,14 @@ export default function Sidebar() {
                         key={project._id}
                         label={
                           <Typography
+                            sx={{
+                              color: "#2a3641",
+                              fontSize: "1.2rem",
+                              fontWeight: "700",
+                            }}
                             data-client={client.name}
                             data-project={project.name}
                             onClick={handleProjectClick}
-                            variant="body1"
                           >
                             {project.name}
                           </Typography>

@@ -158,13 +158,14 @@ export default function Header(props) {
           flexGrow: "1",
           overflowX: "hidden",
           overflowY: "auto",
-          margin: "10px 10px 10px 0",
+          m: 1,
         }}
       >
         <Paper
           component="div"
           elevation={3}
           sx={{
+            zIndex: 1,
             overflow: "visible",
             height: "100%",
             position: "relative",
