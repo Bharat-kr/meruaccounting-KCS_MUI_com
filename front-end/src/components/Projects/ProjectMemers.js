@@ -29,7 +29,7 @@ import {
   addProjectMember,
   removeProjectMember,
 } from "../../api/projects api/projects";
-
+import { useSnackbar } from "notistack";
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, payrate, id) {
   return {
@@ -171,23 +171,31 @@ const EnhancedTableToolbar = (props) => {
     props;
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const { dispatchClientDetails } = useContext(ClientsContext);
+  const { enqueueSnackbar } = useSnackbar();
   const handleMemberDelete = async () => {
-    const deleteList = [];
-    selected.map((select) => {
-      employeesList.filter((emp) =>
-        emp.name === select ? deleteList.push(emp.id) : ""
-      );
-    });
+    try {
+      const deleteList = [];
+      selected.map((select) => {
+        employeesList.filter((emp) =>
+          emp.name === select ? deleteList.push(emp.id) : ""
+        );
+      });
 
-    // React.useEffect(() => {
-    //   setRowsPerPage(rows.length);
-    // }, [rows.length, currentProject, currentClient]);
-    for (let i = 0; i < deleteList.length; i++) {
-      let data = [currentProject._id, deleteList[i]];
-      await removeProjectMember(data, dispatchremoveProjectMember);
+      // React.useEffect(() => {
+      //   setRowsPerPage(rows.length);
+      // }, [rows.length, currentProject, currentClient]);
+      for (let i = 0; i < deleteList.length; i++) {
+        let data = [currentProject._id, deleteList[i]];
+        await removeProjectMember(data, dispatchremoveProjectMember);
+      }
+      await getClient(dispatchClientDetails);
+
+      setSeleceted([]);
+      enqueueSnackbar("Member deleted", { variant: "success" });
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar(error.message, { variant: "info" });
     }
-    await getClient(dispatchClientDetails);
-    setSeleceted([]);
   };
   return (
     <>
@@ -258,6 +266,7 @@ export default function EnhancedTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
   const {
     dispatchClientDetails,
     clientDetails,
@@ -329,9 +338,10 @@ export default function EnhancedTable(props) {
       await addProjectMember(data, dispatchaddProjectMember);
       await getClient(dispatchClientDetails);
       // setRowsPerPage(rows.length + 1);
-
+      enqueueSnackbar("Member added", { variant: "success" });
       // console.log(currentProject);
     } catch (error) {
+      enqueueSnackbar(error.message, { variant: "info" });
       console.log(error.message);
     }
   };
@@ -416,7 +426,7 @@ export default function EnhancedTable(props) {
             alignItems: "center",
           }}
         >
-          <Typography variant="h5" sx={{ pt: 1 }}>
+          <Typography variant="h5" sx={{ pt: 1, ml: 1 }}>
             Project Members
           </Typography>
           <FloatingForm toolTip="Add Member" color="primary" icon={<AddIcon />}>

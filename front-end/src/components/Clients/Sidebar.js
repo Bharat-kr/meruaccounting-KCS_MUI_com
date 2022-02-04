@@ -9,6 +9,7 @@ import TreeItem from "@mui/lab/TreeItem";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
 import Header from "./Header";
+import { useSnackbar } from "notistack";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -36,6 +37,7 @@ export default function Sidebar() {
   const autocomRef = useRef("");
   const sidebarref = useRef("");
   const clientref = useRef("");
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
@@ -133,8 +135,10 @@ export default function Sidebar() {
       } else {
         setnewClientError(true);
       }
+      enqueueSnackbar("Client added ", { variant: "success" });
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
   };
 

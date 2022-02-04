@@ -13,6 +13,7 @@ import {
 } from "../../api/clients api/clients";
 import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -40,6 +41,8 @@ export default function Header(props) {
   const [clientName, setClientName] = useState("");
   const outerref = useRef();
   const inputRef = useRef();
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
@@ -81,9 +84,11 @@ export default function Header(props) {
         const data = [currentClient._id, { name: clientName }];
         await editClient(data, dispatchEditClient);
         await getClient(dispatchClientDetails);
+        enqueueSnackbar("Client edited", { variant: "success" });
       }
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
   };
 
@@ -103,9 +108,10 @@ export default function Header(props) {
       } else {
         changeClient(clientsList[clientIndex + 1]);
       }
-      console.log(currentClient);
+      enqueueSnackbar("Client removed ", { variant: "success" });
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
   };
   const createdOn = moment(currentClient?.createdAt).format("DD-MM-YYYY");

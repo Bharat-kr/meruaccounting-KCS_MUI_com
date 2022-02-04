@@ -67,9 +67,8 @@ export default function Header(props) {
   } = useContext(projectContext);
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
-  const [budgetTime, setbudgetTime] = useState(
-    ` ${currentProject?.budgetTime ? currentProject.budgetTime : 0}`
-  );
+  const [budgetTime, setbudgetTime] = useState();
+  const [consumedTime, setconsumedTime] = useState();
   const outerref = useRef();
   const proInputRef = useRef("");
   const { enqueueSnackbar } = useSnackbar();
@@ -94,6 +93,7 @@ export default function Header(props) {
       await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
     }
   }, [clientDetails]);
+  console.log(currentProject);
   useEffect(() => {
     try {
       currentProject
@@ -104,6 +104,9 @@ export default function Header(props) {
             `${currentProject?.projectLeader?.firstName} ${currentProject?.projectLeader?.lastName}`
           )
         : setProjectLeader("No leader");
+      setbudgetTime(currentProject?.budgetTime);
+      setconsumedTime(currentProject?.consumeTime);
+      proInputRef.current.value = "";
     } catch (err) {
       console.log(err);
     }
@@ -131,10 +134,10 @@ export default function Header(props) {
       );
       const data = [currentProject._id, emp[0].email];
       await addProjectLeader(data, dispatchaddProjectLeader);
-      await getClient(dispatchClientDetails);
       const employee = memberList.filter((emp) => (emp === value ? emp : ""));
       setProjectLeader(employee);
       proInputRef.current.value = "";
+      console.log(proInputRef.current);
 
       enqueueSnackbar("Project Leader changed", { variant: "success" });
     } catch (error) {
@@ -199,18 +202,16 @@ export default function Header(props) {
       enqueueSnackbar(err.message, { variant: "warning" });
     }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-  console.log(currentProject);
-  const handleSave = async (e) => {
+  const handleConsumeSave = () => {};
+  const handleSave = async (v) => {
+    console.log(v);
     try {
       await editProject(
         currentProject._id,
-        { budgetTime: budgetTime },
+        { budgetTime: v },
         dispatchEditProject
       );
+      setbudgetTime(v);
       await getClient(dispatchClientDetails);
       // changeProject(curr);
       enqueueSnackbar("Budget time changed", { variant: "success" });
@@ -342,32 +343,59 @@ export default function Header(props) {
               </Paper>
 
               <SearchBar
+                inputRef={proInputRef}
                 label="Assign Project Leader"
                 handleSearch={handleSearch}
                 id="combo-box-demo"
                 options={memberList}
                 sx={{ width: 100 }}
-                renderInput={(params) => (
-                  <TextField
-                    inputRef={proInputRef}
-                    {...params}
-                    label="Select New Team Leader"
-                    // defaultValue={ProjectLeader}
-                  />
-                )}
               />
             </div>
             <hr />
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Paper elevation={1} sx={{ pt: 1 }}>
-                <Typography variant="h6" sx={{ pt: 3, m: 1 }}>
-                  Total Project Hours : <Link>150hr</Link>
-                </Typography>
-                <Typography variant="h6" sx={{ pt: 1, m: 1 }}>
-                  Total Internal Hours : <Link>30hr</Link>
-                </Typography>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "2rem",
+              }}
+            >
+              <Paper sx={{ pt: 1 }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ ml: 1, display: "flex", alignItems: "center" }}
+                  >
+                    Total Project Hours :
+                  </Typography>
+                  <Typography sx={{ ml: 1 }}>
+                    <EdiText
+                      sx={{ display: "flex", alignItems: "center", pl: 1 }}
+                      type="number"
+                      value={consumedTime}
+                      onCancel={(v) => console.log("CANCELLED: ", v)}
+                      onSave={(v) => handleConsumeSave(v)}
+                    />
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography variant="h6" sx={{ pt: 1, ml: 1 }}>
+                    Total Internal Hours :
+                  </Typography>
+                  <Typography
+                    sx={{ display: "flex", alignItems: "center", mr: 6, pt: 1 }}
+                  >
+                    {currentProject?.internalHours
+                      ? currentProject?.internalHours
+                      : 0}
+                  </Typography>
+                </Box>
               </Paper>
-              <Paper sx={{ pt: 0.9 }}>
+              <Paper>
                 <Typography
                   variant="h6"
                   sx={{ display: "flex", flexDirection: "row", pt: 3 }}
@@ -381,47 +409,21 @@ export default function Header(props) {
                   >
                     BudgetHours :{" "}
                   </Typography>
-                  <EdiText
-                    onChange={(e) => setbudgetTime(e.target.value)}
-                    sx={{ display: "flex", alignItems: "center", pl: 1 }}
-                    type="number"
-                    value={budgetTime}
-                    onCancel={(v) => console.log("CANCELLED: ", v)}
-                    onSave={handleSave}
-                  />
+                  <Typography sx={{ ml: 1 }}>
+                    <EdiText
+                      sx={{ display: "flex", alignItems: "center", pl: 1 }}
+                      type="number"
+                      value={budgetTime}
+                      onCancel={(v) => console.log("CANCELLED: ", v)}
+                      onSave={(v) => handleSave(v)}
+                    />
+                  </Typography>
                 </Typography>
               </Paper>
             </div>
 
             <Paper elevation={2} sx={{ pt: 1 }}>
               <hr />
-              <Box
-                sx={{
-                  display: "flex ",
-                  justifyContent: "space-between",
-                  pt: 2,
-                  pb: 2,
-                }}
-              >
-                {/* <div
-                  style={{
-                    display: "inherit",
-                    width: "300px",
-                    alignItems: "center",
-                  }}
-                >
-                  <SearchBar
-                    label="Search Project Member"
-                    handleSearch={handleSearch}
-                    // ref={memberref}
-                    id="combo-box-demo"
-                    options={memberList}
-                    //   renderInput={(params) => (
-                    //     <TextField {...params} label="Search Project members" />
-                    //   )}
-                  />
-                </div> */}
-              </Box>
 
               <EnhancedTable
                 clientsList={clientsList}
