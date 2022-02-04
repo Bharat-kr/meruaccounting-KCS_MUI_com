@@ -10,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
 import SearchBar from "../SearchBar";
-import { getClientProjects, getClient } from "../../api/clients api/clients";
+import { getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
 import Header from "./Header";
 import Snackbars from "../../_helpers/snackBar";
