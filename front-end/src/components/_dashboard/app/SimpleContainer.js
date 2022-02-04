@@ -9,6 +9,11 @@ import { useContext, useEffect, useState } from "react";
 import { teamContext } from "../../../contexts/TeamsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { getTeam } from "../../../api/teams api/teams";
+import {
+  getCommonData,
+  getCommonDataById,
+} from "../../../api/auth api/commondata";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
 //----------------------------------------------------------------------------------------
 export default function SimpleContainer() {
@@ -17,15 +22,22 @@ export default function SimpleContainer() {
 
   const [teamsList, setTeamsList] = useState([]);
   const [searchedMember, setSearchedMember] = useState(0);
+  const [memberCommonData, setMemberCommonData] = useState();
   const getTeamsLoader = getTeams.loader;
   const tableListRef = React.useRef();
+
+  const {
+    commonData,
+    dispatchCommonData,
+    employeeCommonData,
+    dispatchEmployeeCommonData,
+  } = useContext(CurrentUserContext);
 
   useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
 
   // useState hook for rerender component
-  console.log(getTeams);
   useEffect(() => {
     const data = [];
     let test = -1;
@@ -52,6 +64,18 @@ export default function SimpleContainer() {
     });
     setTeamsList(data);
   }, [getTeams]);
+  const commonDatafunc = async () => {
+    const data = [];
+    for (let i = 0; i < teamsList.length; i++) {
+      data.push(employeeCommonData);
+      await getCommonDataById(teamsList[i].id, dispatchEmployeeCommonData);
+      console.log(employeeCommonData);
+    }
+    // console.log(data);
+  };
+  useEffect(() => {
+    commonDatafunc();
+  }, []);
 
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>
@@ -65,10 +89,11 @@ export default function SimpleContainer() {
     // console.log(tableListRef);
     // console.log(tableListRef.current.scrollHeight*teamsList.indexOf(member[0]) );
     window.scroll({
-      top: 250 + tableListRef.current.scrollHeight*teamsList.indexOf(member[0]),
-      behavior: 'smooth'
+      top:
+        250 + tableListRef.current.scrollHeight * teamsList.indexOf(member[0]),
+      behavior: "smooth",
     });
-  
+
     return setSearchedMember(teamsList.indexOf(member[0]));
   };
 
@@ -104,7 +129,8 @@ export default function SimpleContainer() {
                 sx={{
                   width: 300,
                   height: 20,
-                  p: 1,
+                  pb: 3,
+                  mb: 2,
                 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Search Employee" />

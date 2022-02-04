@@ -41,12 +41,16 @@ function dispdata(data) {
   );
 }
 
-export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}) {
+export default function ApiRefRowsGrid({
+  teamsList,
+  getTeamsLoader,
+  tableListRef,
+}) {
   return getTeamsLoader ? (
     <CircularProgress />
   ) : (
-    <div style={{ height: "auto", width: "100%" }}> 
-      <TableContainer component={Paper} >
+    <div style={{ height: "auto", width: "100%" }}>
+      <TableContainer component={Paper}>
         <Table sx={{ maxHeight: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -58,7 +62,7 @@ export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}
               <StyledTableCell align="right">This Month</StyledTableCell>
             </TableRow>
             <TableRow>
-              <StyledTableCell>2 out of 4 worked Today</StyledTableCell>
+              {/* <StyledTableCell>2 out of 4 worked Today</StyledTableCell> */}
               <StyledTableCell align="right"> </StyledTableCell>
               <StyledTableCell align="right"></StyledTableCell>
               <StyledTableCell align="right"></StyledTableCell>
@@ -66,17 +70,19 @@ export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}
               <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
-          <TableBody >
+          <TableBody>
             {teamsList.map((member) => (
               <StyledTableRow key={member.id} ref={tableListRef}>
                 <StyledTableCell component="th" scope="row">
                   <RouterLink
                     to={`/dashboard/employeepage/${member.id}`}
-                    style={{ textDecoration: "none", color: "primary.main" }}
+                    style={{
+                      textDecoration: "none",
+                      color: "primary.main",
+                      fontWeight: "bold",
+                    }}
                   >
-                    <Typography vairant="subtitle3">
-                      {member.Employee}
-                    </Typography>
+                    <Typography vairant="h6">{member.Employee}</Typography>
                   </RouterLink>
 
                   {/* <div>project placeholder</div> */}
