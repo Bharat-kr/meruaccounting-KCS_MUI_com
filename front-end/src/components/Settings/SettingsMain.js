@@ -15,6 +15,7 @@ import {
   MenuItem,
   Select,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
@@ -543,7 +544,7 @@ export default function SettingsMain(props) {
         >
           <Typography variant="h3">{convertString(heading)}</Typography>
           <Divider />
-          <Box sx={{ height: "auto", width: "100%", bgcolor: "#bdf2bf", p: 1 }}>
+          <Box sx={{ height: "auto", width: "100%", bgcolor: "#C8DCFD", p: 1 }}>
             {subheading}
           </Box>
           <Box sx={{ mt: 3 }}>
@@ -562,6 +563,18 @@ export default function SettingsMain(props) {
                 sx={{ width: 300, mt: 4 }}
                 renderInput={(params) => <TextField {...params} label="User" />}
               />
+              {getTeams.loader && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexGrow: "1",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
               {teamsList.map((user) => (
                 <FormGroup row sx={{ pt: 2 }}>
                   <FormControlLabel

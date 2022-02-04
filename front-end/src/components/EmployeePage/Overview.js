@@ -62,30 +62,39 @@ export default function Overview({ date, days }) {
         }}
       >
         <AppItemOrders Total={(todaysHours / (60 * 60)).toFixed(2)} />
-        <Weeklyhours Total={
-            commonData?.commonData?.weeklyTime
+        <Weeklyhours
+          Total={
+            commonData?.commonData?.weeklyTime &&
+            commonData?.commonData?.weeklyTime.length > 0
               ? (
                   commonData?.commonData?.weeklyTime[0].totalHours /
                   (60 * 60)
                 ).toFixed(2)
               : 0
-          }/>
-        <Monthlyhours Total={
-            commonData?.commonData?.monthlyTime
+          }
+        />
+        <Monthlyhours
+          Total={
+            commonData?.commonData?.monthlyTime &&
+            commonData?.commonData?.monthlyTime.length > 0
               ? (
                   commonData?.commonData?.monthlyTime[0].totalHours /
                   (60 * 60)
                 ).toFixed(2)
               : 0
-          } />
-        <AppBugReports Total={
-            commonData?.commonData?.totalTime
+          }
+        />
+        <AppBugReports
+          Total={
+            commonData?.commonData?.totalTime &&
+            commonData?.commonData?.totalTime.length > 0
               ? (
                   commonData?.commonData?.totalTime[0].totalHours /
                   (60 * 60)
                 ).toFixed(2)
               : 0
-          }/>
+          }
+        />
       </Box>
       <Box
         sx={{
