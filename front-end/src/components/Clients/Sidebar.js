@@ -16,6 +16,7 @@ import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
 import Header from "./Header";
 import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -37,7 +38,7 @@ export default function Sidebar() {
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
-  const [defaultTextValue, setDefaultTextValue] = useState("");
+  const [loaderAddClient, setLoaderAddClient] = useState(false);
   const [selected, setSelected] = React.useState([]);
   const inputRef = useRef("");
   const autocomRef = useRef("");
@@ -117,6 +118,7 @@ export default function Sidebar() {
   // add client in submit
   // not working properly , add proper validation Dr. Kamal Singh
   const handleSubmit = async (e) => {
+    setLoaderAddClient(true);
     try {
       e.preventDefault();
       // if (
@@ -131,6 +133,7 @@ export default function Sidebar() {
       if (newClientValue !== "") {
         await addClient(newClientValue, dispatchAddClient);
         await getClient(dispatchClientDetails);
+
         changeClient(() =>
           clientDetails.client.data.filter((cli) =>
             cli.name === newClientValue ? cli : ""
@@ -141,9 +144,12 @@ export default function Sidebar() {
       } else {
         setnewClientError(true);
       }
+      setLoaderAddClient(false);
       enqueueSnackbar("Client added ", { variant: "success" });
     } catch (err) {
       console.log(err);
+      setLoaderAddClient(false);
+
       enqueueSnackbar(err.message, { variant: "info" });
     }
   };
@@ -281,9 +287,16 @@ export default function Sidebar() {
               label="Add new client"
               error={newClientError}
             />
-            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
+            <LoadingButton
+              fullWidth
+              type="submit"
+              loading={loaderAddClient}
+              loadingPosition="end"
+              variant="contained"
+              sx={{ mt: 1 }}
+            >
               Add Client
-            </Button>
+            </LoadingButton>
           </form>
         </Box>
       </Paper>

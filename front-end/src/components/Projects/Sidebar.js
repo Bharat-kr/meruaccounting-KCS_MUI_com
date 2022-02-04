@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { Paper, Typography, Button, CircularProgress } from "@mui/material";
-import { TreeItem, TreeView } from "@mui/lab";
+import { LoadingButton, TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { makeStyles } from "@mui/styles";
@@ -47,6 +47,7 @@ export default function Sidebar() {
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [loaderAddProject, setLoaderAddProject] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const searchRef = useRef("");
   const handleToggle = (event, nodeIds) => {
@@ -158,6 +159,7 @@ export default function Sidebar() {
   };
   // add client in submit
   const handleSubmit = async (e) => {
+    setLoaderAddProject(true);
     try {
       e.preventDefault();
       setOpen(true);
@@ -171,13 +173,14 @@ export default function Sidebar() {
         await getClient(dispatchClientDetails);
       }
       searchRef.current.value = "";
-
+      setLoaderAddProject(false);
       enqueueSnackbar("Successfully Created Project", { varinat: "success" });
     } catch (error) {
       console.log(error);
       if (currentClient === null || "") {
         enqueueSnackbar("Choose A client", { varinat: "info" });
       } else enqueueSnackbar(error.message, { varinat: "warning" });
+      setLoaderAddProject(false);
     }
   };
 
@@ -328,9 +331,16 @@ export default function Sidebar() {
               sx={{}}
             />
 
-            <Button fullWidth type="submit" variant="contained" sx={{ mt: 1 }}>
+            <LoadingButton
+              fullWidth
+              type="submit"
+              loading={loaderAddProject}
+              loadingPosition="end"
+              variant="contained"
+              sx={{ mt: 1 }}
+            >
               Add Project
-            </Button>
+            </LoadingButton>
           </form>
         </Box>
       </Paper>
