@@ -83,7 +83,8 @@ const login = asyncHandler(async (req, res) => {
 
 const commondata = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
+    const userId = req.body._id ? req.body._id : req.user._id;
+    const user = await User.findById(userId)
       .select("-password")
       .populate({
         path: "days",

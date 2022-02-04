@@ -66,7 +66,7 @@ export default function Activity({
     <Box
       component="div"
       sx={{
-        backgroundColor: `${isAccepted === true ? "#c8facd" : "#ffe7d9"}`,
+        backgroundColor: `${isAccepted === true ? "#C8DCFD" : "#ffe7d9"}`,
         m: 0.5,
         pt: 1.5,
         pr: 1,

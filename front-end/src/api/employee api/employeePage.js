@@ -10,12 +10,12 @@ import {
 
 export const getCommonData = async (id, dispatch) => {
   try {
-    const { data } = await axios.get(`/employee/${id}`);
+    const { data } = await axios.post("/commondata", { _id: id });
     dispatch({
       type: GET_COMMONDATA_SUCCESS,
       payload: data,
     });
-    console.log("commondata success", data);
+    console.log("employee commondata success", data);
   } catch (err) {
     dispatch({
       type: GET_COMMONDATA_FAILED,
@@ -33,7 +33,7 @@ export const deleteSs = async (incomingData, dispatch, id) => {
       data: [...incomingData],
     });
     console.log(data);
-    const newCd = await axios.get(`/employee/${id}`);
+    const newCd = await axios.post("/commondata", { _id: id });
     dispatch({
       type: DELETE_SS_SUCCESS,
       payload: newCd.data,
@@ -54,7 +54,7 @@ export const deleteAct = async (activityId, incomingDate, dispatch, id) => {
       data: { activityId, incomingDate },
     });
     console.log(data);
-    const newCd = await axios.get(`/employee/${id}`);
+    const newCd = await axios.post("/commondata", { _id: id });
     dispatch({
       type: DELETE_ACT_SUCCESS,
       payload: newCd.data,
