@@ -61,8 +61,8 @@ export default function Main() {
   const [projectOptions, setprojectOptions] = React.useState([]);
   const [clientOptions, setclientOptions] = React.useState([]);
   const [employees, setemployees] = React.useState([]);
-  const [projects, setprojects] = React.useState([]);
-  const [clients, setclients] = React.useState([]);
+  const [projects, setprojects] = React.useState(null);
+  const [clients, setclients] = React.useState(null);
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -72,48 +72,114 @@ export default function Main() {
   //   make select employee options
   console.log(getTeams.getTeam);
   React.useEffect(() => {
-    getTeams.getTeam.map((team) => {
-      team.members.map((member) => {
-        let newOption = {
-          _id: member._id,
-          name: `${member.firstName} ${member.lastName}`,
-        };
-        let index = employeeOptions.findIndex((x) => x._id === member._id);
-        index === -1
-          ? setemployeeOptions((prev) => [...prev, newOption])
-          : console.log("object already exists");
+    let array = [];
+    if (clients) {
+      array = [];
+      clientDetails.client.data.map((client) => {
+        // const found = clients.some((el) => el._id === client._id);
+        const found = clients._id === client._id;
+        if (found) {
+          client.projects.map((project) => {
+            project.employees.map((employee) => {
+              let newOption = {
+                _id: employee._id,
+                name: `${employee.firstName} ${employee.lastName}`,
+              };
+              let exists = array.some((el) => el._id === newOption._id);
+              if (!exists) {
+                array.push(newOption);
+              }
+            });
+          });
+          console.log(array);
+          setemployeeOptions([...array]);
+        } else return;
       });
-    });
-  });
-
-  // this will return a true false value to push it or not
-  // function empPro(newObject) {
-  //   if (employees.length !== 0 || projects.length !== 0) {
-  //     // another if
-  //     if (employees.length !== 0 && projects.length === 0) {
-  //     }
-  //   } else {
-  //     // normal
-  //   }
-  // }
-
-  //   make select project options
-  React.useEffect(() => {
-    if (clientDetails.loader === false) {
+    } else if (projects && !clients) {
       clientDetails.client.data.map((client) => {
         client.projects.map((project) => {
-          let newOption = {
-            _id: project._id,
-            name: project.name,
-          };
-          let index = projectOptions.findIndex((x) => x._id === project._id);
-          index === -1
-            ? setprojectOptions((prev) => [...prev, newOption])
-            : console.log("object already exists");
+          // const found = projects.some((el) => el._id === project._id);
+          const found = projects._id === project._id;
+          if (found) {
+            project.employees.map((employee) => {
+              let newOption = {
+                _id: employee._id,
+                name: `${employee.firstName} ${employee.lastName}`,
+              };
+              let exists = array.some((el) => el._id === newOption._id);
+              if (!exists) {
+                array.push(newOption);
+              }
+            });
+          } else return;
         });
+        console.log(array);
+        setemployeeOptions([...array]);
       });
-    } else return;
-  }, [clientDetails, projects, employees]);
+    } else {
+      console.log("no client selected");
+      getTeams.getTeam.map((team) => {
+        team.members.map((member) => {
+          let newOption = {
+            _id: member._id,
+            name: `${member.firstName} ${member.lastName}`,
+          };
+          let exists = array.some((el) => el._id === newOption._id);
+          if (!exists) {
+            array.push(newOption);
+          }
+        });
+        console.log(array);
+        setemployeeOptions((prev) => [...array]);
+      });
+    }
+  }, [getTeams, clients, projects]);
+
+  console.log(clientDetails.client.data);
+  //   make select project options
+  React.useEffect(() => {
+    let array = [];
+    if (clients) {
+      array = [];
+      console.log("clients selected");
+      clientDetails.client.data.map((client) => {
+        client.projects.map((project) => {
+          // const found = clients.some((el) => el._id === client._id);
+          const found = clients._id === client._id;
+          if (found) {
+            project.employees.map((employee) => {
+              let newOption = {
+                _id: project._id,
+                name: project.name,
+              };
+              let exists = array.some((el) => el._id === newOption._id);
+              if (!exists) {
+                array.push(newOption);
+              }
+            });
+          } else return;
+        });
+        console.log(array);
+        setprojectOptions([...array]);
+      });
+    } else {
+      if (clientDetails.loader === false) {
+        clientDetails.client.data.map((client) => {
+          client.projects.map((project) => {
+            let newOption = {
+              _id: project._id,
+              name: project.name,
+            };
+            let exists = array.some((el) => el._id === newOption._id);
+            if (!exists) {
+              array.push(newOption);
+            }
+          });
+          setprojectOptions((prev) => [...array]);
+        });
+      } else return;
+    }
+  }, [clientDetails, clients, employees]);
 
   //   make select client options
   console.log(clientDetails.client.data);
@@ -124,19 +190,11 @@ export default function Main() {
           _id: client._id,
           name: client.name,
         };
-        // if(employees.length === 0 && projects.length === 0 ){
-        // let index = clientOptions.findIndex((x) => x._id === client._id)
-        //  }
-        // else if(employees.length !== 0 && projects.length === 0 )
-        // else if(employees.length === 0 && projects.length !== 0 )
-        // else
         let index = clientOptions.findIndex((x) => x._id === client._id);
-        index === -1
-          ? setclientOptions((prev) => [...prev, newOption])
-          : console.log("object already exists");
+        if (index === -1) setclientOptions((prev) => [...prev, newOption]);
       });
     } else return;
-  }, [clientDetails, projects, employees, clients]);
+  }, [clientDetails, projects, employees]);
 
   return (
     <Box sx={{ width: "100%" }}>
