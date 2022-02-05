@@ -108,6 +108,7 @@ const generateReportClient = asyncHandler(async (req, res) => {
     let user;
     if (userId) user = await User.findById(userId);
     else user = req.user;
+    console.log(user);
 
     const activity = await Activity.aggregate([
       {

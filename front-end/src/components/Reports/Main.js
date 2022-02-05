@@ -8,6 +8,11 @@ import DatePicker from "./DatePicker";
 import SelectEmployees from "./SelectEmployees";
 import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SendIcon from "@mui/icons-material/Send";
+import Stack from "@mui/material/Stack";
+import axios from "axios";
 
 // contexts and apis
 import { teamContext } from "../../contexts/TeamsContext";
@@ -56,17 +61,31 @@ export default function Main() {
   const { clientDetails } = React.useContext(ClientsContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState([]);
+  const [date, setdate] = React.useState(null);
   const [employeeOptions, setemployeeOptions] = React.useState([]);
   const [projectOptions, setprojectOptions] = React.useState([]);
   const [clientOptions, setclientOptions] = React.useState([]);
-  const [employees, setemployees] = React.useState([]);
+  const [employees, setemployees] = React.useState(null);
   const [projects, setprojects] = React.useState(null);
   const [clients, setclients] = React.useState(null);
 
   // tab panels value
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const handleReportClick = async () => {
+    const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
+    const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
+    const userId = employees ? employees._id : null;
+    const projectId = projects ? projects._id : null;
+    const clientId = clients ? clients._id : null;
+    const options = {
+      clientId,
+      projectId,
+      userId,
+      dateOne,
+      dateTwo,
+    };
   };
 
   //   make select employee options
@@ -234,6 +253,13 @@ export default function Main() {
             setclients(newValue);
           }}
         />
+        <Button
+          onClick={handleReportClick}
+          variant="contained"
+          endIcon={<SendIcon />}
+        >
+          generate Reports
+        </Button>
       </TabPanel>
       <TabPanel value={value} index={1}>
         hello
