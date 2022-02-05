@@ -6,6 +6,7 @@ import {
   deleteEmployee,
   editEmployee,
   getEmployeeList,
+  getEmployeeDetails,
 } from "../controllers/employee.js";
 
 const router = express.Router();
@@ -15,6 +16,8 @@ router.route("/:id").get(getEmployeeById).delete(managerPass, deleteEmployee);
 router.route("/edit/:id").patch(authPass, editEmployee);
 
 router.route("/employeeList").get(authPass, getEmployeeList);
+
+router.route("/employeeInfo/:id").post(getEmployeeDetails);
 
 router
   .route("/:id")
