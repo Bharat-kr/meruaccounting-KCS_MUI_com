@@ -94,6 +94,7 @@ const removeMemberReducer = (state, action) => {
 
 export function TeamsProvider(props) {
   const [getTeams, dispatchgetTeam] = useReducer(getTeamReducer, {
+    loader: true,
     getTeam: [],
   });
   const [teamCreate, dispatchTeam] = useReducer(teamCreateReducer, {

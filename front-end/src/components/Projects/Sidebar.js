@@ -218,7 +218,7 @@ export default function Sidebar() {
             options={projectList}
           />
         </Box>
-        {clientDetails.loader && (
+        {clientDetails?.client?.loader && (
           <Box
             sx={{
               display: "flex",
@@ -232,7 +232,7 @@ export default function Sidebar() {
         )}
 
         {/* clients and project tree view flex container */}
-        {!clientDetails.loader && (
+        {!clientDetails?.loader && (
           <Box
             component="div"
             sx={{

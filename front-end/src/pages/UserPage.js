@@ -42,7 +42,7 @@ export default function UserPage() {
     console.log(commonData);
     if (commonData.loader === false) {
       setactivities(
-        commonData.commonData.user.days
+        commonData?.commonData?.user?.days
           .filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
