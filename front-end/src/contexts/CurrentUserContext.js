@@ -59,45 +59,45 @@ const currentUserReducer = (state, action) => {
   }
 };
 
-const employeeDataReducer = (state, action) => {
-  switch (action.type) {
-    case GET_EMPLOYEEDATA_SUCCESS:
-      return {
-        ...state,
-        loader: false,
-        employeeCommonData: [
-          ...state.employeeCommonData,
-          { ...action.payload },
-        ],
-      };
-    case GET_EMPLOYEEDATA_FAILED:
-      return {
-        ...state,
-        loader: false,
-        err: true,
-      };
-    case EMP_DELETE_SS_SUCCESS:
-      return {
-        ...state,
-        employeeCommonData: action.payload,
-      };
-    case EMP_DELETE_SS_FAILED:
-      return {
-        ...state,
-      };
-    case EMP_DELETE_ACT_SUCCESS:
-      return {
-        ...state,
-        employeeCommonData: action.payload,
-      };
-    case EMP_DELETE_ACT_FAILED:
-      return {
-        ...state,
-      };
-    default:
-      return state;
-  }
-};
+// const employeeDataReducer = (state, action) => {
+//   switch (action.type) {
+//     case GET_EMPLOYEEDATA_SUCCESS:
+//       return {
+//         ...state,
+//         loader: false,
+//         employeeCommonData:
+//           // ...state.employeeCommonData,
+//           // { ...action.payload },
+//           action.payload,
+//       };
+//     case GET_EMPLOYEEDATA_FAILED:
+//       return {
+//         ...state,
+//         loader: false,
+//         err: true,
+//       };
+//     case EMP_DELETE_SS_SUCCESS:
+//       return {
+//         ...state,
+//         employeeCommonData: action.payload,
+//       };
+//     case EMP_DELETE_SS_FAILED:
+//       return {
+//         ...state,
+//       };
+//     case EMP_DELETE_ACT_SUCCESS:
+//       return {
+//         ...state,
+//         employeeCommonData: action.payload,
+//       };
+//     case EMP_DELETE_ACT_FAILED:
+//       return {
+//         ...state,
+//       };
+//     default:
+//       return state;
+//   }
+// };
 
 export const CurrentUserContextProvider = (props) => {
   const [commonData, dispatchCommonData] = useReducer(currentUserReducer, {
@@ -106,14 +106,14 @@ export const CurrentUserContextProvider = (props) => {
     err: false,
   });
 
-  const [employeeCommonData, dispatchEmployeeCommonData] = useReducer(
-    employeeDataReducer,
-    {
-      employeeCommonData: [],
-      loader: true,
-      err: false,
-    }
-  );
+  // const [employeeCommonData, dispatchEmployeeCommonData] = useReducer(
+  //   employeeDataReducer,
+  //   {
+  //     employeeCommonData: [],
+  //     loader: true,
+  //     err: false,
+  //   }
+  // );
 
   return (
     <div>
@@ -121,8 +121,8 @@ export const CurrentUserContextProvider = (props) => {
         value={{
           commonData,
           dispatchCommonData,
-          employeeCommonData,
-          dispatchEmployeeCommonData,
+          // employeeCommonData,
+          // dispatchEmployeeCommonData,
         }}
       >
         {props.children}

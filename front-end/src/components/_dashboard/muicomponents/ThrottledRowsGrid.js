@@ -2,7 +2,7 @@ import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { TableContainer, Chip, CircularProgress } from "@mui/material";
+import { TableContainer, Chip, CircularProgress, Box } from "@mui/material";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
@@ -47,7 +47,16 @@ export default function ApiRefRowsGrid({
   tableListRef,
 }) {
   return getTeamsLoader ? (
-    <CircularProgress />
+    <Box
+      sx={{
+        display: "flex",
+        flexGrow: "1",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <CircularProgress />
+    </Box>
   ) : (
     <div style={{ height: "auto", width: "100%" }}>
       <TableContainer component={Paper}>

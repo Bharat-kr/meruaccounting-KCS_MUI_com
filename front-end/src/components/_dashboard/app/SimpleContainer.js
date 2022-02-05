@@ -11,9 +11,11 @@ import { getFullName } from "src/_helpers/getFullName";
 import { getTeam } from "../../../api/teams api/teams";
 import {
   getCommonData,
-  getCommonDataById,
+  // getCommonDataById,
 } from "../../../api/auth api/commondata";
-import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import { employeesTimeDetails } from "../../../api/employee api/employee";
+import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
+import { employeeContext } from "../../../contexts/EmployeeContext";
 
 //----------------------------------------------------------------------------------------
 export default function SimpleContainer() {
@@ -29,10 +31,11 @@ export default function SimpleContainer() {
   const {
     commonData,
     dispatchCommonData,
-    employeeCommonData,
-    dispatchEmployeeCommonData,
+    // employeeCommonData,
+    // dispatchEmployeeCommonData,
   } = useContext(CurrentUserContext);
 
+  const { employeesData, dispatchEmployeesData } = useContext(employeeContext);
   useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
@@ -66,12 +69,13 @@ export default function SimpleContainer() {
   }, [getTeams]);
   const commonDatafunc = async () => {
     const data = [];
-    for (let i = 0; i < teamsList.length; i++) {
-      data.push(employeeCommonData);
-      await getCommonDataById(teamsList[i].id, dispatchEmployeeCommonData);
-      console.log(employeeCommonData);
-    }
-    // console.log(data);
+    // for (let i = 0; i < teamsList.length; i++) {
+    // data.push(employeesData);
+    // console.log(teamsList[1]);
+    console.log(employeesData);
+    await employeesTimeDetails(teamsList[1]?.id, dispatchEmployeesData);
+    // }
+    console.log(data);
   };
   useEffect(() => {
     commonDatafunc();
@@ -85,9 +89,7 @@ export default function SimpleContainer() {
       // eslint-disable-next-line no-useless-return
       return;
     }
-    // const wea = document.querySelector(`#${member[0].id}`);
-    // console.log(tableListRef);
-    // console.log(tableListRef.current.scrollHeight*teamsList.indexOf(member[0]) );
+
     window.scroll({
       top:
         250 + tableListRef.current.scrollHeight * teamsList.indexOf(member[0]),

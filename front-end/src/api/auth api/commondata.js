@@ -6,12 +6,12 @@ import {
   DELETE_SS_FAILED,
   DELETE_ACT_FAILED,
   DELETE_ACT_SUCCESS,
-  GET_EMPLOYEEDATA_SUCCESS,
-  GET_EMPLOYEEDATA_FAILED,
-  EMP_DELETE_SS_SUCCESS,
-  EMP_DELETE_SS_FAILED,
-  EMP_DELETE_ACT_SUCCESS,
-  EMP_DELETE_ACT_FAILED,
+  // GET_EMPLOYEEDATA_SUCCESS,
+  // GET_EMPLOYEEDATA_FAILED,
+  // EMP_DELETE_SS_SUCCESS,
+  // EMP_DELETE_SS_FAILED,
+  // EMP_DELETE_ACT_SUCCESS,
+  // EMP_DELETE_ACT_FAILED,
 } from "../../constants/CurrentUserConstants";
 
 export const getCommonData = async (dispatch) => {
@@ -33,26 +33,26 @@ export const getCommonData = async (dispatch) => {
   }
 };
 
-export const getCommonDataById = async (id, dispatch) => {
-  try {
-    console.log(id);
-    const { data } = await axios.post(`/commondata`, { _id: id });
-    console.log("commondata success", data);
-    dispatch({
-      type: GET_EMPLOYEEDATA_SUCCESS,
-      payload: data,
-    });
-  } catch (err) {
-    console.log(err);
-    dispatch({
-      type: GET_EMPLOYEEDATA_FAILED,
-      payload:
-        err.response && err.response.data.message
-          ? err.response.data.message
-          : err.message,
-    });
-  }
-};
+// export const getCommonDataById = async (id, dispatch) => {
+//   try {
+//     console.log(id);
+//     const { data } = await axios.post(`/commondata`, { _id: id });
+//     console.log("commondata success", data);
+//     dispatch({
+//       type: GET_EMPLOYEEDATA_SUCCESS,
+//       payload: data,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     dispatch({
+//       type: GET_EMPLOYEEDATA_FAILED,
+//       payload:
+//         err.response && err.response.data.message
+//           ? err.response.data.message
+//           : err.message,
+//     });
+//   }
+// };
 
 export const deleteSs = async (incomingData, dispatch) => {
   try {

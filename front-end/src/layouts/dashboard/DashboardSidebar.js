@@ -86,8 +86,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar
-              src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
-              // src={`https://ssmonitor-backend.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
+              // src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
+              // src={`http://monitor.meruaccounting.com:8000/${commonData?.commonData?.user?.avatar}`}
+              src={`https://ssmonitor-backend.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
               alt="photoURL"
             />
             <Box sx={{ ml: 2 }}>

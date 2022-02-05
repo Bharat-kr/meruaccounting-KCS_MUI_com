@@ -200,7 +200,7 @@ export default function Sidebar() {
           />
         </Box>
 
-        {clientDetails.loader && (
+        {clientDetails?.client?.loader && (
           <Box
             sx={{
               display: "flex",
@@ -214,7 +214,7 @@ export default function Sidebar() {
         )}
 
         {/* clients list flex container */}
-        {!clientDetails.loader && (
+        {!clientDetails?.loader && (
           <Box
             ref={sidebarref}
             component="div"
