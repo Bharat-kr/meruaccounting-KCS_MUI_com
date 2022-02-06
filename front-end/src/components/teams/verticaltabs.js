@@ -305,7 +305,7 @@ export default function VerticalTabs() {
             </FloatingForm>
           </Box>
           {/* teams and members tree view flex container */}
-          {getTeams.loader && (
+          {getTeams?.loader === true ? (
             <Box
               sx={{
                 display: "flex",
@@ -316,8 +316,7 @@ export default function VerticalTabs() {
             >
               <CircularProgress />
             </Box>
-          )}
-          {!getTeams.loader && (
+          ) : (
             <Box
               sx={{
                 display: "flex",
