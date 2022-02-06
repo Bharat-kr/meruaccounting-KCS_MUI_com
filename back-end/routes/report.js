@@ -11,10 +11,10 @@ import { authPass } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(authPass, generateReport);
-router.route("/project").get(authPass, generateReportProject);
-router.route("/client").get(authPass, generateReportClient);
-router.route("/user").get(authPass, generateReportByUser);
-router.route("/:id").get(authPass, generateReportByProjectId);
+router.route("/").post(authPass, generateReport);
+router.route("/project").post(authPass, generateReportProject);
+router.route("/client").post(authPass, generateReportClient);
+router.route("/user").post(authPass, generateReportByUser);
+router.route("/:id").post(authPass, generateReportByProjectId);
 
 export default router;

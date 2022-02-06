@@ -1,6 +1,11 @@
 import express from "express";
 import { authPass } from "../middleware/authMiddleware.js";
-import { register, login, commondata } from "../controllers/auth.js";
+import {
+  register,
+  login,
+  commondata,
+  teamCommondata,
+} from "../controllers/auth.js";
 import { body } from "express-validator";
 
 const router = express.Router();
@@ -18,5 +23,6 @@ router
 router.route("/login").post(login);
 
 router.route("/commondata").post(authPass, commondata);
+router.route("/teamCommondata").post(authPass, teamCommondata);
 
 export default router;

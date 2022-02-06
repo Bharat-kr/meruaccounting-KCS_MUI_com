@@ -254,7 +254,7 @@ const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
     const { projectId } = req.body;
-    console.log(req.body);
+
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
       { $inc: { consumeTime: req.body.newProjectHours } },
@@ -378,6 +378,36 @@ const deleteActivity = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update the last active
+// @route   POST /activity/lastActive
+// @access  Private
+
+const updateLastActive = asyncHandler(async (req, res) => {
+  try {
+    const { _id } = req.user;
+    const { lastActive } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      { _id },
+      { lastActive: lastActive }
+    );
+
+    if (!user) {
+      res.status(404);
+      throw new Error("No such user found");
+    }
+
+    await user.save();
+
+    res.status(202).json({
+      message: "Succesfully edited last active",
+      data: user.lastActive,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
   createActivity,
   createScreenShot,
@@ -385,4 +415,5 @@ export {
   splitActivity,
   deleteScreenshot,
   deleteActivity,
+  updateLastActive,
 };

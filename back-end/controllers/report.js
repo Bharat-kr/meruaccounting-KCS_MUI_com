@@ -33,12 +33,31 @@ const generateReport = asyncHandler(async (req, res) => {
       },
       {
         $group: {
-          _id: user._id,
+          _id: {
+            userId: "$employee",
+            project: "$project",
+          },
+          actCount: { $sum: 1 },
           totalHours: { $sum: "$consumeTime" },
           avgPerformanceData: { $avg: "$performanceData" },
-          docCount: { $sum: 1 },
         },
       },
+      {
+        $group: {
+          _id: "$_id.userId",
+          projects: {
+            $push: {
+              book: "$_id.project",
+              count: "$actCount",
+              totalHours: "$totalHours",
+              avgPerformanceData: "$performanceData",
+            },
+          },
+          count: { $sum: "$bookCount" },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 2 },
     ]);
 
     res.json({
@@ -84,6 +103,7 @@ const generateReportProject = asyncHandler(async (req, res) => {
         },
       },
     ]);
+    activity.populate();
 
     res.json({
       status: "ok",
@@ -108,6 +128,7 @@ const generateReportClient = asyncHandler(async (req, res) => {
     let user;
     if (userId) user = await User.findById(userId);
     else user = req.user;
+    console.log(user);
 
     const activity = await Activity.aggregate([
       {

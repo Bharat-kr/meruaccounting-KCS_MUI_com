@@ -13,6 +13,7 @@ import { ClientsContextProvider } from "./contexts/ClientsContext";
 import { EmployeeProvider } from "./contexts/EmployeeContext";
 import { ProjectsContextProvider } from "./contexts/ProjectsContext";
 import { CurrentUserContextProvider } from "./contexts/CurrentUserContext";
+import { ReportsProvider } from "./contexts/ReportsContext";
 import EmployeePageContextProvider from "./contexts/EmployeePageContext";
 // ----------------------------------------------------------------------
 
@@ -35,15 +36,17 @@ export default function App() {
         <BaseOptionChartStyle />
         <CurrentUserContextProvider>
           <ClientsContextProvider>
-            <ProjectsContextProvider>
-              <EmployeeProvider>
-                <EmployeePageContextProvider>
-                  <TeamsProvider>
-                    <Router />
-                  </TeamsProvider>
-                </EmployeePageContextProvider>
-              </EmployeeProvider>
-            </ProjectsContextProvider>
+            <ReportsProvider>
+              <ProjectsContextProvider>
+                <EmployeeProvider>
+                  <EmployeePageContextProvider>
+                    <TeamsProvider>
+                      <Router />
+                    </TeamsProvider>
+                  </EmployeePageContextProvider>
+                </EmployeeProvider>
+              </ProjectsContextProvider>
+            </ReportsProvider>
           </ClientsContextProvider>
         </CurrentUserContextProvider>
       </ThemeConfig>
