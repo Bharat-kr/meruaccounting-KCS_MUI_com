@@ -8,10 +8,21 @@ import DatePicker from "./DatePicker";
 import SelectEmployees from "./SelectEmployees";
 import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import axios from "axios";
+import Graphs from "./Graphs";
 
 // contexts and apis
 import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
+import { reportsContext } from "../../contexts/ReportsContext";
+import {
+  getReportsByUser,
+  getReportsClient,
+  getReportsProject,
+  getReports,
+} from "../../api/reports api/reports";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -54,13 +65,15 @@ export default function Main() {
   const { getTeams } = React.useContext(teamContext);
   //
   const { clientDetails } = React.useContext(ClientsContext);
+  //
+  const { reports, dispatchGetReports } = React.useContext(reportsContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState([]);
+  const [date, setdate] = React.useState(null);
   const [employeeOptions, setemployeeOptions] = React.useState([]);
   const [projectOptions, setprojectOptions] = React.useState([]);
   const [clientOptions, setclientOptions] = React.useState([]);
-  const [employees, setemployees] = React.useState([]);
+  const [employees, setemployees] = React.useState(null);
   const [projects, setprojects] = React.useState(null);
   const [clients, setclients] = React.useState(null);
 
@@ -68,6 +81,31 @@ export default function Main() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const handleReportClick = async () => {
+    const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
+    const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
+    const userId = employees ? employees._id : null;
+    const projectId = projects ? projects._id : null;
+    const clientId = clients ? clients._id : null;
+    const options = {
+      clientId,
+      projectId,
+      userId,
+      dateOne,
+      dateTwo,
+    };
+    //   getReportsByUser,
+    // getReportsClient,
+    // getReportsProject,
+    // getReports,
+    // dispatchGetReports
+    getReports(dispatchGetReports, options);
+    console.log(reports);
+  };
+
+  React.useEffect(() => {
+    console.log(reports);
+  }, [reports]);
 
   //   make select employee options
   console.log(getTeams.getTeam);
@@ -234,6 +272,17 @@ export default function Main() {
             setclients(newValue);
           }}
         />
+        <Button
+          onClick={handleReportClick}
+          variant="contained"
+          endIcon={<SendIcon />}
+        >
+          generate Reports
+        </Button>
+        {/* {!reports.loader ? <div>hello</div> : null} */}
+        {!reports.loader ? (
+          <Graphs reports={reports} style={{ margin: 10 }}></Graphs>
+        ) : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
         hello

@@ -216,4 +216,131 @@ const commondata = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, register, commondata };
+// @desc    Post team common data
+// @route   POST /teamCommondata
+// @access  Private
+
+const teamCommondata = asyncHandler(async (req, res) => {
+  try {
+    let resArr = [];
+    const userIds = req.body.userIds;
+    console.log(userIds);
+    for (let i = 0; i < userIds.length; i++) {
+      const user = await User.findById(userIds[i]).select(
+        "role firstName lastName payRate lastActive email"
+      );
+      const dailyHours = await Activity.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                employee: { $eq: user._id },
+              },
+              {
+                activityOn: {
+                  $eq: dayjs().format("DD/MM/YYYY"),
+                },
+              },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: user._id,
+            totalHours: { $sum: "$consumeTime" },
+            avgPerformanceData: { $avg: "$performanceData" },
+            docCount: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const weeklyTime = await Activity.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                employee: { $eq: user._id },
+              },
+              {
+                activityOn: {
+                  $gte: dayjs().startOf("week").format("DD/MM/YYYY"),
+                  $lte: dayjs().format("DD/MM/YYYY"),
+                },
+              },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: user._id,
+            totalHours: { $sum: "$consumeTime" },
+            avgPerformanceData: { $avg: "$performanceData" },
+            docCount: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const monthlyTime = await Activity.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                employee: { $eq: user._id },
+              },
+              {
+                activityOn: {
+                  $gte: dayjs().startOf("month").format("DD/MM/YYYY"),
+                  $lte: dayjs().format("DD/MM/YYYY"),
+                },
+              },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: user._id,
+            totalHours: { $sum: "$consumeTime" },
+            avgPerformanceData: { $avg: "$performanceData" },
+            docCount: { $sum: 1 },
+          },
+        },
+      ]);
+
+      const totalTime = await Activity.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                employee: { $eq: user._id },
+              },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: user._id,
+            totalHours: { $sum: "$consumeTime" },
+            avgPerformanceData: { $avg: "$performanceData" },
+            docCount: { $sum: 1 },
+          },
+        },
+      ]);
+
+      if (!user) {
+        res.status(404);
+        throw new Error("No such user found");
+      }
+      let obj = { user, dailyHours, weeklyTime, monthlyTime, totalTime };
+      resArr.push(obj);
+    }
+
+    res.status(200).json({
+      status: "Fetched team common data",
+      data: resArr,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { login, register, commondata, teamCommondata };
