@@ -9,14 +9,20 @@ import SelectEmployees from "./SelectEmployees";
 import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
 import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import Stack from "@mui/material/Stack";
 import axios from "axios";
+import Graphs from "./Graphs";
 
 // contexts and apis
 import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
+import { reportsContext } from "../../contexts/ReportsContext";
+import {
+  getReportsByUser,
+  getReportsClient,
+  getReportsProject,
+  getReports,
+} from "../../api/reports api/reports";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,6 +65,8 @@ export default function Main() {
   const { getTeams } = React.useContext(teamContext);
   //
   const { clientDetails } = React.useContext(ClientsContext);
+  //
+  const { reports, dispatchGetReports } = React.useContext(reportsContext);
 
   // variable for date, employees, and projects
   const [date, setdate] = React.useState(null);
@@ -86,7 +94,18 @@ export default function Main() {
       dateOne,
       dateTwo,
     };
+    //   getReportsByUser,
+    // getReportsClient,
+    // getReportsProject,
+    // getReports,
+    // dispatchGetReports
+    getReports(dispatchGetReports, options);
+    console.log(reports);
   };
+
+  React.useEffect(() => {
+    console.log(reports);
+  }, [reports]);
 
   //   make select employee options
   console.log(getTeams.getTeam);
@@ -260,6 +279,10 @@ export default function Main() {
         >
           generate Reports
         </Button>
+        {/* {!reports.loader ? <div>hello</div> : null} */}
+        {!reports.loader ? (
+          <Graphs reports={reports} style={{ margin: 10 }}></Graphs>
+        ) : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
         hello

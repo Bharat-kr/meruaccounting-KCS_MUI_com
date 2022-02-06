@@ -6,6 +6,7 @@ import {
   updateActivity,
   deleteScreenshot,
   deleteActivity,
+  updateLastActive,
 } from "../controllers/activity.js";
 import { authPass } from "../middleware/authMiddleware.js";
 
@@ -24,5 +25,6 @@ router
   .delete(authPass, deleteScreenshot);
 
 router.route("/:id").patch(authPass, updateActivity);
+router.route("/lastActive").post(authPass, updateLastActive);
 
 export default router;
