@@ -13,8 +13,9 @@ import { ClientsContextProvider } from "./contexts/ClientsContext";
 import { EmployeeProvider } from "./contexts/EmployeeContext";
 import { ProjectsContextProvider } from "./contexts/ProjectsContext";
 import { CurrentUserContextProvider } from "./contexts/CurrentUserContext";
-import { ReportsProvider } from "./contexts/ReportsContext";
+import { UserContextProvider } from "./contexts/UserContext";
 import EmployeePageContextProvider from "./contexts/EmployeePageContext";
+import { ReportsProvider } from "./contexts/ReportsContext";
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -34,21 +35,23 @@ export default function App() {
         <ScrollToTop />
         <GlobalStyles />
         <BaseOptionChartStyle />
-        <CurrentUserContextProvider>
-          <ClientsContextProvider>
-            <ReportsProvider>
-              <ProjectsContextProvider>
-                <EmployeeProvider>
-                  <EmployeePageContextProvider>
-                    <TeamsProvider>
-                      <Router />
-                    </TeamsProvider>
-                  </EmployeePageContextProvider>
-                </EmployeeProvider>
-              </ProjectsContextProvider>
-            </ReportsProvider>
-          </ClientsContextProvider>
-        </CurrentUserContextProvider>
+        <UserContextProvider>
+          <CurrentUserContextProvider>
+            <ClientsContextProvider>
+              <ReportsProvider>
+                <ProjectsContextProvider>
+                  <EmployeeProvider>
+                    <EmployeePageContextProvider>
+                      <TeamsProvider>
+                        <Router />
+                      </TeamsProvider>
+                    </EmployeePageContextProvider>
+                  </EmployeeProvider>
+                </ProjectsContextProvider>
+              </ReportsProvider>
+            </ClientsContextProvider>
+          </CurrentUserContextProvider>
+        </UserContextProvider>
       </ThemeConfig>
     </LoginProvider>
   );

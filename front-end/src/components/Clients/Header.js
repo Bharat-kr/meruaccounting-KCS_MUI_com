@@ -28,6 +28,13 @@ const useStyles = makeStyles((theme) => ({
     transition: "width 0.4s ease-in-out",
     "& :focus": { width: "100%" },
   },
+  root: {
+    width: "100%",
+    "@media(minWidth: 780px)": {
+      width: "100%",
+      backgroundColor: "red",
+    },
+  },
 }));
 export default function Header(props) {
   const {
@@ -59,7 +66,7 @@ export default function Header(props) {
     clientDetails,
   } = useContext(ClientsContext);
   let projectList = [];
-  useEffect(async () => {
+  useEffect(() => {
     // getClientPro(JSON.stringify(id));
     setClientName(currentClient?.name);
   }, [currentClient]);
@@ -67,9 +74,9 @@ export default function Header(props) {
     (i) => i._id === currentClient?._id
   );
 
-  useEffect(async () => {
+  useEffect(() => {
     if (clientsList !== null) {
-      await changeClient(clientsList[clientIndex]);
+      changeClient(clientsList[clientIndex]);
       // await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
     }
   }, [clientDetails]);
@@ -121,7 +128,7 @@ export default function Header(props) {
       sx={{
         width: "70%",
         flexGrow: "1",
-        overflowX: "hidden",
+        overflowX: "auto",
         overflowY: "auto",
         // margin: "10px 10px 10px 10px",
       }}
@@ -150,13 +157,16 @@ export default function Header(props) {
   ) : (
     <>
       {/* grid container 40 60 */}
+
       <Box
+        className={classes.root}
         ref={outerref}
         component="div"
         sx={{
-          width: "70%",
+          display: "flex",
+          width: "auto",
           flexGrow: "1",
-          overflowX: "hidden",
+          overflowX: "auto",
           overflowY: "auto",
           m: 1,
         }}
@@ -165,12 +175,11 @@ export default function Header(props) {
           component="div"
           elevation={3}
           sx={{
-            zIndex: 1,
-            overflow: "visible",
+            overflowX: "auto",
             height: "100%",
-            position: "relative",
-            display: "grid",
-            gridTemplateRows: "30% 70%",
+            // position: "relative",
+            // display: "grid",
+            // gridTemplateRows: "30% 70%",
           }}
         >
           <Box sx={{ m: 1 }}>
@@ -202,9 +211,6 @@ export default function Header(props) {
                   fontWeight: "bold",
                 }}
                 onClick={() => {
-                  {
-                    console.log(currentClient);
-                  }
                   changeClient(clientsList[clientIndex]);
                 }}
               >
@@ -282,9 +288,6 @@ export default function Header(props) {
                       fontWeight: "bold",
                     }}
                     onClick={() => {
-                      {
-                        console.log(currentClient);
-                      }
                       changeClient(clientsList[clientIndex]);
                     }}
                   >

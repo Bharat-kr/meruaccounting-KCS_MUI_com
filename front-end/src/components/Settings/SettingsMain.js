@@ -25,6 +25,8 @@ import { getTeam } from "src/api/teams api/teams";
 import { getFullName } from "src/_helpers/getFullName";
 import axios from "axios";
 import { convertString } from "../../contexts/UserContext";
+import { useSnackbar } from "notistack";
+import { UserContext } from "../../contexts/UserContext";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,7 +54,14 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function checkheading(index, settings, id, isTeam, dispatchgetTeam) {
+function checkheading(
+  enqueueSnackbar,
+  index,
+  settings,
+  id,
+  isTeam,
+  dispatchgetTeam
+) {
   const days = [
     "Sunday",
     "Monday",
@@ -71,9 +80,11 @@ function checkheading(index, settings, id, isTeam, dispatchgetTeam) {
       .then((res) => {
         console.log(res);
         getTeam(dispatchgetTeam);
+        enqueueSnackbar("Settings updated", { variant: "success" });
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar(err.message, { variant: "info" });
       });
   };
 
@@ -458,11 +469,13 @@ function checkheading(index, settings, id, isTeam, dispatchgetTeam) {
 }
 
 export default function SettingsMain(props) {
-  const { value, index, heading, subheading, ...other } = props;
+  const { index, heading, subheading, ...other } = props;
   const { loginC } = useContext(loginContext);
   const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  const { tab, changeTab } = useContext(UserContext);
 
   const [teamsList, setTeamsList] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     getTeam(dispatchgetTeam);
@@ -510,17 +523,19 @@ export default function SettingsMain(props) {
         console.log(res);
         if (res.status === 200) {
           getTeam(dispatchgetTeam);
+          enqueueSnackbar("Employee edited", { variant: "success" });
         }
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar(err.message, { variant: "info" });
       });
 
     // console.log(data);
   };
   useEffect(() => {
     axios
-      .get("/commondata")
+      .post("/commondata")
       .then((res) => {
         // console.log(res);
         setSettings(res.data.user.settings);
@@ -532,12 +547,12 @@ export default function SettingsMain(props) {
 
   return (
     <>
-      {value === index && (
+      {tab === index && (
         <Container
           component="div"
           sx={{ pb: 2 }}
           role="tabpanel"
-          hidden={value !== index}
+          hidden={tab !== index}
           id={`vertical-tabpanel-${index}`}
           aria-labelledby={`vertical-tab-${index}`}
           {...other}
@@ -597,6 +612,7 @@ export default function SettingsMain(props) {
                         name="row-radio-buttons-group"
                       >
                         {checkheading(
+                          enqueueSnackbar,
                           index,
                           user.settings,
                           user.id,
