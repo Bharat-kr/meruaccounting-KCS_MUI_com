@@ -9,6 +9,13 @@ import { useContext, useEffect, useState } from "react";
 import { teamContext } from "../../../contexts/TeamsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { getTeam } from "../../../api/teams api/teams";
+import {
+  getCommonData,
+  // getCommonDataById,
+} from "../../../api/auth api/commondata";
+import { employeesTimeDetails } from "../../../api/employee api/employee";
+import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
+import { employeeContext } from "../../../contexts/EmployeeContext";
 
 //----------------------------------------------------------------------------------------
 export default function SimpleContainer() {
@@ -17,15 +24,23 @@ export default function SimpleContainer() {
 
   const [teamsList, setTeamsList] = useState([]);
   const [searchedMember, setSearchedMember] = useState(0);
+  const [memberCommonData, setMemberCommonData] = useState();
   const getTeamsLoader = getTeams.loader;
   const tableListRef = React.useRef();
 
+  const {
+    commonData,
+    dispatchCommonData,
+    // employeeCommonData,
+    // dispatchEmployeeCommonData,
+  } = useContext(CurrentUserContext);
+
+  const { employeesData, dispatchEmployeesData } = useContext(employeeContext);
   useEffect(() => {
     getTeam(dispatchgetTeam);
   }, []);
 
   // useState hook for rerender component
-  console.log(getTeams);
   useEffect(() => {
     const data = [];
     let test = -1;
@@ -52,6 +67,19 @@ export default function SimpleContainer() {
     });
     setTeamsList(data);
   }, [getTeams]);
+  const commonDatafunc = async () => {
+    const data = [];
+    // for (let i = 0; i < teamsList.length; i++) {
+    // data.push(employeesData);
+    // console.log(teamsList[1]);
+    console.log(employeesData);
+    await employeesTimeDetails(teamsList[1]?.id, dispatchEmployeesData);
+    // }
+    console.log(data);
+  };
+  useEffect(() => {
+    commonDatafunc();
+  }, []);
 
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>
@@ -61,14 +89,13 @@ export default function SimpleContainer() {
       // eslint-disable-next-line no-useless-return
       return;
     }
-    // const wea = document.querySelector(`#${member[0].id}`);
-    // console.log(tableListRef);
-    // console.log(tableListRef.current.scrollHeight*teamsList.indexOf(member[0]) );
+
     window.scroll({
-      top: 250 + tableListRef.current.scrollHeight*teamsList.indexOf(member[0]),
-      behavior: 'smooth'
+      top:
+        250 + tableListRef.current.scrollHeight * teamsList.indexOf(member[0]),
+      behavior: "smooth",
     });
-  
+
     return setSearchedMember(teamsList.indexOf(member[0]));
   };
 
@@ -104,7 +131,8 @@ export default function SimpleContainer() {
                 sx={{
                   width: 300,
                   height: 20,
-                  p: 1,
+                  pb: 3,
+                  mb: 2,
                 }}
                 renderInput={(params) => (
                   <TextField {...params} label="Search Employee" />

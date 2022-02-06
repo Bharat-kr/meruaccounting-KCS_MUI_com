@@ -7,6 +7,8 @@ import {
   EMPLOYEE_UPDATE_REQUEST,
   EMPLOYEE_UPDATE_SUCCESS,
   EMPLOYEE_UPDATE_FAILED,
+  GET_EMPLOYEEDATA_SUCCESS,
+  GET_EMPLOYEEDATA_FAILED,
 } from "../../constants/EmployeeConstants";
 
 export const getEmployeeDetails = async (_id, dispatch) => {
@@ -40,6 +42,27 @@ export const employeeUpdate = async (_id, data, dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
+    });
+  }
+};
+
+export const employeesTimeDetails = async (incomingData, dispatch) => {
+  try {
+    console.log(incomingData);
+    const { data } = await axios.post(`/commondata`, { _id: incomingData });
+    console.log("commondata success", data);
+    dispatch({
+      type: GET_EMPLOYEEDATA_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: GET_EMPLOYEEDATA_FAILED,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
     });
   }
 };

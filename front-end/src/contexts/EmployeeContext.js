@@ -7,6 +7,8 @@ import {
   EMPLOYEE_UPDATE_REQUEST,
   EMPLOYEE_UPDATE_SUCCESS,
   EMPLOYEE_UPDATE_FAILED,
+  GET_EMPLOYEEDATA_SUCCESS,
+  GET_EMPLOYEEDATA_FAILED,
 } from "../constants/EmployeeConstants";
 
 export const employeeContext = createContext();
@@ -25,6 +27,22 @@ const employeeDetailsReducer = (state, action) => {
         err: action.payload,
       };
 
+    default:
+      return state;
+  }
+};
+const employeesDataReducer = (state, action) => {
+  switch (action.type) {
+    case GET_EMPLOYEEDATA_SUCCESS:
+      return {
+        loader: false,
+        data: action.payload,
+      };
+    case GET_EMPLOYEEDATA_FAILED:
+      return {
+        loader: false,
+        err: action.payload,
+      };
     default:
       return state;
   }
@@ -58,6 +76,14 @@ export function EmployeeProvider(props) {
     { employee: { loader: true } }
   );
 
+  const [employeesData, dispatchEmployeesData] = useReducer(
+    employeesDataReducer,
+    {
+      data: {
+        loader: true,
+      },
+    }
+  );
   // useEffect(() => {
   //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
   // }, [teamCreate]);
@@ -69,6 +95,8 @@ export function EmployeeProvider(props) {
         dispatchEmployeeDetails,
         employeeUpdate,
         dispatchEmployeeUpdate,
+        employeesData,
+        dispatchEmployeesData,
       }}
     >
       {props.children}
