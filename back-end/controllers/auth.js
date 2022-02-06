@@ -226,7 +226,9 @@ const teamCommondata = asyncHandler(async (req, res) => {
     const userIds = req.body.userIds;
     console.log(userIds);
     for (let i = 0; i < userIds.length; i++) {
-      const user = await User.findById(userIds[i]).select("-password -days");
+      const user = await User.findById(userIds[i]).select(
+        "role firstName lastName payRate lastActive email"
+      );
       const dailyHours = await Activity.aggregate([
         {
           $match: {
