@@ -17,10 +17,8 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
-import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 import AutoComplete from "@mui/material/Autocomplete";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
@@ -28,11 +26,8 @@ import { getClient } from "../../api/clients api/clients";
 import {
   addProjectMember,
   deleteProject,
-  removeProjectMember,
 } from "../../api/projects api/projects";
 import { Link as RouterLink } from "react-router-dom";
-import { setIn } from "formik";
-import { useSnackbar } from "notistack";
 
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, noOfEmployees, id) {
@@ -175,12 +170,10 @@ const EnhancedTableToolbar = (props) => {
     numSelected,
     selected,
     projectsList,
-    currentProject,
     currentClient,
     changeClient,
     changeProject,
     clientIndex,
-    projectIndex,
     setSeleceted,
     clientsList,
   } = props;
@@ -347,7 +340,7 @@ export default function EnhancedTable(props) {
   // // }
   // const clientIndex = 0;
   // const projectIndex = 0;
-  useEffect(async () => {
+  useEffect(() => {
     try {
       const clientIndex = clientsList?.findIndex(
         (i) => i._id === currentClient?._id
@@ -359,8 +352,8 @@ export default function EnhancedTable(props) {
       const data = currentClient?._id;
 
       if (projectIndex && clientIndex !== null) {
-        await changeClient(clientsList[clientIndex]);
-        await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+        changeClient(clientsList[clientIndex]);
+        changeProject(clientsList[clientIndex]?.projects[projectIndex]);
       }
     } catch (err) {
       console.log(err);
@@ -473,6 +466,7 @@ export default function EnhancedTable(props) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
+          width: "auto",
         }}
       >
         <AutoComplete

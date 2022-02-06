@@ -35,6 +35,7 @@ import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 import { removeProjectMember } from "src/api/projects api/projects";
+import { UserContext } from "../../contexts/UserContext";
 import { useSnackbar } from "notistack";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -56,6 +57,7 @@ export default function Main(props) {
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam, updatedMember, getTeams } =
     useContext(teamContext);
+  const { changeTab } = useContext(UserContext);
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
 
@@ -193,6 +195,7 @@ export default function Main(props) {
   };
 
   const Labelconfig = function () {
+    console.log(currMember.settings);
     return (
       <>
         {currMember.projects.map((pro) => (
@@ -450,9 +453,15 @@ export default function Main(props) {
                               sx={{ pr: 2, fontSize: "20px", color: "success" }}
                             >
                               {convertString(keyName)}
-                              {/* {console.log(index)} */}
                             </Typography>
-                            <RouterLink to="/dashboard/settings" sx={{ pr: 1 }}>
+                            <RouterLink
+                              onClick={() => {
+                                console.log(keyIndex);
+                                changeTab(keyIndex - 1);
+                              }}
+                              to="/dashboard/settings"
+                              sx={{ pr: 1 }}
+                            >
                               {currMember.settings[keyName].isTeamSetting
                                 ? settingsValueToString(
                                     currMember.settings[keyName].teamValue

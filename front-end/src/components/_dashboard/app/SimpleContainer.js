@@ -25,7 +25,7 @@ export default function SimpleContainer() {
   const [teamsList, setTeamsList] = useState([]);
   const [searchedMember, setSearchedMember] = useState(0);
   const [memberCommonData, setMemberCommonData] = useState();
-  const getTeamsLoader = getTeams.loader;
+  const getTeamsLoader = getTeams?.loader;
   const tableListRef = React.useRef();
 
   const {
