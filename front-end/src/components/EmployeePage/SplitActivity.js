@@ -11,13 +11,14 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import timeC from "src/_helpers/timeConverter";
 import timeDiff from "src/_helpers/timeDifference";
-import { CurrentUserContext } from "src/contexts/CurrentUserContext";
-import { getCommonData } from "src/api/auth api/commondata";
 import { useSnackbar } from "notistack";
+import { useParams } from "react-router-dom";
+import { getCommonData } from "src/api/employee api/employeePage";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 
 const style = {
   position: "absolute",
@@ -46,8 +47,9 @@ const SplitActivity = ({
 }) => {
   const [projectSelected, setProjectSelected] = React.useState("");
   const [splitTime, setSplitTime] = React.useState("");
-  const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
+  const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
   const { enqueueSnackbar } = useSnackbar();
+  const { id } = useParams();
   const handleChange = (event) => {
     setProjectSelected(event.target.value);
   };
@@ -90,7 +92,7 @@ const SplitActivity = ({
       .post("/activity/splitActivity", data)
       .then((res) => {
         if (res.status === 200) {
-          getCommonData(dispatchCommonData);
+          getCommonData(id, dispatchCommonData);
           enqueueSnackbar("Activity Splited", { variant: "success" });
         }
       })
