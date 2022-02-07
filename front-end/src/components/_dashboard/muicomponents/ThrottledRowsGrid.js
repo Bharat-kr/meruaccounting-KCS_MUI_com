@@ -47,14 +47,12 @@ export default function ApiRefRowsGrid({
   tableListRef,
 }) {
   return getTeamsLoader ? (
-    <Box
-      sx={{
-        display: "flex",
-        flexGrow: "1",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <Box sx={{
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      flexGrow:"1"
+    }}>
       <CircularProgress />
     </Box>
   ) : (

@@ -7,3 +7,4 @@ export default function timeC(epoch_time) {
 
   return hhmm;
 }
+
