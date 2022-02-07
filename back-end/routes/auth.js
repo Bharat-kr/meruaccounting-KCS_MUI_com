@@ -7,6 +7,7 @@ import {
   teamCommondata,
 } from "../controllers/auth.js";
 import { body } from "express-validator";
+import { generateReport } from "../controllers/report.js";
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.route("/login").post(login);
 
 router.route("/commondata").post(authPass, commondata);
 router.route("/teamCommondata").post(authPass, teamCommondata);
+router.route("/generateReport").post(generateReport);
 
 export default router;
