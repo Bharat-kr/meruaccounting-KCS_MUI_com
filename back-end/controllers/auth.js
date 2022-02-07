@@ -229,6 +229,30 @@ const teamCommondata = asyncHandler(async (req, res) => {
       const user = await User.findById(userIds[i]).select(
         "role firstName lastName payRate lastActive email"
       );
+      const yersterdayHours = await Activity.aggregate([
+        {
+          $match: {
+            $and: [
+              {
+                employee: { $eq: user._id },
+              },
+              {
+                activityOn: {
+                  $eq: dayjs().add(-1, day).format("DD/MM/YYYY"),
+                },
+              },
+            ],
+          },
+        },
+        {
+          $group: {
+            _id: user._id,
+            totalHours: { $sum: "$consumeTime" },
+            avgPerformanceData: { $avg: "$performanceData" },
+            docCount: { $sum: 1 },
+          },
+        },
+      ]);
       const dailyHours = await Activity.aggregate([
         {
           $match: {
@@ -330,7 +354,14 @@ const teamCommondata = asyncHandler(async (req, res) => {
         res.status(404);
         throw new Error("No such user found");
       }
-      let obj = { user, dailyHours, weeklyTime, monthlyTime, totalTime };
+      let obj = {
+        user,
+        dailyHours,
+        yersterdayHours,
+        weeklyTime,
+        monthlyTime,
+        totalTime,
+      };
       resArr.push(obj);
     }
 

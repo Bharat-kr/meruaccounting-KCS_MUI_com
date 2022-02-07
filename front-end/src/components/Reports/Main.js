@@ -260,16 +260,16 @@ export default function Main() {
             setemployees(newValue);
           }}
         />
-        <SelectProjects
-          options={projectOptions}
-          setProjects={(newValue) => {
-            setprojects(newValue);
-          }}
-        />
         <SelectClients
           options={clientOptions}
           setClients={(newValue) => {
             setclients(newValue);
+          }}
+        />
+        <SelectProjects
+          options={projectOptions}
+          setProjects={(newValue) => {
+            setprojects(newValue);
           }}
         />
         <Button
