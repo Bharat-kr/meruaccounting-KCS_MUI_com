@@ -11,53 +11,77 @@ import mongoose from "mongoose";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    let { clientId, projectId, userId, dateOne, dateTwo } = req.body;
+    let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
+    projectIds = projectIds.map((id) => {
+      return mongoose.Types.ObjectId(id);
+    });
+    clientIds = clientIds.map((id) => {
+      return mongoose.Types.ObjectId(id);
+    });
+    userIds = userIds.map((id) => {
+      return mongoose.Types.ObjectId(id);
+    });
+
+    console.log(projectIds);
 
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
 
     let user;
-    if (userId) user = await User.findById(userId);
-    else user = req.user;
+    // if (userId) user = await User.findById(userId);
+    // else user = req.user;
 
     const activity = await Activity.aggregate([
       {
         $match: {
           $and: [
-            { project: { $eq: mongoose.Types.ObjectId(projectId) } },
-            { client: { $eq: mongoose.Types.ObjectId(clientId) } },
-            { employee: { $eq: user._id } },
+            { project: { $in: projectIds } },
+            { client: { $in: clientIds } },
+            { employee: { $in: userIds } },
             { activityOn: { $gte: dateOne, $lte: dateTwo } },
           ],
         },
       },
+
       {
         $group: {
           _id: {
             userId: "$employee",
             project: "$project",
+            client: "$client",
           },
           actCount: { $sum: 1 },
           totalHours: { $sum: "$consumeTime" },
           avgPerformanceData: { $avg: "$performanceData" },
         },
       },
+
       {
         $group: {
           _id: "$_id.userId",
           projects: {
             $push: {
-              book: "$_id.project",
+              client: "$_id.client",
+              project: "$_id.project",
               count: "$actCount",
               totalHours: "$totalHours",
               avgPerformanceData: "$performanceData",
             },
           },
-          count: { $sum: "$bookCount" },
+        },
+        $group: {
+          _id: "$_id.userId",
+          clients: {
+            $push: {
+              client: "$_id.client",
+              count: "$actCount",
+              totalHours: "$totalHours",
+              avgPerformanceData: "$performanceData",
+            },
+          },
+          count: { $sum: "$actCount" },
         },
       },
-      { $sort: { count: -1 } },
-      { $limit: 2 },
     ]);
 
     res.json({

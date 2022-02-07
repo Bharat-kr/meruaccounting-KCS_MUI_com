@@ -79,9 +79,9 @@ export default function AccountPopover() {
       >
         <Avatar
           // src={`http://monitor.meruaccounting.com:8000/${commonData?.commonData?.user?.avatar}`}
-          src={`https://ssmonitor-backend.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
-          // src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
-          // alt="photoURL"
+          // src={`https://ssmonitor-backend.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
+          src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
+          alt="photoURL"
         />
       </IconButton>
 

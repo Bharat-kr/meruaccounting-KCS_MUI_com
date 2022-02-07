@@ -187,6 +187,7 @@ const EnhancedTableToolbar = (props) => {
       // }, [rows.length, currentProject, currentClient]);
       for (let i = 0; i < deleteList.length; i++) {
         let data = [currentProject._id, deleteList[i]];
+        console.log(currentProject._id);
         await removeProjectMember(data, dispatchremoveProjectMember);
       }
       await getClient(dispatchClientDetails);
