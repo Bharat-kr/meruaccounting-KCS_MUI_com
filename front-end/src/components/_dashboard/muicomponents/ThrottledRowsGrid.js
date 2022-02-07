@@ -2,7 +2,7 @@ import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { TableContainer, Chip, CircularProgress } from "@mui/material";
+import { TableContainer, Chip, CircularProgress, Box } from "@mui/material";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
@@ -41,12 +41,23 @@ function dispdata(data) {
   );
 }
 
-export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}) {
+export default function ApiRefRowsGrid({
+  teamsList,
+  getTeamsLoader,
+  tableListRef,
+}) {
   return getTeamsLoader ? (
-    <CircularProgress />
+    <Box sx={{
+      display:"flex",
+      alignItems:"center",
+      justifyContent:"center",
+      flexGrow:"1"
+    }}>
+      <CircularProgress />
+    </Box>
   ) : (
-    <div style={{ height: "auto", width: "100%" }}> 
-      <TableContainer component={Paper} >
+    <div style={{ height: "auto", width: "100%" }}>
+      <TableContainer component={Paper}>
         <Table sx={{ maxHeight: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -66,7 +77,7 @@ export default function ApiRefRowsGrid({teamsList, getTeamsLoader ,tableListRef}
               <StyledTableCell align="right"></StyledTableCell>
             </TableRow>
           </TableHead>
-          <TableBody >
+          <TableBody>
             {teamsList.map((member) => (
               <StyledTableRow key={member.id} ref={tableListRef}>
                 <StyledTableCell component="th" scope="row">
