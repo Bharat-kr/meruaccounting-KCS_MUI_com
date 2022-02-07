@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 export const UserContext = createContext();
 
@@ -6,18 +6,22 @@ export function convertString(string) {
   const str = string
     .split(/(?=[A-Z])/)
     .join()
-    .replaceAll(',', ' ');
+    .replaceAll(",", " ");
   // console.log(str);
   return str;
 }
 export const UserContextProvider = (props) => {
+  const [tab, setTab] = useState(0);
+  const changeTab = (value) => {
+    setTab(value);
+  };
   const [User, setUser] = useState([
     {
-      name: 'Ayush',
+      name: "Ayush",
       id: 1,
-      email: 'ayushrocks@gmail.com',
+      email: "ayushrocks@gmail.com",
       pay: 15,
-      role: 'Manager',
+      role: "Manager",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -26,16 +30,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'kamal',
+      name: "kamal",
       id: 2,
-      email: 'Kamali@gmail.com',
+      email: "Kamali@gmail.com",
       pay: 12,
-      role: 'Admin',
+      role: "Admin",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -44,16 +48,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'Jay Maethew',
+      name: "Jay Maethew",
       id: 3,
-      email: 'jaymath@gmail.com',
+      email: "jaymath@gmail.com",
       pay: 16,
-      role: 'Employee',
+      role: "Employee",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -62,16 +66,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'Jacob lame',
+      name: "Jacob lame",
       id: 4,
-      email: 'jacoblame@gmail.com',
+      email: "jacoblame@gmail.com",
       pay: 10,
-      role: 'Employee',
+      role: "Employee",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -80,16 +84,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'Ryan rands',
+      name: "Ryan rands",
       id: 5,
-      email: 'ryanr@gmail.com',
+      email: "ryanr@gmail.com",
       pay: 19,
-      role: 'Manager',
+      role: "Manager",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -98,16 +102,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'Raksha',
+      name: "Raksha",
       id: 6,
-      email: 'raksha@gmail.com',
+      email: "raksha@gmail.com",
       pay: 20,
-      role: 'Employee',
+      role: "Employee",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -116,16 +120,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'Surya',
+      name: "Surya",
       id: 7,
-      email: 'surya@gmail.com',
+      email: "surya@gmail.com",
       pay: 13,
-      role: 'Employee',
+      role: "Employee",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -134,16 +138,16 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
     },
     {
-      name: 'Sushma',
+      name: "Sushma",
       id: 8,
-      email: 'susma@gmail.com',
+      email: "susma@gmail.com",
       pay: 13,
-      role: 'Employee',
+      role: "Employee",
       Settings: {
         ScreenShotPerHour: 12,
         AllowBlur: true,
@@ -152,10 +156,10 @@ export const UserContextProvider = (props) => {
         AutoPause: 5,
         OfflineTime: true,
         NotifyUser: true,
-        WeekStart: 'sunday',
-        CurrencySymbol: 'rupees'
-      }
-    }
+        WeekStart: "sunday",
+        CurrencySymbol: "rupees",
+      },
+    },
   ]);
   //   const [currentClient, setcurrentClient] = useState(User[0]);
 
@@ -165,7 +169,9 @@ export const UserContextProvider = (props) => {
 
   return (
     <div>
-      <UserContext.Provider value={{ User }}>{props.children}</UserContext.Provider>
+      <UserContext.Provider value={{ User, tab, changeTab }}>
+        {props.children}
+      </UserContext.Provider>
     </div>
   );
 };

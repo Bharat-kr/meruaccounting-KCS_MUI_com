@@ -30,38 +30,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// function TabPanel(props) {
-//   const { children, value, index, ...other } = props;
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`simple-tabpanel-${index}`}
-//       aria-labelledby={`simple-tab-${index}`}
-//       {...other}
-//     >
-//       {value === index && (
-//         <Box sx={{ p: 3 }}>
-//           <Typography>{children}</Typography>
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
-
-// TabPanel.propTypes = {
-//   children: PropTypes.node,
-//   index: PropTypes.number.isRequired,
-//   value: PropTypes.number.isRequired,
-// };
-
-// function a11yProps(index) {
-//   return {
-//     id: `simple-tab-${index}`,
-//     "aria-controls": `simple-tabpanel-${index}`,
-//   };
-// }
-
 export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -118,7 +86,7 @@ export default function VerticalTabs() {
   // labels for search box(autocomplete)
   const teamsList = [];
   let teamsDetails;
-  React.useEffect(async () => {
+  React.useEffect(() => {
     try {
       console.log(currTeam?._id, currMember._id);
       const teamIndex = teamsDetails?.findIndex((i) => i._id === currTeam?._id);

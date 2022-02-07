@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import React from "react";
+import React, { useContext } from "react";
 import { Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
@@ -8,7 +8,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import SettingsMain from "./SettingsMain";
 import { convertString } from "../../contexts/UserContext";
-
+import { UserContext } from "../../contexts/UserContext";
 function TabPanel(props) {
   const { children, value, index, heading, subheading, ...other } = props;
 
@@ -55,12 +55,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Sidebar() {
   const classes = useStyles();
+  const { tab, changeTab } = useContext(UserContext);
+  // const [value, setValue] = React.useState(0);
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  // const handleChange = (event, newValue) => {
+  // changeTab(newValue);
+  // };
   // let i = -1;
   // let j = -1;
 
@@ -108,8 +108,8 @@ export default function Sidebar() {
           <Tabs
             orientation="vertical"
             variant="scrollable"
-            value={value}
-            onChange={handleChange}
+            value={tab}
+            onChange={(e, v) => changeTab(v)}
             aria-label="Vertical tabs example"
             sx={{ borderRight: 1, borderColor: "divider" }}
           >
@@ -157,7 +157,7 @@ export default function Sidebar() {
           <Box>
             {Object.keys(effectiveArr).map((keyName, keyIndex) => (
               <SettingsMain
-                value={value}
+                value={tab}
                 index={keyIndex}
                 heading={keyName}
                 subheading={effectiveArr[keyName]}

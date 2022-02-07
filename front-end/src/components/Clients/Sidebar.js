@@ -19,7 +19,14 @@ import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    height: "100%",
+    width: "100%",
+    margin: "auto",
+    display: "grid",
+    gridTemplateColumns: "30% 70%",
+    backgroundColor: "#fdfdff",
+  },
   treeItem: {
     margin: "0",
     fontWeight: "700",
@@ -68,7 +75,7 @@ export default function Sidebar() {
   useEffect(() => {
     getClient(dispatchClientDetails);
   }, []);
-  useEffect(async () => {
+  useEffect(() => {
     try {
       const clientIndex = clientsList?.findIndex(
         (i) => i._id === currentClient?._id
@@ -78,7 +85,7 @@ export default function Sidebar() {
       // );
 
       if (clientIndex !== null) {
-        await changeClient(clientsList[clientIndex]);
+        changeClient(clientsList[clientIndex]);
         // await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
       }
     } catch (err) {
@@ -155,13 +162,15 @@ export default function Sidebar() {
   };
 
   return (
+    // <div className={classes.root}>
     <Box
       component="div"
       sx={{
+        display: "grid",
+        gridTemplate: "30% 70%",
         margin: "10px",
         // height: "70vh",
         flexGrow: "1",
-        display: "flex",
         flexDirection: "row",
         scrollbar: "auto",
       }}
@@ -172,7 +181,7 @@ export default function Sidebar() {
         sx={{
           overflow: "hidden",
           height: "100%",
-          width: "28.5%",
+          width: "40%",
           display: "flex",
           flexDirection: "column",
           // position: "relative",
@@ -220,9 +229,10 @@ export default function Sidebar() {
             component="div"
             sx={{
               display: "flex",
-              flexDirection: "column",
+              // flexDirection: "column",
               flexGrow: "1",
-              alignItems: "flex-start",
+              alignItems: "center",
+              justifyContent: "center",
               overflowY: "auto",
             }}
           >
@@ -302,5 +312,6 @@ export default function Sidebar() {
       </Paper>
       <Header currentClient={currentClient} clientsList={clientsList} />
     </Box>
+    // </div>
   );
 }
