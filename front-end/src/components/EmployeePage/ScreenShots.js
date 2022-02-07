@@ -34,7 +34,7 @@ export default function ScreenShots({ activities, date }) {
             <Activity
               date={date}
               project={act.project}
-              actId={act._id}
+              act={act}
               isAccepted={act.isAccepted}
               startTime={act.startTime}
               endTime={act.endTime}

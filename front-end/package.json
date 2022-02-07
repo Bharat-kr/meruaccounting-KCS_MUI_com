@@ -81,6 +81,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "^4.0.1",
     "react-twitter-login": "^1.4.0",
+    "recharts": "^2.1.8",
     "rxjs": "^7.4.0",
     "simplebar": "^5.3.5",
     "simplebar-react": "^2.3.5",
