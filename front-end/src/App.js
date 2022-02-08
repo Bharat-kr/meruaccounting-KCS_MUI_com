@@ -35,23 +35,23 @@ export default function App() {
         <ScrollToTop />
         <GlobalStyles />
         <BaseOptionChartStyle />
-        <UserContextProvider>
-          <CurrentUserContextProvider>
-            <ClientsContextProvider>
-              <ReportsProvider>
-                <ProjectsContextProvider>
-                  <EmployeeProvider>
+        <EmployeeProvider>
+          <UserContextProvider>
+            <CurrentUserContextProvider>
+              <ClientsContextProvider>
+                <ReportsProvider>
+                  <ProjectsContextProvider>
                     <EmployeePageContextProvider>
                       <TeamsProvider>
                         <Router />
                       </TeamsProvider>
                     </EmployeePageContextProvider>
-                  </EmployeeProvider>
-                </ProjectsContextProvider>
-              </ReportsProvider>
-            </ClientsContextProvider>
-          </CurrentUserContextProvider>
-        </UserContextProvider>
+                  </ProjectsContextProvider>
+                </ReportsProvider>
+              </ClientsContextProvider>
+            </CurrentUserContextProvider>
+          </UserContextProvider>
+        </EmployeeProvider>
       </ThemeConfig>
     </LoginProvider>
   );

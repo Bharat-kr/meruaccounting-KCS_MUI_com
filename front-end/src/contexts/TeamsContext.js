@@ -41,11 +41,13 @@ const getTeamReducer = (state, action) => {
   switch (action.type) {
     case GET_TEAM_SUCCESS:
       return {
+        ...state,
         loader: false,
         getTeam: action.payload,
       };
     case GET_TEAM_FAILED:
       return {
+        ...state,
         loader: false,
         error: action.payload,
       };
