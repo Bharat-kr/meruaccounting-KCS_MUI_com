@@ -15,14 +15,12 @@ const generateReport = asyncHandler(async (req, res) => {
     projectIds = projectIds.map((id) => {
       return mongoose.Types.ObjectId(id);
     });
-    clientIds = clientIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
     userIds = userIds.map((id) => {
       return mongoose.Types.ObjectId(id);
     });
-
-    console.log(projectIds);
+    clientIds = clientIds.map((id) => {
+      return mongoose.Types.ObjectId(id);
+    });
 
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
@@ -31,7 +29,7 @@ const generateReport = asyncHandler(async (req, res) => {
     // if (userId) user = await User.findById(userId);
     // else user = req.user;
 
-    const activity = await Activity.aggregate([
+    await Activity.aggregate([
       {
         $match: {
           $and: [
@@ -62,25 +60,23 @@ const generateReport = asyncHandler(async (req, res) => {
           projects: {
             $push: {
               client: "$_id.client",
-              project: "$_id.project",
+              // project: "$_id.project",
               count: "$actCount",
               totalHours: "$totalHours",
               avgPerformanceData: "$performanceData",
             },
           },
         },
-        $group: {
-          _id: "$_id.userId",
-          clients: {
-            $push: {
-              client: "$_id.client",
-              count: "$actCount",
-              totalHours: "$totalHours",
-              avgPerformanceData: "$performanceData",
-            },
+
+        clients: {
+          $push: {
+            client: "$_id.client",
+            count: "$actCount",
+            totalHours: "$totalHours",
+            avgPerformanceData: "$performanceData",
           },
-          count: { $sum: "$actCount" },
         },
+        count: { $sum: "$actCount" },
       },
     ]);
 
@@ -94,41 +90,69 @@ const generateReport = asyncHandler(async (req, res) => {
 });
 
 // @desc    Generate Report
-// @route   GET /report/project
+// @route   POST /report/project
 // @access  Private
 
 const generateReportProject = asyncHandler(async (req, res) => {
   try {
-    let { projectId, userId, dateOne, dateTwo } = req.body;
-
+    console.log("this is running");
+    let { projectIds, userIds, dateOne, dateTwo } = req.body;
+    projectIds = projectIds.map((id) => {
+      return mongoose.Types.ObjectId(id);
+    });
+    userIds = userIds.map((id) => {
+      return mongoose.Types.ObjectId(id);
+    });
+    console.log(projectIds, userIds);
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
 
     let user;
-    if (userId) user = await User.findById(userId);
-    else user = req.user;
+    // if (userId) user = await User.findById(userId);
+    // else user = req.user;
 
     const activity = await Activity.aggregate([
       {
         $match: {
           $and: [
-            { project: { $eq: mongoose.Types.ObjectId(projectId) } },
-            { employee: { $eq: user._id } },
+            { project: { $in: projectIds } },
+            { employee: { $in: userIds } },
             { activityOn: { $gte: dateOne, $lte: dateTwo } },
           ],
         },
       },
       {
         $group: {
-          _id: user._id,
+          _id: {
+            userId: "$employee",
+            project: "$project",
+            client: "$client",
+          },
+          actCount: { $sum: 1 },
           totalHours: { $sum: "$consumeTime" },
           avgPerformanceData: { $avg: "$performanceData" },
-          docCount: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.userId",
+          projects: {
+            $push: {
+              client: "$_id.client",
+              project: "$_id.project",
+              count: "$actCount",
+              totalHours: "$totalHours",
+              avgPerformanceData: "$performanceData",
+            },
+          },
         },
       },
     ]);
-    activity.populate();
+    // .exec((err, activitiy) => {
+    //   Activity.populate(activity, {path: });
+    // });
 
+    // activity.populate();
     res.json({
       status: "ok",
       data: activity,
@@ -315,3 +339,51 @@ export {
   generateReportByUser,
   generateReportByProjectId,
 };
+
+// Activity.aggregate([
+//   {
+//     $group: {
+//       _id: {
+//         userId: "$employee",
+//         client: "$client",
+//         project: "$project",
+//       },
+//       actCount: { $sum: 1 },
+//       totalHours: { $sum: "$consumeTime" },
+//       avgPerformanceData: { $avg: "$performanceData" },
+//     },
+//   },
+//   {
+//     $group: {
+//       _id: {
+//         userId: "$employee",
+//         client: "$client",
+//       },
+//       actCount: { $sum: 1 },
+//       totalHours: { $sum: "$consumeTime" },
+//       avgPerformanceData: { $avg: "$performanceData" },
+//       projects: {
+//         $push: {
+//           _id: "$_id.client",
+//           count: "$count",
+//           data: "$data",
+//         },
+//       },
+//     },
+//   },
+//   {
+//     $group: {
+//       _id: "$client",
+//       actCount: { $sum: 1 },
+//       totalHours: { $sum: "$consumeTime" },
+//       avgPerformanceData: { $avg: "$performanceData" },
+//       data: {
+//         $push: {
+//           _id: "$_id.project",
+//           count: "$count",
+//           data: "$data",
+//         },
+//       },
+//     },
+//   },
+// ]);
