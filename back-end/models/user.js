@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, length: 6 },
     payRate: { type: Number, default: 100 },
-    lastActive: { type: String, default: "0" },
+    lastActive: { type: Number, default: 0 },
     activityStatus: { type: Boolean, default: false },
     accountInfo: {
       // managerFor: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

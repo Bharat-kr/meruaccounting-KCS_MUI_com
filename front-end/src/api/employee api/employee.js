@@ -49,12 +49,16 @@ export const employeeUpdate = async (_id, data, dispatch) => {
 export const employeesTimeDetails = async (incomingData, dispatch) => {
   try {
     console.log(incomingData);
-    const { data } = await axios.post(`/commondata`, { _id: incomingData });
-    console.log("commondata success", data);
-    dispatch({
-      type: GET_EMPLOYEEDATA_SUCCESS,
-      payload: data,
+    const res = await axios.post(`/teamCommondata`, {
+      userIds: incomingData,
     });
+    if (res.status === 200) {
+      console.log("commondata success", res.data);
+      dispatch({
+        type: GET_EMPLOYEEDATA_SUCCESS,
+        payload: res.data,
+      });
+    }
   } catch (err) {
     console.log(err);
     dispatch({
