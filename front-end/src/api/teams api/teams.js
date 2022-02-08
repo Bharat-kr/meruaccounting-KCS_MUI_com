@@ -1,15 +1,11 @@
 import axios from "axios";
 import {
   TEAM_CREATE_FAILED,
-  TEAM_CREATE_REQUEST,
   TEAM_CREATE_SUCCESS,
-  GET_TEAM_REQUEST,
   GET_TEAM_SUCCESS,
   GET_TEAM_FAILED,
-  UPDATE_MEMBER_REQUEST,
   UPDATE_MEMBER_SUCCESS,
   UPDATE_MEMBER_FAILED,
-  REMOVE_MEMBER_REQUEST,
   REMOVE_MEMBER_FAILED,
   REMOVE_MEMBER_SUCCESS,
 } from "../../constants/TeamConstants";
@@ -42,9 +38,7 @@ export const createTeam = async (name, dispatch) => {
 export const getTeam = async (dispatch, id) => {
   try {
     const res = await axios.get(`team/getTeam`);
-
     console.log(res.data.data);
-
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
   } catch (error) {
     console.log(error);
