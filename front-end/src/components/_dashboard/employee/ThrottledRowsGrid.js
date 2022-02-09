@@ -130,10 +130,10 @@ export default function EmployeeApiRefRowsGrid() {
       <Box sx={{ width: "100%", display: "table" }}>
         {/* <DataGrid rows={rows} columns={columns} /> */}
         <TableContainer
-          sx={{ display: "block", width: "100%", minWidth: "700px" }}
+          sx={{ display: "block", width: "100%" }}
           component={Paper}
         >
-          <Table sx={{ minWidth: "700px" }} aria-label="customized table">
+          <Table aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Employee</StyledTableCell>

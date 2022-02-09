@@ -319,7 +319,7 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 const editEmployee = asyncHandler(async (req, res) => {
   console.log("Inside Route");
   const permission = ac.can(req.user.role).updateOwn("members");
-  console.log("User Role", req.user.role, permission.granted);
+  console.log(permission.Possession);
   if (permission.granted) {
     const employeeId = req.params.id;
     const filteredBody = permission.filter(req.body);
@@ -333,6 +333,7 @@ const editEmployee = asyncHandler(async (req, res) => {
         data: user,
       });
     } catch (error) {
+      console.log(error);
       throw new Error(error);
     }
   } else {
