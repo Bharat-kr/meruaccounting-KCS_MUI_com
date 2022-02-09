@@ -80,7 +80,9 @@ function checkheading(
       .then((res) => {
         console.log(res);
         getTeam(dispatchgetTeam);
-        enqueueSnackbar("Settings updated", { variant: "success" });
+        if (data !== 0 || null)
+          enqueueSnackbar("Settings updated", { variant: "success" });
+        else enqueueSnackbar("Enter Valid input", { variant: "info" });
       })
       .catch((err) => {
         console.log(err);
@@ -105,6 +107,9 @@ function checkheading(
       },
     };
     await UpdateSettings(data);
+    if (value !== 0 || null)
+      enqueueSnackbar("Settings Updated", { variant: "success" });
+    else enqueueSnackbar("Enter valid input", { variant: "info" });
   };
 
   //Apps and url tracking Update function
@@ -121,6 +126,9 @@ function checkheading(
       },
     };
     await UpdateSettings(data);
+    if (data !== 0 || null)
+      enqueueSnackbar("Settings Updated", { variant: "success" });
+    else enqueueSnackbar("Enter valid input", { variant: "info" });
   };
 
   //Weekly time Limit Change Function
@@ -523,7 +531,9 @@ export default function SettingsMain(props) {
         console.log(res);
         if (res.status === 200) {
           getTeam(dispatchgetTeam);
-          enqueueSnackbar("Employee edited", { variant: "success" });
+          if (data !== null)
+            enqueueSnackbar("Employee edited", { variant: "success" });
+          else enqueueSnackbar("Enter number", { variant: "info" });
         }
       })
       .catch((err) => {
@@ -548,9 +558,9 @@ export default function SettingsMain(props) {
   return (
     <>
       {tab === index && (
-        <Container
+        <Box
           component="div"
-          sx={{ pb: 2 }}
+          sx={{ pb: 2, height: "70vh", overflowY: "auto", overflowX: "auto" }}
           role="tabpanel"
           hidden={tab !== index}
           id={`vertical-tabpanel-${index}`}
@@ -626,7 +636,7 @@ export default function SettingsMain(props) {
               ))}
             </Box>
           </Box>
-        </Container>
+        </Box>
       )}
     </>
   );

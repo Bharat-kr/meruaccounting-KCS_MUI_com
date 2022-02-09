@@ -1,4 +1,4 @@
-import React, { useReducer, createContext } from "react";
+import React, { useReducer, createContext, useState } from "react";
 
 import {
   EMPLOYEE_DETAILS_REQUEST,
@@ -35,11 +35,13 @@ const employeesDataReducer = (state, action) => {
   switch (action.type) {
     case GET_EMPLOYEEDATA_SUCCESS:
       return {
+        ...state,
         loader: false,
         data: action.payload,
       };
     case GET_EMPLOYEEDATA_FAILED:
       return {
+        ...state,
         loader: false,
         err: action.payload,
       };
@@ -67,6 +69,10 @@ const employeeUpdatesReducer = (state, action) => {
 };
 
 export function EmployeeProvider(props) {
+  const [employeeTimeData, setEmployeesTimeData] = useState();
+  const changeEmployeeTimeData = (newValue) => {
+    setEmployeesTimeData(newValue);
+  };
   const [employee, dispatchEmployeeDetails] = useReducer(
     employeeDetailsReducer,
     { employee: { loader: true } }
@@ -78,11 +84,7 @@ export function EmployeeProvider(props) {
 
   const [employeesData, dispatchEmployeesData] = useReducer(
     employeesDataReducer,
-    {
-      data: {
-        loader: true,
-      },
-    }
+    { data: {}, loader: true, err: false }
   );
   // useEffect(() => {
   //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
@@ -97,6 +99,8 @@ export function EmployeeProvider(props) {
         dispatchEmployeeUpdate,
         employeesData,
         dispatchEmployeesData,
+        employeeTimeData,
+        changeEmployeeTimeData,
       }}
     >
       {props.children}
