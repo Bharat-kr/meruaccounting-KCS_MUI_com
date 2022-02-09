@@ -2,7 +2,9 @@ import User from "../models/user.js";
 import Activity from "../models/activity.js";
 import generateToken from "../utils/generateToken.js";
 import asyncHandler from "express-async-handler";
+
 import dayjs from "dayjs";
+// import { mongoose } from "mongoose";
 
 // @desc    Register new user
 // @route   POST /register
@@ -377,19 +379,34 @@ const teamCommondata = asyncHandler(async (req, res) => {
 // @desc    Generate Report
 // @route   GET /report
 // @access  Private
-
+import mongoose from "mongoose";
 const generateReportByIds = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
-    projectIds = projectIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
-    clientIds = clientIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
-    userIds = userIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
+    console.log(req.body);
+    const employeeDetails = [];
+
+    if (!projectIds) {
+      projectIds = null;
+    } else {
+      projectIds = projectIds.map((id) => {
+        return mongoose.Types.ObjectId(id);
+      });
+    }
+    // if (!clientIds) {
+    //   clientIds = null;
+    // } else {
+    //   clientIds = clientIds.map((id) => {
+    //     return mongoose.Types.ObjectId(id);
+    //   });
+    // }
+    if (!userIds) {
+      userIds = null;
+    } else {
+      userIds = userIds.map((id) => {
+        return mongoose.Types.ObjectId(id);
+      });
+    }
 
     console.log(projectIds);
 
@@ -399,65 +416,69 @@ const generateReportByIds = asyncHandler(async (req, res) => {
     let user;
     // if (userId) user = await User.findById(userId);
     // else user = req.user;
-
-    const activity = await Activity.aggregate([
-      {
-        $match: {
-          $and: [
-            { project: { $in: projectIds } },
-            { client: { $in: clientIds } },
-            { employee: { $in: userIds } },
-            { activityOn: { $gte: dateOne, $lte: dateTwo } },
-          ],
-        },
-      },
-
-      {
-        $group: {
-          _id: {
-            userId: "$employee",
-            project: "$project",
-            client: "$client",
+    for (var i = 0; i < userIds.length; i++) {
+      const userId = userIds[i];
+      const activity = await Activity.aggregate([
+        {
+          $match: {
+            $and: [
+              // { project: { $in: projectIds } },
+              // { client: { $in: clientIds } },
+              { employee: { $eq: userId } },
+              { activityOn: { $gte: dateOne, $lte: dateTwo } },
+            ],
           },
-          actCount: { $sum: 1 },
-          totalHours: { $sum: "$consumeTime" },
-          avgPerformanceData: { $avg: "$performanceData" },
         },
-      },
 
-      {
-        $group: {
-          _id: "$_id.userId",
-          projects: {
-            $push: {
-              client: "$_id.client",
-              project: "$_id.project",
-              count: "$actCount",
-              totalHours: "$totalHours",
-              avgPerformanceData: "$performanceData",
+        {
+          $group: {
+            _id: {
+              userId: "$employee",
+              project: "$project",
+              client: "$client",
             },
+            actCount: { $sum: 1 },
+            totalHours: { $sum: "$consumeTime" },
+            avgPerformanceData: { $avg: "$performanceData" },
           },
         },
-        $group: {
-          _id: "$_id.userId",
-          clients: {
-            $push: {
-              client: "$_id.client",
-              count: "$actCount",
-              totalHours: "$totalHours",
-              avgPerformanceData: "$performanceData",
-            },
-          },
-          count: { $sum: "$actCount" },
-        },
-      },
-    ]);
+
+        // {
+        //   $group: {
+        //     _id: "$_id.userId",
+        //     projects: {
+        //       $push: {
+        //         client: "$_id.client",
+        //         project: "$_id.project",
+        //         count: "$actCount",
+        //         totalHours: "$totalHours",
+        //         avgPerformanceData: "$performanceData",
+        //       },
+        //     },
+        //   },
+        //   $group: {
+        //     _id: "$_id.userId",
+        //     clients: {
+        //       $push: {
+        //         client: "$_id.client",
+        //         count: "$actCount",
+        //         totalHours: "$totalHours",
+        //         avgPerformanceData: "$performanceData",
+        //       },
+        //     },
+        //     count: { $sum: "$actCount" },
+        //   },
+        // },
+      ]);
+      employeeDetails.push(activity);
+    }
 
     res.json({
       status: "ok",
-      data: activity,
+      employeeDetails,
     });
   } catch (error) {
+    console.log(error);
     throw new Error(error);
   }
 });
