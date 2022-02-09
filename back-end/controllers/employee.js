@@ -17,7 +17,7 @@ const ac = new AccessControl(grantsObject);
 // @access  Private
 
 const getEmployeeById = asyncHandler(async (req, res) => {
-  const permission = ac.can(req.user.role).readOwn("member");
+  const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
     try {
       const { id } = req.params;
@@ -41,7 +41,7 @@ const getEmployeeById = asyncHandler(async (req, res) => {
 import dayjs from "dayjs";
 
 const getEmployeeDetails = asyncHandler(async (req, res) => {
-  // const permission = ac.can(req.user.role).readOwn("member");
+  // const permission = ac.can(req.user.role).readOwn("members");
   if (true) {
     var todayHours = 0;
     var yesterday;
@@ -211,7 +211,7 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getEmployeeList = asyncHandler(async (req, res) => {
-  const permission = ac.can(req.user.role).readOwn("member");
+  const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
     try {
       const { teams } = await User.findById(req.user._id).populate({
@@ -243,7 +243,7 @@ const getEmployeeList = asyncHandler(async (req, res) => {
 
 const deleteEmployee = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const permission = ac.can(req.user.role).deleteOwn("member");
+  const permission = ac.can(req.user.role).deleteOwn("members");
   if (permission.granted) {
     try {
       /* ---------------------------- finding employee ---------------------------- */
@@ -318,8 +318,8 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 
 const editEmployee = asyncHandler(async (req, res) => {
   console.log("Inside Route");
-  const permission = ac.can(req.user.role).updateOwn("member");
-  // console.log(permission.Possession);
+  const permission = ac.can(req.user.role).updateOwn("members");
+  console.log("User Role", req.user.role, permission.granted);
   if (permission.granted) {
     const employeeId = req.params.id;
     const filteredBody = permission.filter(req.body);
