@@ -240,7 +240,7 @@ const teamCommondata = asyncHandler(async (req, res) => {
               },
               {
                 activityOn: {
-                  $eq: dayjs().add(-1, day).format("DD/MM/YYYY"),
+                  $eq: dayjs().add(-1, "day").format("DD/MM/YYYY"),
                 },
               },
             ],
