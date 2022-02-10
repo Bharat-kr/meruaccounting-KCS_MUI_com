@@ -74,7 +74,7 @@ const Timeline = ({ activities }) => {
     });
     setWorkTimes(arr);
   }, [activities]);
-  console.log(workTimes);
+  // console.log(workTimes);
 
   const row = [];
   for (let i = 0; i < 24; i++) {

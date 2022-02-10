@@ -2,10 +2,13 @@ import User from "../models/user.js";
 import Client from "../models/client.js";
 import Project from "../models/project.js";
 import Team from "../models/team.js";
+import mongoose from "mongoose";
 import asyncHandler from "express-async-handler";
 
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
+// var weekday = require("dayjs/plugin/weekday");
+import weekday from "dayjs/plugin/weekday.js";
 
 const ac = new AccessControl(grantsObject);
 
@@ -14,7 +17,7 @@ const ac = new AccessControl(grantsObject);
 // @access  Private
 
 const getEmployeeById = asyncHandler(async (req, res) => {
-  const permission = ac.can(req.user.role).readOwn("member");
+  const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
     try {
       const { id } = req.params;
@@ -35,13 +38,203 @@ const getEmployeeById = asyncHandler(async (req, res) => {
     res.status(403).end("UnAuthorized");
   }
 });
+import dayjs from "dayjs";
+
+const getEmployeeDetails = asyncHandler(async (req, res) => {
+  // const permission = ac.can(req.user.role).readOwn("members");
+  if (true) {
+    var todayHours = 0;
+    var yesterday;
+    var yesterdayHours;
+    var tomorrow;
+    var tomorrowHours;
+    try {
+      const { id } = req.params;
+      const employee = await User.findById(id);
+      if (!employee) {
+        res.status(404);
+        throw new Error(`Employee not found `);
+      }
+      const { userArr } = req.body;
+      const arrData = [];
+      for (var i = 0; i < userArr.length; i++) {
+        const userId = userArr[i];
+        const employee = await User.findById(userId);
+        // console.log("This is userId:", userId, " This is employee:", employee);
+        if (!employee) {
+          res.status(404);
+          throw new Error(`Employee not found `);
+        }
+        const day = dayjs();
+        const dayArr = employee.days;
+
+        var j;
+        for (j = 0; j < dayArr.length; j++) {
+          const dayObj = dayArr[j];
+          let today = dayjs().format("DD/MM/YYYY").toString();
+          // let today = dayjs().format("DD/MM/YYYY");
+          console.log("Today:", today);
+          if (dayObj.date == today) {
+            console.log("Inside If");
+            todayHours = dayObj.dailyHours;
+
+            console.log("todayHours", todayHours);
+
+            yesterday = dayArr[j - 1];
+            yesterdayHours = yesterday.dailyHours;
+            console.log("yesterdayHours", yesterdayHours);
+
+            // tomorrow = dayArr[j + 1];
+            // tomorrowHours = tomorrow.dailyHours;
+          }
+
+          // console.log("Aggregated", user);
+        }
+        let today = dayjs().format("DD/MM/YYYY").toString();
+        let thisMonth = dayjs().month();
+        let thisYear = dayjs().year();
+        console.log("This Month", thisMonth);
+        const firstDate = dayjs()
+          .date(1)
+          .month(thisMonth)
+          .year(thisYear)
+          .format("DD/MM/YYYY");
+        let lastDate = dayjs()
+          .date(25)
+          .month(thisMonth)
+          .year(thisYear)
+          .format("DD/MM/YYYY");
+
+        // console.log("This is Day:", dayObj);
+
+        console.log("First And Loss", firstDate, lastDate);
+        dayjs.extend(weekday);
+
+        // when Sunday is the first day of the week
+
+        const weekStart = dayjs().weekday(-7).format("DD/MM/YYYY");
+        const weekEnd = dayjs().weekday(7).format("DD/MM/YYYY"); // next Sunday
+
+        console.log("Week Start And WekkEnd", weekStart, weekEnd);
+
+        const totalMonth = await User.aggregate([
+          {
+            $match: {
+              _id: { $eq: employee._id },
+            },
+          },
+          { $unwind: "$days" },
+          {
+            $match: {
+              // "days.dailyHours": { $eq: 0 },
+              $and: [
+                {
+                  "days.date": {
+                    $gte: firstDate,
+                    $lte: lastDate,
+                  },
+                },
+                // { "days.dailyHours": { $eq: 0 } },
+              ],
+            },
+          },
+          {
+            $group: {
+              _id: employee._id,
+              totalHours: { $sum: "$days.dailyHours" },
+              // avgPerformanceData: { $avg: "$performanceData" },
+              docCount: { $sum: 1 },
+            },
+          },
+        ]);
+
+        const totalWeek = await User.aggregate([
+          {
+            $match: {
+              _id: { $eq: employee._id },
+            },
+          },
+          { $unwind: "$days" },
+          {
+            $match: {
+              // "days.dailyHours": { $eq: 0 },
+              $and: [
+                {
+                  "days.date": {
+                    $gte: weekStart,
+                    $lte: weekEnd,
+                  },
+                },
+                // { "days.dailyHours": { $eq: 0 } },
+              ],
+            },
+          },
+          {
+            $group: {
+              _id: employee._id,
+              totalHours: { $sum: "$days.dailyHours" },
+              // avgPerformanceData: { $avg: "$performanceData" },
+              docCount: { $sum: 1 },
+            },
+          },
+        ]);
+
+        const totalMonthHours = totalMonth.totalHours;
+        const totalWeekTime = totalWeek.totalHours;
+        const obj = {
+          employee,
+          todayHours,
+          yesterdayHours,
+          tomorrowHours,
+          totalMonthHours,
+          totalWeekTime,
+        };
+        arrData.push(obj);
+      }
+      res.status(200).json({
+        status: "Ok",
+        data: employee,
+        arrData,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new Error(error);
+    }
+  } else {
+    // resource is forbidden for this user/role
+    res.status(403).end("UnAuthorized");
+  }
+});
 
 // @desc    Get employee details
 // @route   GET /employee/employeeList
 // @access  Private
 
+const getAllEmployee = asyncHandler(async (req, res) => {
+  console.log(req.user);
+  const permission = ac.can(req.user.role).readOwn("members");
+  if (permission.granted) {
+    try {
+      const users = await User.find().select("_id firstName");
+
+      res.status(200).json({
+        messsage: "Success",
+        data: users,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    // resource is forbidden for this user/role
+    res.status(403).end("UnAuthorized");
+  }
+});
+// @desc    Get employee details
+// @route   GET /employee/employeeList
+// @access  Private
+
 const getEmployeeList = asyncHandler(async (req, res) => {
-  const permission = ac.can(req.user.role).readOwn("member");
+  const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
     try {
       const { teams } = await User.findById(req.user._id).populate({
@@ -73,7 +266,7 @@ const getEmployeeList = asyncHandler(async (req, res) => {
 
 const deleteEmployee = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const permission = ac.can(req.user.role).deleteOwn("member");
+  const permission = ac.can(req.user.role).deleteOwn("members");
   if (permission.granted) {
     try {
       /* ---------------------------- finding employee ---------------------------- */
@@ -148,8 +341,8 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 
 const editEmployee = asyncHandler(async (req, res) => {
   console.log("Inside Route");
-  const permission = ac.can(req.user.role).updateOwn("member");
-  // console.log(permission.Possession);
+  const permission = ac.can(req.user.role).updateOwn("members");
+  console.log("User Role", req.user.role, permission.granted);
   if (permission.granted) {
     const employeeId = req.params.id;
     const filteredBody = permission.filter(req.body);
@@ -171,4 +364,11 @@ const editEmployee = asyncHandler(async (req, res) => {
   }
 });
 
-export { getEmployeeList, getEmployeeById, deleteEmployee, editEmployee };
+export {
+  getEmployeeList,
+  getEmployeeById,
+  deleteEmployee,
+  editEmployee,
+  getEmployeeDetails,
+  getAllEmployee,
+};
