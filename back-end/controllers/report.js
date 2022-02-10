@@ -11,72 +11,160 @@ import mongoose from "mongoose";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
-    projectIds = projectIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
-    userIds = userIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
-    clientIds = clientIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
-    });
+    // let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
+    // projectIds = projectIds.map((id) => {
+    //   return mongoose.Types.ObjectId(id);
+    // });
+    // userIds = userIds.map((id) => {
+    //   return mongoose.Types.ObjectId(id);
+    // });
+    // clientIds = clientIds.map((id) => {
+    //   return mongoose.Types.ObjectId(id);
+    // });
 
-    if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
-    if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
+    // if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
+    // if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
 
     let user;
     // if (userId) user = await User.findById(userId);
     // else user = req.user;
 
-    await Activity.aggregate([
+    const activity = await Activity.aggregate([
       {
-        $match: {
-          $and: [
-            { project: { $in: projectIds } },
-            { client: { $in: clientIds } },
-            { employee: { $in: userIds } },
-            { activityOn: { $gte: dateOne, $lte: dateTwo } },
+        $match: {},
+      },
+      {
+        $facet: {
+          byProjects: [
+            {
+              $lookup: {
+                from: "projects",
+                localField: "project",
+                foreignField: "_id",
+                as: "project",
+              },
+            },
+            {
+              $unwind: {
+                path: "$project",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  name: "$project.name",
+                  employee: "$project._id",
+                },
+                actCount: {
+                  $sum: 1,
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
+                },
+              },
+            },
+          ],
+          byClients: [
+            {
+              $lookup: {
+                from: "clients",
+                localField: "client",
+                foreignField: "_id",
+                as: "client",
+              },
+            },
+            {
+              $unwind: {
+                path: "$client",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  firstName: "$client.name",
+                  employee: "$client._id",
+                },
+                actCount: {
+                  $sum: 1,
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
+                },
+              },
+            },
+          ],
+          byEmployees: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  firstName: "$employee.firstName",
+                  employee: "$employee._id",
+                  lastName: "$employee.lastName",
+                },
+                actCount: {
+                  $sum: 1,
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
+                },
+              },
+            },
+          ],
+          byScreenshots: [
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
+              $unwind: {
+                path: "$screenshots",
+              },
+            },
+            {
+              $group: {
+                _id: "$screenshots.title",
+                actCount: {
+                  $sum: 1,
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
+                },
+              },
+            },
           ],
         },
-      },
-
-      {
-        $group: {
-          _id: {
-            userId: "$employee",
-            project: "$project",
-            client: "$client",
-          },
-          actCount: { $sum: 1 },
-          totalHours: { $sum: "$consumeTime" },
-          avgPerformanceData: { $avg: "$performanceData" },
-        },
-      },
-
-      {
-        $group: {
-          _id: "$_id.userId",
-          projects: {
-            $push: {
-              client: "$_id.client",
-              // project: "$_id.project",
-              count: "$actCount",
-              totalHours: "$totalHours",
-              avgPerformanceData: "$performanceData",
-            },
-          },
-        },
-
-        clients: {
-          $push: {
-            client: "$_id.client",
-            count: "$actCount",
-            totalHours: "$totalHours",
-            avgPerformanceData: "$performanceData",
-          },
-        },
-        count: { $sum: "$actCount" },
       },
     ]);
 
@@ -339,51 +427,3 @@ export {
   generateReportByUser,
   generateReportByProjectId,
 };
-
-// Activity.aggregate([
-//   {
-//     $group: {
-//       _id: {
-//         userId: "$employee",
-//         client: "$client",
-//         project: "$project",
-//       },
-//       actCount: { $sum: 1 },
-//       totalHours: { $sum: "$consumeTime" },
-//       avgPerformanceData: { $avg: "$performanceData" },
-//     },
-//   },
-//   {
-//     $group: {
-//       _id: {
-//         userId: "$employee",
-//         client: "$client",
-//       },
-//       actCount: { $sum: 1 },
-//       totalHours: { $sum: "$consumeTime" },
-//       avgPerformanceData: { $avg: "$performanceData" },
-//       projects: {
-//         $push: {
-//           _id: "$_id.client",
-//           count: "$count",
-//           data: "$data",
-//         },
-//       },
-//     },
-//   },
-//   {
-//     $group: {
-//       _id: "$client",
-//       actCount: { $sum: 1 },
-//       totalHours: { $sum: "$consumeTime" },
-//       avgPerformanceData: { $avg: "$performanceData" },
-//       data: {
-//         $push: {
-//           _id: "$_id.project",
-//           count: "$count",
-//           data: "$data",
-//         },
-//       },
-//     },
-//   },
-// ]);

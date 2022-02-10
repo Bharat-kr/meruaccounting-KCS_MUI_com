@@ -5,7 +5,9 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Bars from "./BarChart";
-import PieChart from "./PieChart";
+import PChart from "./PieChart";
+import ProjectsCharts from "./ProjectsCharts";
+import ClientsCharts from "./ClientsCharts";
 import FloatingForm from "./FloatingForm";
 
 function TabPanel(props) {
@@ -57,18 +59,22 @@ export default function Graphs({ reports }) {
           aria-label="basic tabs example"
         >
           <Tab label="Timeline" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Employees" {...a11yProps(1)} />
+          <Tab label="Projects" {...a11yProps(2)} />
+          <Tab label="Clients" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Bars reports={reports}></Bars>
+        <Bars></Bars>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PieChart></PieChart>
+        <PChart></PChart>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <ProjectsCharts />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <ClientsCharts></ClientsCharts>
       </TabPanel>
     </Box>
   );

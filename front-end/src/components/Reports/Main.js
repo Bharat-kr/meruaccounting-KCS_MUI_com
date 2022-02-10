@@ -280,9 +280,7 @@ export default function Main() {
           generate Reports
         </Button>
         {/* {!reports.loader ? <div>hello</div> : null} */}
-        {!reports.loader ? (
-          <Graphs reports={reports} style={{ margin: 10 }}></Graphs>
-        ) : null}
+        {true ? <Graphs style={{ margin: 10 }}></Graphs> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
         hello
