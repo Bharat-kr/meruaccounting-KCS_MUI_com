@@ -210,6 +210,29 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
 // @route   GET /employee/employeeList
 // @access  Private
 
+const getAllEmployee = asyncHandler(async (req, res) => {
+  console.log(req.user);
+  const permission = ac.can(req.user.role).readOwn("members");
+  if (permission.granted) {
+    try {
+      const users = await User.find().select("_id firstName");
+
+      res.status(200).json({
+        messsage: "Success",
+        data: users,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    // resource is forbidden for this user/role
+    res.status(403).end("UnAuthorized");
+  }
+});
+// @desc    Get employee details
+// @route   GET /employee/employeeList
+// @access  Private
+
 const getEmployeeList = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
@@ -348,4 +371,5 @@ export {
   deleteEmployee,
   editEmployee,
   getEmployeeDetails,
+  getAllEmployee,
 };
