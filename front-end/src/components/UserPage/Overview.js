@@ -12,13 +12,16 @@ import {
   AppItemOrders,
   AppBugReports,
 } from "../_dashboard/app";
-import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import timeDiff from "src/_helpers/timeDifference";
 
 // contexts
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
-export default function Overview({ date, days }) {
+export default function Overview({ date, days, activities }) {
   const { commonData } = useContext(CurrentUserContext);
   const [value, setValue] = React.useState("1");
+  const [apps, setApps] = React.useState([]);
+  const [appsMap, setAppsMap] = React.useState([]);
   const [todaysHours, setTodaysHours] = useState(0);
 
   //getting DailyHours
@@ -33,6 +36,37 @@ export default function Overview({ date, days }) {
       setTodaysHours(0);
     }
   }, [date]);
+
+  console.log("activities", activities);
+
+  //Getting apps and URL's
+  useEffect(() => {
+    if (activities !== undefined && activities.length > 0) {
+      let arr = [];
+      let map = new Map();
+      let finalArray = [];
+
+      activities.forEach((activity) => {
+        activity.screenshots.forEach((screenshot) => {
+          arr.push(screenshot.title);
+          if (map.get(screenshot.title)) {
+            map.set(screenshot.title, map.get(screenshot.title) + 1);
+          } else {
+            map.set(screenshot.title, 1);
+          }
+        });
+      });
+      map.forEach((value, key) => {
+        finalArray.push({
+          app: key,
+          usage: value,
+        });
+      });
+      setApps(arr);
+      setAppsMap(finalArray);
+      console.log(map);
+    }
+  }, [activities]);
 
   //toggling tasks and apps
   const handleChange = (event, newValue) => {
@@ -138,33 +172,76 @@ export default function Overview({ date, days }) {
                 </Typography>
               </Box>
               <TabPanel value="1">
-                <Box overflow={"auto"}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography
-                      sx={{ mb: 1.5 }}
-                      variant="h5"
-                      color="text.primary"
-                    >
-                      Current Project
-                      <br />
-                      <Typography color="text.primary">
-                        Tasks getting Performed
-                      </Typography>
-                    </Typography>
-                    <Typography variant="h4" component="div">
-                      1h 32m
-                    </Typography>
-                  </Box>
-                  <Divider sx={{ backgroundColor: "primary.dark" }} />
+                <Box overflow={"auto"} sx={{ height: 145 }}>
+                  {activities &&
+                    activities.map((activity) => {
+                      return (
+                        <>
+                          <Box
+                            key={activity._id}
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              px: 1,
+                            }}
+                          >
+                            <Typography
+                              sx={{ mb: 1.5 }}
+                              variant="h5"
+                              color="text.primary"
+                            >
+                              {activity.project.name}
+                              <br />
+                              <Typography color="text.primary">
+                                {activity.task}
+                              </Typography>
+                            </Typography>
+                            <Typography variant="h4" component="div">
+                              {timeDiff(activity.startTime, activity.endTime)}
+                            </Typography>
+                          </Box>
+                          <Divider sx={{ backgroundColor: "primary.dark" }} />
+                        </>
+                      );
+                    })}
                 </Box>
               </TabPanel>
-              <TabPanel value="2">...</TabPanel>
+              <TabPanel value="2">
+                <Box overflow={"auto"} sx={{ height: 145 }}>
+                  {appsMap &&
+                    appsMap.map((data) => {
+                      return (
+                        <>
+                          <Box
+                            key={data.app}
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              px: 1,
+                            }}
+                          >
+                            <Typography
+                              sx={{ my: 1.5 }}
+                              variant="h6"
+                              color="text.primary"
+                            >
+                              {data.app}
+                              <br />
+                            </Typography>
+                            <Typography variant="h5" component="div">
+                              {`${((data.usage / apps.length) * 100).toFixed(
+                                2
+                              )}%`}
+                            </Typography>
+                          </Box>
+                          <Divider sx={{ backgroundColor: "primary.dark" }} />
+                        </>
+                      );
+                    })}
+                </Box>
+              </TabPanel>
             </TabContext>
           </CardContent>
         </Card>
