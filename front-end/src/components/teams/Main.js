@@ -37,6 +37,7 @@ import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 import { removeProjectMember } from "src/api/projects api/projects";
 import { UserContext } from "../../contexts/UserContext";
 import { useSnackbar } from "notistack";
+import { loginContext } from "../../contexts/LoginContext";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -60,6 +61,7 @@ export default function Main(props) {
   const { changeTab } = useContext(UserContext);
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
+  const { loginC } = useContext(loginContext);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -358,7 +360,7 @@ export default function Main(props) {
             </Box>
             {currMember.status !== "archived" && (
               <>
-                {currMember.role === "admin" && (
+                {loginC.userData.role === "admin" && (
                   <Box sx={{ mt: 2 }}>
                     <FormControl component="fieldset" sx={{ pt: 2 }}>
                       <Typography variant="h4">
@@ -380,6 +382,11 @@ export default function Main(props) {
                           label="Manager - can see selected user's Timeline & Reports (but not rates)"
                         />
                         <FormControlLabel
+                          value="projectleader"
+                          control={<Radio onChange={updateRole} />}
+                          label="Project leader- able to manage project and project members."
+                        />
+                        <FormControlLabel
                           value="employee"
                           control={<Radio onChange={updateRole} />}
                           label="Employee - can see their own data only"
@@ -388,24 +395,19 @@ export default function Main(props) {
                     </FormControl>
                   </Box>
                 )}
-                {currMember.role === "admin" && (
+                {currMember.role === "manager" && (
                   <Box>
-                    <Typography variant="h5">Manage for</Typography>
-                    <Typography varinat="body2">
-                      If enabled,
-                      {getFullName(currMember.firstName, currMember.lastName)}
-                      will be able to see selected user's Timeline and Reports,
-                      but not rates.
+                    <Typography variant="h5">
+                      {currMember.firstName} can create their team
                     </Typography>
-                    <Typography varinat="h6">
-                      {/* {User.map((user) => (
+
+                    {/* {.map((user) => (
                     <FormControlLabel
                       sx={{ pt: 1, fontWeight: 10 }}
                       control={<Switch />}
                       label={user.name}
                     />
                   ))} */}
-                    </Typography>
                   </Box>
                 )}
 

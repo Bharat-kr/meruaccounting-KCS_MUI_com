@@ -102,7 +102,30 @@ const commondata = asyncHandler(async (req, res) => {
           ],
         },
       });
-
+    const yersterdayHours = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+            {
+              activityOn: {
+                $eq: dayjs().add(-1, "day").format("DD/MM/YYYY"),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
     const dailyHours = await Activity.aggregate([
       {
         $match: {
@@ -208,6 +231,7 @@ const commondata = asyncHandler(async (req, res) => {
     res.status(200).json({
       status: "Fetched common data",
       user,
+      yersterdayHours,
       dailyHours,
       weeklyTime,
       monthlyTime,

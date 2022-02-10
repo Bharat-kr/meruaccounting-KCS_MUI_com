@@ -61,9 +61,10 @@ export default function RegisterForm() {
       );
       const res = await axios({
         method: "post",
-        url: "https://ssmonitor-backend.herokuapp.com//register",
+        url: "http://localhost:8000/register",
+        // url: "https://ssmonitor-backend.herokuapp.com//register",
         data: {
-          role: "manager",
+          role: "admin",
           firstName: { ...getFieldProps("firstName") }.value,
           lastName: { ...getFieldProps("lastName") }.value,
           email: { ...getFieldProps("email") }.value,

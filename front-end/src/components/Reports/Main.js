@@ -173,7 +173,7 @@ export default function Main() {
     }
   }, [getTeams, clients, projects]);
 
-  console.log(clientDetails.client.data);
+  console.log(clientDetails?.client?.data);
   //   make select project options
   React.useEffect(() => {
     let array = [];
@@ -201,7 +201,7 @@ export default function Main() {
         setprojectOptions([...array]);
       });
     } else {
-      if (clientDetails.loader === false) {
+      if (clientDetails?.loader === false) {
         clientDetails.client.data.map((client) => {
           client.projects.map((project) => {
             let newOption = {
@@ -220,7 +220,7 @@ export default function Main() {
   }, [clientDetails, clients, employees]);
 
   //   make select client options
-  console.log(clientDetails.client.data);
+  console.log(clientDetails?.client?.data);
   React.useEffect(() => {
     if (clientDetails.loader === false) {
       clientDetails.client.data.map((client) => {

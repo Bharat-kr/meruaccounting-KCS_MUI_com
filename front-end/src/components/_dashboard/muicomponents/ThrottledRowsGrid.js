@@ -39,10 +39,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function dispdata(data, data2) {
+function dispdata(data, data2, user) {
   return (
     <>
-      <Link underline="hover">{data}</Link>
+      <Typography
+        underline="hover"
+        component={RouterLink}
+        sx={{
+          fontWeight: "400",
+          textDecoration: "none",
+          color: "primary.main",
+          ":hover": {
+            color: "primary.darker",
+            textDecoration: "underline #000000",
+          },
+        }}
+        to={`/dashboard/employeepage/${user._id}`}
+        variant="body2"
+      >
+        {data}
+      </Typography>
       <Typography variant="body2" sx={{ mt: 0.5 }} display="block" gutterBottom>
         {data2 !== null ? data2 : ""}
       </Typography>
@@ -52,14 +68,15 @@ function dispdata(data, data2) {
 
 export default function ApiRefRowsGrid(props) {
   const { teamsList, getTeamsLoader, tableListRef } = props;
+  const [tData, setTData] = React.useState([]);
   const {
     employeesData,
     employeeTimeData,
     changeEmployeeTimeData,
     dispatchEmployeesData,
   } = React.useContext(employeeContext);
-  const [tData, setTData] = React.useState([]);
   const { dispatchgetTeam, getTeams } = React.useContext(teamContext);
+  let totalActive = 0;
 
   console.log(teamsList);
   employeeTimeData?.map((mem) => {
@@ -98,7 +115,12 @@ export default function ApiRefRowsGrid(props) {
   //   console.log();
   //   console.log(date.getTime());
   // });
-  return tData?.length === 0 ? (
+
+  tData?.map((member) =>
+    member.user.lastActive / 1000 >= 86400 ? (totalActive += 1) : ""
+  );
+
+  return employeesData?.data?.length === 0 ? (
     <Box
       sx={{
         display: "flex",
@@ -108,6 +130,42 @@ export default function ApiRefRowsGrid(props) {
       }}
     >
       <CircularProgress />
+    </Box>
+  ) : employeesData?.data?.loader ? (
+    <Box
+      component="div"
+      sx={{
+        height: "50vh",
+        width: "100%",
+        flexGrow: "1",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Box
+        component="img"
+        src="/svgs/member.svg"
+        sx={{ width: 100, height: 70, backgroundColor: "white" }}
+      />
+      <Typography
+        to={`/dashboard/teams`}
+        component={RouterLink}
+        sx={{
+          fontSize: "1.5rem",
+          fontWeight: "600",
+          textDecoration: "none",
+          color: "primary.main",
+          ":hover": {
+            color: "primary.darker",
+            textDecoration: "underline #000000",
+          },
+        }}
+        varinat="h5"
+      >
+        Add member to team
+      </Typography>
     </Box>
   ) : (
     <div style={{ height: "auto", width: "100%" }}>
@@ -123,12 +181,7 @@ export default function ApiRefRowsGrid(props) {
               <StyledTableCell align="right">This Month</StyledTableCell>
             </TableRow>
             <TableRow>
-              {/* <StyledTableCell>2 out of 4 worked Today</StyledTableCell> */}
-              <StyledTableCell align="right"> </StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell>{`${totalActive} out of ${tData?.length} Active today`}</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -143,7 +196,7 @@ export default function ApiRefRowsGrid(props) {
                       <Typography
                         component={RouterLink}
                         sx={{
-                          fontWeiight: "600",
+                          fontWeight: "600",
                           textDecoration: "none",
                           color: "black",
                         }}
@@ -158,9 +211,22 @@ export default function ApiRefRowsGrid(props) {
                       {dispdata(
                         date.getTime() - member?.user?.lastActive <= 120000 ? (
                           <Box sx={{ display: "flex", flexDirection: "row" }}>
-                            <CircleIcon sx={{ color: "success.darker" }} />
-                            <Typography sx={{ ml: 1 }}>
-                              Currently Active
+                            <CircleIcon
+                              small
+                              sx={{ color: "success.darker" }}
+                            />
+                            <Typography
+                              sx={{
+                                fontWeight: "400",
+                                textDecoration: "none",
+                                color: "primary.main",
+                                ":hover": {
+                                  color: "primary.darker",
+                                  textDecoration: "underline #000000",
+                                },
+                              }}
+                            >
+                              Active
                             </Typography>
                           </Box>
                         ) : moment(member?.user?.lastActive).subtract(
@@ -172,7 +238,9 @@ export default function ApiRefRowsGrid(props) {
                             .fromNow()
                         ) : (
                           "Not Active in a while"
-                        )
+                        ),
+                        "",
+                        member.user
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="right">
@@ -195,7 +263,8 @@ export default function ApiRefRowsGrid(props) {
                               member.dailyHours[0]?.totalHours /
                               member.user.payRate
                             ).toFixed(2)
-                          : ""
+                          : "",
+                        member.user
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="right">
@@ -218,7 +287,8 @@ export default function ApiRefRowsGrid(props) {
                               member.yersterdayHours[0]?.totalHours /
                               member.user.payRate
                             ).toFixed(2)
-                          : ""
+                          : "",
+                        member.user
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="right">
@@ -241,7 +311,8 @@ export default function ApiRefRowsGrid(props) {
                               member.weeklyTime[0]?.totalHours /
                               member.user.payRate
                             ).toFixed(2)
-                          : ""
+                          : "",
+                        member.user
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="right">
@@ -264,7 +335,8 @@ export default function ApiRefRowsGrid(props) {
                               member?.monthlyTime[0]?.totalHours /
                               member.user.payRate
                             ).toFixed(2)
-                          : ""
+                          : "",
+                        member.user
                       )}
                     </StyledTableCell>
                   </StyledTableRow>
