@@ -19,6 +19,8 @@ import reportRoutes from "./routes/report.js";
 import uploadRoutes from "./routes/upload.js";
 import notificationRoutes from "./routes/notify.js";
 import avatarRoutes from "./routes/avatar.js";
+import adminRoutes from "./routes/admin.js";
+import projectLeaderRoutes from "./routes/projectLeader.js";
 
 const __dirname = path.resolve();
 
@@ -51,6 +53,8 @@ app.use("/upload", uploadRoutes);
 app.use("/avatar", avatarRoutes);
 app.use("/report", reportRoutes);
 app.use("/notify", notificationRoutes);
+app.use("/admin", adminRoutes);
+app.use("/projectLeader", projectLeaderRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/avatar", express.static(path.join(__dirname, "/avatar")));
