@@ -51,7 +51,6 @@ const SplitActivity = ({
   const handleChange = (event) => {
     setProjectSelected(event.target.value);
   };
-  console.log(project);
   const [splitModal, setSplitModal] = useState(false);
   const handleSplitOpen = () => {
     handleClose();
