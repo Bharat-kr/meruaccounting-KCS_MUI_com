@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+import path from "path";
+
 import colors from "colors";
 
 const connectDB = async () => {
+  // const __dirname = path.resolve();
+  // dotenv.config({ path: path.join(__dirname, "./.env") }); //local
+
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,

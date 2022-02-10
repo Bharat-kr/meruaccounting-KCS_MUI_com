@@ -68,7 +68,7 @@ export default function Main(props) {
     console.log(event.target.checked);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     try {
       console.log(currTeam?._id, currMember._id);
       const teamIndex = teamsDetails?.findIndex((i) => i._id === currTeam?._id);
@@ -77,8 +77,8 @@ export default function Main(props) {
       );
       console.log(teamIndex, memberIndex, "hello");
       if (teamsDetails !== null) {
-        await setCurrTeam(teamsDetails[teamIndex]);
-        await setMember(teamsDetails[teamIndex]?.members[memberIndex]);
+        setCurrTeam(teamsDetails[teamIndex]);
+        setMember(teamsDetails[teamIndex]?.members[memberIndex]);
       }
     } catch (err) {
       console.log(err);

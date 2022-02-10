@@ -92,7 +92,7 @@ export default function Sidebar() {
         component="div"
         sx={{
           margin: "10px",
-          maxHeight: "60vh",
+          maxHeight: "70vh",
           height: "auto",
         }}
       >
