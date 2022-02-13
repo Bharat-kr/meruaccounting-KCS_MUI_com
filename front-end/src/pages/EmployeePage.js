@@ -69,7 +69,11 @@ export default function UserPage() {
             })
           }
         />
-        <Overview date={date} days={commonData?.commonData?.user?.days} />
+        <Overview
+          date={date}
+          days={commonData?.commonData?.user?.days}
+          activities={activities}
+        />
         <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>
