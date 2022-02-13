@@ -5,9 +5,10 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Bars from "./BarChart";
-import PChart from "./PieChart";
 import ProjectsCharts from "./ProjectsCharts";
 import ClientsCharts from "./ClientsCharts";
+import EmployeesCharts from "./EmployeesCharts";
+import AppsCharts from "./AppsCharts";
 import FloatingForm from "./FloatingForm";
 
 function TabPanel(props) {
@@ -61,20 +62,24 @@ export default function Graphs({ reports }) {
           <Tab label="Timeline" {...a11yProps(0)} />
           <Tab label="Employees" {...a11yProps(1)} />
           <Tab label="Projects" {...a11yProps(2)} />
-          <Tab label="Clients" {...a11yProps(2)} />
+          <Tab label="Clients" {...a11yProps(3)} />
+          <Tab label="Apps & Urls" {...a11yProps(4)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
         <Bars></Bars>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PChart></PChart>
+        <EmployeesCharts></EmployeesCharts>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <ProjectsCharts />
       </TabPanel>
       <TabPanel value={value} index={3}>
         <ClientsCharts></ClientsCharts>
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <AppsCharts></AppsCharts>
       </TabPanel>
     </Box>
   );

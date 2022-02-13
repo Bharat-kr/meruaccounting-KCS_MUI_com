@@ -3,40 +3,40 @@ import { reportsContext } from "../../contexts/ReportsContext";
 import secondsToHms from "../../_helpers/secondsToHms";
 import { CanvasJSChart } from "canvasjs-react-charts";
 
-export default function ProjectsCharts() {
+export default function AppsCharts() {
   const { reports } = React.useContext(reportsContext);
-  const [projects, setprojects] = useState([]);
+  const [apps, setapps] = useState([]);
   const [state, setState] = useState([]);
   const [totalTime, settotalTime] = useState(100);
 
   //  set data
   React.useEffect(() => {
-    setprojects(reports.reports.data[0].byProjects);
+    setapps(reports.reports.data[0].byScreenshots);
   }, [reports]);
-  console.log(projects);
+  console.log(apps);
 
   React.useEffect(() => {
     let tt = 0;
-    projects.forEach((project) => {
-      tt = tt + project.totalHours;
+    apps.forEach((app) => {
+      tt = tt + app.totalHours;
     });
     settotalTime(tt);
-    projects.map((project) => {
+    apps.map((app) => {
       let obj = {
-        label: project._id.name ? project._id.name : "deleted",
-        y: (100 * (project.totalHours / tt)).toString(),
-        hhmm: secondsToHms(project.totalHours),
+        label: app._id,
+        y: (100 * (app.totalHours / tt)).toString(),
+        hhmm: secondsToHms(app.totalHours),
       };
-      setState((prev) => [...prev, obj]);
+      if (obj.y > 10) setState((prev) => [...prev, obj]);
     });
-  }, [projects]);
+  }, [apps]);
   console.log(state);
 
   const options = {
     exportEnabled: true,
     animationEnabled: true,
     title: {
-      text: "Hours worked for Projects",
+      text: "Hours worked for apps",
     },
     data: [
       {

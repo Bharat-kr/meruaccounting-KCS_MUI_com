@@ -15,8 +15,6 @@ export default function ClientsCharts() {
   }, [reports]);
   console.log(clients);
 
-  React.useEffect(() => {}, []);
-
   React.useEffect(() => {
     let tt = 0;
     clients.forEach((client) => {
