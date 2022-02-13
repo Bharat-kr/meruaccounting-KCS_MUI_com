@@ -80,6 +80,17 @@ const updateMember = asyncHandler(async (req, res) => {
       team.members.push(employeeId);
       await team.save();
 
+      //adding notiifcation for employee
+      const notification = {
+        title: "New Team",
+        description: `Added to the team ${team.name}`,
+        avatar: "if there is some avatar",
+        type: "teams",
+      };
+      newEmployee.notifications = [notification, ...newEmployee.notifications];
+
+      await newEmployee.save();
+
       res.status(200).json({
         status: "ok",
         data: team,
