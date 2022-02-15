@@ -9,6 +9,7 @@ import {
   getTeamById,
   getTeam,
   deleteTeam,
+  getTeamMemberData,
 } from "../controllers/team.js";
 import { makePause } from "../controllers/pause.js";
 
@@ -28,4 +29,5 @@ router.route("/pause").patch(authPass, managerPass, makePause);
 
 router.route("/getTeam/:id").get(authPass, getTeamById);
 
+router.route("/getTeamData").post(authPass, getTeamMemberData);
 export default router;

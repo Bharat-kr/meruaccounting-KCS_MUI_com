@@ -10,21 +10,22 @@ import {
   TextField,
   getPaginationItemUtilityClass,
 } from "@mui/material";
-import ApiRefRowsGrid from "../muicomponents/ThrottledRowsGrid";
+import AdminApiRefRowsGrid from "./adminThrottledRowsGrid";
 import { useContext, useEffect, useState } from "react";
 import { teamContext } from "../../../contexts/TeamsContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { getTeam } from "../../../api/teams api/teams";
-
+import { getAllEmployee } from "src/api/admin api/admin";
 import { employeesTimeDetails } from "../../../api/employee api/employee";
 import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
 import { employeeContext } from "../../../contexts/EmployeeContext";
 
 //----------------------------------------------------------------------------------------
 export default function AdminContainer(props) {
-  const { teamsList } = props;
+  // const { teamsList } = props;
+  const [teamsList, setTeamList] = useState([]);
   const [open, setOpen] = React.useState(false);
-  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  const { dispatchgetTeam, getTeams, commonData } = useContext(teamContext);
 
   const [newteamsList, setnewTeamsList] = useState([]);
   // const [employeeData, setEmployeeData] = useState();
@@ -38,29 +39,28 @@ export default function AdminContainer(props) {
     dispatchEmployeesData,
     employeeTimeData,
     changeEmployeeTimeData,
+    dispatchAdminAllEmployee,
+    adminAllEmployee,
   } = useContext(employeeContext);
-  useEffect(() => {
-    // if (teamsList !== null) setnewTeamsList(teamsList);
-    commonDatafunc();
-  }, [getTeams, teamsList]);
-  console.log(teamsList);
-  const commonDatafunc = async () => {
-    const data = [];
-    const dataPush = [];
-    if (teamsList !== undefined) {
-      for (let i = 0; i < teamsList.length; i++) {
-        data.push(teamsList[i].id);
-      }
-    } else {
-      for (let i = 0; i < newteamsList.length; i++) {
-        data.push(newteamsList[i].id);
-      }
-    }
-    console.log(data);
-    await employeesTimeDetails(data, dispatchEmployeesData);
 
-    changeEmployeeTimeData(employeesData?.data?.data);
-  };
+  // React.useLayoutEffect(() => {
+  //   getAllEmployee(dispatchAdminAllEmployee);
+  // }, [commonData]);
+  React.useLayoutEffect(() => {
+    let pushData = [];
+    let int = setInterval(() => {
+      getAllEmployee(dispatchAdminAllEmployee);
+    }, [120000]);
+
+    adminAllEmployee?.allEmployee?.data?.map((mem) => {
+      pushData.push({
+        id: mem._id,
+        Employee: `${mem.firstName} ${mem.lastName}`,
+      });
+    });
+    setTeamList(pushData);
+    return () => clearInterval(int);
+  }, []);
 
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>
@@ -120,7 +120,7 @@ export default function AdminContainer(props) {
                 )}
               />
             </Container>
-            <ApiRefRowsGrid
+            <AdminApiRefRowsGrid
               employeeTimeData={employeeTimeData}
               teamsList={teamsList}
               getTeamsLoader={getTeamsLoader}

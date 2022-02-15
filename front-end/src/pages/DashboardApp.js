@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 // material
 import { Grid, Container } from "@mui/material";
@@ -18,50 +18,41 @@ import { getTeam } from "../api/teams api/teams";
 
 import { employeesTimeDetails } from "../api/employee api/employee";
 import { employeeContext } from "src/contexts/EmployeeContext";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import AdminContainer from "src/components/_dashboard/admin/admincontainer";
+import { getAllEmployee } from "../api/admin api/admin";
+
+import ProjectLeaderContainer from "src/components/_dashboard/projectLeader/plcontainer";
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
   const { loginC } = useContext(loginContext);
   const { dispatchgetTeam, getTeams } = useContext(teamContext);
-
+  const { commonData } = useContext(CurrentUserContext);
   const [teamsList, setTeamsList] = useState([]);
-  const { employeesData, employeeTimeData } = useContext(employeeContext);
-  useEffect(() => {
-    getTeam(dispatchgetTeam);
-  }, []);
+  const [allEmployees, setAllEmployees] = useState([]);
+  const {
+    employeesData,
+    employeeTimeData,
+    adminAllEmployee,
+    dispatchAdminAllEmployee,
+  } = useContext(employeeContext);
 
-  // useState hook for rerender component
-  useEffect(() => {
-    const data = [];
-    let test = -1;
-    getTeams?.getTeam?.forEach((team) => {
-      // eslint-disable-next-line prefer-template
-
-      team.members?.map((member) => {
-        if (
-          !data.find((el) => {
-            return el.id === member._id;
-          })
-        ) {
-          data.push({
-            Employee: getFullName(member.firstName, member.lastName),
-            id: member._id,
-          });
-        }
-      });
-    });
-    setTeamsList(data);
-  }, [getTeams]);
-  console.log(teamsList);
+  // console.log(teamsList);
+  // console.log(allEmployees);
   return (
     <Page title="Screen Monitor | Meru Accounting">
       <Container maxWidth="lg">
         <PageHeader title="Dashboard" />
 
         <Grid container spacing={2}>
-          {Role.indexOf(loginC.userData.role) === 2 ? (
+          {Role.indexOf(loginC.userData.role) <= 1 ? (
+            <AdminContainer sx={{ width: "100%" }} teamsList={allEmployees} />
+          ) : Role.indexOf(loginC.userData.role) === 2 ? (
             <SimpleContainer teamsList={teamsList} sx={{ width: "100%" }} />
+          ) : Role.indexOf(loginC.userData.role) === 3 ? (
+            <ProjectLeaderContainer />
           ) : (
             <EmployeeContainer sx={{ width: "100%" }} />
           )}

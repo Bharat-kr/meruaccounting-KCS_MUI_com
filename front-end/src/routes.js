@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 // layouts
 import DashboardLayout from "./layouts/dashboard";
@@ -16,11 +18,37 @@ import UserSettings from "./pages/UserSettings";
 import UserPage from "./pages/UserPage";
 import EmployeePage from "./pages/EmployeePage";
 import { PrivateRoute } from "./components/privatroutes";
+import { employeeContext } from "./contexts/EmployeeContext";
+import { getAllEmployee } from "src/api/admin api/admin";
+import { teamContext } from "./contexts/TeamsContext";
+import { loginContext } from "./contexts/LoginContext";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import {
+  getTeamCommonData,
+  projectMemberCommonData,
+} from "./api/auth api/commondata";
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const token = localStorage["Bearer Token"];
+  const { commonData } = useContext(teamContext);
+  const {
+    dispatchTeamCommonData,
+    projectMemberData,
+    dispatchProjectMemberData,
+  } = useContext(CurrentUserContext);
 
+  const { loginC } = useContext(loginContext);
+  const { dispatchAdminAllEmployee } = useContext(employeeContext);
+  React.useLayoutEffect(() => {
+    if (loginC.userData.role === "admin")
+      getAllEmployee(dispatchAdminAllEmployee);
+    else if (loginC.userData.role === "manager")
+      getTeamCommonData(dispatchTeamCommonData);
+    else if (loginC.userData.role === "projectLeader")
+      projectMemberCommonData(dispatchProjectMemberData);
+  }, [commonData]);
+  console.log(projectMemberData);
   return useRoutes([
     {
       path: "/dashboard",
