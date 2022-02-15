@@ -11,19 +11,26 @@ import mongoose from "mongoose";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    // let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
-    // projectIds = projectIds.map((id) => {
-    //   return mongoose.Types.ObjectId(id);
-    // });
-    // userIds = userIds.map((id) => {
-    //   return mongoose.Types.ObjectId(id);
-    // });
-    // clientIds = clientIds.map((id) => {
-    //   return mongoose.Types.ObjectId(id);
-    // });
+    let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
 
-    // if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
-    // if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
+    if (projectIds) {
+      projectIds = projectIds.map((id) => {
+        return mongoose.Types.ObjectId(id);
+      });
+    }
+    if (userIds) {
+      userIds = userIds.map((id) => {
+        return mongoose.Types.ObjectId(id);
+      });
+    }
+    if (clientIds) {
+      clientIds = clientIds.map((id) => {
+        return mongoose.Types.ObjectId(id);
+      });
+    }
+
+    if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
+    if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
 
     let user;
     // if (userId) user = await User.findById(userId);
@@ -31,7 +38,45 @@ const generateReport = asyncHandler(async (req, res) => {
 
     const activity = await Activity.aggregate([
       {
-        $match: {},
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $cond: [
+                  projectIds,
+                  {
+                    $in: ["$project", projectIds],
+                  },
+                  { $not: { $in: ["$project", []] } },
+                ],
+              },
+              {
+                $cond: [
+                  clientIds,
+                  {
+                    $in: ["$client", clientIds],
+                  },
+                  { $not: { $in: ["$client", []] } },
+                ],
+              },
+              {
+                $cond: [
+                  userIds,
+                  {
+                    $in: ["$employee", userIds],
+                  },
+                  { $not: { $in: ["$employee", []] } },
+                ],
+              },
+              // {
+              //   $and: [
+              //     { $gte: ["$activityOn", dateOne] },
+              //     { $lte: ["$activityOn", dateTwo] },
+              //   ],
+              // },
+            ],
+          },
+        },
       },
       {
         $facet: {
@@ -161,6 +206,26 @@ const generateReport = asyncHandler(async (req, res) => {
                 avgPerformanceData: {
                   $avg: "$performanceData",
                 },
+              },
+            },
+          ],
+          byDates: [
+            {
+              $group: {
+                _id: "$activityOn",
+                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPerformanceData: { $avg: "$performanceData" },
+              },
+            },
+          ],
+          total: [
+            {
+              $group: {
+                _id: "null",
+                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPerformanceData: { $avg: "$performanceData" },
               },
             },
           ],

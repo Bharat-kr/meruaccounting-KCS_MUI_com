@@ -1,64 +1,123 @@
-import React, { useState } from "react";
-import { reportsContext } from "../../contexts/ReportsContext";
+import React from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import secondsToHms from "../../_helpers/secondsToHms";
-import { CanvasJSChart } from "canvasjs-react-charts";
+import { reportsContext } from "../../contexts/ReportsContext";
 
-export default function AppsCharts() {
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+export default function AppsChart() {
   const { reports } = React.useContext(reportsContext);
-  const [apps, setapps] = useState([]);
-  const [state, setState] = useState([]);
-  const [totalTime, settotalTime] = useState(100);
+  const [totalTime, settotalTime] = React.useState(100);
+  const [dataLabels, setlabels] = React.useState([]);
+  const [dataValues, setvalues] = React.useState([]);
+  console.table(reports.reports.data[0].byScreenshots);
 
-  //  set data
   React.useEffect(() => {
-    setapps(reports.reports.data[0].byScreenshots);
+    let total = 0;
+    reports.reports.data[0].byScreenshots.forEach((ss) => {
+      total = total + ss.totalHours;
+    });
+    settotalTime(total);
+
+    let othersT = 0;
+    let labelsArr = [];
+    reports.reports.data[0].byScreenshots.forEach((ss) => {
+      if ((ss.totalHours * 100) / total >= 5) labelsArr.push(ss._id);
+      else othersT = 0 + ss.totalHours;
+    });
+    labelsArr.push("others");
+    setlabels(labelsArr);
+
+    let dataArr = [];
+    reports.reports.data[0].byScreenshots.forEach((ss) => {
+      if ((ss.totalHours * 100) / total >= 5) dataArr.push(ss.totalHours);
+    });
+    dataArr.push(othersT);
+    setvalues(dataArr);
   }, [reports]);
-  console.log(apps);
 
-  React.useEffect(() => {
-    let tt = 0;
-    apps.forEach((app) => {
-      tt = tt + app.totalHours;
-    });
-    settotalTime(tt);
-    apps.map((app) => {
-      let obj = {
-        label: app._id,
-        y: (100 * (app.totalHours / tt)).toString(),
-        hhmm: secondsToHms(app.totalHours),
-      };
-      if (obj.y > 10) setState((prev) => [...prev, obj]);
-    });
-  }, [apps]);
-  console.log(state);
+  console.log(dataLabels, dataValues);
 
   const options = {
-    exportEnabled: true,
-    animationEnabled: true,
-    title: {
-      text: "Hours worked for apps",
+    layout: { autoPadding: true },
+    scaleLabel: "<%= ' ' + value%>",
+
+    legend: { display: true, position: "right" },
+    maintainAspectRatio: false,
+
+    plugins: {
+      tooltip: {
+        // enabled: false,
+        callbacks: {
+          label: function (context) {
+            let number =
+              (context.chart.data.datasets[0].data[context.dataIndex] * 100) /
+              total;
+            let rounded = Math.round(number * 10) / 10;
+
+            return rounded + "%";
+          },
+        },
+      },
+
+      datalabels: {
+        display: "auto",
+        anchor: "end",
+        align: "end",
+        clamp: true,
+        clip: true,
+        formatter: (value, context) => {
+          return (
+            context.chart.data.labels[context.dataIndex] +
+            " " +
+            secondsToHms(value)
+          );
+        },
+      },
     },
-    data: [
+  };
+
+  const total = totalTime;
+  const data = {
+    labels: dataLabels,
+    datasets: [
       {
-        type: "pie",
-        startAngle: 75,
-        toolTipContent: "<b>{label}</b>: {y}%",
-        showInLegend: "true",
-        legendText: "{label}",
-        indexLabelFontSize: 16,
-        indexLabel: "{label} - {hhmm}",
-        dataPoints: state,
+        data: dataValues,
+        backgroundColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderColor: [
+          "#fff",
+          "#fff",
+          "#fff",
+          "#fff",
+          "#fff",
+          "#fff",
+          "#fff",
+          "#fff",
+        ],
+        borderWidth: 2,
       },
     ],
   };
 
   return (
-    <div>
-      <CanvasJSChart
-        options={options}
-        /* onRef={ref => this.chart = ref} */
-      />
-      {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-    </div>
+    <Doughnut
+      type="outlabeledPie"
+      plugins={[ChartDataLabels]}
+      height="200px"
+      width="200px"
+      data={data}
+      options={options}
+    />
   );
 }
