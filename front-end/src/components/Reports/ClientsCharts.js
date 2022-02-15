@@ -12,6 +12,7 @@ export default function AppsChart() {
   const [totalTime, settotalTime] = React.useState(100);
   const [dataLabels, setlabels] = React.useState([]);
   const [dataValues, setvalues] = React.useState([]);
+  console.log(reports);
   console.table(reports.reports[0].byClients);
 
   React.useEffect(() => {
