@@ -41,11 +41,11 @@ export default function Router() {
   const { loginC } = useContext(loginContext);
   const { dispatchAdminAllEmployee } = useContext(employeeContext);
   React.useLayoutEffect(() => {
-    if (loginC.userData.role === "admin")
+    if (loginC?.userData?.role === "admin")
       getAllEmployee(dispatchAdminAllEmployee);
-    else if (loginC.userData.role === "manager")
+    else if (loginC?.userData?.role === "manager")
       getTeamCommonData(dispatchTeamCommonData);
-    else if (loginC.userData.role === "projectLeader")
+    else if (loginC?.userData?.role === "projectLeader")
       projectMemberCommonData(dispatchProjectMemberData);
   }, [commonData]);
   console.log(projectMemberData);
