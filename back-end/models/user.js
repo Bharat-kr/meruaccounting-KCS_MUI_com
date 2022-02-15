@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "employee",
-      enum: ["employee", "admin", "manager"],
+      enum: ["employee", "admin", "manager", "projectLeader"],
     },
     avatar: { type: String, default: "avatar\\image-1642839181868.jpg" },
     isManager: { type: Boolean, default: false },
