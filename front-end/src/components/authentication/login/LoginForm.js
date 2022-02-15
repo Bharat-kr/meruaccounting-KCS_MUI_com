@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link as RouterLink, useNavigate, useHistory } from "react-router-dom";
 import { useFormik, Form, FormikProvider } from "formik";
 import { Icon } from "@iconify/react";
@@ -23,13 +23,15 @@ import { loginContext } from "../../../contexts/LoginContext";
 export default function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("date");
   const [resstatus, setRestatus] = useState(null);
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
       .email("Email must be a valid email address")
       .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(/^(?=.{6})/, "Must Contain 6 Characters"),
   });
   const { loginC, dispatchLogin } = useContext(loginContext);
 
@@ -45,8 +47,17 @@ export default function LoginForm() {
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } =
-    formik;
+  const {
+    errors,
+    dirty,
+    isValid,
+    touched,
+    values,
+    setErrors,
+    isSubmitting,
+    handleSubmit,
+    getFieldProps,
+  } = formik;
 
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
@@ -87,6 +98,19 @@ export default function LoginForm() {
   //   }
   // };
 
+  console.log(formik);
+
+  useEffect(() => {
+    if (loginC.error) {
+      // setRestatus(true);
+      setErrors({
+        ...errors,
+        email: "Invalid Email",
+        password: "Wrong Password",
+      });
+    }
+  }, [loginC]);
+
   const handleSubmitAxios = async (e) => {
     e.preventDefault();
 
@@ -114,7 +138,7 @@ export default function LoginForm() {
   // console.log(loginC);
   return (
     <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmitAxios}>
+      <Form autoComplete="off" onSubmit={handleSubmitAxios}>
         <Stack spacing={3}>
           <TextField
             fullWidth
@@ -122,8 +146,8 @@ export default function LoginForm() {
             type="email"
             label="Email address"
             {...getFieldProps("email")}
-            error={resstatus}
-            helperText={message}
+            error={touched.email && Boolean(errors?.email)}
+            helperText={touched.email && errors?.email}
           />
 
           <TextField
@@ -141,8 +165,8 @@ export default function LoginForm() {
                 </InputAdornment>
               ),
             }}
-            error={resstatus}
-            helperText={message}
+            error={touched.password && Boolean(errors?.password)}
+            helperText={touched.password && errors?.password}
           />
         </Stack>
 
@@ -169,6 +193,7 @@ export default function LoginForm() {
 
         <LoadingButton
           fullWidth
+          disabled={!dirty || !isValid}
           size="large"
           type="submit"
           variant="contained"
