@@ -9,15 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { Stack, TextField, IconButton, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import axios from "axios";
-import { func } from "prop-types";
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
-  const [resstatus, setRestatus] = useState(null);
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -31,7 +28,12 @@ export default function RegisterForm() {
     email: Yup.string()
       .email("Email must be a valid email address")
       .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
   });
 
   const formik = useFormik({
@@ -47,7 +49,16 @@ export default function RegisterForm() {
     },
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const {
+    errors,
+    touched,
+    dirty,
+    isValid,
+    setErrors,
+    handleSubmit,
+    isSubmitting,
+    getFieldProps,
+  } = formik;
   // let res;
   const handleSubmitAxios = async (e) => {
     e.preventDefault();
@@ -71,16 +82,15 @@ export default function RegisterForm() {
           password: { ...getFieldProps("password") }.value,
         },
       });
-      setMessage("");
       console.log(res);
     } catch (error) {
+      console.log(error.response.data.message);
       if (error.response) {
-        setMessage(error.response.data.message);
-        setRestatus(error.response.status);
-        // console.log(error.response.headers);
+        setErrors({
+          ...errors,
+          email: error.response.data.message,
+        });
       }
-
-      // console.log(error.response);
     }
   };
 
@@ -94,8 +104,8 @@ export default function RegisterForm() {
               fullWidth
               label="First name"
               {...getFieldProps("firstName")}
-              error={resstatus}
-              helperText={message}
+              error={touched.firstName && Boolean(errors.firstName)}
+              helperText={touched.firstName && errors.firstName}
             />
 
             <TextField
@@ -103,8 +113,8 @@ export default function RegisterForm() {
               fullWidth
               label="Last name"
               {...getFieldProps("lastName")}
-              error={message}
-              helperText={message}
+              error={touched.lastName && Boolean(errors.lastName)}
+              helperText={touched.lastName && errors.lastName}
             />
           </Stack>
 
@@ -115,8 +125,8 @@ export default function RegisterForm() {
             type="email"
             label="Email address"
             {...getFieldProps("email")}
-            error={resstatus}
-            helperText={message}
+            error={touched.email && Boolean(errors.email)}
+            helperText={touched.email && errors.email}
           />
 
           <TextField
@@ -125,8 +135,6 @@ export default function RegisterForm() {
             autoComplete="current-password"
             type={showPassword ? "text" : "password"}
             label="Password"
-            error={resstatus}
-            helperText={message}
             {...getFieldProps("password")}
             InputProps={{
               endAdornment: (
@@ -140,10 +148,13 @@ export default function RegisterForm() {
                 </InputAdornment>
               ),
             }}
+            error={touched.password && Boolean(errors.password)}
+            helperText={touched.password && errors.password}
           />
 
           <LoadingButton
             fullWidth
+            disabled={!dirty || !isValid}
             size="large"
             type="submit"
             variant="contained"

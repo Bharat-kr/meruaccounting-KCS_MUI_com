@@ -73,7 +73,7 @@ function checkheading(
   ];
 
   //Common update setting for all functions
-  const UpdateSettings = async (data) => {
+  const UpdateSettings = async (data, desc) => {
     // console.log(settings);
     await axios
       .patch(`/employee/edit/${id}`, data)
@@ -88,6 +88,13 @@ function checkheading(
         console.log(err);
         enqueueSnackbar(err.message, { variant: "info" });
       });
+    let notification = {
+      title: "Setting Changed",
+      description: desc,
+      avatar: "if there is some avatar",
+      type: "settings",
+    };
+    await axios.post(`/notify/${id}`, notification);
   };
 
   //Screenshot per hour update function
@@ -106,7 +113,12 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(
+      data,
+      `Screenshot Per hour changed to ${
+        settings.ScreenShotPerHour.individualValue !== 0 ? "Disabled" : value
+      }`
+    );
     if (value !== 0 || null)
       enqueueSnackbar("Settings Updated", { variant: "success" });
     else enqueueSnackbar("Enter valid input", { variant: "info" });
@@ -125,7 +137,12 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(
+      data,
+      `Apps and Url tracking ${
+        settings.AppsAndUrlTracking.indivValue ? "Enabled" : "Disabled"
+      }`
+    );
     if (data !== 0 || null)
       enqueueSnackbar("Settings Updated", { variant: "success" });
     else enqueueSnackbar("Enter valid input", { variant: "info" });
@@ -147,7 +164,12 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(
+      data,
+      `Weekly Time Limit changed to ${
+        settings.WeeklyTimeLimit.individualValue !== 0 ? "Disabled" : value
+      }`
+    );
   };
 
   //AutoPause Update Function
@@ -165,7 +187,14 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(
+      data,
+      `Auto pause ${
+        settings.AutoPause.individualValue !== 0
+          ? "is Disabled"
+          : `after ${value} mins`
+      }`
+    );
   };
 
   //Offline Time Update Function
@@ -181,7 +210,12 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(
+      data,
+      `Adding Offline Time ${
+        settings.OfflineTime.individualValue ? "Enabled" : "Disabled"
+      }`
+    );
   };
 
   //Notify User update function
@@ -197,7 +231,12 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(
+      data,
+      `Notify on screenshot Taken ${
+        settings.NotifyUser.individualValue ? "Enabled" : "Disabled"
+      }`
+    );
   };
 
   // WeekStart Update Function
@@ -213,7 +252,7 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(data, `WeekStart Changed to ${days[e.target.value]}`);
   };
 
   //Currency Symbol update Function
@@ -231,7 +270,7 @@ function checkheading(
         },
       },
     };
-    await UpdateSettings(data);
+    await UpdateSettings(data, `Currency changed to ${value}`);
   };
 
   if (index === 0) {
