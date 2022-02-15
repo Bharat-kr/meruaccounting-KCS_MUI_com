@@ -22,6 +22,7 @@ import {
 import { employeesTimeDetails } from "../../../api/employee api/employee";
 import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
 import { employeeContext } from "../../../contexts/EmployeeContext";
+import { getAllEmployee } from "src/api/admin api/admin";
 
 //----------------------------------------------------------------------------------------
 export default function SimpleContainer(props) {
@@ -41,33 +42,16 @@ export default function SimpleContainer(props) {
     dispatchEmployeesData,
     employeeTimeData,
     changeEmployeeTimeData,
+    dispatchAdminAllEmployees,
+    adminAllEmployees,
   } = useContext(employeeContext);
-  // let vari = true;
-  // // setInterval(() => (vari === true ? (vari = false) : (vari = true)), 5000);
-  // // console.log(teamsList);
-  useEffect(() => {
-    // if (teamsList !== null) setnewTeamsList(teamsList);
-    commonDatafunc();
-  }, [getTeams, teamsList]);
-  console.log(teamsList);
-  const commonDatafunc = async () => {
-    const data = [];
-    const dataPush = [];
-    if (teamsList !== undefined) {
-      for (let i = 0; i < teamsList.length; i++) {
-        data.push(teamsList[i].id);
-      }
-    } else {
-      for (let i = 0; i < newteamsList.length; i++) {
-        data.push(newteamsList[i].id);
-      }
-    }
-    console.log(data);
-    await employeesTimeDetails(data, dispatchEmployeesData);
 
-    changeEmployeeTimeData(employeesData?.data?.data);
-  };
-
+  // React.useLayoutEffect(() => {
+  //   getAllEmployee(dispatchAdminAllEmployees);
+  // });
+  // React.useEffect(() => {
+  //   console.log(adminAllEmployees);
+  // });
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>
       member.Employee === value ? member : ""

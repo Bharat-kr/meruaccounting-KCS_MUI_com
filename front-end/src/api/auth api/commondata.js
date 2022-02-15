@@ -6,12 +6,10 @@ import {
   DELETE_SS_FAILED,
   DELETE_ACT_FAILED,
   DELETE_ACT_SUCCESS,
-  // GET_EMPLOYEEDATA_SUCCESS,
-  // GET_EMPLOYEEDATA_FAILED,
-  // EMP_DELETE_SS_SUCCESS,
-  // EMP_DELETE_SS_FAILED,
-  // EMP_DELETE_ACT_SUCCESS,
-  // EMP_DELETE_ACT_FAILED,
+  TEAM_COMMONDATA_SUCCESS,
+  TEAM_COMMONDATA_FAILED,
+  PROJECTMEMBER_CD_SUCCESS,
+  PROJECTMEMBER_CD_FAILED,
 } from "../../constants/CurrentUserConstants";
 
 export const getCommonData = async (dispatch) => {
@@ -93,6 +91,42 @@ export const deleteAct = async (activityId, incomingDate, dispatch) => {
         err.response && err.response.data.message
           ? err.response.data.message
           : err.message,
+    });
+  }
+};
+
+export const getTeamCommonData = async (dispatch) => {
+  try {
+    const { data } = await axios.post(`/teamCommonData`);
+    dispatch({
+      type: TEAM_COMMONDATA_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: TEAM_COMMONDATA_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const projectMemberCommonData = async (dispatch) => {
+  try {
+    const { data } = await axios.post(`/projectLeader/getMembers`);
+    dispatch({
+      type: PROJECTMEMBER_CD_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PROJECTMEMBER_CD_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
     });
   }
 };

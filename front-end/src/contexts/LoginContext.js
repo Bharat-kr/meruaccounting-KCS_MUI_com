@@ -7,7 +7,7 @@ const initialValue = {
   isLogin: false,
   userData: {},
   loader: false,
-  err: false,
+  error: false,
 };
 
 const reducer = (state, action) => {
@@ -20,12 +20,14 @@ const reducer = (state, action) => {
           userData: action.data,
           isLogin: true,
           loader: false,
+          error: false,
         };
       }
       return {
         userData: {},
         isLogin: false,
         loader: false,
+        error: false,
       };
 
     case "LOGIN_ERR": {
@@ -47,7 +49,9 @@ export function LoginProvider(props) {
   });
 
   useEffect(() => {
-    localStorage.setItem("loginC", JSON.stringify(loginC));
+    if (!loginC.error) {
+      localStorage.setItem("loginC", JSON.stringify(loginC));
+    }
   }, [loginC]);
 
   return <loginContext.Provider value={{ loginC, dispatchLogin }} {...props} />;

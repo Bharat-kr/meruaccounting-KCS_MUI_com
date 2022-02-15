@@ -12,11 +12,12 @@ import {
 
 export const getAllEmployee = async (dispatch) => {
   try {
-    const { data } = await axios.post(`/admin/getAllEmployee`);
+    const { data } = await axios.post(`/admin/getCommonData`);
     dispatch({
       type: ADMIN_GETALLEMPLOYEE_SUCCESS,
       payload: data,
     });
+    console.log("admin", data);
   } catch (err) {
     dispatch({
       type: ADMIN_GETALLEMPLOYEE_FAILED,

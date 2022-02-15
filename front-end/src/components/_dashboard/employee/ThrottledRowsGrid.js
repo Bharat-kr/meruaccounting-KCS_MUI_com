@@ -99,12 +99,10 @@ export default function EmployeeApiRefRowsGrid() {
     }, 120000);
     return () => clearInterval(int);
   }, []);
-  React.useEffect(() => {
-    let data = [];
-    if (commonData.commonData !== undefined) {
-      setTData(commonData.commonData);
-    }
-  }, [commonData]);
+
+  if (commonData.commonData !== undefined) {
+    setTData(commonData.commonData);
+  }
   return tData?.length === 0 ? (
     <Box
       sx={{

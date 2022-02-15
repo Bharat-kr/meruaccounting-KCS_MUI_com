@@ -248,152 +248,172 @@ const commondata = asyncHandler(async (req, res) => {
 
 const teamCommondata = asyncHandler(async (req, res) => {
   try {
-    let resArr = [];
-    const userIds = req.body.userIds;
-    console.log(userIds);
-    for (let i = 0; i < userIds.length; i++) {
-      const user = await User.findById(userIds[i]).select(
-        "role firstName lastName payRate lastActive email"
-      );
-      const yersterdayHours = await Activity.aggregate([
-        {
-          $match: {
-            $and: [
-              {
-                employee: { $eq: user._id },
-              },
-              {
-                activityOn: {
-                  $eq: dayjs().add(-1, "day").format("DD/MM/YYYY"),
+    // let resArr = [];
+    const userId = req.user._id;
+    const arr = await User.aggregate([
+      {
+        $match: {
+          _id: {
+            $eq: userId,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "teams",
+          localField: "teams",
+          foreignField: "_id",
+          as: "teams",
+        },
+      },
+      {
+        $unwind: {
+          path: "$teams",
+        },
+      },
+      {
+        $unwind: {
+          path: "$teams.members",
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          members: {
+            $addToSet: "$teams.members",
+          },
+        },
+      },
+    ]);
+    const userIds = arr[0].members;
+    const act = await User.aggregate([
+      {
+        $match: {
+          _id: {
+            $in: userIds,
+          },
+        },
+      },
+      {
+        $unset: [
+          "settings",
+          "password",
+          "projects",
+          "clients",
+          "notifications",
+          "days",
+          "__v",
+          "createdAt",
+          "updatedAt",
+          "avatar",
+          "teams",
+          "accountInfo",
+        ],
+      },
+      {
+        $lookup: {
+          from: "activities",
+          let: {
+            uId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$employee", "$$uId"],
                 },
               },
-            ],
-          },
-        },
-        {
-          $group: {
-            _id: user._id,
-            totalHours: { $sum: "$consumeTime" },
-            avgPerformanceData: { $avg: "$performanceData" },
-            docCount: { $sum: 1 },
-          },
-        },
-      ]);
-      const dailyHours = await Activity.aggregate([
-        {
-          $match: {
-            $and: [
-              {
-                employee: { $eq: user._id },
-              },
-              {
-                activityOn: {
-                  $eq: dayjs().format("DD/MM/YYYY"),
+            },
+            {
+              $group: {
+                _id: "null",
+                count: {
+                  $sum: 1,
+                },
+                today: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $eq: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                week: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $and: [
+                          {
+                            $gte: [
+                              "$activityOn",
+                              dayjs().startOf("week").format("DD/MM/YYYY"),
+                            ],
+                          },
+                          {
+                            $lte: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                          },
+                        ],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                month: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $and: [
+                          {
+                            $gte: [
+                              "$activityOn",
+                              dayjs().startOf("month").format("DD/MM/YYYY"),
+                            ],
+                          },
+                          {
+                            $lte: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                          },
+                        ],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                yesterday: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $eq: [
+                          "$activityOn",
+                          dayjs().add(-1, "day").format("DD/MM/YYYY"),
+                        ],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
                 },
               },
-            ],
-          },
+            },
+          ],
+          as: "time",
         },
-        {
-          $group: {
-            _id: user._id,
-            totalHours: { $sum: "$consumeTime" },
-            avgPerformanceData: { $avg: "$performanceData" },
-            docCount: { $sum: 1 },
-          },
-        },
-      ]);
-
-      const weeklyTime = await Activity.aggregate([
-        {
-          $match: {
-            $and: [
-              {
-                employee: { $eq: user._id },
-              },
-              {
-                activityOn: {
-                  $gte: dayjs().startOf("week").format("DD/MM/YYYY"),
-                  $lte: dayjs().format("DD/MM/YYYY"),
-                },
-              },
-            ],
-          },
-        },
-        {
-          $group: {
-            _id: user._id,
-            totalHours: { $sum: "$consumeTime" },
-            avgPerformanceData: { $avg: "$performanceData" },
-            docCount: { $sum: 1 },
-          },
-        },
-      ]);
-
-      const monthlyTime = await Activity.aggregate([
-        {
-          $match: {
-            $and: [
-              {
-                employee: { $eq: user._id },
-              },
-              {
-                activityOn: {
-                  $gte: dayjs().startOf("month").format("DD/MM/YYYY"),
-                  $lte: dayjs().format("DD/MM/YYYY"),
-                },
-              },
-            ],
-          },
-        },
-        {
-          $group: {
-            _id: user._id,
-            totalHours: { $sum: "$consumeTime" },
-            avgPerformanceData: { $avg: "$performanceData" },
-            docCount: { $sum: 1 },
-          },
-        },
-      ]);
-
-      const totalTime = await Activity.aggregate([
-        {
-          $match: {
-            $and: [
-              {
-                employee: { $eq: user._id },
-              },
-            ],
-          },
-        },
-        {
-          $group: {
-            _id: user._id,
-            totalHours: { $sum: "$consumeTime" },
-            avgPerformanceData: { $avg: "$performanceData" },
-            docCount: { $sum: 1 },
-          },
-        },
-      ]);
-
-      if (!user) {
-        res.status(404);
-        throw new Error("No such user found");
-      }
-      let obj = {
-        user,
-        dailyHours,
-        yersterdayHours,
-        weeklyTime,
-        monthlyTime,
-        totalTime,
-      };
-      resArr.push(obj);
-    }
+      },
+    ]);
 
     res.status(200).json({
       status: "Fetched team common data",
-      data: resArr,
+      data: act,
     });
   } catch (error) {
     throw new Error(error);

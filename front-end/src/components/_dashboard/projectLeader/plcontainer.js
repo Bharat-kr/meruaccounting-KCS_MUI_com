@@ -39,28 +39,6 @@ export default function ProjectLeaderContainer(props) {
     employeeTimeData,
     changeEmployeeTimeData,
   } = useContext(employeeContext);
-  useEffect(() => {
-    // if (teamsList !== null) setnewTeamsList(teamsList);
-    commonDatafunc();
-  }, [getTeams, teamsList]);
-  console.log(teamsList);
-  const commonDatafunc = async () => {
-    const data = [];
-    const dataPush = [];
-    if (teamsList !== undefined) {
-      for (let i = 0; i < teamsList.length; i++) {
-        data.push(teamsList[i].id);
-      }
-    } else {
-      for (let i = 0; i < newteamsList.length; i++) {
-        data.push(newteamsList[i].id);
-      }
-    }
-    console.log(data);
-    await employeesTimeDetails(data, dispatchEmployeesData);
-
-    changeEmployeeTimeData(employeesData?.data?.data);
-  };
 
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>

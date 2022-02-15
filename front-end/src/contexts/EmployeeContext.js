@@ -10,6 +10,17 @@ import {
   GET_EMPLOYEEDATA_SUCCESS,
   GET_EMPLOYEEDATA_FAILED,
 } from "../constants/EmployeeConstants";
+import {
+  ADMIN_GETALLEMPLOYEE_SUCCESS,
+  ADMIN_GETALLEMPLOYEE_FAILED,
+  ADMIN_GETALLTEAMS_SUCCESS,
+  ADMIN_GETALLTEAMS_FAILED,
+  ADMIN_GETALLCLIENTS_SUCCESS,
+  ADMIN_GETALLCLIENTS_FAILED,
+  ADMIN_GETALLPROJECTS_SUCCESS,
+  ADMIN_GETALLPROJECTS_FAILED,
+} from "../constants/adminConstants";
+import { getAllEmployee } from "src/api/admin api/admin";
 
 export const employeeContext = createContext();
 
@@ -68,6 +79,79 @@ const employeeUpdatesReducer = (state, action) => {
   }
 };
 
+const adminGetEmployeeReducer = (state, action) => {
+  switch (action.type) {
+    case ADMIN_GETALLEMPLOYEE_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        allEmployee: action.payload,
+      };
+    case ADMIN_GETALLEMPLOYEE_FAILED:
+      return {
+        ...state,
+        loader: false,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+const adminGetTeamsReducer = (state, action) => {
+  switch (action.type) {
+    case ADMIN_GETALLTEAMS_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        allTeams: action.payload,
+      };
+    case ADMIN_GETALLTEAMS_FAILED:
+      return {
+        ...state,
+        loader: false,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+const adminGetClientsReducer = (state, action) => {
+  switch (action.type) {
+    case ADMIN_GETALLCLIENTS_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        allClients: action.payload,
+      };
+    case ADMIN_GETALLCLIENTS_FAILED:
+      return {
+        ...state,
+        loader: false,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+const adminGetProjectsReducer = (state, action) => {
+  switch (action.type) {
+    case ADMIN_GETALLPROJECTS_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        allProjects: action.payload,
+      };
+    case ADMIN_GETALLPROJECTS_FAILED:
+      return {
+        ...state,
+        loader: false,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 export function EmployeeProvider(props) {
   const [employeeTimeData, setEmployeesTimeData] = useState();
   const changeEmployeeTimeData = (newValue) => {
@@ -86,9 +170,22 @@ export function EmployeeProvider(props) {
     employeesDataReducer,
     { data: {}, loader: true, err: false }
   );
-  // useEffect(() => {
-  //   localStorage.setItem('teamCreate', JSON.stringify(teamCreate));
-  // }, [teamCreate]);
+  const [adminAllEmployee, dispatchAdminAllEmployee] = useReducer(
+    adminGetEmployeeReducer,
+    { allEmployee: {}, loader: true, err: false }
+  );
+  const [adminAllTeams, dispatchAdminAllTeams] = useReducer(
+    adminGetTeamsReducer,
+    { allTeams: {}, loader: true, err: false }
+  );
+  const [adminAllClients, dispatchAdminAllClients] = useReducer(
+    adminGetClientsReducer,
+    { allClients: {}, loader: true, err: false }
+  );
+  const [adminAllProjects, dispatchAdminAllProjects] = useReducer(
+    adminGetProjectsReducer,
+    { allProjects: {}, loader: true, err: false }
+  );
 
   return (
     <employeeContext.Provider
@@ -101,6 +198,14 @@ export function EmployeeProvider(props) {
         dispatchEmployeesData,
         employeeTimeData,
         changeEmployeeTimeData,
+        adminAllClients,
+        adminAllEmployee,
+        adminAllProjects,
+        adminAllTeams,
+        dispatchAdminAllClients,
+        dispatchAdminAllEmployee,
+        dispatchAdminAllProjects,
+        dispatchAdminAllTeams,
       }}
     >
       {props.children}

@@ -382,7 +382,7 @@ export default function Main(props) {
                           label="Manager - can see selected user's Timeline & Reports (but not rates)"
                         />
                         <FormControlLabel
-                          value="projectleader"
+                          value="projectLeader"
                           control={<Radio onChange={updateRole} />}
                           label="Project leader- able to manage project and project members."
                         />

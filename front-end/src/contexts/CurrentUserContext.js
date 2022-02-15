@@ -12,6 +12,10 @@ import {
   EMP_DELETE_SS_FAILED,
   EMP_DELETE_ACT_SUCCESS,
   EMP_DELETE_ACT_FAILED,
+  TEAM_COMMONDATA_SUCCESS,
+  TEAM_COMMONDATA_FAILED,
+  PROJECTMEMBER_CD_SUCCESS,
+  PROJECTMEMBER_CD_FAILED,
 } from "../constants/CurrentUserConstants";
 
 export const CurrentUserContext = createContext();
@@ -98,6 +102,40 @@ const currentUserReducer = (state, action) => {
 //       return state;
 //   }
 // };
+const teamCommonDataReducer = (state, action) => {
+  switch (action.type) {
+    case TEAM_COMMONDATA_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        data: action.payload,
+      };
+    case TEAM_COMMONDATA_FAILED:
+      return {
+        ...state,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+const projectMemberDataReducer = (state, action) => {
+  switch (action.type) {
+    case PROJECTMEMBER_CD_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        data: action.payload,
+      };
+    case PROJECTMEMBER_CD_FAILED:
+      return {
+        ...state,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 export const CurrentUserContextProvider = (props) => {
   const [commonData, dispatchCommonData] = useReducer(currentUserReducer, {
@@ -105,7 +143,22 @@ export const CurrentUserContextProvider = (props) => {
     loader: true,
     err: false,
   });
-
+  const [teamCommonData, dispatchTeamCommonData] = useReducer(
+    teamCommonDataReducer,
+    {
+      data: {},
+      loader: true,
+      err: false,
+    }
+  );
+  const [projectMemberData, dispatchProjectMemberData] = useReducer(
+    projectMemberDataReducer,
+    {
+      data: {},
+      loader: true,
+      err: false,
+    }
+  );
   // const [employeeCommonData, dispatchEmployeeCommonData] = useReducer(
   //   employeeDataReducer,
   //   {
@@ -121,8 +174,10 @@ export const CurrentUserContextProvider = (props) => {
         value={{
           commonData,
           dispatchCommonData,
-          // employeeCommonData,
-          // dispatchEmployeeCommonData,
+          teamCommonData,
+          dispatchTeamCommonData,
+          projectMemberData,
+          dispatchProjectMemberData,
         }}
       >
         {props.children}

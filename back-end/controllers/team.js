@@ -80,6 +80,17 @@ const updateMember = asyncHandler(async (req, res) => {
       team.members.push(employeeId);
       await team.save();
 
+      //adding notiifcation for employee
+      const notification = {
+        title: "New Team",
+        description: `Added to the team ${team.name}`,
+        avatar: "if there is some avatar",
+        type: "teams",
+      };
+      newEmployee.notifications = [notification, ...newEmployee.notifications];
+
+      await newEmployee.save();
+
       res.status(200).json({
         status: "ok",
         data: team,
@@ -303,6 +314,42 @@ const deleteTeam = asyncHandler(async (req, res) => {
   }
 });
 
+const getTeamMemberData = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("team");
+  if (permission.granted) {
+    try {
+      let teamsArr = [];
+      const { teams } = await User.findById(req.user._id).populate({
+        path: "teams",
+        model: "Team",
+        populate: {
+          path: "members",
+          model: "User",
+          select: [
+            "_id",
+            // , "firstName", " lastName", "payRate", "lastActive"
+          ],
+        },
+      });
+      // teams?.map((team) => {
+      //   team?.members?.map((m) => {
+      //     console.log(m);
+      //     teamsArr(m._id);
+      //   });
+      // });
+      // let uniqueTeamsArr = [...new Set(teamsArr)];
+
+      // console.log(teamsArr);
+      res.status(200).json({
+        message: "OK",
+        data: teams,
+      });
+    } catch (err) {
+      throw new Error(error);
+    }
+  }
+});
+
 export {
   createTeam,
   updateMember,
@@ -310,4 +357,5 @@ export {
   getTeamById,
   getTeam,
   deleteTeam,
+  getTeamMemberData,
 };
