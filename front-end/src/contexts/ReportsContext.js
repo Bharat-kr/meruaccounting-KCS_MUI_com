@@ -13,6 +13,7 @@ const getReportsReducer = (state, action) => {
         ...state,
         loader: false,
         reports: action.payload,
+        error: false,
       };
     case GET_REPORTS_FAILED:
       return {

@@ -10,19 +10,13 @@ import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
-import axios from "axios";
 import Graphs from "./Graphs";
 
 // contexts and apis
 import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
-import {
-  getReportsByUser,
-  getReportsClient,
-  getReportsProject,
-  getReports,
-} from "../../api/reports api/reports";
+import { getReports } from "../../api/reports api/reports";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,9 +67,9 @@ export default function Main() {
   const [employeeOptions, setemployeeOptions] = React.useState([]);
   const [projectOptions, setprojectOptions] = React.useState([]);
   const [clientOptions, setclientOptions] = React.useState([]);
-  const [employees, setemployees] = React.useState(null);
-  const [projects, setprojects] = React.useState(null);
-  const [clients, setclients] = React.useState(null);
+  const [employees, setemployees] = React.useState([]);
+  const [projects, setprojects] = React.useState([]);
+  const [clients, setclients] = React.useState([]);
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -84,21 +78,17 @@ export default function Main() {
   const handleReportClick = async () => {
     const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
     const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
-    const userId = employees ? employees._id : null;
-    const projectId = projects ? projects._id : null;
-    const clientId = clients ? clients._id : null;
+    const userIds = employees.length ? employees : null;
+    const projectIds = projects.length ? projects : null;
+    const clientIds = clients.length ? clients : null;
     const options = {
-      clientId,
-      projectId,
-      userId,
+      clientIds,
+      projectIds,
+      userIds,
       dateOne,
       dateTwo,
     };
-    //   getReportsByUser,
-    // getReportsClient,
-    // getReportsProject,
-    // getReports,
-    // dispatchGetReports
+    console.log(options);
     getReports(dispatchGetReports, options);
     console.log(reports);
   };
@@ -108,115 +98,42 @@ export default function Main() {
   }, [reports]);
 
   //   make select employee options
-  console.log(getTeams.getTeam);
   React.useEffect(() => {
     let array = [];
-    if (clients) {
-      array = [];
-      clientDetails.client.data.map((client) => {
-        // const found = clients.some((el) => el._id === client._id);
-        const found = clients._id === client._id;
-        if (found) {
-          client.projects.map((project) => {
-            project.employees.map((employee) => {
-              let newOption = {
-                _id: employee._id,
-                name: `${employee.firstName} ${employee.lastName}`,
-              };
-              let exists = array.some((el) => el._id === newOption._id);
-              if (!exists) {
-                array.push(newOption);
-              }
-            });
-          });
-          console.log(array);
-          setemployeeOptions([...array]);
-        } else return;
+    getTeams.getTeam.map((team) => {
+      team.members.map((member) => {
+        let newOption = {
+          _id: member._id,
+          name: `${member.firstName} ${member.lastName}`,
+        };
+        let exists = array.some((el) => el._id === newOption._id);
+        if (!exists) {
+          array.push(newOption);
+        }
       });
-    } else if (projects && !clients) {
+      setemployeeOptions((prev) => [...array]);
+    });
+  }, [getTeams, clients, projects]);
+
+  //   make select project options
+  React.useEffect(() => {
+    let array = [];
+
+    if (clientDetails?.loader === false) {
       clientDetails.client.data.map((client) => {
         client.projects.map((project) => {
-          // const found = projects.some((el) => el._id === project._id);
-          const found = projects._id === project._id;
-          if (found) {
-            project.employees.map((employee) => {
-              let newOption = {
-                _id: employee._id,
-                name: `${employee.firstName} ${employee.lastName}`,
-              };
-              let exists = array.some((el) => el._id === newOption._id);
-              if (!exists) {
-                array.push(newOption);
-              }
-            });
-          } else return;
-        });
-        console.log(array);
-        setemployeeOptions([...array]);
-      });
-    } else {
-      console.log("no client selected");
-      getTeams.getTeam.map((team) => {
-        team.members.map((member) => {
           let newOption = {
-            _id: member._id,
-            name: `${member.firstName} ${member.lastName}`,
+            _id: project._id,
+            name: project.name,
           };
           let exists = array.some((el) => el._id === newOption._id);
           if (!exists) {
             array.push(newOption);
           }
         });
-        console.log(array);
-        setemployeeOptions((prev) => [...array]);
+        setprojectOptions((prev) => [...array]);
       });
-    }
-  }, [getTeams, clients, projects]);
-
-  console.log(clientDetails?.client?.data);
-  //   make select project options
-  React.useEffect(() => {
-    let array = [];
-    if (clients) {
-      array = [];
-      console.log("clients selected");
-      clientDetails.client.data.map((client) => {
-        client.projects.map((project) => {
-          // const found = clients.some((el) => el._id === client._id);
-          const found = clients._id === client._id;
-          if (found) {
-            project.employees.map((employee) => {
-              let newOption = {
-                _id: project._id,
-                name: project.name,
-              };
-              let exists = array.some((el) => el._id === newOption._id);
-              if (!exists) {
-                array.push(newOption);
-              }
-            });
-          } else return;
-        });
-        console.log(array);
-        setprojectOptions([...array]);
-      });
-    } else {
-      if (clientDetails?.loader === false) {
-        clientDetails.client.data.map((client) => {
-          client.projects.map((project) => {
-            let newOption = {
-              _id: project._id,
-              name: project.name,
-            };
-            let exists = array.some((el) => el._id === newOption._id);
-            if (!exists) {
-              array.push(newOption);
-            }
-          });
-          setprojectOptions((prev) => [...array]);
-        });
-      } else return;
-    }
+    } else return;
   }, [clientDetails, clients, employees]);
 
   //   make select client options

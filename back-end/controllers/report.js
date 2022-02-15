@@ -16,19 +16,21 @@ const generateReport = asyncHandler(async (req, res) => {
 
     if (projectIds) {
       projectIds = projectIds.map((id) => {
-        return mongoose.Types.ObjectId(id);
+        return mongoose.Types.ObjectId(id._id);
       });
     }
     if (userIds) {
       userIds = userIds.map((id) => {
-        return mongoose.Types.ObjectId(id);
+        return mongoose.Types.ObjectId(id._id);
       });
     }
     if (clientIds) {
       clientIds = clientIds.map((id) => {
-        return mongoose.Types.ObjectId(id);
+        return mongoose.Types.ObjectId(id._id);
       });
     }
+
+    console.log(clientIds, projectIds, userIds, dateOne, dateTwo);
 
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
@@ -293,10 +295,10 @@ const generateReportProject = asyncHandler(async (req, res) => {
     console.log("this is running");
     let { projectIds, userIds, dateOne, dateTwo } = req.body;
     projectIds = projectIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
+      return mongoose.Types.ObjectId(id._id);
     });
     userIds = userIds.map((id) => {
-      return mongoose.Types.ObjectId(id);
+      return mongoose.Types.ObjectId(id._id);
     });
     console.log(projectIds, userIds);
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");

@@ -12,18 +12,18 @@ export default function AppsChart() {
   const [totalTime, settotalTime] = React.useState(100);
   const [dataLabels, setlabels] = React.useState([]);
   const [dataValues, setvalues] = React.useState([]);
-  console.table(reports.reports.data[0].byScreenshots);
+  console.table(reports.reports[0].byScreenshots);
 
   React.useEffect(() => {
     let total = 0;
-    reports.reports.data[0].byScreenshots.forEach((ss) => {
+    reports.reports[0].byScreenshots.forEach((ss) => {
       total = total + ss.totalHours;
     });
     settotalTime(total);
 
     let othersT = 0;
     let labelsArr = [];
-    reports.reports.data[0].byScreenshots.forEach((ss) => {
+    reports.reports[0].byScreenshots.forEach((ss) => {
       if ((ss.totalHours * 100) / total >= 5) labelsArr.push(ss._id);
       else othersT = 0 + ss.totalHours;
     });
@@ -31,7 +31,7 @@ export default function AppsChart() {
     setlabels(labelsArr);
 
     let dataArr = [];
-    reports.reports.data[0].byScreenshots.forEach((ss) => {
+    reports.reports[0].byScreenshots.forEach((ss) => {
       if ((ss.totalHours * 100) / total >= 5) dataArr.push(ss.totalHours);
     });
     dataArr.push(othersT);

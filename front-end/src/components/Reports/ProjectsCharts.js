@@ -11,7 +11,7 @@ export default function ProjectsCharts() {
 
   //  set data
   React.useEffect(() => {
-    setprojects(reports.reports.data[0].byProjects);
+    setprojects(reports.reports[0].byProjects);
   }, [reports]);
   console.log(projects);
 
