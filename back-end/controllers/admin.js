@@ -3,6 +3,8 @@ import Client from "../models/client.js";
 import Project from "../models/project.js";
 import Team from "../models/team.js";
 import mongoose from "mongoose";
+import Activity from "../models/activity.js";
+import dayjs from "dayjs";
 import asyncHandler from "express-async-handler";
 
 import { AccessControl } from "accesscontrol";
@@ -22,7 +24,6 @@ const getAllEmployee = asyncHandler(async (req, res) => {
   if (permission.granted) {
     try {
       const users = await User.find().select("_id firstName lastName");
-
       res.status(200).json({
         messsage: "Success",
         data: users,
@@ -64,4 +65,138 @@ const getAllTeams = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAllEmployee, getAllTeams };
+const adminCommondata = asyncHandler(async (req, res) => {
+  try {
+    // let resArr = [];
+    const userId = req.user._id;
+    const arr = await User.aggregate([
+      {
+        $match: {},
+      },
+      {
+        $unset: [
+          "settings",
+          "password",
+          "projects",
+          "clients",
+          "notifications",
+          "days",
+          "__v",
+          "createdAt",
+          "updatedAt",
+          "avatar",
+          "teams",
+          "accountInfo",
+        ],
+      },
+      {
+        $lookup: {
+          from: "activities",
+          let: {
+            uId: "$_id",
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$employee", "$$uId"],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: "null",
+                count: {
+                  $sum: 1,
+                },
+                today: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $eq: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                week: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $and: [
+                          {
+                            $gte: [
+                              "$activityOn",
+                              dayjs().startOf("week").format("DD/MM/YYYY"),
+                            ],
+                          },
+                          {
+                            $lte: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                          },
+                        ],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                month: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $and: [
+                          {
+                            $gte: [
+                              "$activityOn",
+                              dayjs().startOf("month").format("DD/MM/YYYY"),
+                            ],
+                          },
+                          {
+                            $lte: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                          },
+                        ],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                yesterday: {
+                  $sum: {
+                    $cond: [
+                      {
+                        $eq: [
+                          "$activityOn",
+                          dayjs().add(-1, "day").format("DD/MM/YYYY"),
+                        ],
+                      },
+                      "$consumeTime",
+                      0,
+                    ],
+                  },
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
+                },
+              },
+            },
+          ],
+          as: "time",
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      status: "Fetched admin common data",
+      data: arr,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { getAllEmployee, getAllTeams, adminCommondata };

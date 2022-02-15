@@ -74,51 +74,18 @@ export default function ApiRefRowsGrid(props) {
     employeeTimeData,
     changeEmployeeTimeData,
     dispatchEmployeesData,
+    adminAllEmployee,
   } = React.useContext(employeeContext);
   const { dispatchgetTeam, getTeams } = React.useContext(teamContext);
   let totalActive = 0;
-
-  console.log(teamsList);
-  employeeTimeData?.map((mem) => {
-    console.log(mem.user.firstName);
-  });
-  const date = new Date();
-  React.useEffect(() => {
-    let int = setInterval(async () => {
-      await getTeam(dispatchgetTeam);
-
-      const data = [];
-      const dataPush = [];
-      // if (teamsList !== undefined) {
-      for (let i = 0; i < teamsList.length; i++) {
-        data.push(teamsList[i].id);
-      }
-      // } else {
-      // for (let i = 0; i < teamsList.length; i++) {
-      // data.push(newteamsList[i].id);
-      // }
-      // }
-      console.log(data);
-      await employeesTimeDetails(data, dispatchEmployeesData);
-
-      changeEmployeeTimeData(employeesData?.data?.data);
-    }, 120000);
-    return () => clearInterval(int);
-  }, []);
-  React.useEffect(() => {
-    console.log(employeesData?.data?.data);
-    setTData(employeesData?.data?.data);
-    console.log(tData);
-  }, [employeesData]);
-  console.log(tData);
-  // tData?.map((mem) => {
-  //   console.log();
-  //   console.log(date.getTime());
-  // });
-
-  tData?.map((member) =>
-    member.user.lastActive / 1000 >= 86400 ? (totalActive += 1) : ""
+  React.useEffect(
+    () =>
+      adminAllEmployee?.allEmployee?.data
+        ? setTData(adminAllEmployee?.allEmployee?.data)
+        : "",
+    [adminAllEmployee]
   );
+  const date = new Date();
 
   return employeesData?.data?.length === 0 ? (
     <Box
