@@ -4,6 +4,7 @@ import Project from "../models/project.js";
 import asyncHandler from "express-async-handler";
 import dayjs from "dayjs";
 import mongoose from "mongoose";
+import moment from "moment";
 
 // @desc    Generate Report
 // @route   GET /report
@@ -32,7 +33,7 @@ const generateReport = asyncHandler(async (req, res) => {
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
 
-    let user;
+    // let user;
     // if (userId) user = await User.findById(userId);
     // else user = req.user;
 
@@ -68,12 +69,53 @@ const generateReport = asyncHandler(async (req, res) => {
                   { $not: { $in: ["$employee", []] } },
                 ],
               },
-              // {
-              //   $and: [
-              //     { $gte: ["$activityOn", dateOne] },
-              //     { $lte: ["$activityOn", dateTwo] },
-              //   ],
-              // },
+              {
+                $and: [
+                  {
+                    $ne: ["$activityOn", ""],
+                  },
+                  {
+                    $ne: ["$activityOn", "null"],
+                  },
+                  {
+                    $ne: ["$activityOn", null],
+                  },
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dateOne,
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dateTwo,
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
             ],
           },
         },
