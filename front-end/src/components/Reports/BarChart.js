@@ -1,36 +1,26 @@
 import React, { useEffect, useState } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { ReportsProvider } from "src/contexts/ReportsContext";
+import { BarChart, Bar, XAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { reportsContext } from "../../contexts/ReportsContext";
 
-const data = [
-  {
-    date: "2 Nov",
-    totalHours: 2400,
-  },
-];
+// const data = [
+//   {
+//     date: "2 Nov",
+//     totalHours: 2400,
+//   },
+// ];
 
-export default function Bars({ reports }) {
-  const { reports: rData } = reports;
-  console.log(rData);
+export default function Bars() {
+  const { reports } = React.useContext(reportsContext);
+  console.log(reports);
   const [data, setdata] = useState([]);
-  // make data
   useEffect(() => {
     setdata([
       {
         date: "2 Nov",
-        totalHours: rData[0].totalHours,
+        totalHours: "20",
       },
     ]);
-  }, [rData]);
+  }, []);
   console.log(data);
 
   return (

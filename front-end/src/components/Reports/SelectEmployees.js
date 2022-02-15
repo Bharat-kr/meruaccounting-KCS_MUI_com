@@ -7,7 +7,7 @@ export default function SelectEmployees({ options, setEmployees }) {
   return (
     <Box sx={{ m: 2, ml: 0 }}>
       <Autocomplete
-        // multiple
+        multiple
         options={options}
         getOptionLabel={(option) => `${option.name} `}
         filterSelectedOptions
