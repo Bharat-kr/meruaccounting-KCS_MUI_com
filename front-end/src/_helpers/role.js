@@ -1,1 +1,1 @@
-export const Role = ['superadmin', 'admin', 'manager', 'teamleader', 'employee'];
+export const Role = ["owner", "admin", "manager", "projectLeader", "employee"];

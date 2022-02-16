@@ -22,36 +22,38 @@ import {
 import { employeesTimeDetails } from "../../../api/employee api/employee";
 import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
 import { employeeContext } from "../../../contexts/EmployeeContext";
-import { getAllEmployee } from "src/api/admin api/admin";
+import { getTeamCommonData } from "../../../api/auth api/commondata";
 
 //----------------------------------------------------------------------------------------
 export default function SimpleContainer(props) {
-  const { teamsList } = props;
+  const [teamsList, setTeamsList] = useState([]);
   const [open, setOpen] = React.useState(false);
   const { dispatchgetTeam, getTeams } = useContext(teamContext);
 
   const [newteamsList, setnewTeamsList] = useState([]);
   // const [employeeData, setEmployeeData] = useState();
   const [searchedMember, setSearchedMember] = useState(0);
-  const [memberCommonData, setMemberCommonData] = useState();
   const getTeamsLoader = getTeams?.loader;
   const tableListRef = React.useRef();
   // const [int, setInt] = useState(true);
-  const {
-    employeesData,
-    dispatchEmployeesData,
-    employeeTimeData,
-    changeEmployeeTimeData,
-    dispatchAdminAllEmployees,
-    adminAllEmployees,
-  } = useContext(employeeContext);
+  const { dispatchTeamCommonData, teamCommonData } =
+    useContext(CurrentUserContext);
 
-  // React.useLayoutEffect(() => {
-  //   getAllEmployee(dispatchAdminAllEmployees);
-  // });
-  // React.useEffect(() => {
-  //   console.log(adminAllEmployees);
-  // });
+  React.useLayoutEffect(() => {
+    let pushData = [];
+    let int = setInterval(() => {
+      getTeamCommonData(dispatchTeamCommonData);
+    }, [120000]);
+
+    teamCommonData?.data?.data?.map((mem) => {
+      pushData.push({
+        id: mem._id,
+        Employee: `${mem.firstName} ${mem.lastName}`,
+      });
+    });
+    setTeamsList(pushData);
+    return () => clearInterval(int);
+  }, []);
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>
       member.Employee === value ? member : ""
@@ -111,7 +113,6 @@ export default function SimpleContainer(props) {
               />
             </Container>
             <ApiRefRowsGrid
-              employeeTimeData={employeeTimeData}
               teamsList={teamsList}
               getTeamsLoader={getTeamsLoader}
               tableListRef={tableListRef}
