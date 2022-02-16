@@ -210,9 +210,9 @@ const getTeam = asyncHandler(async (req, res) => {
   if (permission.granted) {
     try {
       const user = await User.findById(req.user._id);
-      let teams;
+      let dteams;
       if (user.role === "admin") {
-        teams = await Team.find().populate({
+        dteams = await Team.find().populate({
           path: "members",
           model: "User",
           select: [
@@ -276,11 +276,13 @@ const getTeam = asyncHandler(async (req, res) => {
               populate: { path: "projects", model: "Project" },
             },
           });
+
+        dteams = teams;
       }
 
       res.json({
         status: "Success",
-        data: teams,
+        data: dteams,
       });
     } catch (error) {
       throw new Error(error);
