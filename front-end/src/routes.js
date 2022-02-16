@@ -41,11 +41,11 @@ export default function Router() {
   const { loginC } = useContext(loginContext);
   const { dispatchAdminAllEmployee } = useContext(employeeContext);
   React.useLayoutEffect(() => {
-    if (loginC.userData.role === "admin")
+    if (loginC?.userData?.role === "admin")
       getAllEmployee(dispatchAdminAllEmployee);
-    else if (loginC.userData.role === "manager")
+    else if (loginC?.userData?.role === "manager")
       getTeamCommonData(dispatchTeamCommonData);
-    else if (loginC.userData.role === "projectLeader")
+    else if (loginC?.userData?.role === "projectLeader")
       projectMemberCommonData(dispatchProjectMemberData);
   }, [commonData]);
   console.log(projectMemberData);
@@ -73,12 +73,12 @@ export default function Router() {
           element: <PrivateRoute component={Teams} roles={2} />,
         },
         // eslint-disable-next-line jsx-a11y/aria-role
-        // till teamLeader
+        // till projectLeader
         {
           path: "clients",
-          element: <PrivateRoute component={Clients} roles={3} />,
+          element: <PrivateRoute component={Clients} roles={2} />,
         },
-        // till teamLeader
+        // till projectLeader
         {
           path: "projects",
           element: <PrivateRoute component={Projects} roles={3} />,
@@ -86,7 +86,7 @@ export default function Router() {
         // all
         {
           path: "settings",
-          element: <PrivateRoute component={Settings} roles={4} />,
+          element: <PrivateRoute component={Settings} roles={2} />,
         },
         // all
         {

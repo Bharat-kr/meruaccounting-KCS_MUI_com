@@ -13,32 +13,39 @@ import {
 import ApiRefRowsGrid from "../muicomponents/ThrottledRowsGrid";
 import { useContext, useEffect, useState } from "react";
 import { teamContext } from "../../../contexts/TeamsContext";
-import { getFullName } from "src/_helpers/getFullName";
-import { getTeam } from "../../../api/teams api/teams";
+import PlApiRefRowsGrid from "./plThrottledRowsGrid";
 
-import { employeesTimeDetails } from "../../../api/employee api/employee";
 import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
-import { employeeContext } from "../../../contexts/EmployeeContext";
+import { projectMemberCommonData } from "../../../api/auth api/commondata";
 
 //----------------------------------------------------------------------------------------
 export default function ProjectLeaderContainer(props) {
-  const { teamsList } = props;
-  const [open, setOpen] = React.useState(false);
-  const { dispatchgetTeam, getTeams } = useContext(teamContext);
+  const [teamsList, setTeamsList] = React.useState([]);
+  const { getTeams } = useContext(teamContext);
 
-  const [newteamsList, setnewTeamsList] = useState([]);
   // const [employeeData, setEmployeeData] = useState();
   const [searchedMember, setSearchedMember] = useState(0);
-  const [memberCommonData, setMemberCommonData] = useState();
   const getTeamsLoader = getTeams?.loader;
   const tableListRef = React.useRef();
   // const [int, setInt] = useState(true);
-  const {
-    employeesData,
-    dispatchEmployeesData,
-    employeeTimeData,
-    changeEmployeeTimeData,
-  } = useContext(employeeContext);
+  const { projectMemberData, dispatchProjectMemberData } =
+    useContext(CurrentUserContext);
+
+  React.useLayoutEffect(() => {
+    let pushData = [];
+    let int = setInterval(() => {
+      projectMemberCommonData(dispatchProjectMemberData);
+    }, [120000]);
+
+    projectMemberData?.data?.data?.map((mem) => {
+      pushData.push({
+        id: mem._id,
+        Employee: `${mem.firstName} ${mem.lastName}`,
+      });
+    });
+    setTeamsList(pushData);
+    return () => clearInterval(int);
+  }, []);
 
   const handleSearch = (e, value) => {
     const member = teamsList.filter((member) =>
@@ -98,8 +105,7 @@ export default function ProjectLeaderContainer(props) {
                 )}
               />
             </Container>
-            <ApiRefRowsGrid
-              employeeTimeData={employeeTimeData}
+            <PlApiRefRowsGrid
               teamsList={teamsList}
               getTeamsLoader={getTeamsLoader}
               tableListRef={tableListRef}

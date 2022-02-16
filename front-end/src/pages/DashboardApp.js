@@ -48,9 +48,9 @@ export default function DashboardApp() {
 
         <Grid container spacing={2}>
           {Role.indexOf(loginC.userData.role) <= 1 ? (
-            <AdminContainer sx={{ width: "100%" }} teamsList={allEmployees} />
+            <AdminContainer sx={{ width: "100%" }} />
           ) : Role.indexOf(loginC.userData.role) === 2 ? (
-            <SimpleContainer teamsList={teamsList} sx={{ width: "100%" }} />
+            <SimpleContainer sx={{ width: "100%" }} />
           ) : Role.indexOf(loginC.userData.role) === 3 ? (
             <ProjectLeaderContainer />
           ) : (

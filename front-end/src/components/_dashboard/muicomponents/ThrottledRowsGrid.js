@@ -7,16 +7,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
-import { employeeContext } from "../../../contexts/EmployeeContext";
+
 import CircleIcon from "@mui/icons-material/Circle";
-import timeC from "../../../_helpers/timeConverter";
-import { employeesTimeDetails } from "../../../api/employee api/employee";
-import { teamContext } from "src/contexts/TeamsContext";
-import { getTeam } from "../../../api/teams api/teams";
+
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
 // -----------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -66,28 +63,27 @@ function dispdata(data, data2, user) {
   );
 }
 
-export default function ApiRefRowsGrid(props) {
-  const { teamsList, getTeamsLoader, tableListRef } = props;
+export default function AdminApiRefRowsGrid(props) {
+  const { tableListRef } = props;
   const [tData, setTData] = React.useState([]);
-  const {
-    employeesData,
-    employeeTimeData,
-    changeEmployeeTimeData,
-    dispatchEmployeesData,
-    adminAllEmployee,
-  } = React.useContext(employeeContext);
-  const { dispatchgetTeam, getTeams } = React.useContext(teamContext);
+  const { teamCommonData } = React.useContext(CurrentUserContext);
   let totalActive = 0;
+  const date = new Date();
   React.useEffect(
     () =>
-      adminAllEmployee?.allEmployee?.data
-        ? setTData(adminAllEmployee?.allEmployee?.data)
-        : "",
-    [adminAllEmployee]
+      teamCommonData?.data?.data ? setTData(teamCommonData?.data?.data) : "",
+    [teamCommonData]
   );
-  const date = new Date();
+  console.log(teamCommonData);
 
-  return employeesData?.data?.length === 0 ? (
+  if (tData?.length !== 0) {
+    tData.map((mem) => {
+      if ((date.getTime() - mem.lastActive).toFixed(0) / 1000 <= 86400)
+        totalActive += 1;
+    });
+  }
+
+  return teamCommonData?.loader === true ? (
     <Box
       sx={{
         display: "flex",
@@ -98,30 +94,24 @@ export default function ApiRefRowsGrid(props) {
     >
       <CircularProgress />
     </Box>
-  ) : employeesData?.data?.loader ? (
-    <Box
-      component="div"
-      sx={{
-        height: "50vh",
-        width: "100%",
-        flexGrow: "1",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+  ) : teamCommonData.err === true ? (
+    <Box sx={{ width: "100%", height: "70vh" }}>
       <Box
         component="img"
         src="/svgs/member.svg"
-        sx={{ width: 100, height: 70, backgroundColor: "white" }}
+        sx={{ width: "100%", height: "30vh", backgroundColor: "white" }}
       />
       <Typography
-        to={`/dashboard/teams`}
+        underline="hover"
         component={RouterLink}
         sx={{
-          fontSize: "1.5rem",
-          fontWeight: "600",
+          pl: "19rem",
+          display: "flex",
+          flexDirection: "column",
+          alignContent: "center",
+          alignItem: "center",
+          alignSelf: "center",
+          fontWeight: "400",
           textDecoration: "none",
           color: "primary.main",
           ":hover": {
@@ -129,9 +119,10 @@ export default function ApiRefRowsGrid(props) {
             textDecoration: "underline #000000",
           },
         }}
-        varinat="h5"
+        to={`/dashboard/teams`}
+        variant="h6"
       >
-        Add member to team
+        Add members to team
       </Typography>
     </Box>
   ) : (
@@ -141,11 +132,11 @@ export default function ApiRefRowsGrid(props) {
           <TableHead>
             <TableRow>
               <StyledTableCell>Employees</StyledTableCell>
-              <StyledTableCell align="right">Last Active</StyledTableCell>
-              <StyledTableCell align="right">Today</StyledTableCell>
-              <StyledTableCell align="right">Yesterday</StyledTableCell>
-              <StyledTableCell align="right">This Week</StyledTableCell>
-              <StyledTableCell align="right">This Month</StyledTableCell>
+              <StyledTableCell align="left">Last Active</StyledTableCell>
+              <StyledTableCell align="left">Today</StyledTableCell>
+              <StyledTableCell align="left">Yesterday</StyledTableCell>
+              <StyledTableCell align="left">This Week</StyledTableCell>
+              <StyledTableCell align="left">This Month</StyledTableCell>
             </TableRow>
             <TableRow>
               <StyledTableCell>{`${totalActive} out of ${tData?.length} Active today`}</StyledTableCell>
@@ -158,7 +149,7 @@ export default function ApiRefRowsGrid(props) {
             {tData?.map((member) => {
               return (
                 <>
-                  <StyledTableRow key={member.user._id} ref={tableListRef}>
+                  <StyledTableRow key={member._id} ref={tableListRef}>
                     <StyledTableCell component="th" scope="row">
                       <Typography
                         component={RouterLink}
@@ -167,16 +158,16 @@ export default function ApiRefRowsGrid(props) {
                           textDecoration: "none",
                           color: "black",
                         }}
-                        to={`/dashboard/employeepage/${member.user._id}`}
+                        to={`/dashboard/employeepage/${member._id}`}
                         variant="h5"
                       >
-                        {member.user.firstName} {member.user.lastName}
+                        {member.firstName} {member.lastName}
                       </Typography>
                     </StyledTableCell>
 
-                    <StyledTableCell align="right">
+                    <StyledTableCell align="left">
                       {dispdata(
-                        date.getTime() - member?.user?.lastActive <= 120000 ? (
+                        date.getTime() - member?.lastActive <= 120000 ? (
                           <Box sx={{ display: "flex", flexDirection: "row" }}>
                             <CircleIcon
                               small
@@ -196,114 +187,91 @@ export default function ApiRefRowsGrid(props) {
                               Active
                             </Typography>
                           </Box>
-                        ) : moment(member?.user?.lastActive).subtract(
-                            7,
-                            "days"
-                          ) >= 604800 ? (
-                          moment(member?.user?.lastActive)
+                        ) : moment(member?.lastActive).subtract(7, "days") >=
+                          604800 ? (
+                          moment(member?.lastActive)
                             .startOf("minutes")
                             .fromNow()
                         ) : (
                           "Not Active in a while"
                         ),
                         "",
-                        member.user
+                        member
                       )}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align="left">
                       {dispdata(
-                        member?.dailyHours?.length === 1
-                          ? member.dailyHours[0]?.totalHours <= 3600
+                        member?.time[0]?.today
+                          ? member.time[0]?.today <= 3600
                             ? `${Math.floor(
-                                (member.dailyHours[0]?.totalHours % 3600) / 60
+                                (member.time[0]?.today % 3600) / 60
                               )} min`
-                            : `${(
-                                member.dailyHours[0].totalHours / 3600
-                              ).toFixed(0)} hr` +
-                              ` ${(
-                                (member.dailyHours[0].totalHours % 3600) /
-                                60
-                              ).toFixed(0)} min`
-                          : "0",
-                        member.dailyHours.length === 1
-                          ? (
-                              member.dailyHours[0]?.totalHours /
-                              member.user.payRate
-                            ).toFixed(2)
-                          : "",
-                        member.user
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {dispdata(
-                        member.yersterdayHours?.length === 1
-                          ? member.yersterdayHours[0]?.totalHours <= 3600
-                            ? `${(
-                                member.yersterdayHours[0]?.totalHours / 60
-                              ).toFixed(0)} min`
-                            : `${(
-                                member.yersterdayHours[0].totalHours / 3600
-                              ).toFixed(0)} hr` +
-                              ` ${(
-                                (member.yersterdayHours[0].totalHours % 3600) /
-                                60
-                              ).toFixed(0)} min`
-                          : "0",
-                        member.yersterdayHours.length === 1
-                          ? (
-                              member.yersterdayHours[0]?.totalHours /
-                              member.user.payRate
-                            ).toFixed(2)
-                          : "",
-                        member.user
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {dispdata(
-                        member?.weeklyTime?.length === 1
-                          ? member.weeklyTime[0].totalHours <= 3600
-                            ? `${(member.weeklyTime[0].totalHours / 60).toFixed(
+                            : `${(member.time[0].today / 3600).toFixed(0)} hr` +
+                              ` ${((member.time[0].today % 3600) / 60).toFixed(
                                 0
                               )} min`
-                            : `${(
-                                member.weeklyTime[0].totalHours / 3600
-                              ).toFixed(0)} hr` +
-                              ` ${(
-                                (member.weeklyTime[0].totalHours % 3600) /
-                                60
-                              ).toFixed(0)} min`
                           : "0",
-                        member.weeklyTime.length === 1
-                          ? (
-                              member.weeklyTime[0]?.totalHours /
-                              member.user.payRate
-                            ).toFixed(2)
+                        member.time[0]?.today === 1
+                          ? (member.time[0]?.today / member.payRate).toFixed(2)
                           : "",
-                        member.user
+                        member
                       )}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    <StyledTableCell align="left">
                       {dispdata(
-                        member?.monthlyTime?.length === 1
-                          ? member.monthlyTime[0].totalHours <= 3600
-                            ? `${(
-                                member.monthlyTime[0].totalHours / 60
-                              ).toFixed(0)} min`
-                            : `${(
-                                member.monthlyTime[0].totalHours / 3600
-                              ).toFixed(0)} hr` +
+                        member.time[0]?.yesterday
+                          ? member.time[0].yesterday <= 3600
+                            ? `${(member.time[0].yesterday / 60).toFixed(
+                                0
+                              )} min`
+                            : `${(member.time[0].yesterday / 3600).toFixed(
+                                0
+                              )} hr` +
                               ` ${(
-                                (member.monthlyTime[0].totalHours % 3600) /
+                                (member.time[0].yesterday % 3600) /
                                 60
                               ).toFixed(0)} min`
                           : "0",
-                        member?.monthlyTime.length === 1
-                          ? (
-                              member?.monthlyTime[0]?.totalHours /
-                              member.user.payRate
-                            ).toFixed(2)
+                        member.time[0]?.yesterday
+                          ? (member.time[0].yesterday / member.payRate).toFixed(
+                              2
+                            )
                           : "",
-                        member.user
+                        member
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="left">
+                      {dispdata(
+                        member?.time[0]?.week
+                          ? member.time[0]?.week <= 3600
+                            ? `${(member.time[0]?.week / 60).toFixed(0)} min`
+                            : `${(member.time[0]?.week / 3600).toFixed(0)} hr` +
+                              ` ${((member.time[0]?.week % 3600) / 60).toFixed(
+                                0
+                              )} min`
+                          : "0",
+                        member.time[0]?.week
+                          ? (member.time[0]?.week / member.payRate).toFixed(2)
+                          : "",
+                        member
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell align="left">
+                      {dispdata(
+                        member?.time[0]?.month
+                          ? member.time[0]?.month <= 3600
+                            ? `${(member.time[0]?.month / 60).toFixed(0)} min`
+                            : `${(member.time[0]?.month / 3600).toFixed(
+                                0
+                              )} hr` +
+                              ` ${((member.time[0]?.month % 3600) / 60).toFixed(
+                                0
+                              )} min`
+                          : "0",
+                        member?.time[0]?.month
+                          ? (member?.time[0]?.month / member.payRate).toFixed(2)
+                          : "",
+                        member
                       )}
                     </StyledTableCell>
                   </StyledTableRow>

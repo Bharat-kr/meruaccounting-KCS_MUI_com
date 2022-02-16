@@ -66,136 +66,145 @@ const getAllTeams = asyncHandler(async (req, res) => {
 });
 
 const adminCommondata = asyncHandler(async (req, res) => {
-  try {
-    // let resArr = [];
-    const userId = req.user._id;
-    const arr = await User.aggregate([
-      {
-        $match: {},
-      },
-      {
-        $unset: [
-          "settings",
-          "password",
-          "projects",
-          "clients",
-          "notifications",
-          "days",
-          "__v",
-          "createdAt",
-          "updatedAt",
-          "avatar",
-          "teams",
-          "accountInfo",
-        ],
-      },
-      {
-        $lookup: {
-          from: "activities",
-          let: {
-            uId: "$_id",
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ["$employee", "$$uId"],
-                },
-              },
-            },
-            {
-              $group: {
-                _id: "null",
-                count: {
-                  $sum: 1,
-                },
-                today: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: ["$activityOn", dayjs().format("DD/MM/YYYY")],
-                      },
-                      "$consumeTime",
-                      0,
-                    ],
-                  },
-                },
-                totalHours: {
-                  $sum: "$consumeTime",
-                },
-                week: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $and: [
-                          {
-                            $gte: [
-                              "$activityOn",
-                              dayjs().startOf("week").format("DD/MM/YYYY"),
-                            ],
-                          },
-                          {
-                            $lte: ["$activityOn", dayjs().format("DD/MM/YYYY")],
-                          },
-                        ],
-                      },
-                      "$consumeTime",
-                      0,
-                    ],
-                  },
-                },
-                month: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $and: [
-                          {
-                            $gte: [
-                              "$activityOn",
-                              dayjs().startOf("month").format("DD/MM/YYYY"),
-                            ],
-                          },
-                          {
-                            $lte: ["$activityOn", dayjs().format("DD/MM/YYYY")],
-                          },
-                        ],
-                      },
-                      "$consumeTime",
-                      0,
-                    ],
-                  },
-                },
-                yesterday: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: [
-                          "$activityOn",
-                          dayjs().add(-1, "day").format("DD/MM/YYYY"),
-                        ],
-                      },
-                      "$consumeTime",
-                      0,
-                    ],
-                  },
-                },
-                avgPerformanceData: {
-                  $avg: "$performanceData",
-                },
-              },
-            },
-          ],
-          as: "time",
+  const permission = ac.can(req.user.role).readOwn("team");
+  if (permission.granted) {
+    try {
+      // let resArr = [];
+      const userId = req.user._id;
+      const arr = await User.aggregate([
+        {
+          $match: {},
         },
-      },
-    ]);
+        {
+          $unset: [
+            "settings",
+            "password",
+            "projects",
+            "clients",
+            "notifications",
+            "days",
+            "__v",
+            "createdAt",
+            "updatedAt",
+            "avatar",
+            "teams",
+            "accountInfo",
+          ],
+        },
+        {
+          $lookup: {
+            from: "activities",
+            let: {
+              uId: "$_id",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$employee", "$$uId"],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "null",
+                  count: {
+                    $sum: 1,
+                  },
+                  today: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $eq: ["$activityOn", dayjs().format("DD/MM/YYYY")],
+                        },
+                        "$consumeTime",
+                        0,
+                      ],
+                    },
+                  },
+                  totalHours: {
+                    $sum: "$consumeTime",
+                  },
+                  week: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $and: [
+                            {
+                              $gte: [
+                                "$activityOn",
+                                dayjs().startOf("week").format("DD/MM/YYYY"),
+                              ],
+                            },
+                            {
+                              $lte: [
+                                "$activityOn",
+                                dayjs().format("DD/MM/YYYY"),
+                              ],
+                            },
+                          ],
+                        },
+                        "$consumeTime",
+                        0,
+                      ],
+                    },
+                  },
+                  month: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $and: [
+                            {
+                              $gte: [
+                                "$activityOn",
+                                dayjs().startOf("month").format("DD/MM/YYYY"),
+                              ],
+                            },
+                            {
+                              $lte: [
+                                "$activityOn",
+                                dayjs().format("DD/MM/YYYY"),
+                              ],
+                            },
+                          ],
+                        },
+                        "$consumeTime",
+                        0,
+                      ],
+                    },
+                  },
+                  yesterday: {
+                    $sum: {
+                      $cond: [
+                        {
+                          $eq: [
+                            "$activityOn",
+                            dayjs().add(-1, "day").format("DD/MM/YYYY"),
+                          ],
+                        },
+                        "$consumeTime",
+                        0,
+                      ],
+                    },
+                  },
+                  avgPerformanceData: {
+                    $avg: "$performanceData",
+                  },
+                },
+              },
+            ],
+            as: "time",
+          },
+        },
+      ]);
 
-    res.status(200).json({
-      status: "Fetched admin common data",
-      data: arr,
-    });
-  } catch (error) {
-    throw new Error(error);
+      res.status(200).json({
+        status: "Fetched admin common data",
+        data: arr,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 });
 
