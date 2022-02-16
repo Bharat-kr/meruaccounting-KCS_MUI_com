@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { CssBaseline, Box } from "@mui/material";
 import moment from "moment";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 // components
-import Calendar from "../components/UserPage/Calendar";
+import Calendar from "../components/EmployeePage/Calendar";
 import Overview from "../components/EmployeePage/Overview";
 import ScreenShots from "../components/EmployeePage/ScreenShots";
 import Timeline from "../components/EmployeePage/Timeline";
@@ -22,9 +22,14 @@ export default function UserPage() {
   const [activities, setactivities] = useState([]);
   const { dispatchCommonData } = useContext(EmployeePageContext);
   const [isInternal, setisInternal] = useState(false);
-  const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
   const { commonData } = useContext(EmployeePageContext);
   const { id } = useParams();
+  const location = useLocation();
+  const [date, setdate] = useState(
+    moment()
+      .subtract(location.state === "yesterday" ? 1 : 0, "day")
+      .format("DD/MM/YYYY")
+  );
 
   // interval for getting common data each minute
   useEffect(() => {
@@ -62,6 +67,9 @@ export default function UserPage() {
         />
         <Calendar
           days={commonData?.commonData?.user?.days}
+          date={moment()
+            .subtract(location.state === "yesterday" ? 1 : 0, "day")
+            .format("D")}
           setDate={(date) =>
             setdate((prev) => {
               console.log(date);

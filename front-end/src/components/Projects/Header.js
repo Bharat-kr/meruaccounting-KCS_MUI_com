@@ -18,6 +18,7 @@ import EnhancedTable from "../Projects/ProjectMemers";
 import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import { useSnackbar } from "notistack";
+import { useLayoutEffect } from "react";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -86,14 +87,15 @@ export default function Header(props) {
     ? clientsList[clientIndex]?.projects?.findIndex(
         (i) => i._id === currentProject?._id
       )
-    : "";
-  useEffect(async () => {
+    : 0;
+  console.log(projectIndex + 1, clientIndex);
+  useEffect(() => {
     if (clientsList !== null || undefined) {
-      await changeClient(clientsList[clientIndex]);
-      await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+      changeClient(clientsList[clientIndex]);
+
+      changeProject(clientsList[clientIndex]?.projects[projectIndex]);
     }
   }, [clientDetails]);
-  console.log(currentProject);
   useEffect(() => {
     try {
       currentProject
@@ -137,7 +139,6 @@ export default function Header(props) {
       const employee = memberList.filter((emp) => (emp === value ? emp : ""));
       setProjectLeader(employee);
       proInputRef.current.value = "";
-      console.log(proInputRef.current);
 
       enqueueSnackbar("Project Leader changed", { variant: "success" });
     } catch (error) {
@@ -212,15 +213,15 @@ export default function Header(props) {
         dispatchEditProject
       );
       setbudgetTime(v);
-      await getClient(dispatchClientDetails);
-      // changeProject(curr);
+      // await getClient(dispatchClientDetails);
+      changeProject(currentProject);
       enqueueSnackbar("Budget time changed", { variant: "success" });
     } catch (error) {
       console.log(error);
       enqueueSnackbar(error.message, { variant: "warning" });
     }
   };
-
+  console.log(currentProject);
   return currentProject === undefined ? (
     <Box
       component="div"

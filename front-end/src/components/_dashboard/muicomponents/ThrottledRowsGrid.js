@@ -36,7 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function dispdata(data, data2, user) {
+function dispdata(data, data2, user, state) {
   return (
     <>
       <Typography
@@ -53,6 +53,7 @@ function dispdata(data, data2, user) {
         }}
         to={`/dashboard/employeepage/${user._id}`}
         variant="body2"
+        state={state}
       >
         {data}
       </Typography>
@@ -237,7 +238,8 @@ export default function AdminApiRefRowsGrid(props) {
                               2
                             )
                           : "",
-                        member
+                        member,
+                        "yesterday"
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="left">

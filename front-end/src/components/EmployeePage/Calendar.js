@@ -23,7 +23,7 @@ export default class Calendar extends React.Component {
     return this.state.dateObject.format("Y");
   };
   currentDay = () => {
-    return this.state.dateObject.format("D");
+    return this.props.date;
   };
   firstDayOfMonth = () => {
     let dateObject = this.state.dateObject;
