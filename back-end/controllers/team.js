@@ -209,40 +209,74 @@ const getTeam = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).readOwn("team");
   if (permission.granted) {
     try {
-      const { teams } = await User.findById(req.user._id)
-        .populate({
-          path: "teams",
-          model: "Team",
+      const user = await User.findById(req.user._id);
+      let teams;
+      if (user.role === "admin") {
+        teams = await Team.find().populate({
+          path: "members",
+          model: "User",
+          select: [
+            "firstName",
+            "lastName",
+            "email",
+            "settings",
+            "projects",
+            "role",
+            "payRate",
+            "status",
+          ],
           populate: {
-            path: "members",
-            model: "User",
-            select: [
-              "firstName",
-              "lastName",
-              "email",
-              "settings",
-              "projects",
-              "role",
-              "payRate",
-              "status",
-            ],
-            populate: {
-              path: "projects",
-              model: "Project",
-              select: ["name"],
-            },
-          },
-        })
-        .populate({
-          path: "teams",
-          model: "Team",
-          populate: {
-            path: "manager",
-            model: "User",
-            select: ["-password", "-settings"],
-            populate: { path: "projects", model: "Project" },
+            path: "projects",
+            model: "Project",
+            select: ["name"],
           },
         });
+        // .populate({
+        //   path: "teams",
+        //   model: "Team",
+        //   populate: {
+        //     path: "manager",
+        //     model: "User",
+        //     select: ["-password", "-settings"],
+        //     populate: { path: "projects", model: "Project" },
+        //   },
+        // });
+      } else {
+        const { teams } = await User.findById(req.user._id)
+          .populate({
+            path: "teams",
+            model: "Team",
+            populate: {
+              path: "members",
+              model: "User",
+              select: [
+                "firstName",
+                "lastName",
+                "email",
+                "settings",
+                "projects",
+                "role",
+                "payRate",
+                "status",
+              ],
+              populate: {
+                path: "projects",
+                model: "Project",
+                select: ["name"],
+              },
+            },
+          })
+          .populate({
+            path: "teams",
+            model: "Team",
+            populate: {
+              path: "manager",
+              model: "User",
+              select: ["-password", "-settings"],
+              populate: { path: "projects", model: "Project" },
+            },
+          });
+      }
 
       res.json({
         status: "Success",
