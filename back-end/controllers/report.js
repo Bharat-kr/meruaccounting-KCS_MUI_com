@@ -143,7 +143,7 @@ const generateReport = asyncHandler(async (req, res) => {
               $group: {
                 _id: {
                   name: "$project.name",
-                  employee: "$project._id",
+                  _id: "$project._id",
                 },
                 actCount: {
                   $sum: 1,
@@ -176,7 +176,7 @@ const generateReport = asyncHandler(async (req, res) => {
               $group: {
                 _id: {
                   firstName: "$client.name",
-                  employee: "$client._id",
+                  _id: "$client._id",
                 },
                 actCount: {
                   $sum: 1,
