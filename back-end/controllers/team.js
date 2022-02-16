@@ -212,35 +212,32 @@ const getTeam = asyncHandler(async (req, res) => {
       const user = await User.findById(req.user._id);
       let dteams;
       if (user.role === "admin") {
-        dteams = await Team.find().populate({
-          path: "members",
-          model: "User",
-          select: [
-            "firstName",
-            "lastName",
-            "email",
-            "settings",
-            "projects",
-            "role",
-            "payRate",
-            "status",
-          ],
-          populate: {
-            path: "projects",
-            model: "Project",
-            select: ["name"],
-          },
-        });
-        // .populate({
-        //   path: "teams",
-        //   model: "Team",
-        //   populate: {
-        //     path: "manager",
-        //     model: "User",
-        //     select: ["-password", "-settings"],
-        //     populate: { path: "projects", model: "Project" },
-        //   },
-        // });
+        dteams = await Team.find()
+          .populate({
+            path: "members",
+            model: "User",
+            select: [
+              "firstName",
+              "lastName",
+              "email",
+              "settings",
+              "projects",
+              "role",
+              "payRate",
+              "status",
+            ],
+            populate: {
+              path: "projects",
+              model: "Project",
+              select: ["name"],
+            },
+          })
+          .populate({
+            path: "manager",
+            model: "User",
+            select: ["-password", "-settings"],
+            populate: { path: "projects", model: "Project" },
+          });
       } else {
         const { teams } = await User.findById(req.user._id)
           .populate({
