@@ -62,7 +62,7 @@ export default function Sidebar() {
     await getClient(dispatchClientDetails);
   }, []);
   let clientsList = [];
-
+  console.group(clientDetails);
   if (clientDetails.loader === false) {
     clientsList = clientDetails?.client?.data;
   }

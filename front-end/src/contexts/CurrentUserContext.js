@@ -113,6 +113,7 @@ const teamCommonDataReducer = (state, action) => {
     case TEAM_COMMONDATA_FAILED:
       return {
         ...state,
+        loader: false,
         err: action.payload,
       };
     default:
@@ -130,6 +131,7 @@ const projectMemberDataReducer = (state, action) => {
     case PROJECTMEMBER_CD_FAILED:
       return {
         ...state,
+        loader: false,
         err: action.payload,
       };
     default:
