@@ -4,7 +4,6 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 export default function SearchBar(props) {
   const inputref = React.useRef();
   const [value, setValue] = React.useState();
-  console.log(props.inputRef);
   return (
     <Box
       sx={{

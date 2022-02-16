@@ -83,7 +83,7 @@ export default function PlApiRefRowsGrid(props) {
     });
   }
 
-  return tData?.length === 0 ? (
+  return projectMemberData?.loader === true ? (
     <Box
       sx={{
         display: "flex",
@@ -93,6 +93,37 @@ export default function PlApiRefRowsGrid(props) {
       }}
     >
       <CircularProgress />
+    </Box>
+  ) : projectMemberData?.err === true ? (
+    <Box sx={{ width: "100%", height: "70vh" }}>
+      <Box
+        component="img"
+        src="/svgs/member.svg"
+        sx={{ width: "100%", height: "30vh", backgroundColor: "white" }}
+      />
+      <Typography
+        underline="hover"
+        component={RouterLink}
+        sx={{
+          pl: "19rem",
+          display: "flex",
+          flexDirection: "column",
+          alignContent: "center",
+          alignItem: "center",
+          alignSelf: "center",
+          fontWeight: "400",
+          textDecoration: "none",
+          color: "primary.main",
+          ":hover": {
+            color: "primary.darker",
+            textDecoration: "underline #000000",
+          },
+        }}
+        to={`/dashboard/projects`}
+        variant="h6"
+      >
+        Add members to Project
+      </Typography>
     </Box>
   ) : (
     <div style={{ height: "auto", width: "100%" }}>
