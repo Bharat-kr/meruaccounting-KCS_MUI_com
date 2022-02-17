@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import User from "../models/user.js";
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
+import mongoose from "mongoose";
 
 const ac = new AccessControl(grantsObject);
 
@@ -50,30 +51,63 @@ const getClient = asyncHandler(async (req, res) => {
   console.log(ac);
   const permission = ac.can(req.user.role).readOwn("client", ["*"]);
   console.log(permission);
+
   if (permission.granted) {
     try {
-      const client = await Client.find({ manager: req.user._id }).populate([
-        {
-          path: "projects",
-          populate: [
-            {
-              path: "employees",
-              select: ["firstName", "lastName", "days", "email", "projects"],
-              populate: {
-                path: "projects",
-                model: "Project",
-                select: ["name", "budgetTime"],
+      const user = await User.findById(req.user._id);
+      let client;
+      if (user.role !== "admin") {
+        client = await Client.find({ manager: req.user._id }).populate([
+          {
+            path: "projects",
+            match: {
+              _id: {
+                $in: user.projects,
               },
             },
-            {
-              path: "projectLeader",
-              select: ["firstName", "lastName", "email"],
-            },
-            { path: "createdBy", select: ["firstName", "lastName"] },
-          ],
-        },
-        { path: "createdBy", select: ["firstName", "lastName"] },
-      ]);
+            populate: [
+              {
+                path: "employees",
+                select: ["firstName lastName days email projects"],
+                populate: {
+                  path: "projects",
+                  model: "Project",
+                  select: ["name", "budgetTime"],
+                },
+              },
+              {
+                path: "projectLeader",
+                select: ["firstName lastName email -days"],
+              },
+              { path: "createdBy", select: ["firstName lastName"] },
+            ],
+          },
+          { path: "createdBy", select: ["firstName lastName"] },
+        ]);
+      } else {
+        client = await Client.find({ manager: req.user._id }).populate([
+          {
+            path: "projects",
+            populate: [
+              {
+                path: "employees",
+                select: ["firstName", "lastName", "days", "email", "projects"],
+                populate: {
+                  path: "projects",
+                  model: "Project",
+                  select: ["name", "budgetTime"],
+                },
+              },
+              {
+                path: "projectLeader",
+                select: ["firstName", "lastName", "email"],
+              },
+              { path: "createdBy", select: ["firstName", "lastName"] },
+            ],
+          },
+          { path: "createdBy", select: ["firstName", "lastName"] },
+        ]);
+      }
 
       if (!client) {
         res.status(404);
