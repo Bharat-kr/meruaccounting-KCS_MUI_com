@@ -58,6 +58,8 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  console.table([email, password]);
+
   if (!email || !password) {
     res.status(401);
     throw new Error("Missing credentials");

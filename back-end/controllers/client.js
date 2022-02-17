@@ -68,7 +68,7 @@ const getClient = asyncHandler(async (req, res) => {
             populate: [
               {
                 path: "employees",
-                select: ["firstName lastName days email projects"],
+                select: ["firstName", "lastName", "days", "email", "projects"],
                 populate: {
                   path: "projects",
                   model: "Project",
@@ -77,12 +77,12 @@ const getClient = asyncHandler(async (req, res) => {
               },
               {
                 path: "projectLeader",
-                select: ["firstName lastName email -days"],
+                select: ["firstName", "lastName", "email"],
               },
-              { path: "createdBy", select: ["firstName lastName"] },
+              { path: "createdBy", select: ["firstName", "lastName"] },
             ],
           },
-          { path: "createdBy", select: ["firstName lastName"] },
+          { path: "createdBy", select: ["firstName", "lastName"] },
         ]);
       } else {
         client = await Client.find({ manager: req.user._id }).populate([
