@@ -64,7 +64,7 @@ function dispdata(data, data2, user, state) {
   );
 }
 
-export default function AdminApiRefRowsGrid(props) {
+export default function ApiRefRowsGrid(props) {
   const { tableListRef } = props;
   const [tData, setTData] = React.useState([]);
   const { teamCommonData } = React.useContext(CurrentUserContext);
@@ -83,7 +83,6 @@ export default function AdminApiRefRowsGrid(props) {
         totalActive += 1;
     });
   }
-
   return teamCommonData?.loader === true ? (
     <Box
       sx={{
@@ -95,8 +94,18 @@ export default function AdminApiRefRowsGrid(props) {
     >
       <CircularProgress />
     </Box>
-  ) : teamCommonData.err === true ? (
-    <Box sx={{ width: "100%", height: "70vh" }}>
+  ) : teamCommonData.err !== false ? (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        // justifyContent: "center",
+        alignContent: "center",
+        alignItem: "center",
+        width: "100%",
+        height: "70vh",
+      }}
+    >
       <Box
         component="img"
         src="/svgs/member.svg"
@@ -106,10 +115,10 @@ export default function AdminApiRefRowsGrid(props) {
         underline="hover"
         component={RouterLink}
         sx={{
-          pl: "19rem",
-          display: "flex",
-          flexDirection: "column",
-          alignContent: "center",
+          // pl: "26rem",
+          // display: "flex",
+          // flexDirection: "column",
+          // alignContent: "center",
           alignItem: "center",
           alignSelf: "center",
           fontWeight: "400",

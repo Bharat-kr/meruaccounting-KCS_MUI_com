@@ -94,8 +94,18 @@ export default function PlApiRefRowsGrid(props) {
     >
       <CircularProgress />
     </Box>
-  ) : projectMemberData?.err === true ? (
-    <Box sx={{ width: "100%", height: "70vh" }}>
+  ) : projectMemberData?.err !== true ? (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        // justifyContent: "center",
+        alignContent: "center",
+        alignItem: "center",
+        width: "100%",
+        height: "70vh",
+      }}
+    >
       <Box
         component="img"
         src="/svgs/member.svg"
@@ -105,10 +115,10 @@ export default function PlApiRefRowsGrid(props) {
         underline="hover"
         component={RouterLink}
         sx={{
-          pl: "19rem",
-          display: "flex",
-          flexDirection: "column",
-          alignContent: "center",
+          // pl: "26rem",
+          // display: "flex",
+          // flexDirection: "column",
+          // alignContent: "center",
           alignItem: "center",
           alignSelf: "center",
           fontWeight: "400",

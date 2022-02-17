@@ -349,9 +349,9 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
       });
       if (!alreadyProjectAdded) {
         newEmployee.projects.push(projectId);
-        // if (newEmployee.role === "employee") {
-        newEmployee.role = "projectLeader";
-        // }
+        if (newEmployee.role === "employee") {
+          newEmployee.role = "projectLeader";
+        }
         await newEmployee.save();
       }
 
