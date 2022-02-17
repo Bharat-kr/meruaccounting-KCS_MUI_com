@@ -19,13 +19,13 @@ router.route("/create").post(authPass, createTeam);
 
 router.route("/updateMember").patch(authPass, updateMember);
 
-router.route("/removeMember").delete(authPass, managerPass, removeMember);
+router.route("/removeMember").delete(authPass, removeMember);
 
 router.route("/getTeam").get(authPass, getTeam);
 
 router.route("/").delete(authPass, deleteTeam);
 
-router.route("/pause").patch(authPass, managerPass, makePause);
+router.route("/pause").patch(authPass, makePause);
 
 router.route("/getTeam/:id").get(authPass, getTeamById);
 
