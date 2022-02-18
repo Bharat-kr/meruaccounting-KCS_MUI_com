@@ -3,7 +3,6 @@ import Router from "./routes";
 // theme
 import ThemeConfig from "./theme";
 import GlobalStyles from "./theme/globalStyles";
-import AnimatedCursor from "react-animated-cursor";
 // components
 import ScrollToTop from "./components/ScrollToTop";
 import { BaseOptionChartStyle } from "./components/charts/BaseOptionChart";

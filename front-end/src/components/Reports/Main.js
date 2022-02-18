@@ -196,8 +196,7 @@ export default function Main() {
         >
           generate Reports
         </Button>
-        {/* {!reports.loader ? <div>hello</div> : null} */}
-        {true ? <Graphs style={{ margin: 10 }}></Graphs> : null}
+        {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>
         hello
