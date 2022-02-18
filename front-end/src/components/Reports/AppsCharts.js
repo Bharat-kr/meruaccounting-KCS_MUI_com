@@ -8,6 +8,7 @@ export default function AppsCharts() {
   const { reports } = React.useContext(reportsContext);
   const [chartData, setchartData] = useState([]);
   const [totalHours, settotalHours] = useState(null);
+  const [totalActCount, settotalCount] = useState(null);
   const [totalPData, settotalPData] = useState(null);
 
   useEffect(() => {
@@ -19,13 +20,14 @@ export default function AppsCharts() {
     let arr = reports.reports[0].byScreenshots.map((ss) => {
       let o = {
         type: `${ss._id}`,
-        value: ss.totalHours,
+        value: ss.actCount,
       };
       return o;
     });
     setchartData(arr);
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
+    settotalCount(reports?.reports[0]?.total[0]?.actCount);
   }, [reports]);
 
   const config = {
@@ -36,7 +38,7 @@ export default function AppsCharts() {
     radius: 0.75,
     label: {
       formatter: (datum) => {
-        return `${datum.type}: ${secondsToHms(datum.value)}`;
+        return `${datum.type}`;
       },
       autoHide: true,
       type: "spider",
@@ -46,7 +48,7 @@ export default function AppsCharts() {
       formatter: (datum) => {
         return {
           name: datum.type,
-          value: (datum.value * 100) / totalHours + "%",
+          value: (datum.value * 100) / totalActCount + "%",
         };
       },
     },
