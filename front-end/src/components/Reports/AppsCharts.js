@@ -1,123 +1,84 @@
-import React from "react";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
-import ChartDataLabels from "chartjs-plugin-datalabels";
-import secondsToHms from "../../_helpers/secondsToHms";
+import React, { useState, useEffect } from "react";
+import { Pie } from "@ant-design/plots";
 import { reportsContext } from "../../contexts/ReportsContext";
+import secondsToHms from "../../_helpers/secondsToHms";
+import { Box, Typography } from "@mui/material";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-export default function AppsChart() {
+export default function AppsCharts() {
   const { reports } = React.useContext(reportsContext);
-  const [totalTime, settotalTime] = React.useState(100);
-  const [dataLabels, setlabels] = React.useState([]);
-  const [dataValues, setvalues] = React.useState([]);
-  console.table(reports.reports[0].byScreenshots);
+  const [chartData, setchartData] = useState([]);
+  const [totalHours, settotalHours] = useState(null);
+  const [totalPData, settotalPData] = useState(null);
 
-  React.useEffect(() => {
-    let total = 0;
+  useEffect(() => {
+    let t = 0;
     reports.reports[0].byScreenshots.forEach((ss) => {
-      total = total + ss.totalHours;
+      t = t + ss.actCount;
     });
-    settotalTime(total);
-
-    let othersT = 0;
-    let labelsArr = [];
-    reports.reports[0].byScreenshots.forEach((ss) => {
-      if ((ss.totalHours * 100) / total >= 5) labelsArr.push(ss._id);
-      else othersT = 0 + ss.totalHours;
+    console.log(t);
+    let arr = reports.reports[0].byScreenshots.map((ss) => {
+      let o = {
+        type: `${ss._id}`,
+        value: ss.totalHours,
+      };
+      return o;
     });
-    labelsArr.push("others");
-    setlabels(labelsArr);
-
-    let dataArr = [];
-    reports.reports[0].byScreenshots.forEach((ss) => {
-      if ((ss.totalHours * 100) / total >= 5) dataArr.push(ss.totalHours);
-    });
-    dataArr.push(othersT);
-    setvalues(dataArr);
+    setchartData(arr);
+    settotalHours(reports?.reports[0]?.total[0]?.totalHours);
+    settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
   }, [reports]);
 
-  console.log(dataLabels, dataValues);
-
-  const options = {
-    layout: { autoPadding: true },
-    scaleLabel: "<%= ' ' + value%>",
-
-    legend: { display: true, position: "right" },
-    maintainAspectRatio: false,
-
-    plugins: {
-      tooltip: {
-        // enabled: false,
-        callbacks: {
-          label: function (context) {
-            let number =
-              (context.chart.data.datasets[0].data[context.dataIndex] * 100) /
-              total;
-            let rounded = Math.round(number * 10) / 10;
-
-            return rounded + "%";
-          },
-        },
+  const config = {
+    width: 1000,
+    data: chartData,
+    angleField: "value",
+    colorField: "type",
+    radius: 0.75,
+    label: {
+      formatter: (datum) => {
+        return `${datum.type}: ${secondsToHms(datum.value)}`;
       },
-
-      datalabels: {
-        display: "auto",
-        anchor: "end",
-        align: "end",
-        clamp: true,
-        clip: true,
-        formatter: (value, context) => {
-          return (
-            context.chart.data.labels[context.dataIndex] +
-            " " +
-            secondsToHms(value)
-          );
-        },
+      autoHide: true,
+      type: "spider",
+      labelHeight: 28,
+    },
+    tooltip: {
+      formatter: (datum) => {
+        return {
+          name: datum.type,
+          value: (datum.value * 100) / totalHours + "%",
+        };
       },
     },
-  };
-
-  const total = totalTime;
-  const data = {
-    labels: dataLabels,
-    datasets: [
+    interactions: [
       {
-        data: dataValues,
-        backgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 159, 64, 1)",
-        ],
-        borderColor: [
-          "#fff",
-          "#fff",
-          "#fff",
-          "#fff",
-          "#fff",
-          "#fff",
-          "#fff",
-          "#fff",
-        ],
-        borderWidth: 2,
+        type: "element-selected",
+      },
+      {
+        type: "element-active",
       },
     ],
   };
-
   return (
-    <Doughnut
-      type="outlabeledPie"
-      plugins={[ChartDataLabels]}
-      height="200px"
-      width="200px"
-      data={data}
-      options={options}
-    />
+    <Box>
+      <Box sx={{}}>
+        <Typography variant="h2" sx={{ opacity: 1, textAlign: "left" }}>
+          Apps Reports
+        </Typography>
+      </Box>
+      <Box>
+        <Box>
+          <Typography variant="h3" sx={{ opacity: 0.6, textAlign: "left" }}>
+            {secondsToHms(totalHours)}
+          </Typography>
+          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
+            {totalPData}
+          </Typography>
+        </Box>
+        <div>
+          <Pie style={{ flexGrow: "2" }} {...config} />
+        </div>
+      </Box>
+    </Box>
   );
 }

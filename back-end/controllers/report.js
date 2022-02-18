@@ -296,7 +296,7 @@ const generateReport = asyncHandler(async (req, res) => {
           total: [
             {
               $group: {
-                _id: "null",
+                _id: null,
                 internal: {
                   $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
                 },
@@ -304,6 +304,7 @@ const generateReport = asyncHandler(async (req, res) => {
                   $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
                 },
                 actCount: { $sum: 1 },
+
                 totalHours: { $sum: "$consumeTime" },
                 avgPerformanceData: { $avg: "$performanceData" },
               },
