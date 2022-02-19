@@ -17,6 +17,7 @@ import SearchBar from "../SearchBar";
 import { getFullName } from "src/_helpers/getFullName";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 import { useSnackbar } from "notistack";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
