@@ -213,7 +213,7 @@ export default function Main(props) {
     );
   };
 
-  return currMember === null ? (
+  return currMember === undefined ? (
     <Box
       component="div"
       sx={{
