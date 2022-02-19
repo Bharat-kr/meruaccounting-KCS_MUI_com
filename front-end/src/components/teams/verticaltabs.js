@@ -7,7 +7,12 @@ import { Box, Paper, TextField, Button, CircularProgress } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Main from "./Main";
 import { teamContext } from "../../contexts/TeamsContext";
-import { getTeam, createTeam, updateMember } from "../../api/teams api/teams";
+import {
+  getTeam,
+  createTeam,
+  updateMember,
+  deleteTeam,
+} from "../../api/teams api/teams";
 import Treeview from "../Treeview";
 import { LoadingButton, TreeView } from "@mui/lab";
 import { TreeItem } from "@mui/lab";
@@ -36,8 +41,14 @@ export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
   // const { clients, changeClient } = useContext(ClientsContext);
   // const { User } = useContext(UserContext);
-  const { dispatchgetTeam, getTeams, dispatchTeam, dispatchUpdateMember } =
-    useContext(teamContext);
+  const {
+    dispatchgetTeam,
+    getTeams,
+    dispatchTeam,
+    dispatchUpdateMember,
+    deletedTeam,
+    dispatchDeleteTeam,
+  } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
@@ -89,12 +100,10 @@ export default function VerticalTabs() {
   let teamsDetails;
   React.useEffect(() => {
     try {
-      console.log(currTeam?._id, currMember._id);
       const teamIndex = teamsDetails?.findIndex((i) => i._id === currTeam?._id);
       const memberIndex = teamsDetails[teamIndex]?.members?.findIndex(
         (i) => i._id === currMember?._id
       );
-      console.log(teamIndex, memberIndex, "hello");
       if (teamsDetails !== null) {
         setCurrTeam(teamsDetails[teamIndex]);
         setCurrMember(teamsDetails[teamIndex]?.members[memberIndex]);
@@ -129,15 +138,19 @@ export default function VerticalTabs() {
     );
 
     setCurrMember(member[0]);
-    if (team.members === []) {
-      setCurrMember(null);
-    }
 
     // console.log("member", member[0]);
   };
   // Deleting team
   const handleTeamDelete = () => {
-    console.log(currTeam);
+    try {
+      deleteTeam(currTeam._id, dispatchDeleteTeam);
+      // if(deletedTeam.data.){}
+      console.log(deletedTeam);
+      getTeam(dispatchgetTeam);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   //Creating New Team
@@ -145,7 +158,6 @@ export default function VerticalTabs() {
     setLoaderAddTeam(true);
     try {
       e.preventDefault();
-      console.log(newTeam);
       await createTeam({ name: newTeam }, dispatchTeam);
       await getTeam(dispatchgetTeam);
       setLoaderAddTeam(false);
@@ -157,16 +169,15 @@ export default function VerticalTabs() {
       console.log(err);
     }
   };
-
+  console.log(currTeam, currMember);
   //Changing Curr Team
   const changeCurrTeam = async (e) => {
     const team = await getTeams.getTeam.filter((team) =>
       team.name === e.target.textContent ? team : ""
     );
     setCurrTeamToUpdate(team[0]);
-    team.members === undefined
-      ? setCurrMember(null)
-      : console.info("no member");
+    setCurrTeam(team[0]);
+    team.members === "" ? setCurrMember(undefined) : console.info("no member");
   };
 
   //Add Member to a Team

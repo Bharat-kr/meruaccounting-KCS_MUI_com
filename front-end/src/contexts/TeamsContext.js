@@ -11,6 +11,8 @@ import {
   REMOVE_MEMBER_SUCCESS,
   REMOVE_MEMBER_FAILED,
   REMOVE_MEMBER_RESET,
+  DELETE_TEAM_SUCCESS,
+  DELETE_TEAM_FAILED,
 } from "../constants/TeamConstants";
 
 export const teamContext = React.createContext();
@@ -94,6 +96,25 @@ const removeMemberReducer = (state, action) => {
   }
 };
 
+const deleteTeamReducer = (state, action) => {
+  switch (action.type) {
+    case DELETE_TEAM_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        data: action.payload,
+      };
+    case DELETE_TEAM_FAILED:
+      return {
+        ...state,
+        loader: false,
+        err: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 export function TeamsProvider(props) {
   const [getTeams, dispatchgetTeam] = useReducer(getTeamReducer, {
     loader: true,
@@ -110,6 +131,12 @@ export function TeamsProvider(props) {
     removeMember: { loader: true },
   });
 
+  const [deletedTeam, dispatchDeleteTeam] = useReducer(deleteTeamReducer, {
+    data: {},
+    loader: true,
+    err: false,
+  });
+
   return (
     <teamContext.Provider
       value={{
@@ -121,6 +148,8 @@ export function TeamsProvider(props) {
         dispatchUpdateMember,
         removeMember,
         dispatchRemoveMember,
+        deletedTeam,
+        dispatchDeleteTeam,
       }}
     >
       {props.children}

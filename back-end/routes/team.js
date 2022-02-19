@@ -23,7 +23,7 @@ router.route("/removeMember").delete(authPass, removeMember);
 
 router.route("/getTeam").get(authPass, getTeam);
 
-router.route("/").delete(authPass, deleteTeam);
+router.route("/:id").delete(authPass, deleteTeam);
 
 router.route("/pause").patch(authPass, makePause);
 
