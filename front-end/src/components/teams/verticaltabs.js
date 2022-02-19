@@ -129,7 +129,15 @@ export default function VerticalTabs() {
     );
 
     setCurrMember(member[0]);
+    if (team.members === []) {
+      setCurrMember(null);
+    }
+
     // console.log("member", member[0]);
+  };
+  // Deleting team
+  const handleTeamDelete = () => {
+    console.log(currTeam);
   };
 
   //Creating New Team
@@ -156,6 +164,9 @@ export default function VerticalTabs() {
       team.name === e.target.textContent ? team : ""
     );
     setCurrTeamToUpdate(team[0]);
+    team.members === undefined
+      ? setCurrMember(null)
+      : console.info("no member");
   };
 
   //Add Member to a Team
@@ -325,14 +336,14 @@ export default function VerticalTabs() {
                         {el.name}
                       </Typography>
                     }
-                    key={el.name}
+                    key={el._id}
                     onClick={changeCurrTeam}
                   >
                     {el.members.map((member) => {
                       return (
                         <TreeItem
                           nodeId={member._id.toString() + el._id.toString()}
-                          key={member._id}
+                          key={member._id + el._id}
                           label={
                             <Typography
                               sx={{
@@ -424,7 +435,52 @@ export default function VerticalTabs() {
               setCurrTeam={(team) => setCurrTeam(team)}
               teamsDetails={teamsDetails}
             />
-            {/* ))} */}
+            {currTeam !== null && (
+              <Box
+                onClick={handleTeamDelete}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // justifyContent: "center",
+                  alignContent: "center",
+                  alignItem: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "10rem",
+                    display: "flex",
+                    alignSelf: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    alignItem: "center",
+                    justifyContent: "center",
+                    borderRadius: "34px",
+                    backgroundColor: "#45546a",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      // pl: 1,
+                      color: "white",
+                      alignItem: "center",
+                      textAlign: "center",
+                    }}
+                  >
+                    Delete Team
+                  </Typography>
+                  <DeleteIcon
+                    sx={{
+                      pl: 0.5,
+                      // fontSize: "1.3rem",
+                      display: "flex",
+                      alignContent: "center",
+                      color: "white",
+                    }}
+                  />
+                </Box>
+              </Box>
+            )}
           </Box>
         </Paper>
       </Box>
