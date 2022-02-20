@@ -319,11 +319,9 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 const editEmployee = asyncHandler(async (req, res) => {
   console.log("Inside Route");
   const permission = ac.can(req.user.role).updateOwn("members");
-  console.log(permission.Possession);
   if (permission.granted) {
     const employeeId = req.params.id;
     const filteredBody = permission.filter(req.body);
-    console.log(filteredBody);
     try {
       const user = await User.findByIdAndUpdate(employeeId, filteredBody);
       console.log(user);

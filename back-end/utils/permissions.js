@@ -58,7 +58,7 @@ export let grantsObject = {
       "update:any": ["*"],
       "delete:any": ["*"],
     },
-    member: {
+    members: {
       "read:any": ["*"],
       "update:any": ["*", "!payRate"],
       //   "delete:any": ["*"],

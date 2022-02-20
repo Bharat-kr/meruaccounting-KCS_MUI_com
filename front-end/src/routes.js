@@ -27,6 +27,7 @@ import {
   getTeamCommonData,
   projectMemberCommonData,
 } from "./api/auth api/commondata";
+import SavedReports from "./pages/SavedReports";
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -123,6 +124,7 @@ export default function Router() {
         { path: "404", element: <NotFound /> },
         { path: "/", element: <Navigate to="/login" /> },
         { path: "*", element: <Navigate to="/404" /> },
+        { path: "/reports/sharedReports/:id", element: <SavedReports /> },
       ],
     },
     // { path: '#', element: <Navigate to="/UserDetails" /> },
