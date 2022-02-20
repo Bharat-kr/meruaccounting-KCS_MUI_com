@@ -342,7 +342,7 @@ const saveReports = asyncHandler(async (req, res) => {
       includeAL,
       includePR,
       includeApps,
-      groupBy,
+      options,
     } = req.body;
     let userId = req.user._id;
 
@@ -351,16 +351,13 @@ const saveReports = asyncHandler(async (req, res) => {
     // STEP : Writing to a file
     fs.writeFileSync(
       `./saved reports/${fileName}.json`,
-      JSON.stringify(reports),
-      (err) => {
-        // Checking for errors
-        if (err) throw err;
-        console.log("Done writing"); // Success
-      }
+      JSON.stringify(reports)
     );
 
     // make a new document for reports schema
     const saved = await Reports.create({
+      options,
+      user: userId,
       includeSS,
       includeAL,
       includePR,
@@ -383,23 +380,18 @@ const saveReports = asyncHandler(async (req, res) => {
 // @access  Private
 const fetchReports = asyncHandler(async (req, res) => {
   try {
-    let { url } = req.body;
-    let userId = req.user._id;
+    let { _id } = req.body;
 
-    const { fileName, name } = await Reports.findById(url);
+    const report = await Reports.findById(_id);
 
     // Read users.json file
-    function processFile(content) {
-      data = content;
-    }
     let data = JSON.parse(
-      fs.readFileSync(`./saved reports/${fileName}.json`, "utf8")
+      fs.readFileSync(`./saved reports/${report.fileName}.json`, "utf8")
     );
 
     res.json({
       status: "Report fetched",
-      fileName,
-      name,
+      report,
       data: data,
     });
   } catch (error) {

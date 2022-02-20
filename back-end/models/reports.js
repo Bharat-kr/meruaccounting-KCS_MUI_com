@@ -9,6 +9,8 @@ const reportsSchema = new mongoose.Schema(
     name: { type: String, unique: "true" },
     fileName: { type: String, unique: "true" },
     groupBy: { type: String, unique: "true" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    options: { type: Array, default: [] },
   },
   { timestamps: true }
 );
