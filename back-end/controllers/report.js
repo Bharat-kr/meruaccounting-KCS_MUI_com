@@ -336,6 +336,7 @@ const generateReport = asyncHandler(async (req, res) => {
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
+      url,
       reports,
       name,
       includeSS,
@@ -345,7 +346,7 @@ const saveReports = asyncHandler(async (req, res) => {
       options,
     } = req.body;
     let userId = req.user._id;
-
+    console.log(reports);
     let fileName = userId + "-" + new Date().getTime();
 
     // STEP : Writing to a file
@@ -358,6 +359,7 @@ const saveReports = asyncHandler(async (req, res) => {
     const saved = await Reports.create({
       options,
       user: userId,
+      url,
       includeSS,
       includeAL,
       includePR,
@@ -380,13 +382,15 @@ const saveReports = asyncHandler(async (req, res) => {
 // @access  Private
 const fetchReports = asyncHandler(async (req, res) => {
   try {
-    let { _id } = req.body;
+    let { url } = req.body;
 
-    const report = await Reports.findById(_id);
+    const report = await Reports.find({ url: url });
+
+    console.log(report[0].fileName);
 
     // Read users.json file
     let data = JSON.parse(
-      fs.readFileSync(`./saved reports/${report.fileName}.json`, "utf8")
+      fs.readFileSync(`./saved reports/${report[0].fileName}.json`, "utf8")
     );
 
     res.json({
