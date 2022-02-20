@@ -12,6 +12,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Typography, Backdrop, Button, Paper } from "@mui/material";
 import ApiRefRowsGrid from "../muicomponents/ThrottledRowsGrid";
 import EmployeeApiRefRowsGrid from "./ThrottledRowsGrid";
+import { getCommonData } from "../../../api/auth api/commondata";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+
 // import PageHeader from '../../PageHeader';
 
 export default function EmployeeContainer() {
@@ -22,6 +25,16 @@ export default function EmployeeContainer() {
   const handleToggle = () => {
     setOpen(!open);
   };
+  const { commonData, dispatchCommonData } =
+    React.useContext(CurrentUserContext);
+
+  React.useEffect(() => {
+    let int = setInterval(async () => {
+      await getCommonData(dispatchCommonData);
+    }, 120000);
+    return () => clearInterval(int);
+  }, []);
+  // console.log(commonData);
   return (
     <>
       <CssBaseline />

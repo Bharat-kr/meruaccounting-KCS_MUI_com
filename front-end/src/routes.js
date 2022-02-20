@@ -24,6 +24,7 @@ import { teamContext } from "./contexts/TeamsContext";
 import { loginContext } from "./contexts/LoginContext";
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 import {
+  getCommonData,
   getTeamCommonData,
   projectMemberCommonData,
 } from "./api/auth api/commondata";
@@ -37,6 +38,7 @@ export default function Router() {
     dispatchTeamCommonData,
     projectMemberData,
     dispatchProjectMemberData,
+    dispatchCommonData,
   } = useContext(CurrentUserContext);
 
   const { loginC } = useContext(loginContext);
@@ -48,6 +50,7 @@ export default function Router() {
       getTeamCommonData(dispatchTeamCommonData);
     else if (loginC?.userData?.role === "projectLeader")
       projectMemberCommonData(dispatchProjectMemberData);
+    getCommonData(dispatchCommonData);
   }, [commonData]);
   console.log(projectMemberData);
   return useRoutes([
