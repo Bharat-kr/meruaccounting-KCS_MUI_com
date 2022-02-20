@@ -5,12 +5,14 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DatePicker from "./DatePicker";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+// components
+import Graphs from "./Graphs";
 import SelectEmployees from "./SelectEmployees";
 import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
-import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
-import Graphs from "./Graphs";
+import SaveReport from "./SaveReport";
 
 // contexts and apis
 import { teamContext } from "../../contexts/TeamsContext";
@@ -92,10 +94,6 @@ export default function Main() {
     getReports(dispatchGetReports, options);
     console.log(reports);
   };
-
-  React.useEffect(() => {
-    console.log(reports);
-  }, [reports]);
 
   //   make select employee options
   React.useEffect(() => {
@@ -189,13 +187,19 @@ export default function Main() {
             setprojects(newValue);
           }}
         />
-        <Button
-          onClick={handleReportClick}
-          variant="contained"
-          endIcon={<SendIcon />}
+        <Box
+          component="div"
+          sx={{ display: "flex", justifyContent: "space-between" }}
         >
-          generate Reports
-        </Button>
+          <Button
+            onClick={handleReportClick}
+            variant="contained"
+            endIcon={<SendIcon />}
+          >
+            generate Reports
+          </Button>
+          {!reports.loader ? <SaveReport></SaveReport> : null}
+        </Box>
         {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
       </TabPanel>
       <TabPanel value={value} index={1}>

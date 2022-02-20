@@ -1,12 +1,13 @@
-import { motion } from "framer-motion";
-import { Link as RouterLink } from "react-router-dom";
+import * as React from "react";
 // material
 import { styled } from "@mui/material/styles";
 import { Box, Button, Typography, Container } from "@mui/material";
 // components
 import Page from "../components/Page";
 import { useParams } from "react-router-dom";
-
+// contexts and api
+import { reportsContext } from "../contexts/ReportsContext";
+import { getSavedReports } from "../api/reports api/reports";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -20,7 +21,17 @@ const RootStyle = styled(Page)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function SavedReports() {
+  const { savedReports, dispatchGetSavedReports } =
+    React.useContext(reportsContext);
   const { id } = useParams();
+
+  React.useEffect(() => {
+    const options = {
+      url: id,
+    };
+    getSavedReports(dispatchGetSavedReports, options);
+  }, []);
+  console.log(savedReports);
   return (
     <RootStyle title="SavedReports">
       <Container></Container>
