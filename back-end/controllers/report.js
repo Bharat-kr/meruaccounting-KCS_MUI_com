@@ -395,8 +395,8 @@ const fetchReports = asyncHandler(async (req, res) => {
 
     res.json({
       status: "Report fetched",
-      report,
-      data: data,
+      report: data,
+      data: report,
     });
   } catch (error) {
     throw new Error(error);

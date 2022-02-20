@@ -64,6 +64,10 @@ export default function SaveReport() {
   const [name, setName] = React.useState("");
   const [url, setUrl] = React.useState(uuidv4());
 
+  React.useEffect(() => {
+    setUrl(uuidv4());
+  }, [open]);
+
   //   console.log(reports);
   const handleChange = (event) => {
     setName(event.target.value);
@@ -71,7 +75,7 @@ export default function SaveReport() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = async () => {
+  const handleClickSave = async () => {
     setOpen(false);
     const data = {
       reports: reports.reports,
@@ -79,8 +83,12 @@ export default function SaveReport() {
       name,
     };
     const savedData = await axios.post("/report/save", data);
-    setUrl(uuidv4());
-    console.log(savedData);
+    navigator.clipboard.writeText(
+      `http://localhost:3000/reports/sharedReports/${url}`
+    );
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -119,7 +127,7 @@ export default function SaveReport() {
             <TextField
               fullWidth
               label="Sharing link"
-              defaultValue={`http://localhost:3000/savedreports/${url}`}
+              defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
               InputProps={{
                 readOnly: true,
               }}
@@ -127,7 +135,7 @@ export default function SaveReport() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={handleClickSave}>
             Save
           </Button>
         </DialogActions>
