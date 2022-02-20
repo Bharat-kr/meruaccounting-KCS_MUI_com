@@ -94,15 +94,12 @@ export default function EmployeeApiRefRowsGrid() {
 
   const date = new Date();
   React.useEffect(() => {
-    let int = setInterval(async () => {
-      await getCommonData(dispatchCommonData);
-    }, 120000);
-    return () => clearInterval(int);
+    console.log(commonData);
+    if (commonData.commonData !== undefined) {
+      setTData(commonData.commonData);
+    }
   }, []);
 
-  if (commonData.commonData !== undefined) {
-    setTData(commonData.commonData);
-  }
   return tData?.length === 0 ? (
     <Box
       sx={{
