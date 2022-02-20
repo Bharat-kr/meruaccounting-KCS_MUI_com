@@ -298,10 +298,11 @@ const deleteTeam = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).readOwn("team");
   if (permission.granted) {
     const manager = req.user;
-    const { teamId } = req.body;
+    const teamId = req.params.id;
     try {
+      console.log(req.body);
       const team = await Team.findByIdAndRemove(teamId);
-      if (!team) throw new Error("No team found");
+      if (!team) throw new Error("No team found", teamId);
 
       const teamMembers = team.members;
       const managerId = team.manager;
