@@ -57,12 +57,16 @@ export default function Main(props) {
     ...other
   } = props;
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
-  const { dispatchRemoveMember, dispatchgetTeam, updatedMember, getTeams } =
-    useContext(teamContext);
-  const { loginC } = useContext(loginContext);
-
+  const {
+    dispatchRemoveMember,
+    dispatchgetTeam,
+    removeMember,
+    updatedMember,
+    getTeams,
+  } = useContext(teamContext);
   const { changeTab } = useContext(UserContext);
-  const { dispatchremoveProjectMember } = useContext(projectContext);
+  const { dispatchremoveProjectMember, removeProjectMember } =
+    useContext(projectContext);
   const [Checked, setChecked] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -96,11 +100,17 @@ export default function Main(props) {
       };
       await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
       await getTeam(dispatchgetTeam);
-      enqueueSnackbar("Payrate updated", { variant: "success" });
+      // enqueueSnackbar("Payrate updated", { variant: "success" });
     } catch (err) {
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
       console.log(err);
     }
+    enqueueSnackbar(
+      updatedMember.error ? updatedMember.error : "Payrate Updated",
+      {
+        variant: updatedMember.error ? "info" : "success",
+      }
+    );
   };
 
   //Updating role of Employee
@@ -115,11 +125,17 @@ export default function Main(props) {
       console.log(data);
       await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
       await getTeam(dispatchgetTeam);
-      enqueueSnackbar("Role updated", { variant: "success" });
+      // enqueueSnackbar("Role updated", { variant: "success" });
     } catch (err) {
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
       console.log(err);
     }
+    enqueueSnackbar(
+      updatedMember.error ? updatedMember.error : "Updated Role",
+      {
+        variant: updatedMember.error ? "info" : "success",
+      }
+    );
   };
 
   //Changing status of an employee
@@ -131,11 +147,17 @@ export default function Main(props) {
       console.log(data);
       await employeeUpdate(currMember?._id, data, dispatchEmployeeUpdate);
       await getTeam(dispatchgetTeam);
-      enqueueSnackbar("Employee updated", { variant: "success" });
+      // enqueueSnackbar("Employee updated", { variant: "success" });
     } catch (err) {
       console.log(err);
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      updatedMember.error ? updatedMember.error : "Updated Status",
+      {
+        variant: updatedMember.error ? "info" : "success",
+      }
+    );
   };
 
   //Deleting a member from a team
@@ -148,11 +170,17 @@ export default function Main(props) {
       console.log(data);
       await removeMember(data, dispatchRemoveMember);
       await getTeam(dispatchgetTeam);
-      enqueueSnackbar("Member removed", { variant: "success" });
+      // enqueueSnackbar("Member removed", { variant: "success" });
     } catch (err) {
       console.log(err);
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      removeMember.error ? removeMember.error : "Deleted Member",
+      {
+        variant: removeMember.error ? "info" : "success",
+      }
+    );
   };
 
   //Removing employee from a project
@@ -165,11 +193,17 @@ export default function Main(props) {
       console.log(data);
       await removeProjectMember(data, dispatchremoveProjectMember);
       await getTeam(dispatchgetTeam);
-      enqueueSnackbar("Project removed ", { variant: "success" });
+      // enqueueSnackbar("Project removed", { variant: "success" });
     } catch (err) {
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
       console.log(err);
     }
+    enqueueSnackbar(
+      removeProjectMember.error ? removeProjectMember.error : "Project removed",
+      {
+        variant: removeProjectMember.error ? "info" : "success",
+      }
+    );
   };
 
   //Searching a project

@@ -42,12 +42,21 @@ export default function VerticalTabs() {
   // const { clients, changeClient } = useContext(ClientsContext);
   // const { User } = useContext(UserContext);
   const {
+<<<<<<< HEAD
     dispatchgetTeam,
     getTeams,
     dispatchTeam,
     dispatchUpdateMember,
     deletedTeam,
     dispatchDeleteTeam,
+=======
+    teamCreate,
+    dispatchgetTeam,
+    getTeams,
+    dispatchTeam,
+    updatedMember,
+    dispatchUpdateMember,
+>>>>>>> bharat
   } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
@@ -162,12 +171,15 @@ export default function VerticalTabs() {
       await getTeam(dispatchgetTeam);
       setLoaderAddTeam(false);
       newTeamRef.current.value = "";
-      enqueueSnackbar("Team created", { variant: "success" });
+      // enqueueSnackbar("Team created", { variant: "success" });
     } catch (err) {
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
       setLoaderAddTeam(false);
       console.log(err);
     }
+    enqueueSnackbar(teamCreate.error ? teamCreate.error : "Team Created", {
+      variant: teamCreate.error ? "error" : "success",
+    });
   };
   console.log(currTeam, currMember);
   //Changing Curr Team
@@ -192,12 +204,16 @@ export default function VerticalTabs() {
       await getTeam(dispatchgetTeam);
       setLoaderAddMember(false);
       addMemberRef.current.value = "";
-      enqueueSnackbar("Member added", { variant: "success" });
+      // enqueueSnackbar("Member added", { variant: "success" });
     } catch (err) {
       console.log(err);
       setLoaderAddMember(false);
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      updatedMember.error ? updatedMember.error : "Member added",
+      { variant: updatedMember.error ? "error" : "success" }
+    );
   };
 
   //diffrentiate the listValue

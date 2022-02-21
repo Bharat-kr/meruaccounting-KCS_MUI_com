@@ -59,6 +59,7 @@ export default function Sidebar() {
     dispatchAddClient,
     // addClient,
     client,
+    newClient,
     clientDetails,
     dispatchClientDetails,
   } = useContext(ClientsContext);
@@ -144,14 +145,17 @@ export default function Sidebar() {
       } else {
         setnewClientError(true);
       }
-      setLoaderAddClient(false);
-      enqueueSnackbar("Client added ", { variant: "success" });
+      setLoaderAddClient(false); 
+      // enqueueSnackbar("Client added ", { variant: "success" });
     } catch (err) {
       console.log(err);
       setLoaderAddClient(false);
 
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(newClient.error ? newClient.error : "Client added", {
+      variant: newClient.error ? "info" : "success",
+    });
   };
 
   return (
