@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 // contexts and api
 import { reportsContext } from "../contexts/ReportsContext";
 import { getSavedReports } from "../api/reports api/reports";
+import Main from "../components/SavedReports/Main";
+
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -34,7 +36,13 @@ export default function SavedReports() {
   console.log(savedReports);
   return (
     <RootStyle title="SavedReports">
-      <Container></Container>
+      <Container sx={{ width: "70%", mt: 8 }}>
+        <Box
+          sx={{ height: "5rem", mt: 2, display: "flex", flexDirection: "row" }}
+        >
+          <Main />
+        </Box>
+      </Container>
     </RootStyle>
   );
 }

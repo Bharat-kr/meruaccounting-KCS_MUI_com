@@ -38,6 +38,7 @@ import { removeProjectMember } from "src/api/projects api/projects";
 import { UserContext } from "../../contexts/UserContext";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -58,11 +59,11 @@ export default function Main(props) {
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchRemoveMember, dispatchgetTeam, updatedMember, getTeams } =
     useContext(teamContext);
+  const { loginC } = useContext(loginContext);
+
   const { changeTab } = useContext(UserContext);
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const [Checked, setChecked] = useState();
-  const { loginC } = useContext(loginContext);
-
   const { enqueueSnackbar } = useSnackbar();
 
   const handleLabelChange = (event) => {
@@ -105,6 +106,9 @@ export default function Main(props) {
   //Updating role of Employee
   const updateRole = async (e) => {
     try {
+      if (loginC.userData.role === "manager" || "projectLeader")
+        throw new Error("Changing Role will delete all data for the roel");
+
       const data = {
         role: e.target.value,
       };
@@ -274,13 +278,17 @@ export default function Main(props) {
                   <Typography variant="body1">{currMember?.email}</Typography>
                   {currMember.status !== "archived" && (
                     <Grid xs={8} sx={{ mt: 2 }}>
-                      <Typography variant="h4">Payrate</Typography>
-                      <EdiText
-                        type="number"
-                        value={`${currMember.payRate}`}
-                        onCancel={(v) => console.log("CANCELLED: ", v)}
-                        onSave={(v) => updatePayrate(v)}
-                      />
+                      {loginC && Role.indexOf(loginC.userData.role) <= 1 && (
+                        <>
+                          <Typography variant="h4">Payrate</Typography>
+                          <EdiText
+                            type="number"
+                            value={`${currMember.payRate}`}
+                            onCancel={(v) => console.log("CANCELLED: ", v)}
+                            onSave={(v) => updatePayrate(v)}
+                          />
+                        </>
+                      )}
                     </Grid>
                   )}
                 </Grid>
@@ -360,7 +368,7 @@ export default function Main(props) {
             </Box>
             {currMember.status !== "archived" && (
               <>
-                {loginC.userData.role === "admin" && (
+                {loginC && Role.indexOf(loginC.userData.role) <= 1 && (
                   <Box sx={{ mt: 2 }}>
                     <FormControl component="fieldset" sx={{ pt: 2 }}>
                       <Typography variant="h4">

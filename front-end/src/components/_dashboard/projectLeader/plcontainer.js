@@ -64,6 +64,7 @@ export default function ProjectLeaderContainer(props) {
     }
     return setSearchedMember(teamsList.indexOf(member[0]));
   };
+  console.log(projectMemberCommonData);
 
   return (
     <>
