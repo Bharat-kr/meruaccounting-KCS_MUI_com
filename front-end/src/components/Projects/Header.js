@@ -65,6 +65,8 @@ export default function Header(props) {
     dispatchDeleteProject,
     dispatchaddProjectLeader,
     editedProject,
+    deletedProject,
+    editProjectLeader,
   } = useContext(projectContext);
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
@@ -140,11 +142,19 @@ export default function Header(props) {
       setProjectLeader(employee);
       proInputRef.current.value = "";
 
-      enqueueSnackbar("Project Leader changed", { variant: "success" });
+      // enqueueSnackbar("Project Leader changed", { variant: "success" });
     } catch (error) {
       console.log(error.message);
-      enqueueSnackbar(error.message, { variant: "warning" });
+      // enqueueSnackbar(error.message, { variant: "warning" });
     }
+    enqueueSnackbar(
+      editProjectLeader.error
+        ? editProjectLeader.error
+        : "Project Leader changed",
+      {
+        variant: editProjectLeader.error ? "info" : "success",
+      }
+    );
   };
   const handleEdit = () => {};
   const handleEditSubmit = async (e) => {
@@ -157,11 +167,17 @@ export default function Header(props) {
       );
       await getClient(dispatchClientDetails);
       // changeProject(curr);
-      enqueueSnackbar("Project name changed", { variant: "success" });
+      // enqueueSnackbar("Project name changed", { variant: "success" });
     } catch (error) {
       console.log(error);
-      enqueueSnackbar(error.message, { variant: "warning" });
+      // enqueueSnackbar(error.message, { variant: "warning" });
     }
+    enqueueSnackbar(
+      editedProject.error ? editedProject.error : "Project name changed",
+      {
+        variant: editedProject.error ? "info" : "success",
+      }
+    );
   };
   const handleProjectDelete = async (e) => {
     try {
@@ -197,11 +213,17 @@ export default function Header(props) {
       }
       await deleteProject(currentProject._id, dispatchDeleteProject);
       await getClient(dispatchClientDetails);
-      enqueueSnackbar("Project deleted", { variant: "success" });
+      // enqueueSnackbar("Project deleted", { variant: "success" });
     } catch (err) {
       console.log(err);
-      enqueueSnackbar(err.message, { variant: "warning" });
+      // enqueueSnackbar(err.message, { variant: "warning" });
     }
+    enqueueSnackbar(
+      deletedProject.error ? deletedProject.error : "Project deleted",
+      {
+        variant: deletedProject.error ? "warning" : "success",
+      }
+    );
   };
   const handleConsumeSave = () => {};
   const handleSave = async (v) => {
@@ -215,11 +237,17 @@ export default function Header(props) {
       setbudgetTime(v);
       // await getClient(dispatchClientDetails);
       changeProject(currentProject);
-      enqueueSnackbar("Budget time changed", { variant: "success" });
+      // enqueueSnackbar("Budget time changed", { variant: "success" });
     } catch (error) {
       console.log(error);
-      enqueueSnackbar(error.message, { variant: "warning" });
+      // enqueueSnackbar(error.message, { variant: "warning" });
     }
+    enqueueSnackbar(
+      editedProject.error ? editedProject.error : "Project name changed",
+      {
+        variant: editedProject.error ? "info" : "success",
+      }
+    );
   };
   console.log(currentProject);
   return currentProject === undefined ? (

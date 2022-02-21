@@ -118,7 +118,7 @@ export const ClientsContextProvider = (props) => {
   const [newClient, dispatchAddClient] = useReducer(addClientReducer, {
     newClient: { loader: true },
   });
-  const [deleteClient, dispatchDeleteClient] = useReducer(deleteClientReducer, {
+  const [deletedClient, dispatchDeleteClient] = useReducer(deleteClientReducer, {
     deleteClient: { loader: true },
   });
   const [clientProjectDetails, dispatchClientProjectDetails] = useReducer(
@@ -219,7 +219,7 @@ export const ClientsContextProvider = (props) => {
           dispatchClientDetails,
           newClient,
           dispatchAddClient,
-          deleteClient,
+          deletedClient,
           dispatchDeleteClient,
           currentClient,
           changeClient,
