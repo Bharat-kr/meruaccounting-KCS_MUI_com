@@ -214,6 +214,7 @@ const removeProjectMemberReducer = (state, action) => {
       return {
         loader: false,
         removeProjectMember: action.payload,
+        error:null
       };
     case REMOVE_MEMBER_FROMRPOJECT_FAILED:
       return {
@@ -246,7 +247,7 @@ export const ProjectsContextProvider = (props) => {
   const [editedProject, dispatchEditProject] = useReducer(editProjectsReducer, {
     editedProject: { loader: true },
   });
-  const [deleteProject, dispatchDeleteProject] = useReducer(
+  const [deletedProject, dispatchDeleteProject] = useReducer(
     deleteProjectsReducer,
     {
       deleteProject: { loader: true },
@@ -290,7 +291,7 @@ export const ProjectsContextProvider = (props) => {
         dispatchAddTeamProject,
         editedProject,
         dispatchEditProject,
-        deleteProject,
+        deletedProject,
         dispatchDeleteProject,
         dispatchProjectById,
         projectById,
@@ -301,6 +302,7 @@ export const ProjectsContextProvider = (props) => {
         dispatcheditProjectLeader,
         editProjectLeader,
         dispatchremoveProjectMember,
+        removeProjectMember,
         removeProjectMemberReducer,
       }}
     >

@@ -56,6 +56,7 @@ export default function Header(props) {
     dispatchClientProjectDetails,
     dispatchEditClient,
     dispatchClientDetails,
+    deletedClient,
     clientDetails,
   } = useContext(ClientsContext);
   let projectList = [];
@@ -84,12 +85,18 @@ export default function Header(props) {
         const data = [currentClient._id, { name: clientName }];
         await editClient(data, dispatchEditClient);
         await getClient(dispatchClientDetails);
-        enqueueSnackbar("Client edited", { variant: "success" });
+        // enqueueSnackbar("Client edited", { variant: "success" });
       }
     } catch (err) {
       console.log(err);
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      editClient.error ? editClient.error : "Client edited ",
+      {
+        variant: editClient.error ? "info" : "success",
+      }
+    );
   };
 
   const handleDeleteClient = async (e) => {
@@ -108,11 +115,17 @@ export default function Header(props) {
       } else {
         changeClient(clientsList[clientIndex + 1]);
       }
-      enqueueSnackbar("Client removed ", { variant: "success" });
+      // enqueueSnackbar("Client removed ", { variant: "success" });
     } catch (err) {
       console.log(err);
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      deletedClient.error ? deletedClient.error : "Client removed ",
+      {
+        variant: deletedClient.error ? "info" : "success",
+      }
+    );
   };
   const createdOn = moment(currentClient?.createdAt).format("DD-MM-YYYY");
   return currentClient === undefined || "" ? (

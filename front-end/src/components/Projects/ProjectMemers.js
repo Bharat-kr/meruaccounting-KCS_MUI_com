@@ -170,7 +170,8 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { numSelected, selected, employeesList, currentProject, setSeleceted } =
     props;
-  const { dispatchremoveProjectMember } = useContext(projectContext);
+  const { removeProjectMember, dispatchremoveProjectMember } =
+    useContext(projectContext);
   const { dispatchClientDetails } = useContext(ClientsContext);
   const { enqueueSnackbar } = useSnackbar();
   const handleMemberDelete = async () => {
@@ -193,11 +194,17 @@ const EnhancedTableToolbar = (props) => {
       await getClient(dispatchClientDetails);
 
       setSeleceted([]);
-      enqueueSnackbar("Member deleted", { variant: "success" });
+      // enqueueSnackbar("Member deleted", { variant: "success" });
     } catch (error) {
       console.log(error);
-      enqueueSnackbar(error.message, { variant: "info" });
+      // enqueueSnackbar(error.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      removeProjectMember.error ? removeProjectMember.error : "Member deleted",
+      {
+        variant: removeProjectMember.error ? "info" : "success",
+      }
+    );
   };
   return (
     <>
@@ -278,7 +285,8 @@ export default function EnhancedTable(props) {
     currentProject,
     currentClient,
   } = useContext(ClientsContext);
-  const { dispatchaddProjectMember } = useContext(projectContext);
+  const { ProjectMember, dispatchaddProjectMember } =
+    useContext(projectContext);
 
   const tableListRef = useRef();
   const employeesList = [];
@@ -343,13 +351,19 @@ export default function EnhancedTable(props) {
       await getClient(dispatchClientDetails);
       setLoaderAddMember(false);
       // setRowsPerPage(rows.length + 1);
-      enqueueSnackbar("Member added", { variant: "success" });
+      // enqueueSnackbar("Member added", { variant: "success" });
       // console.log(currentProject);
     } catch (error) {
       setLoaderAddMember(false);
-      enqueueSnackbar(error.message, { variant: "info" });
+      // enqueueSnackbar(error.message, { variant: "info" });
       console.log(error.message);
     }
+    enqueueSnackbar(
+      ProjectMember.error ? ProjectMember.error : "Member added",
+      {
+        variant: ProjectMember.error ? "info" : "success",
+      }
+    );
   };
 
   const handleSearch = async (e, value) => {
