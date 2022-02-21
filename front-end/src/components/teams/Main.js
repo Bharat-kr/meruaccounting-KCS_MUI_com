@@ -64,6 +64,8 @@ export default function Main(props) {
     updatedMember,
     getTeams,
   } = useContext(teamContext);
+  const { loginC } = useContext(loginContext);
+
   const { changeTab } = useContext(UserContext);
   const { dispatchremoveProjectMember, removeProjectMember } =
     useContext(projectContext);

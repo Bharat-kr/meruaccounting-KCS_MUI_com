@@ -19,7 +19,7 @@ import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
-import RowData from "./Datagrid";
+// import RowData from "./Datagrid";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -106,7 +106,7 @@ export default function Main() {
     <Box sx={{ width: "100%" }}>
       {true ? <Graphs style={{ margin: 10 }}></Graphs> : null}
       {/* </TabPanel> */}
-      <RowData />
+      {/* <RowData /> */}
     </Box>
   );
 }
