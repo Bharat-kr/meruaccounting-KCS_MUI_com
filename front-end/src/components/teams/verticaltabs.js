@@ -35,8 +35,14 @@ export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
   // const { clients, changeClient } = useContext(ClientsContext);
   // const { User } = useContext(UserContext);
-  const { dispatchgetTeam, getTeams, dispatchTeam, dispatchUpdateMember } =
-    useContext(teamContext);
+  const {
+    teamCreate,
+    dispatchgetTeam,
+    getTeams,
+    dispatchTeam,
+    updatedMember,
+    dispatchUpdateMember,
+  } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
@@ -141,13 +147,17 @@ export default function VerticalTabs() {
       await getTeam(dispatchgetTeam);
       setLoaderAddTeam(false);
       newTeamRef.current.value = "";
-      enqueueSnackbar("Team created", { variant: "success" });
+      // enqueueSnackbar("Team created", { variant: "success" });
     } catch (err) {
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
       setLoaderAddTeam(false);
       console.log(err);
     }
+    enqueueSnackbar(teamCreate.error ? teamCreate.error : "Team Created", {
+      variant: teamCreate.error ? "error" : "success",
+    });
   };
+  console.log(teamCreate);
 
   //Changing Curr Team
   const changeCurrTeam = async (e) => {
@@ -169,12 +179,16 @@ export default function VerticalTabs() {
       await getTeam(dispatchgetTeam);
       setLoaderAddMember(false);
       addMemberRef.current.value = "";
-      enqueueSnackbar("Member added", { variant: "success" });
+      // enqueueSnackbar("Member added", { variant: "success" });
     } catch (err) {
       console.log(err);
       setLoaderAddMember(false);
-      enqueueSnackbar(err.message, { variant: "info" });
+      // enqueueSnackbar(err.message, { variant: "info" });
     }
+    enqueueSnackbar(
+      updatedMember.error ? updatedMember.error : "Member added",
+      { variant: updatedMember.error ? "error" : "success" }
+    );
   };
 
   //diffrentiate the listValue

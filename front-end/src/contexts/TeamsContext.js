@@ -21,6 +21,7 @@ const teamCreateReducer = (state, action) => {
       return {
         loader: false,
         teamCreate: action.payload,
+        error:null,
       };
     case TEAM_CREATE_FAILED:
       return {
@@ -31,6 +32,7 @@ const teamCreateReducer = (state, action) => {
       return {
         teamCreate: {},
         loader: false,
+        error:null,
       };
     default:
       return state;
@@ -62,6 +64,7 @@ const updateMemberReducer = (state, action) => {
       return {
         loader: false,
         updatedMember: action.payload,
+        error:null
       };
     case UPDATE_MEMBER_FAILED:
       return {
@@ -81,6 +84,7 @@ const removeMemberReducer = (state, action) => {
       return {
         loader: false,
         removeMember: action.payload,
+        error:null
       };
     case REMOVE_MEMBER_FAILED:
       return {
