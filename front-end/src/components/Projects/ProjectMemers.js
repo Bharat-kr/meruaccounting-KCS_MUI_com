@@ -1,4 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
 import { Box, TextField, Button } from "@mui/material";
@@ -31,6 +32,7 @@ import {
 } from "../../api/projects api/projects";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
+import data from "@iconify/icons-eva/menu-2-fill";
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, payrate, id) {
   return {
@@ -321,6 +323,22 @@ export default function EnhancedTable(props) {
       console.log(err);
     }
   }, [clientDetails]);
+
+  let reportsData;
+  React.useEffect(async () => {
+    try {
+      const reportOptions = {
+        projectIds: [currentProject._id],
+        userIds: currentProject.employees.map((mem) => mem._id),
+      };
+      console.log(reportOptions);
+      const { data } = await axios.post(`/report`, reportOptions);
+      console.log(data);
+      reportsData = data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentProject]);
   React.useEffect(() => {
     try {
       currentProject?.employees?.map((emp) => {
@@ -341,7 +359,7 @@ export default function EnhancedTable(props) {
       console.log(err);
     }
   }, [currentClient, currentProject, clientDetails]);
-
+  console.log(reportsData);
   const handleMemberAdded = async (e) => {
     e.preventDefault();
     setLoaderAddMember(true);
