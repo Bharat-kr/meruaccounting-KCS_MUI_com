@@ -76,7 +76,7 @@ function dispdata(data, data2, user) {
             textDecoration: "underline #000000",
           },
         }}
-        to={`/dashboard/employeepage/${user._id}`}
+        to={`/dashboard/userpage`}
         variant="body2"
       >
         {data}
@@ -150,7 +150,7 @@ export default function EmployeeApiRefRowsGrid() {
                       textDecoration: "none",
                       color: "black",
                     }}
-                    to={`/dashboard/employeepage/${tData.user._id}`}
+                    to={`/dashboard/userpage`}
                     variant="h5"
                   >
                     {tData.user.firstName} {tData.user.lastName}

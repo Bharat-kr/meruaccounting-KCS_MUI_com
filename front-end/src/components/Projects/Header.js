@@ -19,6 +19,8 @@ import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import { useSnackbar } from "notistack";
 import { useLayoutEffect } from "react";
+import { Role } from "../../_helpers/role";
+import { loginContext } from "../../contexts/LoginContext";
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -50,6 +52,8 @@ export default function Header(props) {
   // to focus edit name of client
   const inputRef = useRef();
   //context
+
+  const { loginC } = useContext(loginContext);
   const {
     clients,
     currentClient,
@@ -109,7 +113,7 @@ export default function Header(props) {
           )
         : setProjectLeader("No leader");
       setbudgetTime(currentProject?.budgetTime);
-      setconsumedTime(currentProject?.consumeTime);
+      setconsumedTime((currentProject?.consumeTime / 3600).toFixed(2));
       proInputRef.current.value = "";
     } catch (err) {
       console.log(err);
@@ -308,8 +312,7 @@ export default function Header(props) {
           }}
         >
           <Box sx={{ m: 1 }}>
-            <div></div>
-            <h3 style={{ backgroundColor: "#fff" }}>
+            <div style={{ marginBottom: ".5rem" }}>
               <form onSubmit={handleEditSubmit} style={{ display: "inline" }}>
                 <input
                   onChange={(e) => setprojectName(e.target.value)}
@@ -336,11 +339,13 @@ export default function Header(props) {
                 <DeleteIcon onClick={handleProjectDelete} />
                 {/* </button> */}
               </div>
-            </h3>
+            </div>
+            <hr></hr>
             <Typography
-              variant="h4"
+              variant="h6"
               sx={{
-                mt: 2,
+                mt: 3,
+                ml: 1,
                 display: "block",
                 width: "100%",
               }}
@@ -351,10 +356,10 @@ export default function Header(props) {
               style={{
                 width: "100%",
                 float: "left",
-                paddingTop: "20px",
+                // paddingTop: "20px",
                 display: "flex",
                 // justifyContent: "left",
-                marginLeft: "2px",
+                // marginLeft: "2px",
               }}
             >
               <Paper
@@ -362,23 +367,25 @@ export default function Header(props) {
                 sx={{
                   textAlign: "center",
                   color: "primary.darker",
-                  fontSize: "25px",
+                  fontSize: "20px",
                   width: 150,
-                  mt: 2,
-                  mr: 2,
+                  mt: 1,
+                  mr: 1,
                 }}
               >
                 {ProjectLeader}
               </Paper>
 
-              <SearchBar
-                inputRef={proInputRef}
-                label="Assign Project Leader"
-                handleSearch={handleSearch}
-                id="combo-box-demo"
-                options={memberList}
-                sx={{ width: 100 }}
-              />
+              {loginC && Role.indexOf(loginC.userData.role) <= 2 && (
+                <SearchBar
+                  inputRef={proInputRef}
+                  label="Assign Project Leader"
+                  handleSearch={handleSearch}
+                  id="combo-box-demo"
+                  options={memberList}
+                  sx={{ width: 100 }}
+                />
+              )}
             </div>
             <hr />
             <div
@@ -397,13 +404,17 @@ export default function Header(props) {
                     Total Project Hours :
                   </Typography>
                   <Typography sx={{ ml: 1 }}>
-                    <EdiText
-                      sx={{ display: "flex", alignItems: "center", pl: 1 }}
-                      type="number"
-                      value={consumedTime}
-                      onCancel={(v) => console.log("CANCELLED: ", v)}
-                      onSave={(v) => handleConsumeSave(v)}
-                    />
+                    {loginC && Role.indexOf(loginC.userData.role) <= 2 ? (
+                      <EdiText
+                        sx={{ display: "flex", alignItems: "center", pl: 1 }}
+                        type="number"
+                        value={`${consumedTime} hr`}
+                        onCancel={(v) => console.log("CANCELLED: ", v)}
+                        onSave={(v) => handleConsumeSave(v)}
+                      />
+                    ) : (
+                      <Typography sx={{ pr: 8 }}>{consumedTime} hr</Typography>
+                    )}
                   </Typography>
                 </Box>
                 <Box
@@ -419,15 +430,26 @@ export default function Header(props) {
                     sx={{ display: "flex", alignItems: "center", mr: 6, pt: 1 }}
                   >
                     {currentProject?.internalHours
-                      ? currentProject?.internalHours
-                      : 0}
+                      ? (currentProject?.internalHours / 3600).toFixed(2)
+                      : 0}{" "}
+                    hr
                   </Typography>
                 </Box>
               </Paper>
               <Paper>
                 <Typography
                   variant="h6"
-                  sx={{ display: "flex", flexDirection: "row", pt: 3 }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    textAlign: "center",
+                    alignContent: "center",
+                    justifyItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    pt: 3,
+                  }}
                 >
                   <Typography
                     variant="h6"
@@ -439,13 +461,31 @@ export default function Header(props) {
                     BudgetHours :{" "}
                   </Typography>
                   <Typography sx={{ ml: 1 }}>
-                    <EdiText
-                      sx={{ display: "flex", alignItems: "center", pl: 1 }}
-                      type="number"
-                      value={budgetTime}
-                      onCancel={(v) => console.log("CANCELLED: ", v)}
-                      onSave={(v) => handleSave(v)}
-                    />
+                    {loginC && Role.indexOf(loginC.userData.role) <= 2 ? (
+                      <EdiText
+                        sx={{ display: "flex", alignItems: "center", pl: 1 }}
+                        type="number"
+                        value={`${budgetTime} hr`}
+                        onCancel={(v) => console.log("CANCELLED: ", v)}
+                        onSave={(v) => handleSave(v)}
+                      />
+                    ) : (
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          textAlign: "center",
+                          alignContent: "center",
+                          justifyItems: "center",
+                          justifyContent: "center",
+                          alignSelf: "center",
+                          pl: 1,
+                        }}
+                      >
+                        {budgetTime} hr
+                      </Typography>
+                    )}
                   </Typography>
                 </Typography>
               </Paper>
