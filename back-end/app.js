@@ -2,8 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import colors from "colors";
-const favicon = require("serve-favicon");
-// import serveFavicon from "serve-favicon";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
 import YAML from "yamljs";
@@ -38,7 +36,6 @@ app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(favicon(path.join(__dirname, "/favicon.ico")));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -61,6 +58,7 @@ app.use("/projectLeader", projectLeaderRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/avatar", express.static(path.join(__dirname, "/avatar")));
+app.use("/favicon.ico", express.static("images/favicon.ico"));
 
 // Middleware
 app.use(notFound);
