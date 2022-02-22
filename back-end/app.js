@@ -58,7 +58,6 @@ app.use("/projectLeader", projectLeaderRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/avatar", express.static(path.join(__dirname, "/avatar")));
-app.use("/favicon.ico", express.static("images/favicon.ico"));
 
 // Middleware
 app.use(notFound);
