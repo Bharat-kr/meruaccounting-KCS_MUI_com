@@ -325,16 +325,21 @@ export default function EnhancedTable(props) {
   }, [clientDetails]);
 
   let reportsData;
-  React.useEffect(async () => {
+  const reportsFunction = async (reportOptions) => {
+    const { data } = await axios.post(`/report`, reportOptions);
+    return data;
+    console.log(data);
+  };
+  React.useEffect(() => {
     try {
       const reportOptions = {
-        projectIds: [currentProject._id],
-        userIds: currentProject.employees.map((mem) => mem._id),
+        projectIds: [{ _id: currentProject._id }],
+        userIds: currentProject.employees.map((mem) => {
+          return { _id: mem._id };
+        }),
       };
-      console.log(reportOptions);
-      const { data } = await axios.post(`/report`, reportOptions);
-      console.log(data);
-      reportsData = data.data;
+      reportsData = reportsFunction(reportOptions);
+      console.log(reportsData);
     } catch (error) {
       console.log(error);
     }
