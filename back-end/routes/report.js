@@ -11,6 +11,6 @@ const router = express.Router();
 
 router.route("/").post(authPass, generateReport);
 router.route("/save").post(authPass, saveReports);
-router.route("/fetch").post(authPass, fetchReports);
+router.route("/fetch").post(fetchReports);
 
 export default router;

@@ -95,7 +95,7 @@ export default function PlApiRefRowsGrid(props) {
     >
       <CircularProgress />
     </Box>
-  ) : projectMemberData?.err !== true ? (
+  ) : projectMemberData?.err ? (
     <Box
       sx={{
         display: "flex",

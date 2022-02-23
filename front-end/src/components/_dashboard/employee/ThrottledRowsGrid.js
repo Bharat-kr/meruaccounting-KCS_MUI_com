@@ -151,7 +151,7 @@ export default function EmployeeApiRefRowsGrid() {
                       textDecoration: "none",
                       color: "black",
                     }}
-                    to={`/dashboard/employeepage/${tData.user._id}`}
+                    to={`/dashboard/userpage`}
                     variant="h5"
                   >
                     {tData.user.firstName} {tData.user.lastName}

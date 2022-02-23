@@ -16,6 +16,9 @@ import Header from "./Header";
 import Snackbars from "../../_helpers/snackBar";
 import zIndex from "@mui/material/styles/zIndex";
 import { useSnackbar } from "notistack";
+import { loginContext } from "../../contexts/LoginContext";
+import { Role } from "../../_helpers/role";
+
 //-------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -27,7 +30,9 @@ export default function Sidebar() {
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
   const [newProjectValue, setnewProjectValue] = useState();
+
   // contexts
+  const { loginC } = useContext(loginContext);
   const {
     clients,
     currentClient,
@@ -315,33 +320,35 @@ export default function Sidebar() {
             "& > :not(style)": { m: 1 },
           }}
         >
-          <form
-            onSubmit={handleSubmit}
-            noValidate
-            autoComplete="off"
-            style={{ width: "100%" }}
-          >
-            <TextField
-              inputRef={searchRef}
-              onChange={(e) => setnewProjectValue(e.target.value)}
-              required
-              fullWidth
-              label="Add new project"
-              error={newClientError}
-              sx={{}}
-            />
-
-            <LoadingButton
-              fullWidth
-              type="submit"
-              loading={loaderAddProject}
-              loadingPosition="end"
-              variant="contained"
-              sx={{ mt: 1 }}
+          {loginC && Role.indexOf(loginC.userData.role) <= 2 && (
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              autoComplete="off"
+              style={{ width: "100%" }}
             >
-              Add Project
-            </LoadingButton>
-          </form>
+              <TextField
+                inputRef={searchRef}
+                onChange={(e) => setnewProjectValue(e.target.value)}
+                required
+                fullWidth
+                label="Add new project"
+                error={newClientError}
+                sx={{}}
+              />
+
+              <LoadingButton
+                fullWidth
+                type="submit"
+                loading={loaderAddProject}
+                loadingPosition="end"
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Add Project
+              </LoadingButton>
+            </form>
+          )}
         </Box>
       </Paper>
       <Header
