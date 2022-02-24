@@ -6,6 +6,10 @@ const screenshotSchema = new mongoose.Schema({
     ref: "curUserId",
     required: true,
   },
+  consumeTime: {
+    type: Number,
+    default: 0.0,
+  },
   client: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "curClientId",
