@@ -316,16 +316,18 @@ const deleteScreenshot = asyncHandler(async (req, res) => {
         throw new Error(`${screenshotId} not found`);
       }
 
+      const delTime = screenshot.consumeTime ? screenshot.consumeTime : 0;
+
       const activity = await Activity.findById(activityId);
       if (!screenshot) {
         res.status(404);
         throw new Error(`${activityId} not found`);
       }
 
+      activity.consumeTime = activity.consumeTime - delTime;
       activity.screenshots = activity.screenshots.filter(
         (_id) => _id.toHexString() !== screenshotId
       );
-
       await activity.save();
 
       await Screenshot.findByIdAndDelete(screenshotId);
