@@ -51,6 +51,7 @@ export function ReportsProvider(props) {
   const [reports, dispatchGetReports] = useReducer(getReportsReducer, {
     loader: true,
     reports: [],
+    data: {},
     error: false,
   });
   const [savedReports, dispatchGetSavedReports] = useReducer(

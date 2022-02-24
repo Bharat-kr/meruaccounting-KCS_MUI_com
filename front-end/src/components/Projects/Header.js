@@ -405,15 +405,9 @@ export default function Header(props) {
                   </Typography>
                   <Typography sx={{ ml: 1 }}>
                     {loginC && Role.indexOf(loginC.userData.role) <= 2 ? (
-                      <EdiText
-                        sx={{ display: "flex", alignItems: "center", pl: 1 }}
-                        type="number"
-                        value={`${consumedTime} hr`}
-                        onCancel={(v) => console.log("CANCELLED: ", v)}
-                        onSave={(v) => handleConsumeSave(v)}
-                      />
-                    ) : (
                       <Typography sx={{ pr: 8 }}>{consumedTime} hr</Typography>
+                    ) : (
+                      ""
                     )}
                   </Typography>
                 </Box>

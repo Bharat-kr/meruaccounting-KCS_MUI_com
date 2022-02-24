@@ -172,7 +172,7 @@ export const addProjectLeader = async (incomingData, dispatch) => {
   }
 };
 
-export const removeProjectMember = async (incomingData, dispatch) => {
+export const removeProjectMem = async (incomingData, dispatch) => {
   try {
     const { data } = await axios.patch(
       `/project/removeMember/${incomingData[0]}`,
