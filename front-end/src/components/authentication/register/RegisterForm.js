@@ -75,7 +75,8 @@ export default function RegisterForm() {
 
         // url: "http://monitor.meruaccounting.com:8000/",
         url: "http://localhost:8000/register",
-        // url: "https://ssmonitor-backend.herokuapp.com//register",
+        // url: "https://monitoring-meru.herokuapp.com/",
+
         data: {
           role: "admin",
           firstName: { ...getFieldProps("firstName") }.value,

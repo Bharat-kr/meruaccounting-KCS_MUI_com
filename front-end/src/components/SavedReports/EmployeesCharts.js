@@ -11,7 +11,7 @@ export default function EmployeesCharts() {
   const [totalPData, settotalPData] = useState(null);
 
   useEffect(() => {
-    let arr = savedReports.reports[0].byEmployees.map((emp) => {
+    let arr = savedReports?.reports[0]?.byEmployees.map((emp) => {
       let o = {
         type: `${emp._id.firstName} ${emp._id.lastName}`,
         value: emp.totalHours,

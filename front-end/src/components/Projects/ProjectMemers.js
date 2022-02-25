@@ -28,19 +28,19 @@ import { projectContext } from "../../contexts/ProjectsContext";
 import { getClient } from "../../api/clients api/clients";
 import {
   addProjectMember,
-  removeProjectMember,
+  removeProjectMem,
 } from "../../api/projects api/projects";
+import { getReports } from "../../api/reports api/reports";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
-import data from "@iconify/icons-eva/menu-2-fill";
+import { reportsContext } from "../../contexts/ReportsContext";
 //------------------------------------------------------------------------------------------------//
-function createData(name, projectHours, internalHours, payrate, id) {
+function createData(name, projectHours, internalHours, totalHours) {
   return {
     name,
     projectHours,
     internalHours,
-    payrate,
-    id,
+    totalHours,
   };
 }
 
@@ -93,12 +93,7 @@ const headCells = [
     disablePadding: false,
     label: "internal Hours",
   },
-  {
-    id: "payrate",
-    numeric: true,
-    disablePadding: false,
-    label: "payrate",
-  },
+
   {
     id: "totalHours",
     numeric: true,
@@ -190,8 +185,7 @@ const EnhancedTableToolbar = (props) => {
       // }, [rows.length, currentProject, currentClient]);
       for (let i = 0; i < deleteList.length; i++) {
         let data = [currentProject._id, deleteList[i]];
-        console.log(currentProject._id);
-        await removeProjectMember(data, dispatchremoveProjectMember);
+        await removeProjectMem(data, dispatchremoveProjectMember);
       }
       await getClient(dispatchClientDetails);
 
@@ -278,6 +272,8 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
   const [loaderAddMember, setLoaderAddMember] = useState(false);
+  const [projectMember, setProjectMember] = useState([]);
+  const addMemberRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
   const {
     dispatchClientDetails,
@@ -289,23 +285,96 @@ export default function EnhancedTable(props) {
   } = useContext(ClientsContext);
   const { ProjectMember, dispatchaddProjectMember } =
     useContext(projectContext);
+  const { reports, dispatchGetReports } = useContext(reportsContext);
 
   const tableListRef = useRef();
   const employeesList = [];
   const employeeNameList = [];
-  currentProject
-    ? currentProject.employees.map((emp) => {
-        employeesList.push({
-          dayArray: emp.days,
-          id: emp._id,
-          name: `${emp.firstName} ${emp.lastName}`,
-          email: emp.email,
-          payRate: emp.payRate,
-        });
-        employeeNameList.push(`${emp.firstName} ${emp.lastName}`);
-      })
-    : employeesList.push("");
   const rowPush = [];
+
+  const reportsFunction = async (reportOptions) => {
+    await getReports(dispatchGetReports, reportOptions);
+  };
+  React.useEffect(async () => {
+    try {
+      const reportOptions = {
+        projectIds: [{ _id: currentProject._id }],
+        userIds: currentProject.employees.map((mem) => {
+          return { _id: mem._id };
+        }),
+      };
+      await reportsFunction(reportOptions);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentProject]);
+  useEffect(() => {
+    setProjectMember(reports?.reports);
+    console.log(reports.reports);
+  }, [reports]);
+  React.useEffect(async () => {
+    try {
+      // // console.log(projectMember[0]?.byEmployees);
+      // projectMember[0]?.byEmployees?.map((emp) => {
+      //   rowPush.push(
+      //     createData(
+      //       `${emp._id.firstName} ${emp._id.lastName}`,
+      //       `${(emp.external / 3600).toFixed(2)} hr`,
+      //       `${(emp.internal / 3600).toFixed(2)} hr`,
+      //       `${(emp.totalHours / 3600).toFixed(2)} hr`
+      //     )
+      //   );
+      // });
+      currentProject
+        ? currentProject.employees.map((emp, index) => {
+            // let exists = projectMember[0]?.byEmployees?.some((el) => el._id === newOption._id);
+            let o = {};
+            let exists = projectMember[0]?.byEmployees?.filter(
+              (el) => el._id.employee === emp._id
+            );
+            if (exists && exists.length) {
+              o = {
+                id: exists[0]._id.employee,
+                name: `${exists[0]._id.firstName} ${exists[0]._id.lastName}`,
+                internal: `${(exists[0].internal / 3600).toFixed(2)} hr`,
+                external: `${(exists[0].external / 3600).toFixed(2)} hr`,
+                totalHours: `${(exists[0].totalHours / 3600).toFixed(2)} hr`,
+              };
+            } else {
+              o = {
+                id: emp._id,
+                name: `${emp.firstName} ${emp.lastName}`,
+                internal: `0 hr`,
+                external: `0 hr`,
+                totalHours: `0 hr`,
+              };
+            }
+            employeesList.push(o);
+            //     projectMember[0]?.byEmployees?.some((emplo) => {
+            //       // emplo._id.employee === emp._id && // () => {
+            //       // employeesList[index]?.id === emp._id &&
+            //       employeesList.push({
+            //         id: emp._id,
+            //         name: `${emp.firstName} ${emp.lastName}`,
+            //         // internal: emp._id === emplo._id.employee ? emplo.internal : 0,
+            //         // external: emp._id === emplo._id.employee ? emplo.external : 0,
+            //         // totalHours:  emp._id === emplo._id.employee ? emplo.totalHours : 0,
+            //       });
+            //     });
+            employeeNameList.push(`${emp.firstName} ${emp.lastName}`);
+          })
+        : employeesList.push("");
+      // const newList = [...new Set(employeesList)];
+      console.log(employeesList);
+      setRows(employeesList);
+      setRowsPerPage(rows.length);
+      setSelected([]);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [currentClient, currentProject, clientDetails, projectMember]);
+
+  console.log(employeesList);
   useEffect(async () => {
     try {
       const data = currentClient?._id;
@@ -324,47 +393,6 @@ export default function EnhancedTable(props) {
     }
   }, [clientDetails]);
 
-  let reportsData;
-  const reportsFunction = async (reportOptions) => {
-    const { data } = await axios.post(`/report`, reportOptions);
-    return data;
-    console.log(data);
-  };
-  React.useEffect(() => {
-    try {
-      const reportOptions = {
-        projectIds: [{ _id: currentProject._id }],
-        userIds: currentProject.employees.map((mem) => {
-          return { _id: mem._id };
-        }),
-      };
-      reportsData = reportsFunction(reportOptions);
-      console.log(reportsData);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [currentProject]);
-  React.useEffect(() => {
-    try {
-      currentProject?.employees?.map((emp) => {
-        rowPush.push(
-          createData(
-            `${emp.firstName} ${emp.lastName}`,
-            0.0,
-            0.0,
-            emp.payRate,
-            emp._id
-          )
-        );
-      });
-      setRows(rowPush);
-      setRowsPerPage(rows.length);
-      setSelected([]);
-    } catch (err) {
-      console.log(err);
-    }
-  }, [currentClient, currentProject, clientDetails]);
-  console.log(reportsData);
   const handleMemberAdded = async (e) => {
     e.preventDefault();
     setLoaderAddMember(true);
@@ -481,6 +509,7 @@ export default function EnhancedTable(props) {
               style={{ padding: "10px" }}
             >
               <TextField
+                inputRef={addMemberRef}
                 onChange={(e) => setNewMember(e.target.value)}
                 required
                 type="email"
@@ -575,9 +604,9 @@ export default function EnhancedTable(props) {
                         <TableCell component="th" scope="row" padding="none">
                           {row.name}
                         </TableCell>
-                        <TableCell align="right">{row.projectHours}</TableCell>
-                        <TableCell align="right">{row.internalHours}</TableCell>
-                        <TableCell align="right">{row.payrate}</TableCell>
+                        <TableCell align="right">{row.external}</TableCell>
+                        <TableCell align="right">{row.internal}</TableCell>
+                        {/* <TableCell align="right">{row.payrate}</TableCell> */}
                         <TableCell align="right">{row.totalHours}</TableCell>
                       </TableRow>
                     );
