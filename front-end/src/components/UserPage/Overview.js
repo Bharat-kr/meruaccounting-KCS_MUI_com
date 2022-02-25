@@ -175,6 +175,7 @@ export default function Overview({ date, days, activities }) {
                 <Box overflow={"auto"} sx={{ height: 145 }}>
                   {activities &&
                     activities.map((activity) => {
+                      console.log(activity);
                       return (
                         <>
                           <Box
@@ -191,7 +192,7 @@ export default function Overview({ date, days, activities }) {
                               variant="h5"
                               color="text.primary"
                             >
-                              {activity.project.name}
+                              {activity?.project?.name}
                               <br />
                               <Typography color="text.primary">
                                 {activity.task}
