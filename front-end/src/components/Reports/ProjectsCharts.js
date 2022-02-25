@@ -41,7 +41,7 @@ export default function ProjectsCharts() {
       formatter: (datum) => {
         return {
           name: datum.type,
-          value: (datum.value * 100) / totalHours + "%",
+          value: Math.trunc((datum.value * 100) / totalHours) + "%",
         };
       },
     },
@@ -67,7 +67,7 @@ export default function ProjectsCharts() {
             {secondsToHms(totalHours)}
           </Typography>
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {totalPData}
+            {Math.trunc(totalPData)}%
           </Typography>
         </Box>
         <div>

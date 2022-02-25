@@ -18,7 +18,8 @@ import { dirname } from "path";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
+    let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
+      req.body;
 
     if (projectIds) {
       projectIds = projectIds.map((id) => {

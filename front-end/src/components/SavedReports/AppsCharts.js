@@ -48,7 +48,7 @@ export default function AppsCharts() {
       formatter: (datum) => {
         return {
           name: datum.type,
-          value: (datum.value * 100) / totalActCount + "%",
+          value: Math.trunc((datum.value * 100) / totalActCount) + "%",
         };
       },
     },
@@ -74,7 +74,7 @@ export default function AppsCharts() {
             {secondsToHms(totalHours)}
           </Typography>
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {totalPData}
+            {Math.trunc(totalPData)}%
           </Typography>
         </Box>
         <div>
