@@ -11,7 +11,6 @@ import moment from "moment";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { v4 as uuidv4 } from "uuid";
 
 // @desc    Generate Report
 // @route   GET /report
@@ -19,7 +18,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
+    let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
+      req.body;
 
     if (projectIds) {
       projectIds = projectIds.map((id) => {

@@ -8,6 +8,7 @@ const projectSchema = new mongoose.Schema(
     projectLeader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    activities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activity" }],
     client: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
   },
   { timestamps: true }
