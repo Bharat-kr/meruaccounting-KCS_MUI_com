@@ -198,12 +198,16 @@ const deleteClient = asyncHandler(async (req, res) => {
       /* ------------------ finding user to delete client in that ----------------- */
 
       const user = await User.findById(userId);
+
       if (user) {
-        user.clients.forEach((client, index) => {
-          if (client.toHexString() == clientId) {
-            user.clients.splice(index, 1);
-          }
-        });
+        //   user.clients.forEach((client, index) => {
+        //     if (client.toHexString() == clientId) {
+        //       user.clients.splice(index, 1);
+        //     }
+        //   });
+        user.clients = user.clients.filter(
+          (_id) => _id.toHexString() !== clientId
+        );
         await user.save();
       }
 
@@ -220,11 +224,14 @@ const deleteClient = asyncHandler(async (req, res) => {
           const employee = await User.findById(employeeId);
 
           if (employee) {
-            employee.projects.forEach((project, index) => {
-              if (project.toHexString() === projectId.toHexString()) {
-                employee.projects.splice(index, 1);
-              }
-            });
+            // employee.projects.forEach((project, index) => {
+            //   if (project.toHexString() === projectId.toHexString()) {
+            //     employee.projects.splice(index, 1);
+            //   }
+            // });
+            employee.projects = employee.projects.filter(
+              (_id) => _id.toHexString() !== projectId
+            );
             await employee.save();
           }
         }
