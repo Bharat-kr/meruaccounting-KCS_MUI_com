@@ -17,6 +17,7 @@ import { loginContext } from "../contexts/LoginContext";
 // import { getCommonData } from "../api/auth api/commondata";
 import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
+import { useLocation } from "react-router-dom";
 
 export default function UserPage() {
   const { loginC } = useContext(loginContext);
@@ -25,7 +26,12 @@ export default function UserPage() {
   const [activities, setactivities] = useState([]);
   const { dispatchCommonData } = useContext(CurrentUserContext);
   const [isInternal, setisInternal] = useState(false);
-  const [date, setdate] = useState(moment().format("DD/MM/YYYY"));
+  const location = useLocation();
+  const [date, setdate] = useState(
+    moment()
+      .subtract(location.state === "yesterday" ? 1 : 0, "day")
+      .format("DD/MM/YYYY")
+  );
   const { commonData } = useContext(CurrentUserContext);
 
   // interval for getting common data each minute
@@ -58,6 +64,9 @@ export default function UserPage() {
       <Box component="div" sx={{ width: "95%", margin: "auto" }}>
         <PageHeader title="Hi, Welcome Back!" />
         <Calendar
+          date={moment()
+            .subtract(location.state === "yesterday" ? 1 : 0, "day")
+            .format("D")}
           days={commonData?.commonData?.user?.days}
           setDate={(date) =>
             setdate((prev) => {
@@ -66,7 +75,11 @@ export default function UserPage() {
             })
           }
         />
-        <Overview date={date} days={commonData?.commonData?.user?.days} activities={activities}/>
+        <Overview
+          date={date}
+          days={commonData?.commonData?.user?.days}
+          activities={activities}
+        />
         <Timeline activities={activities} />
         <IntExt
           setInternal={(isInt) =>
