@@ -262,9 +262,46 @@ const updateActivity = asyncHandler(async (req, res) => {
     const { projectId } = req.body;
     console.log(req.body);
 
+    const activityId = req.params.id;
+    const unUpdatedactivity = await Activity.findByIdAndUpdate(
+      activityId,
+      req.body
+    );
+    const activity = await Activity.findById(activityId);
+
+    // get project time from aggregation
+    const updateProjectTime = await Activity.aggregate([
+      {
+        $match: {
+          project: projectId,
+        },
+      },
+      {
+        $group: {
+          _id: project,
+          internal: {
+            $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
+          },
+          external: {
+            $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
+          },
+          consumeTime: {
+            $sum: "$consumeTime",
+          },
+        },
+      },
+    ]);
+    // updateProjectTime[0].consumeTime
+
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
-      { $inc: { consumeTime: req.body.newProjectHours } },
+      {
+        $set: {
+          consumeTime: updateProjectTime[0].consumeTime,
+          internal: updateProjectTime[0].internal,
+          external: updateProjectTime[0].external,
+        },
+      },
       { multi: false }
     );
     console.log(
@@ -272,23 +309,41 @@ const updateActivity = asyncHandler(async (req, res) => {
       project
     );
 
+    // get the total time here from aggregation for user daily hours updatation
+    const updateDailyTime = await Activity.aggregate([
+      {
+        $match: {
+          employee: _id,
+          activityOn: "23/02/2022",
+        },
+      },
+      {
+        $group: {
+          _id: "$activityOn",
+          consumeTime: {
+            $sum: "$consumeTime",
+          },
+        },
+      },
+    ]);
+    // updateDailyTime[0].consumeTime
+
     const user = await User.findByIdAndUpdate(
       { _id },
-      { $inc: { "days.$[elem].dailyHours": req.body.newDailyHours } },
+      { $set: { "days.$[elem].dailyHours": updateDailyTime[0].consumeTime } },
       {
         multi: false,
         arrayFilters: [{ "elem.date": { $eq: dayjs().format("DD/MM/YYYY") } }],
       }
     );
-
-    console.log(project);
-
-    const activityId = req.params.id;
-    const unUpdatedactivity = await Activity.findByIdAndUpdate(
-      activityId,
-      req.body
-    );
-    const activity = await Activity.findById(activityId);
+    // const user = await User.findByIdAndUpdate(
+    //   { _id },
+    //   { $inc: { "days.$[elem].dailyHours": req.body.newDailyHours } },
+    //   {
+    //     multi: false,
+    //     arrayFilters: [{ "elem.date": { $eq: dayjs().format("DD/MM/YYYY") } }],
+    //   }
+    // );
 
     if (!unUpdatedactivity) {
       res.status(404);
