@@ -118,9 +118,12 @@ export const ClientsContextProvider = (props) => {
   const [newClient, dispatchAddClient] = useReducer(addClientReducer, {
     newClient: { loader: true },
   });
-  const [deletedClient, dispatchDeleteClient] = useReducer(deleteClientReducer, {
-    deleteClient: { loader: true },
-  });
+  const [deletedClient, dispatchDeleteClient] = useReducer(
+    deleteClientReducer,
+    {
+      deleteClient: { loader: true },
+    }
+  );
   const [clientProjectDetails, dispatchClientProjectDetails] = useReducer(
     clientProjectDetailsReducer,
     { clientProjectDetails: { loader: true } }
@@ -128,70 +131,10 @@ export const ClientsContextProvider = (props) => {
   const [editClient, dispatchEditClient] = useReducer(editClientReducer, {
     editClient: { loader: true },
   });
-  const [clients, setClients] = useState([
-    {
-      id: 1,
-      name: "Amazon",
-      Clientmembers: [
-        "Kamal",
-        "Ayush",
-        "Raksha",
-        "Mark",
-        "Surya",
-        "Zuckerberg",
-        "Jaya",
-        "Sushma",
-      ],
-      projects: [
-        {
-          name: "Project 1",
-          Projectmembers: ["Raksha", "Mark", "Surya"],
-          rate: 200,
-        },
-        {
-          name: "Project 2",
-          Projectmembers: ["Ayush", "Zuckerberg"],
-          rate: 300,
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Google",
-      Clientmembers: [
-        "Kamal",
-        "Ayush",
-        "Raksha",
-        "Mark",
-        "Surya",
-        "Zuckerberg",
-        "Jaya",
-        "Sushma",
-      ],
-      projects: [
-        {
-          name: "Project 3",
-          Projectmembers: ["Jaya", "Sushma"],
-          rate: 100,
-        },
-        {
-          name: "Project 4",
-          Projectmembers: ["Kamal", "Ayush"],
-          rate: 50,
-        },
-      ],
-    },
-  ]);
+  const [clients, setClients] = useState([]);
   const [currentClient, setcurrentClient] = useState("");
   const [currentProject, setcurrentProject] = useState("");
 
-  // const [currentProjectmembers, setcurrentProjectmembers] = useState(
-  //   clients.projects[0].Projectmembers
-  // );
-
-  // const changeProjectmember = (member) => {
-  //   setcurrentProjectmembers(member);
-  // };
   const changeClient = (client) => {
     setcurrentClient(client);
   };

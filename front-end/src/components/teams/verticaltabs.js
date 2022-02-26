@@ -42,14 +42,15 @@ export default function VerticalTabs() {
   // const { clients, changeClient } = useContext(ClientsContext);
   // const { User } = useContext(UserContext);
   const {
-    teamCreate,
     dispatchgetTeam,
     getTeams,
     dispatchTeam,
-    updatedMember,
     dispatchUpdateMember,
     deletedTeam,
     dispatchDeleteTeam,
+    teamCreate,
+    updatedMember,
+
   } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");

@@ -23,7 +23,7 @@ export default class Calendar extends React.Component {
     return this.state.dateObject.format("Y");
   };
   currentDay = () => {
-    return this.state.dateObject.format("D");
+    return this.props.date;
   };
   firstDayOfMonth = () => {
     let dateObject = this.state.dateObject;
@@ -216,7 +216,9 @@ export default class Calendar extends React.Component {
       daysInMonth.push(
         <Tooltip
           title={`${
-            this.getHours(d) ? (this.getHours(d).dailyHours / (60 * 60)).toFixed(2) : 0
+            this.getHours(d)
+              ? (this.getHours(d).dailyHours / (60 * 60)).toFixed(2)
+              : 0
           } Hrs`}
           arrow
           followCursor
