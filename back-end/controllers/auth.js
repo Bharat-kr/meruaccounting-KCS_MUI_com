@@ -160,17 +160,62 @@ const commondata = asyncHandler(async (req, res) => {
     const weeklyTime = await Activity.aggregate([
       {
         $match: {
-          $and: [
-            {
-              employee: { $eq: user._id },
-            },
-            {
-              activityOn: {
-                $gte: dayjs().startOf("week").format("DD/MM/YYYY"),
-                $lte: dayjs().format("DD/MM/YYYY"),
+          $expr: {
+            $and: [
+              {
+                $eq: ["$employee", user._id],
               },
-            },
-          ],
+              {
+                $and: [
+                  {
+                    $ne: ["$activityOn", null],
+                  },
+                  {
+                    $ne: ["$activityOn", ""],
+                  },
+                  {
+                    $ne: ["$activityOn", "null"],
+                  },
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs()
+                            .startOf("week")
+                            .format("DD/MM/YYYY"),
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs().format("DD/MM/YYYY"),
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         },
       },
       {
@@ -183,20 +228,66 @@ const commondata = asyncHandler(async (req, res) => {
       },
     ]);
 
+    console.log(dateOne, dateTwo);
     const monthlyTime = await Activity.aggregate([
       {
         $match: {
-          $and: [
-            {
-              employee: { $eq: user._id },
-            },
-            {
-              activityOn: {
-                $gte: dayjs().startOf("month").format("DD/MM/YYYY"),
-                $lte: dayjs().format("DD/MM/YYYY"),
+          $expr: {
+            $and: [
+              {
+                $eq: ["$employee", user._id],
               },
-            },
-          ],
+              {
+                $and: [
+                  {
+                    $ne: ["$activityOn", null],
+                  },
+                  {
+                    $ne: ["$activityOn", ""],
+                  },
+                  {
+                    $ne: ["$activityOn", "null"],
+                  },
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs()
+                            .startOf("month")
+                            .format("DD/MM/YYYY"),
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs().format("DD/MM/YYYY"),
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         },
       },
       {
@@ -358,15 +449,48 @@ const teamCommondata = asyncHandler(async (req, res) => {
                         {
                           $and: [
                             {
+                              $ne: ["$activityOn", null],
+                            },
+                            {
+                              $ne: ["$activityOn", ""],
+                            },
+                            {
+                              $ne: ["$activityOn", "null"],
+                            },
+                            {
                               $gte: [
-                                "$activityOn",
-                                dayjs().startOf("week").format("DD/MM/YYYY"),
+                                {
+                                  $dateFromString: {
+                                    dateString: "$activityOn",
+                                    format: "%d/%m/%Y",
+                                    onNull: new Date(0),
+                                  },
+                                },
+                                {
+                                  $dateFromString: {
+                                    dateString: dayjs()
+                                      .startOf("week")
+                                      .format("DD/MM/YYYY"),
+                                    format: "%d/%m/%Y",
+                                    onNull: new Date(0),
+                                  },
+                                },
                               ],
                             },
                             {
                               $lte: [
-                                "$activityOn",
-                                dayjs().format("DD/MM/YYYY"),
+                                {
+                                  $dateFromString: {
+                                    dateString: "$activityOn",
+                                    format: "%d/%m/%Y",
+                                  },
+                                },
+                                {
+                                  $dateFromString: {
+                                    dateString: dayjs().format("DD/MM/YYYY"),
+                                    format: "%d/%m/%Y",
+                                  },
+                                },
                               ],
                             },
                           ],
@@ -382,15 +506,48 @@ const teamCommondata = asyncHandler(async (req, res) => {
                         {
                           $and: [
                             {
+                              $ne: ["$activityOn", null],
+                            },
+                            {
+                              $ne: ["$activityOn", ""],
+                            },
+                            {
+                              $ne: ["$activityOn", "null"],
+                            },
+                            {
                               $gte: [
-                                "$activityOn",
-                                dayjs().startOf("month").format("DD/MM/YYYY"),
+                                {
+                                  $dateFromString: {
+                                    dateString: "$activityOn",
+                                    format: "%d/%m/%Y",
+                                    onNull: new Date(0),
+                                  },
+                                },
+                                {
+                                  $dateFromString: {
+                                    dateString: dayjs()
+                                      .startOf("month")
+                                      .format("DD/MM/YYYY"),
+                                    format: "%d/%m/%Y",
+                                    onNull: new Date(0),
+                                  },
+                                },
                               ],
                             },
                             {
                               $lte: [
-                                "$activityOn",
-                                dayjs().format("DD/MM/YYYY"),
+                                {
+                                  $dateFromString: {
+                                    dateString: "$activityOn",
+                                    format: "%d/%m/%Y",
+                                  },
+                                },
+                                {
+                                  $dateFromString: {
+                                    dateString: dayjs().format("DD/MM/YYYY"),
+                                    format: "%d/%m/%Y",
+                                  },
+                                },
                               ],
                             },
                           ],
