@@ -228,7 +228,6 @@ const commondata = asyncHandler(async (req, res) => {
       },
     ]);
 
-    console.log(dateOne, dateTwo);
     const monthlyTime = await Activity.aggregate([
       {
         $match: {
