@@ -3,7 +3,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { noCase } from "change-case";
 import { useRef, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 //icons
@@ -35,6 +35,7 @@ import {
 // components
 import MenuPopover from "../../components/MenuPopover";
 import { getCommonData } from "src/api/auth api/commondata";
+import { loginContext } from "src/contexts/LoginContext";
 
 function renderContent(notification) {
   const title = (
@@ -116,13 +117,20 @@ NotificationItem.propTypes = {
 
 function NotificationItem({ notification, markAsRead }) {
   const { avatar, title } = renderContent(notification);
+  const { loginC } = useContext(loginContext);
+  const navigate = useNavigate();
+  const role = loginC.userData.role;
   return (
     <ListItemButton
-      to={`/dashboard/${notification.type}`}
       disableGutters
-      component={RouterLink}
       onClick={() => {
         markAsRead(notification._id);
+        if (role === "admin" || role === "manager") {
+          navigate(`/dashboard/${notification.type}`, { replace: true });
+        }
+        if (role === "projectLeader" && notification.type === "projects") {
+          navigate(`/dashboard/${notification.type}`, { replace: true });
+        }
       }}
       sx={{
         py: 1.5,

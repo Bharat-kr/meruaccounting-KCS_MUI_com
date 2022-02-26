@@ -61,7 +61,7 @@ const projectRows = [
   createData("Project5", "4min", "5hr", "8hr 23min", "13hr 19min", "34hr"),
 ];
 
-function dispdata(data, data2, user) {
+function dispdata(data, data2, user, state) {
   return (
     <>
       <Typography
@@ -76,7 +76,8 @@ function dispdata(data, data2, user) {
             textDecoration: "underline #000000",
           },
         }}
-        to={`/dashboard/userpage`}
+        to={`/dashboard/userpage/`}
+        state={state}
         variant="body2"
       >
         {data}
@@ -228,7 +229,8 @@ export default function EmployeeApiRefRowsGrid() {
                           tData.user.payRate
                         ).toFixed(2)
                       : "",
-                    tData.user
+                    tData.user,
+                    "yesterday"
                   )}
                 </StyledTableCell>
                 <StyledTableCell align="right">

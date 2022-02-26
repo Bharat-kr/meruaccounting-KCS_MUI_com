@@ -24,9 +24,9 @@ import projectLeaderRoutes from "./routes/projectLeader.js";
 
 const __dirname = path.resolve();
 
-dotenv.config({ path: path.join(__dirname, "../.env") }); //heroku
+// dotenv.config({ path: path.join(__dirname, "../.env") }); //heroku
 
-// dotenv.config({ path: path.join(__dirname, "./config/config.env") }); //local
+dotenv.config({ path: path.join(__dirname, "./config/config.env") }); //local
 
 connectDB();
 

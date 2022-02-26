@@ -11,7 +11,6 @@ import moment from "moment";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { v4 as uuidv4 } from "uuid";
 
 // @desc    Generate Report
 // @route   GET /report
@@ -19,7 +18,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
-    let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
+    let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
+      req.body;
 
     if (projectIds) {
       projectIds = projectIds.map((id) => {
@@ -280,6 +280,85 @@ const generateReport = asyncHandler(async (req, res) => {
                 },
                 avgPerformanceData: {
                   $avg: "$performanceData",
+                },
+              },
+            },
+          ],
+          byEP: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  userId: "$employee._id",
+                  firstName: "$employee.firstName",
+                  lastName: "$employee.lastName",
+                  project: "$project",
+                  client: "$client",
+                },
+                actCount: {
+                  $sum: 1,
+                },
+                totalHours: {
+                  $sum: "$consumeTime",
+                },
+                avgPerformanceData: {
+                  $avg: "$performanceData",
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "projects",
+                localField: "_id.project",
+                foreignField: "_id",
+                as: "project",
+              },
+            },
+            {
+              $lookup: {
+                from: "clients",
+                localField: "_id.client",
+                foreignField: "_id",
+                as: "client",
+              },
+            },
+            {
+              $unwind: {
+                path: "$client",
+              },
+            },
+            {
+              $unwind: {
+                path: "$project",
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  userId: "$_id.userId",
+                  firstName: "$_id.firstName",
+                  lastName: "$_id.lastName",
+                },
+                projects: {
+                  $push: {
+                    client: "$client.name",
+                    project: "$project.name",
+                    count: "$actCount",
+                    totalHours: "$totalHours",
+                    avgPerformanceData: "$performanceData",
+                  },
                 },
               },
             },
