@@ -23,10 +23,9 @@ import AutoComplete from "@mui/material/Autocomplete";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { projectContext } from "../../contexts/ProjectsContext";
 import { getClient } from "../../api/clients api/clients";
-import {
-  addProjectMember,
-  deleteProject,
-} from "../../api/projects api/projects";
+import { getReports } from "../../api/reports api/reports";
+import { reportsContext } from "../../contexts/ReportsContext";
+import { deleteProject } from "../../api/projects api/projects";
 import { Link as RouterLink } from "react-router-dom";
 
 //------------------------------------------------------------------------------------------------//
@@ -179,6 +178,7 @@ const EnhancedTableToolbar = (props) => {
   } = props;
   const { dispatchremoveProjectMember } = useContext(projectContext);
   const { dispatchClientDetails } = useContext(ClientsContext);
+
   const handleProjectDelete = async () => {
     const deleteList = [];
     selected.map((select) => {
@@ -186,25 +186,12 @@ const EnhancedTableToolbar = (props) => {
         pro.name === select ? deleteList.push(pro.id) : ""
       );
     });
-    // const delfunc = () => {
-    //   let i;
-    //   deleteList.map(async (id, index) => {
-    //   });
-    // };
-    // const newfunc = async (id) => {
+
     for (let i = 0; i < deleteList.length; i++) {
       await deleteProject(deleteList[i], dispatchremoveProjectMember);
     }
     await getClient(dispatchClientDetails);
-    // };
-    //   const interval = setInterval(newfunc(id), 2000);
-    //   if (index === deleteList.length - 1) {
-    //     clearInterval(interval);
-    //   }
-    // delfunc();
-    // React.useEffect(() => {
-    //   setRowsPerPage(rows.length);
-    // }, [rows.length, currentProject, currentClient]);
+
     setSeleceted([]);
   };
 
@@ -300,46 +287,31 @@ export default function EnhancedTable(props) {
   const [orderBy, setOrderBy] = React.useState("projectHours");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [newMember, setNewMember] = useState("");
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
+  const [proList, setProList] = useState([]);
+
   const {
-    dispatchClientDetails,
     clientDetails,
     changeProject,
     changeClient,
     currentProject,
     currentClient,
   } = useContext(ClientsContext);
-  const { dispatchaddProjectMember, ProjectMember } =
-    useContext(projectContext);
+
+  const { reports, dispatchGetReports } = useContext(reportsContext);
 
   const tableListRef = useRef();
   const projectsList = [];
   const projectNameList = [];
-  currentClient
-    ? currentClient.projects?.map((pro) => {
-        projectsList.push({
-          id: pro._id,
-          name: `${pro.name}`,
-          budgetTime: pro.budgetTime,
-          consumeTime: pro.consumeTime,
-          noOfEmployees: pro.employess?.length,
-        });
-        projectNameList.push(`${pro.name}`);
-      })
-    : projectsList.push("");
-  const rowPush = [];
   const clientIndex = clientsList?.findIndex(
     (i) => i._id === currentClient?._id
   );
   const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
     (i) => i._id === currentProject?._id
   );
-  // // }
-  // const clientIndex = 0;
-  // const projectIndex = 0;
+
   useEffect(() => {
     try {
       const clientIndex = clientsList?.findIndex(
@@ -359,40 +331,90 @@ export default function EnhancedTable(props) {
       console.log(err);
     }
   }, [clientDetails]);
-  React.useEffect(() => {
+
+  const reportsFunction = async (reportOptions) => {
+    await getReports(dispatchGetReports, reportOptions);
+  };
+
+  React.useEffect(async () => {
     try {
-      currentClient?.projects?.map((pro) => {
-        rowPush.push(
-          createData(
-            `${pro.name}`,
-            pro.consumeTime,
-            pro.budgetTime,
-            pro.employees.length,
-            pro._id
-          )
-        );
-      });
-      setRows(rowPush);
+      const reportOptions = {
+        clientIds: [{ _id: currentClient._id }],
+      };
+      await reportsFunction(reportOptions);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentClient]);
+
+  console.log(currentClient);
+
+  useEffect(() => {
+    setProList(reports?.reports);
+    console.log(reports.reports);
+  }, [reports]);
+
+  React.useEffect(async () => {
+    try {
+      currentClient
+        ? currentClient.projects.map((pro) => {
+            let o = {};
+            let exists = proList[0]?.byProjects?.filter(
+              (el) => el._id._id === pro._id
+            );
+            if (exists && exists.length) {
+              o = {
+                id: exists[0]._id._id,
+                name: `${exists[0]._id.name}`,
+                internal: `${(exists[0].internal / 3600).toFixed(2)} hr`,
+                external: `${(exists[0].external / 3600).toFixed(2)} hr`,
+                noOfEmployees: pro.employees.length,
+                totalHours: `${(exists[0].totalHours / 3600).toFixed(2)} hr`,
+              };
+            } else {
+              o = {
+                id: pro._id,
+                name: `${pro.name}`,
+                internal: `0 hr`,
+                external: `0 hr`,
+                noOfEmployees: pro.employees.length,
+                totalHours: `0 hr`,
+              };
+            }
+            projectsList.push(o);
+
+            projectNameList.push(`${pro.name}`);
+          })
+        : projectsList.push("");
+
+      setRows(projectsList);
       setRowsPerPage(rows.length);
       setSelected([]);
     } catch (err) {
       console.log(err);
     }
-  }, [currentClient, currentProject, clientDetails]);
+  }, [currentClient, clientDetails, proList]);
 
-  const handleMemberAdded = async (e) => {
-    e.preventDefault();
-    try {
-      const data = [currentProject._id, newMember];
-      await addProjectMember(data, dispatchaddProjectMember);
-      await getClient(dispatchClientDetails);
-      // setRowsPerPage(rows.length + 1);
-
-      // console.log(currentProject);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  // React.useEffect(() => {
+  //   try {
+  //     currentClient?.projects?.map((pro) => {
+  //       rowPush.push(
+  //         createData(
+  //           `${pro.name}`,
+  //           pro.consumeTime,
+  //           pro.budgetTime,
+  //           pro.employees.length,
+  //           pro._id
+  //         )
+  //       );
+  //     });
+  //     setRows(rowPush);
+  //     setRowsPerPage(rows.length);
+  //     setSelected([]);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, [currentClient, currentProject, clientDetails]);
 
   const handleSearch = async (e, value) => {
     e.preventDefault();
@@ -548,8 +570,8 @@ export default function EnhancedTable(props) {
                         <TableCell component="th" scope="row" padding="none">
                           {row.name}
                         </TableCell>
-                        <TableCell align="right">{row.projectHours}</TableCell>
-                        <TableCell align="right">{row.internalHours}</TableCell>
+                        <TableCell align="right">{row.external}</TableCell>
+                        <TableCell align="right">{row.internal}</TableCell>
                         <TableCell align="right">{row.noOfEmployees}</TableCell>
                         <TableCell align="right">{row.totalHours}</TableCell>
                       </TableRow>
