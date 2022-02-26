@@ -12,6 +12,7 @@ import Graphs from "./Graphs";
 import SelectEmployees from "./SelectEmployees";
 import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
+import SelectGroup from "./SelectGroup";
 import SaveReport from "./SaveReport";
 
 // contexts and apis
@@ -72,6 +73,10 @@ export default function Main() {
   const [employees, setemployees] = React.useState([]);
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
+  const [group, setgroup] = React.useState([
+    "Group by employee",
+    "Group by project",
+  ]);
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -83,12 +88,14 @@ export default function Main() {
     const userIds = employees.length ? employees : null;
     const projectIds = projects.length ? projects : null;
     const clientIds = clients.length ? clients : null;
+    const groupBy = group;
     const options = {
       clientIds,
       projectIds,
       userIds,
       dateOne,
       dateTwo,
+      groupBy,
     };
     console.log(options);
     getReports(dispatchGetReports, options);
@@ -185,6 +192,12 @@ export default function Main() {
           options={projectOptions}
           setProjects={(newValue) => {
             setprojects(newValue);
+          }}
+        />
+        <SelectGroup
+          setGroup={(newValue) => {
+            console.log(newValue);
+            setgroup(newValue);
           }}
         />
         <Box

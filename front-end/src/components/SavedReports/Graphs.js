@@ -53,7 +53,13 @@ export default function Graphs({ reports }) {
 
   return (
     <Box sx={{ mt: 2, width: "100%" }}>
+      <Box>
+        <Typography>
+          
+        </Typography>
+      </Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+
         <Tabs
           value={value}
           onChange={handleChange}

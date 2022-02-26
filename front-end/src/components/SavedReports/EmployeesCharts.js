@@ -11,7 +11,7 @@ export default function EmployeesCharts() {
   const [totalPData, settotalPData] = useState(null);
 
   useEffect(() => {
-    let arr = savedReports.reports[0].byEmployees.map((emp) => {
+    let arr = savedReports?.reports[0]?.byEmployees.map((emp) => {
       let o = {
         type: `${emp._id.firstName} ${emp._id.lastName}`,
         value: emp.totalHours,
@@ -41,7 +41,7 @@ export default function EmployeesCharts() {
       formatter: (datum) => {
         return {
           name: datum.type,
-          value: (datum.value * 100) / totalHours + "%",
+          value: Math.trunc((datum.value * 100) / totalHours) + "%",
         };
       },
     },
@@ -67,7 +67,7 @@ export default function EmployeesCharts() {
             {secondsToHms(totalHours)}
           </Typography>
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {totalPData}
+            {Math.trunc(totalPData)}%
           </Typography>
         </Box>
         <div>

@@ -38,7 +38,13 @@ export default function SavedReports() {
     <RootStyle title="SavedReports">
       <Container sx={{ width: "70%", mt: 8 }}>
         <Box
-          sx={{ height: "5rem", mt: 2, display: "flex", flexDirection: "row" }}
+          sx={{
+            height: "5rem",
+            mt: 2,
+            display: "flex",
+            flexDirection: "row",
+            scroll: "auto",
+          }}
         >
           <Main />
         </Box>
