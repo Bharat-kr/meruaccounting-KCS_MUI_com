@@ -21,6 +21,8 @@ import { useSnackbar } from "notistack";
 import { useLayoutEffect } from "react";
 import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
+import { reportsContext } from "../../contexts/ReportsContext";
+
 //---------------------------------------------------------------
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +66,7 @@ export default function Header(props) {
     clientDetails,
     dispatchClientDetails,
   } = useContext(ClientsContext);
+
   const {
     dispatchEditProject,
     dispatchDeleteProject,
@@ -72,6 +75,9 @@ export default function Header(props) {
     deletedProject,
     editProjectLeader,
   } = useContext(projectContext);
+
+  const { reports } = useContext(reportsContext);
+
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
   const [budgetTime, setbudgetTime] = useState();
@@ -112,6 +118,7 @@ export default function Header(props) {
             `${currentProject?.projectLeader?.firstName} ${currentProject?.projectLeader?.lastName}`
           )
         : setProjectLeader("No leader");
+      
       setbudgetTime(currentProject?.budgetTime);
       setconsumedTime((currentProject?.consumeTime / 3600).toFixed(2));
       proInputRef.current.value = "";
@@ -229,7 +236,6 @@ export default function Header(props) {
       }
     );
   };
-  const handleConsumeSave = () => {};
   const handleSave = async (v) => {
     console.log(v);
     try {
@@ -254,6 +260,9 @@ export default function Header(props) {
     );
   };
   console.log(currentProject);
+
+
+
   return currentProject === undefined ? (
     <Box
       component="div"

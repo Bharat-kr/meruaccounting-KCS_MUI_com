@@ -23,12 +23,17 @@ import { getAllEmployee } from "src/api/admin api/admin";
 import { teamContext } from "./contexts/TeamsContext";
 import { loginContext } from "./contexts/LoginContext";
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import { ClientsContext } from "src/contexts/ClientsContext";
+
 import {
   getCommonData,
   getTeamCommonData,
   projectMemberCommonData,
 } from "./api/auth api/commondata";
+import { getClient } from "./api/clients api/clients";
+
 import SavedReports from "./pages/SavedReports";
+
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -41,9 +46,12 @@ export default function Router() {
     dispatchCommonData,
   } = useContext(CurrentUserContext);
 
+  const { dispatchClientDetails } = useContext(ClientsContext);
   const { loginC } = useContext(loginContext);
   const { dispatchAdminAllEmployee } = useContext(employeeContext);
+
   React.useLayoutEffect(() => {
+    getClient(dispatchClientDetails);
     if (loginC?.userData?.role === "admin")
       getAllEmployee(dispatchAdminAllEmployee);
     else if (loginC?.userData?.role === "manager")
