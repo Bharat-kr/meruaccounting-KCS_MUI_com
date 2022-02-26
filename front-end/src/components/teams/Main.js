@@ -39,6 +39,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
+import ChangeModal from "./ChangeModal";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -140,6 +141,25 @@ export default function Main(props) {
     );
   };
 
+  const [prevRole, setPrevRole] = useState(null);
+  useEffect(() => {
+    setPrevRole(currMember?.role);
+  }, [currMember]);
+  
+  //modal values
+  const [modal, setModal] = useState(false);
+  const handleModalOpen = () => {
+    setModal(true);
+  };
+  const handleModalClose = () => {
+    setModal(false);
+  };
+  const handleRoleChange = (e, value) => {
+    console.log(e.target.value, value, prevRole);
+    if (prevRole === "manager" || prevRole === "projectLeader") {
+      handleModalOpen();
+    }
+  };
   //Changing status of an employee
   const updateStatus = async (value) => {
     try {
@@ -414,25 +434,26 @@ export default function Main(props) {
                         aria-label="Role"
                         value={currMember.role}
                         name="radio-buttons-group"
+                        onChange={handleRoleChange}
                       >
                         <FormControlLabel
                           value="admin"
-                          control={<Radio onChange={updateRole} />}
+                          control={<Radio />}
                           label="Admin - full control over Team, Projects & Settings. Does not have access to owner's My Account page settings."
                         />
                         <FormControlLabel
                           value="manager"
-                          control={<Radio onChange={updateRole} />}
+                          control={<Radio />}
                           label="Manager - can see selected user's Timeline & Reports (but not rates)"
                         />
                         <FormControlLabel
                           value="projectLeader"
-                          control={<Radio onChange={updateRole} />}
+                          control={<Radio />}
                           label="Project leader- able to manage project and project members."
                         />
                         <FormControlLabel
                           value="employee"
-                          control={<Radio onChange={updateRole} />}
+                          control={<Radio />}
                           label="Employee - can see their own data only"
                         />
                       </RadioGroup>
@@ -526,6 +547,7 @@ export default function Main(props) {
           </Typography>
         </Container>
       )}
+      <ChangeModal modal={modal} handleModalClose={handleModalClose} />
     </>
   );
 }
