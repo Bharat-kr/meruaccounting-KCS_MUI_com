@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 
 const createScreenShot = asyncHandler(async (req, res) => {
   const {
+    consumeTime,
     clientId,
     projectId,
     task,
@@ -26,6 +27,7 @@ const createScreenShot = asyncHandler(async (req, res) => {
     client: clientId,
     project: projectId,
     task,
+    consumeTime,
     image,
     activityAt: activityAt,
     activityId,
@@ -101,6 +103,10 @@ const createActivity = asyncHandler(async (req, res) => {
       activity,
       days: user.days,
     });
+
+    const project = await Project.findById(projectId);
+    project.activities.push(activity);
+    await project.save();
   } else {
     throw new Error("Internal server error");
   }
@@ -254,6 +260,7 @@ const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
     const { projectId } = req.body;
+    console.log(req.body);
 
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
