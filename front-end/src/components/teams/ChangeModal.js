@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { getFullName } from "src/_helpers/getFullName";
 
 const style = {
   position: "absolute",
@@ -30,13 +31,13 @@ const style = {
   },
 };
 
-const ChangeModal = ({ modal, handleModalClose }) => {
+const ChangeModal = ({ modal, handleModalClose, currTeam, prevRole }) => {
   const [newManger, setNewManager] = React.useState("");
 
   const handleChange = (event) => {
     setNewManager(event.target.value);
   };
-  console.log(modal);
+  console.log(currTeam);
   return (
     <Modal
       open={modal}
@@ -58,7 +59,7 @@ const ChangeModal = ({ modal, handleModalClose }) => {
           }}
         >
           <Typography variant="h4" color="primary">
-            Split Time
+            Who will be the new Manager ?
           </Typography>
           <IconButton>
             <CloseIcon onClick={handleModalClose} />
@@ -78,8 +79,7 @@ const ChangeModal = ({ modal, handleModalClose }) => {
               mt: 1,
             }}
           >
-            New Manager
-            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+            <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
               <InputLabel id="demo-simple-select-filled-label">Age</InputLabel>
               <Select
                 labelId="demo-simple-select-filled-label"
@@ -87,12 +87,9 @@ const ChangeModal = ({ modal, handleModalClose }) => {
                 value={newManger}
                 onChange={handleChange}
               >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                {currTeam?.members.map((member) => {
+                  return <MenuItem value={member._id}>{getFullName(member.firstName , member.lastName)}</MenuItem>;
+                })}
               </Select>
             </FormControl>
           </Box>
@@ -114,7 +111,7 @@ const ChangeModal = ({ modal, handleModalClose }) => {
             }}
             //   onClick={handleSplit}
           >
-            Split Activity
+            Change Manager
           </Button>
           <Button variant="outlined" color="primary" onClick={handleModalClose}>
             Cancel

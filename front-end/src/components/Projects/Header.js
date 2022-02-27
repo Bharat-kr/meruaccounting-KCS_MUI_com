@@ -76,7 +76,7 @@ export default function Header(props) {
     editProjectLeader,
   } = useContext(projectContext);
 
-  const { reports } = useContext(reportsContext);
+  const { reports, byClients, byProject } = useContext(reportsContext);
 
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
@@ -118,14 +118,15 @@ export default function Header(props) {
             `${currentProject?.projectLeader?.firstName} ${currentProject?.projectLeader?.lastName}`
           )
         : setProjectLeader("No leader");
-      
+
       setbudgetTime(currentProject?.budgetTime);
-      setconsumedTime((currentProject?.consumeTime / 3600).toFixed(2));
+      console.log(byProject.totalHours);
+      setconsumedTime((byProject[0].totalHours / 3600).toFixed(2));
       proInputRef.current.value = "";
     } catch (err) {
       console.log(err);
     }
-  }, [clientDetails, currentClient, currentProject]);
+  }, [clientDetails, currentClient, currentProject, byProject, byClients]);
 
   let memberList = [];
   let membersData = [];
@@ -260,8 +261,6 @@ export default function Header(props) {
     );
   };
   console.log(currentProject);
-
-
 
   return currentProject === undefined ? (
     <Box
@@ -432,9 +431,7 @@ export default function Header(props) {
                   <Typography
                     sx={{ display: "flex", alignItems: "center", mr: 6, pt: 1 }}
                   >
-                    {currentProject?.internalHours
-                      ? (currentProject?.internalHours / 3600).toFixed(2)
-                      : 0}{" "}
+                    {byProject ? (byProject[0]?.internal / 3600).toFixed(2) : 0}{" "}
                     hr
                   </Typography>
                 </Box>
