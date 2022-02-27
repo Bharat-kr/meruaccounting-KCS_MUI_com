@@ -64,6 +64,14 @@ export function ReportsProvider(props) {
     }
   );
 
+  const [byClients, setByClients] = React.useState([]);
+  const [byProject, SetByProject] = React.useState([]);
+  const byClientsFunc = (cli) => {
+    setByClients(cli);
+  };
+  const byProjectFunc = (pro) => {
+    SetByProject(pro);
+  };
   return (
     <reportsContext.Provider
       value={{
@@ -71,6 +79,10 @@ export function ReportsProvider(props) {
         dispatchGetReports,
         savedReports,
         dispatchGetSavedReports,
+        byClients,
+        byProject,
+        byClientsFunc,
+        byProjectFunc,
       }}
     >
       {props.children}

@@ -186,7 +186,7 @@ export default function Overview({ date, dateObj, days, activities }) {
                               variant="h5"
                               color="text.primary"
                             >
-                              {activity.project.name}
+                              {activity?.project?.name}
                               <br />
                               <Typography color="text.primary">
                                 {activity.task}

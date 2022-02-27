@@ -285,7 +285,14 @@ export default function EnhancedTable(props) {
   } = useContext(ClientsContext);
   const { ProjectMember, dispatchaddProjectMember } =
     useContext(projectContext);
-  const { reports, dispatchGetReports } = useContext(reportsContext);
+  const {
+    reports,
+    dispatchGetReports,
+    byClients,
+    byProject,
+    byClientsFunc,
+    byProjectFunc,
+  } = useContext(reportsContext);
 
   const tableListRef = useRef();
   const employeesList = [];
@@ -314,20 +321,8 @@ export default function EnhancedTable(props) {
   }, [reports]);
   React.useEffect(async () => {
     try {
-      // // console.log(projectMember[0]?.byEmployees);
-      // projectMember[0]?.byEmployees?.map((emp) => {
-      //   rowPush.push(
-      //     createData(
-      //       `${emp._id.firstName} ${emp._id.lastName}`,
-      //       `${(emp.external / 3600).toFixed(2)} hr`,
-      //       `${(emp.internal / 3600).toFixed(2)} hr`,
-      //       `${(emp.totalHours / 3600).toFixed(2)} hr`
-      //     )
-      //   );
-      // });
       currentProject
         ? currentProject.employees.map((emp, index) => {
-            // let exists = projectMember[0]?.byEmployees?.some((el) => el._id === newOption._id);
             let o = {};
             let exists = projectMember[0]?.byEmployees?.filter(
               (el) => el._id.employee === emp._id
@@ -350,21 +345,11 @@ export default function EnhancedTable(props) {
               };
             }
             employeesList.push(o);
-            //     projectMember[0]?.byEmployees?.some((emplo) => {
-            //       // emplo._id.employee === emp._id && // () => {
-            //       // employeesList[index]?.id === emp._id &&
-            //       employeesList.push({
-            //         id: emp._id,
-            //         name: `${emp.firstName} ${emp.lastName}`,
-            //         // internal: emp._id === emplo._id.employee ? emplo.internal : 0,
-            //         // external: emp._id === emplo._id.employee ? emplo.external : 0,
-            //         // totalHours:  emp._id === emplo._id.employee ? emplo.totalHours : 0,
-            //       });
-            //     });
+
             employeeNameList.push(`${emp.firstName} ${emp.lastName}`);
           })
         : employeesList.push("");
-      // const newList = [...new Set(employeesList)];
+
       console.log(employeesList);
       setRows(employeesList);
       setRowsPerPage(rows.length);
