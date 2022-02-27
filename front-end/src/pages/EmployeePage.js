@@ -30,6 +30,9 @@ export default function UserPage() {
       .subtract(location.state === "yesterday" ? 1 : 0, "day")
       .format("DD/MM/YYYY")
   );
+  const [dateObj, setdateObj] = useState(
+    moment().subtract(location.state === "yesterday" ? 1 : 0, "day")
+  );
 
   // interval for getting common data each minute
   useEffect(() => {
@@ -67,18 +70,22 @@ export default function UserPage() {
         />
         <Calendar
           days={commonData?.commonData?.user?.days}
-          date={moment()
-            .subtract(location.state === "yesterday" ? 1 : 0, "day")
-            .format("D")}
+          date={dateObj.format("D")}
           setDate={(date) =>
             setdate((prev) => {
               console.log(date);
               return date;
             })
           }
+          setDateObj={(obj) => {
+            setdateObj((prev) => {
+              return obj;
+            });
+          }}
         />
         <Overview
           date={date}
+          dateObj={dateObj}
           days={commonData?.commonData?.user?.days}
           activities={activities}
         />
