@@ -285,19 +285,12 @@ export default function EnhancedTable(props) {
   } = useContext(ClientsContext);
   const { ProjectMember, dispatchaddProjectMember } =
     useContext(projectContext);
-  const {
-    reports,
-    dispatchGetReports,
-    byClients,
-    byProject,
-    byClientsFunc,
-    byProjectFunc,
-  } = useContext(reportsContext);
+  const { reports, dispatchGetReports, byClientsFunc, byProjectFunc } =
+    useContext(reportsContext);
 
   const tableListRef = useRef();
   const employeesList = [];
   const employeeNameList = [];
-  const rowPush = [];
 
   const reportsFunction = async (reportOptions) => {
     await getReports(dispatchGetReports, reportOptions);
@@ -314,9 +307,11 @@ export default function EnhancedTable(props) {
     } catch (error) {
       console.log(error);
     }
-  }, [currentProject]);
+  }, [currentProject, currentClient]);
   useEffect(() => {
     setProjectMember(reports?.reports);
+    byClientsFunc(reports?.reports[0]?.byClients);
+    byProjectFunc(reports?.reports[0]?.byProjects);
     console.log(reports.reports);
   }, [reports]);
   React.useEffect(async () => {

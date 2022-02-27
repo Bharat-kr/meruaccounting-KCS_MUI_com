@@ -68,8 +68,10 @@ export function ReportsProvider(props) {
   const [byProject, SetByProject] = React.useState([]);
   const byClientsFunc = (cli) => {
     setByClients(cli);
+    console.log(cli);
   };
   const byProjectFunc = (pro) => {
+    console.log(pro);
     SetByProject(pro);
   };
   return (
