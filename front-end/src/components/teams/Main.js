@@ -145,7 +145,7 @@ export default function Main(props) {
   useEffect(() => {
     setPrevRole(currMember?.role);
   }, [currMember]);
-  
+
   //modal values
   const [modal, setModal] = useState(false);
   const handleModalOpen = () => {
@@ -547,7 +547,12 @@ export default function Main(props) {
           </Typography>
         </Container>
       )}
-      <ChangeModal modal={modal} handleModalClose={handleModalClose} />
+      <ChangeModal
+        modal={modal}
+        handleModalClose={handleModalClose}
+        currTeam={currTeam}
+        prevRole={prevRole}
+      />
     </>
   );
 }
