@@ -188,6 +188,7 @@ export default class Calendar extends React.Component {
     });
     console.log("SELECTED DATE: ", dateObject.format("DD/MM/YYYY"));
     this.props.setDate(dateObject.format("DD/MM/YYYY"));
+    this.props.setDateObj(dateObject);
   };
   getHours = (d) => {
     let date = `${d}/${this.state.dateObject.format("MM")}/${this.year()}`;

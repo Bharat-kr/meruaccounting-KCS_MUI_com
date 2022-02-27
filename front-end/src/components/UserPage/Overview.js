@@ -17,7 +17,7 @@ import timeDiff from "src/_helpers/timeDifference";
 // contexts
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
-export default function Overview({ date, days, activities }) {
+export default function Overview({ date, dateObj, days, activities }) {
   const { commonData } = useContext(CurrentUserContext);
   const [value, setValue] = React.useState("1");
   const [apps, setApps] = React.useState([]);
@@ -161,7 +161,7 @@ export default function Overview({ date, days, activities }) {
                     justifyContent: "space-between",
                   }}
                 >
-                  {moment().format("MMMM Do YYYY, h:mm:ss a")}
+                  {dateObj.format("Do MMMM YYYY")}
                   <TabList
                     onChange={handleChange}
                     aria-label="lab API tabs example"
