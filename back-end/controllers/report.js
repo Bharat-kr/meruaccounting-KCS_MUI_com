@@ -307,15 +307,11 @@ const generateReport = asyncHandler(async (req, res) => {
                   project: "$project",
                   client: "$client",
                 },
-                actCount: {
-                  $sum: 1,
-                },
-                totalHours: {
-                  $sum: "$consumeTime",
-                },
-                avgPerformanceData: {
-                  $avg: "$performanceData",
-                },
+                payRate: { $first: "$employee.payRate" },
+                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPerformanceData: { $avg: "$performanceData" },
+                screenshots: { $first: "$screenshots" },
               },
             },
             {
@@ -335,6 +331,14 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
             {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
               $unwind: {
                 path: "$client",
               },
@@ -344,6 +348,7 @@ const generateReport = asyncHandler(async (req, res) => {
                 path: "$project",
               },
             },
+
             {
               $group: {
                 _id: {
@@ -351,15 +356,81 @@ const generateReport = asyncHandler(async (req, res) => {
                   firstName: "$_id.firstName",
                   lastName: "$_id.lastName",
                 },
+                payRate: { $first: "$payRate" },
                 projects: {
                   $push: {
                     client: "$client.name",
                     project: "$project.name",
                     count: "$actCount",
                     totalHours: "$totalHours",
-                    avgPerformanceData: "$performanceData",
+                    avgPerformanceData: "$avgPerformanceData",
+                    screenshots: "$screenshots",
                   },
                 },
+              },
+            },
+          ],
+          byCE: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  userId: "$employee._id",
+                  firstName: "$employee.firstName",
+                  lastName: "$employee.lastName",
+                  client: "$client",
+                },
+                screenshots: { $first: "$screenshots" },
+                payRate: { $first: "$employee.payRate" },
+                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPerformanceData: { $avg: "$performanceData" },
+              },
+            },
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
+              $group: {
+                _id: "$_id.client",
+
+                users: {
+                  $push: {
+                    screenshots: "$screenshots",
+                    payRate: "$payRate",
+                    user: "$_id.userId",
+                    firstName: "$_id.firstName",
+                    lastName: "$_id.lastName",
+                    count: "$actCount",
+                    totalHours: "$totalHours",
+                    avgPerformanceData: "$avgPerformanceData",
+                  },
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "clients",
+                localField: "_id",
+                foreignField: "_id",
+                as: "client",
               },
             },
           ],
