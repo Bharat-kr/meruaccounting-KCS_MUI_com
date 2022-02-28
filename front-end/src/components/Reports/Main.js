@@ -77,6 +77,7 @@ export default function Main() {
     "Group by employee",
     "Group by project",
   ]);
+  const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -97,6 +98,7 @@ export default function Main() {
       dateTwo,
       groupBy,
     };
+    setSaveReportOptions(options);
     console.log(options);
     getReports(dispatchGetReports, options);
     console.log(reports);
@@ -211,7 +213,9 @@ export default function Main() {
           >
             generate Reports
           </Button>
-          {!reports.loader ? <SaveReport></SaveReport> : null}
+          {!reports.loader ? (
+            <SaveReport options={saveReportsOptions}></SaveReport>
+          ) : null}
         </Box>
         {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
       </TabPanel>

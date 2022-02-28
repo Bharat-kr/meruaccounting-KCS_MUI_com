@@ -548,6 +548,7 @@ const generateReport = asyncHandler(async (req, res) => {
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
+      groupBy,
       url,
       reports,
       name,
@@ -558,6 +559,8 @@ const saveReports = asyncHandler(async (req, res) => {
       options,
     } = req.body;
     let userId = req.user._id;
+    console.log(options);
+    let { firstName, lastName } = await User.findById(userId);
     console.log(reports);
     let fileName = userId + "-" + new Date().getTime();
 
@@ -569,6 +572,7 @@ const saveReports = asyncHandler(async (req, res) => {
 
     // make a new document for reports schema
     const saved = await Reports.create({
+      groupBy,
       options,
       user: userId,
       url,
@@ -576,7 +580,7 @@ const saveReports = asyncHandler(async (req, res) => {
       includeAL,
       includePR,
       includeApps,
-      name,
+      name: `${firstName} ${lastName}`,
       fileName,
     });
 
@@ -596,9 +600,19 @@ const fetchReports = asyncHandler(async (req, res) => {
   try {
     let { url } = req.body;
 
-    const report = await Reports.find({ url: url });
-
-    console.log(report[0].fileName);
+    const report = await Reports.find({ url: url }).populate({
+      path: "user",
+      model: "User",
+      select: {
+        password: 0,
+        projects: 0,
+        days: 0,
+        clients: 0,
+        teams: 0,
+        settings: 0,
+        notifications: 0,
+      },
+    });
 
     // Read users.json file
     let data = JSON.parse(
