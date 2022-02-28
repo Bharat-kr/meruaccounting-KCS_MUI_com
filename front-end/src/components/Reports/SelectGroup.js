@@ -8,6 +8,7 @@ export default function SelectGroup({ setGroup }) {
     { label: "Group by project", value: "P" },
     { label: "Detailed", value: "D" },
     { label: "Group by Apps & URLs", value: "A" },
+    { label: "Group by client", value: "C" },
   ];
 
   const [value, setvalue] = React.useState([
@@ -36,6 +37,16 @@ export default function SelectGroup({ setGroup }) {
           }}
         >
           Summary by project
+        </Typography>
+        <Typography
+          sx={{
+            ...typoStyle,
+          }}
+          onClick={() => {
+            setvalue([selectGroupOptions[4], selectGroupOptions[0]]);
+          }}
+        >
+          Summary by client
         </Typography>
         <Typography
           sx={{
