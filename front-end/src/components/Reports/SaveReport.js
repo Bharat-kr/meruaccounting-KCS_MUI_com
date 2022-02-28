@@ -58,7 +58,7 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function SaveReport() {
+export default function SaveReport(props) {
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("");
@@ -81,6 +81,7 @@ export default function SaveReport() {
       reports: reports.reports,
       url,
       name,
+      options: props.options,
     };
     const savedData = await axios.post("/report/save", data);
     navigator.clipboard.writeText(
