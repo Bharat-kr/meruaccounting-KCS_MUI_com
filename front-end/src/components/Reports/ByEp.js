@@ -8,16 +8,16 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-export default function ByCl() {
+export default function ByEp(props) {
+  const { reports } = props;
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
   const { savedReports } = React.useContext(reportsContext);
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([
     {
-      field: "Client",
+      field: "Employee",
       minWidth: 300,
       rowGroup: true,
 
@@ -26,7 +26,7 @@ export default function ByCl() {
       },
     },
     {
-      field: "Employee",
+      field: "Project",
       minWidth: 100,
     },
     { field: "Duration", minWidth: 100 },
@@ -35,6 +35,7 @@ export default function ByCl() {
   ]);
   const defaultColDef = useMemo(() => {
     return {
+      // marginLeft: 300,
       flex: 1,
       minWidth: 100,
       sortable: true,
@@ -42,28 +43,26 @@ export default function ByCl() {
     };
   }, []);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
+    // setRowData(savedReports.reports[0]?.byEP);
+    console.log(reports);
 
     let arr = [];
-    savedReports.reports[0]?.byCE?.map((cli) => {
-      cli.users.map((emp) => {
+    reports.reports[0]?.byEP?.map((emp) => {
+      emp.projects.map((pro) => {
         arr.push({
-          Client: `${
-            cli.client[0]?.name ? cli?.client[0].name : "Deleted client"
-          }`,
-
-          Employee: `${emp.firstName} ${emp.lastName}`,
-          Duration: (emp.totalHours / 3600).toFixed(2),
+          Employee: `${emp._id.firstName} ${emp._id.lastName}`,
+          Project: `${pro.project}`,
+          Duration: (pro.totalHours / 3600).toFixed(2),
           Money:
             (emp?.toalHours / 3600 / emp?.payRate).toFixed(2) === Number
               ? (emp?.toalHours / 3600 / emp?.payRate).toFixed(2)
               : "",
-          Activity: emp.performanceData,
+          Activity: pro.performanceData,
         });
       });
     });
     setRowData(arr);
-  }, [savedReports]);
+  }, [reports]);
   const onGridReady = useCallback((savedReports) => {}, []);
 
   return (

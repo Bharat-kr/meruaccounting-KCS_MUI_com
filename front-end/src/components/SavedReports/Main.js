@@ -21,6 +21,7 @@ import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
 import ByPr from "./ByPr";
+import ByCl from "./ByCL";
 import GridExample from "../../components/SavedReports/ByEp";
 
 function TabPanel(props) {
@@ -101,14 +102,24 @@ export default function Main() {
     getReports(dispatchGetReports, options);
     console.log(reports);
   };
-
+  if (group.includes("Group by employee")) {
+    console.log("hey");
+  }
   return (
     <>
       {true ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
           <Graphs style={{ margin: 10 }}></Graphs>
-          {/* <ByEp sx={{ height: "auto" }} /> */}
-          <ByPr sx={{ height: "auto" }} />
+          {/* {group.includes("Group by employee") && (
+            <ByEp sx={{ height: "auto" }} />
+          )}
+          {group.includes("Group by project") && (
+            <ByPr sx={{ height: "auto" }} />
+          )}
+          {group.includes("Group by client") && ( */}
+          <ByCl sx={{ height: "auto" }} />
+          {/* )} */}
+
           {/* <GridExample /> */}
           {/* </TabPanel> */}
         </Box>

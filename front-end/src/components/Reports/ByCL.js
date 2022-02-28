@@ -10,7 +10,8 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-export default function ByCl() {
+export default function ByCl(props) {
+  const { reports } = props;
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
   const { savedReports } = React.useContext(reportsContext);
@@ -42,10 +43,10 @@ export default function ByCl() {
     };
   }, []);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
+    console.log(reports);
 
     let arr = [];
-    savedReports.reports[0]?.byCE?.map((cli) => {
+    reports.reports[0]?.byCE?.map((cli) => {
       cli.users.map((emp) => {
         arr.push({
           Client: `${
@@ -63,7 +64,7 @@ export default function ByCl() {
       });
     });
     setRowData(arr);
-  }, [savedReports]);
+  }, [reports]);
   const onGridReady = useCallback((savedReports) => {}, []);
 
   return (

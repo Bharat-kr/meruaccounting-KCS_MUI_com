@@ -20,6 +20,9 @@ import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
+import ByEp from "./ByEp";
+import ByPr from "./ByPr";
+import ByCl from "./ByCL";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -213,9 +216,22 @@ export default function Main() {
           </Button>
           {!reports.loader ? <SaveReport></SaveReport> : null}
         </Box>
-        {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
+        {!reports.loader ? (
+          <>
+            <Graphs style={{ margin: 10 }}></Graphs>
+            {group.includes("Group by employee") && (
+              <ByEp sx={{ height: "auto" }} reports={reports} />
+            )}
+            {group.includes("Group by project") && (
+              <ByPr sx={{ height: "auto" }} reports={reports} />
+            )}
+            {group.includes("Group by client") && (
+              <ByCl sx={{ height: "auto" }} reports={reports} />
+            )}
+          </>
+        ) : null}
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      {/* <TabPanel value={value} index={1}>
         hello
       </TabPanel>
       <TabPanel value={value} index={2}>
@@ -225,7 +241,10 @@ export default function Main() {
       <TabPanel value={value} index={3}>
         {" "}
         hello
-      </TabPanel>
+      </TabPanel> */}
+
+      {/* <GridExample /> */}
+      {/* </TabPanel> */}
     </Box>
   );
 }
