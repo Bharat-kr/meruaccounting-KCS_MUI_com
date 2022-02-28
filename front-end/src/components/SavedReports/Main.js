@@ -20,6 +20,7 @@ import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
+import ByPr from "./ByPr";
 import GridExample from "../../components/SavedReports/ByEp";
 
 function TabPanel(props) {
@@ -106,7 +107,8 @@ export default function Main() {
       {true ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
           <Graphs style={{ margin: 10 }}></Graphs>
-          <ByEp sx={{ height: "auto" }} />
+          {/* <ByEp sx={{ height: "auto" }} /> */}
+          <ByPr sx={{ height: "auto" }} />
           {/* <GridExample /> */}
           {/* </TabPanel> */}
         </Box>
