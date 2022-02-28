@@ -4,15 +4,15 @@ import TextField from "@mui/material/TextField";
 
 export default function SelectGroup({ setGroup }) {
   const selectGroupOptions = [
-    { title: "Group by employee", value: "E" },
-    { title: "Group by project", value: "P" },
-    { title: "Detailed", value: "D" },
-    { title: "Group by Apps & URLs", value: "A" },
+    { label: "Group by employee", value: "E" },
+    { label: "Group by project", value: "P" },
+    { label: "Detailed", value: "D" },
+    { label: "Group by Apps & URLs", value: "A" },
   ];
 
   const [value, setvalue] = React.useState([
-    selectGroupOptions[1].title,
-    selectGroupOptions[0].title,
+    selectGroupOptions[1],
+    selectGroupOptions[0],
   ]);
   const typoStyle = {
     m: 1,
@@ -32,10 +32,7 @@ export default function SelectGroup({ setGroup }) {
             ...typoStyle,
           }}
           onClick={() => {
-            setvalue([
-              selectGroupOptions[1].title,
-              selectGroupOptions[0].title,
-            ]);
+            setvalue([selectGroupOptions[1], selectGroupOptions[0]]);
           }}
         >
           Summary by project
@@ -46,10 +43,7 @@ export default function SelectGroup({ setGroup }) {
           }}
           onClick={() => {
             console.log("two");
-            setvalue([
-              selectGroupOptions[0].title,
-              selectGroupOptions[1].title,
-            ]);
+            setvalue([selectGroupOptions[0], selectGroupOptions[1]]);
           }}
         >
           Summary by employee
@@ -61,7 +55,7 @@ export default function SelectGroup({ setGroup }) {
           }}
           onClick={() => {
             console.log("two");
-            setvalue([selectGroupOptions[2].title]);
+            setvalue([selectGroupOptions[2]]);
           }}
         >
           Detailed
@@ -72,7 +66,7 @@ export default function SelectGroup({ setGroup }) {
           }}
           onClick={() => {
             console.log("two");
-            setvalue([selectGroupOptions[3].title]);
+            setvalue([selectGroupOptions[3]]);
           }}
         >
           Apps & URLs
@@ -82,7 +76,7 @@ export default function SelectGroup({ setGroup }) {
         disabled
         multiple
         id="tags-readOnly"
-        options={selectGroupOptions.map((option) => option.title)}
+        options={selectGroupOptions.map((option) => option)}
         value={value}
         readOnly
         renderInput={(params) => (

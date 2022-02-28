@@ -548,7 +548,6 @@ const generateReport = asyncHandler(async (req, res) => {
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
-      groupBy,
       url,
       reports,
       name,
@@ -572,7 +571,6 @@ const saveReports = asyncHandler(async (req, res) => {
 
     // make a new document for reports schema
     const saved = await Reports.create({
-      groupBy,
       options,
       user: userId,
       url,

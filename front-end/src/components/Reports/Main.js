@@ -74,8 +74,8 @@ export default function Main() {
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
   const [group, setgroup] = React.useState([
-    "Group by employee",
-    "Group by project",
+    { label: "Group by project", value: "P" },
+    { label: "Group by employee", value: "E" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
@@ -89,7 +89,10 @@ export default function Main() {
     const userIds = employees.length ? employees : null;
     const projectIds = projects.length ? projects : null;
     const clientIds = clients.length ? clients : null;
-    const groupBy = group;
+    let groupBy = "";
+    group.forEach((g) => {
+      groupBy = groupBy.concat(g.value);
+    });
     const options = {
       clientIds,
       projectIds,
