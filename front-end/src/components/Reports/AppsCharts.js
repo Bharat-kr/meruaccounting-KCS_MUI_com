@@ -10,6 +10,7 @@ export default function AppsCharts() {
   const [totalHours, settotalHours] = useState(null);
   const [totalActCount, settotalCount] = useState(null);
   const [totalPData, settotalPData] = useState(null);
+  const [totalPRate, settotalPRate] = useState(null);
 
   useEffect(() => {
     let t = 0;
@@ -28,8 +29,8 @@ export default function AppsCharts() {
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
     settotalCount(reports?.reports[0]?.total[0]?.actCount);
+    settotalPRate(reports?.reports[0]?.total[0]?.avgPayRate);
   }, [reports]);
-
   const config = {
     width: 1000,
     data: chartData,
@@ -75,6 +76,9 @@ export default function AppsCharts() {
           </Typography>
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
             {Math.trunc(totalPData)}%
+          </Typography>
+          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
+            {Math.trunc((totalPRate * totalHours) / 3600)}
           </Typography>
         </Box>
         <div>
