@@ -33,9 +33,9 @@ import { getTeam, removeMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
+import { UserContext } from "../../contexts/UserContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 import { removeProjectMember } from "src/api/projects api/projects";
-import { UserContext } from "../../contexts/UserContext";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
@@ -120,7 +120,7 @@ export default function Main(props) {
   const updateRole = async (e) => {
     try {
       if (loginC.userData.role === "manager" || "projectLeader")
-        throw new Error("Changing Role will delete all data for the roel");
+        throw new Error("Changing Role will delete all data for the role");
 
       const data = {
         role: e.target.value,
@@ -142,6 +142,7 @@ export default function Main(props) {
   };
 
   const [prevRole, setPrevRole] = useState(null);
+  const [newRole, setNewRole] = useState(null);
   useEffect(() => {
     setPrevRole(currMember?.role);
   }, [currMember]);
@@ -154,10 +155,13 @@ export default function Main(props) {
   const handleModalClose = () => {
     setModal(false);
   };
-  const handleRoleChange = (e, value) => {
+  const handleRoleChange = async (e, value) => {
     console.log(e.target.value, value, prevRole);
+    setNewRole(value);
     if (prevRole === "manager" || prevRole === "projectLeader") {
       handleModalOpen();
+    } else {
+      await updateRole(e);
     }
   };
   //Changing status of an employee
@@ -550,8 +554,11 @@ export default function Main(props) {
       <ChangeModal
         modal={modal}
         handleModalClose={handleModalClose}
+        currMember={currMember}
         currTeam={currTeam}
         prevRole={prevRole}
+        newRole={newRole}
+        // updateRole={updateRole}
       />
     </>
   );

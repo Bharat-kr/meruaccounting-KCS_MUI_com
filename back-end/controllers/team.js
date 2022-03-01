@@ -104,6 +104,38 @@ const updateMember = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update manager of team
+// @route   PATCH /team/updateTeam
+// @access  Private
+// @params  { teamId:" " ,newManager: " " }
+
+const updateTeam = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).updateOwn("team");
+  if (permission.granted) {
+    try {
+      const { teamId , newManager } = req.body;
+
+      const team = await Team.findById(teamId);
+      if (!team) {
+        res.status(404);
+        throw new Error(`No team found ${teamId}`);
+      }
+      team.manager = newManager;
+      await team.save();
+
+      res.status(200).json({
+        status: "ok",
+        data: team,
+      });
+    } catch (error) {
+      res.status(500);
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
 // @desc    Remove member
 // @route   DELETE /team/updateMember
 // @access  Private
@@ -392,4 +424,5 @@ export {
   getTeam,
   deleteTeam,
   getTeamMemberData,
+  updateTeam
 };

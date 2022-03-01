@@ -74,6 +74,26 @@ export const updateMember = async (incomingData, dispatch) => {
   }
 };
 
+export const updateTeam = async (incomingData) => {
+  try {
+    const { data } = await axios.patch("/team/updateTeam", incomingData);
+
+    // dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
+
+    console.log("Updated Member");
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+    // dispatch({
+    //   type: UPDATE_MEMBER_FAILED,
+    //   payload:
+    //     error.response && error.response.data.message
+    //       ? error.response.data.message
+    //       : error.message,
+    // });
+  }
+};
+
 export const removeMember = async (incomingData, dispatch) => {
   try {
     const { data } = await axios.delete("/team/removeMember", {
