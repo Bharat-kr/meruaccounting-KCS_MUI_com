@@ -9,6 +9,7 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import ScreenShotRender from "./ScreenShotRender";
 
 export default function ByCl() {
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
@@ -21,15 +22,19 @@ export default function ByCl() {
       minWidth: 300,
       rowGroup: true,
 
-      cellRenderer: function (params) {
-        return <span style={{ marginLeft: 10 }}>{params.value}</span>;
-      },
+      // cellRenderer: function (params) {
+      //   return <span style={{ marginLeft: 10 }}>{params.value}</span>;
+      // },
     },
     {
       field: "Employee",
       minWidth: 100,
     },
-    { field: "Duration", minWidth: 100 },
+    {
+      field: "Duration",
+      minWidth: 100,
+      cellRenderer: "hello",
+    },
     { field: "Activity", minWidth: 100 },
     { field: "Money", minWidth: 100 },
   ]);
