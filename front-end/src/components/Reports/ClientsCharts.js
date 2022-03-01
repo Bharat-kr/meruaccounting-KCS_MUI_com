@@ -9,6 +9,7 @@ export default function ClientsCharts() {
   const [chartData, setchartData] = useState([]);
   const [totalHours, settotalHours] = useState(null);
   const [totalPData, settotalPData] = useState(null);
+  const [totalPRate, settotalPRate] = useState(null);
 
   useEffect(() => {
     let arr = reports.reports[0].byClients.map((client) => {
@@ -21,6 +22,7 @@ export default function ClientsCharts() {
     setchartData(arr);
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
+    settotalPRate(reports?.reports[0]?.total[0]?.avgPayRate);
   }, [reports]);
 
   const config = {
@@ -68,6 +70,9 @@ export default function ClientsCharts() {
           </Typography>
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
             {Math.trunc(totalPData)}%
+          </Typography>
+          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
+            {Math.trunc((totalPRate * totalHours) / 3600)}
           </Typography>
         </Box>
         <div>

@@ -517,17 +517,30 @@ const generateReport = asyncHandler(async (req, res) => {
           ],
           total: [
             {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
               $group: {
                 _id: null,
+                actCount: { $sum: 1 },
                 internal: {
                   $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
                 },
                 external: {
                   $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
                 },
-                actCount: { $sum: 1 },
-
                 totalHours: { $sum: "$consumeTime" },
+                avgPayRate: { $avg: "$employee.payRate" },
                 avgPerformanceData: { $avg: "$performanceData" },
               },
             },
