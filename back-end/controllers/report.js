@@ -450,6 +450,71 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
           ],
+          byD: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
+              $lookup: {
+                from: "clients",
+                localField: "client",
+                foreignField: "_id",
+                as: "client",
+              },
+            },
+            {
+              $unwind: {
+                path: "$client",
+              },
+            },
+            {
+              $lookup: {
+                from: "projects",
+                localField: "project",
+                foreignField: "_id",
+                as: "project",
+              },
+            },
+            {
+              $unwind: {
+                path: "$project",
+              },
+            },
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                startTime: 1,
+                endTime: 1,
+                consumeTime: 1,
+                performanceData: 1,
+                activityOn: 1,
+                screenshots: 1,
+                "project.name": 1,
+                "client.name": 1,
+                "employee.firstName": 1,
+                "employee.lastName": 1,
+                "employee.payRate": 1,
+              },
+            },
+          ],
           total: [
             {
               $group: {
