@@ -23,6 +23,8 @@ import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
 import ByPr from "./ByPr";
 import ByCl from "./ByCL";
+import ByDetailed from "./ByDetailed";
+import ByAppsUrl from "./ByApp&Url";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -77,8 +79,8 @@ export default function Main() {
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
   const [group, setgroup] = React.useState([
-    { label: "Group by project", value: "P" },
     { label: "Group by employee", value: "E" },
+    // { label: "Group by project", value: "P" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
@@ -150,7 +152,6 @@ export default function Main() {
   }, [clientDetails, clients, employees]);
 
   //   make select client options
-  console.log(clientDetails?.client?.data);
   React.useEffect(() => {
     if (clientDetails.loader === false) {
       clientDetails.client.data.map((client) => {
@@ -225,15 +226,20 @@ export default function Main() {
         </Box>
         {!reports.loader ? (
           <>
+            {console.log(group.filter((grp) => grp.value === "A").length === 0)}
             <Graphs style={{ margin: 10 }}></Graphs>
-            {group.includes("Group by employee") && (
+            {group.filter((grp) => grp.value === "E").length !== 0 ? (
               <ByEp sx={{ height: "auto" }} reports={reports} />
-            )}
-            {group.includes("Group by project") && (
+            ) : group.filter((grp) => grp.value === "P").length !== 0 ? (
               <ByPr sx={{ height: "auto" }} reports={reports} />
-            )}
-            {group.includes("Group by client") && (
+            ) : group.filter((grp) => grp.value === "C").length !== 0 ? (
               <ByCl sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "D").length !== 0 ? (
+              <ByDetailed sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "A").length !== 0 ? (
+              <ByAppsUrl sx={{ height: "auto" }} reports={reports} />
+            ) : (
+              ""
             )}
           </>
         ) : null}

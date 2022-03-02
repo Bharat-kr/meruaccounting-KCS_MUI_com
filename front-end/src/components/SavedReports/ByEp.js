@@ -52,11 +52,8 @@ export default function ByEp() {
           Employee: `${emp._id.firstName} ${emp._id.lastName}`,
           Project: `${pro.project}`,
           Duration: (pro.totalHours / 3600).toFixed(2),
-          Money:
-            (emp?.toalHours / 3600 / emp?.payRate).toFixed(2) === Number
-              ? (emp?.toalHours / 3600 / emp?.payRate).toFixed(2)
-              : "",
-          Activity: pro.performanceData,
+          Money: ((emp?.totalHours / 3600) * emp?.payRate).toFixed(2),
+          Activity: pro.avgPerformanceData,
         });
       });
     });

@@ -11,6 +11,7 @@ import { reportsContext } from "../../contexts/ReportsContext";
 
 export default function ByEp(props) {
   const { reports } = props;
+
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
   const { savedReports } = React.useContext(reportsContext);
@@ -44,20 +45,19 @@ export default function ByEp(props) {
   }, []);
   React.useEffect(() => {
     // setRowData(savedReports.reports[0]?.byEP);
-    console.log(reports);
+    console.log(savedReports.reports[0]?.byEP);
 
     let arr = [];
     reports.reports[0]?.byEP?.map((emp) => {
       emp.projects.map((pro) => {
+        console.log(emp?.totalHours);
         arr.push({
           Employee: `${emp._id.firstName} ${emp._id.lastName}`,
           Project: `${pro.project}`,
-          Duration: (pro.totalHours / 3600).toFixed(2),
-          Money:
-            (emp?.toalHours / 3600 / emp?.payRate).toFixed(2) === Number
-              ? (emp?.toalHours / 3600 / emp?.payRate).toFixed(2)
-              : "",
-          Activity: pro.performanceData,
+          Duration: `${(pro.totalHours / 3600).toFixed(2)} hr`,
+
+          Money: ((emp?.totalHours / 3600) * emp?.payRate).toFixed(2),
+          Activity: (pro.avgPerformanceData / 1).toFixed(2),
         });
       });
     });

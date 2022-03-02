@@ -22,6 +22,8 @@ import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
 import ByPr from "./ByPr";
 import ByCl from "./ByCL";
+import ByD from "./ByDetailed";
+import ByAppUrl from "./ByApp&Url";
 import GridExample from "../../components/SavedReports/ByEp";
 
 function TabPanel(props) {
@@ -117,7 +119,9 @@ export default function Main() {
             <ByPr sx={{ height: "auto" }} />
           )}
           {group.includes("Group by client") && ( */}
-          <ByCl sx={{ height: "auto" }} />
+          {/* <ByCl sx={{ height: "auto" }} /> */}
+          {/* <ByD sx={{ height: "auto" }} /> */}
+          <ByAppUrl sx={{ height: "auto" }} />
           {/* )} */}
 
           {/* <GridExample /> */}

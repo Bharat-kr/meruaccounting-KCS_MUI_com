@@ -59,11 +59,8 @@ export default function ByCl() {
 
           Employee: `${emp.firstName} ${emp.lastName}`,
           Duration: (emp.totalHours / 3600).toFixed(2),
-          Money:
-            (emp?.toalHours / 3600 / emp?.payRate).toFixed(2) === Number
-              ? (emp?.toalHours / 3600 / emp?.payRate).toFixed(2)
-              : "",
-          Activity: emp.performanceData,
+          Activity: emp.avgPerformanceData.toFixed(2),
+          Money: ((emp?.totalHours / 3600) * emp.payRate).toFixed(2),
         });
       });
     });

@@ -12,17 +12,29 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ScreenShotRender from "./ScreenShotRender";
 import timeC from "../../_helpers/timeConverter";
 
-export default function ByAppsUrl() {
+export default function ByDetailed() {
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
   const { savedReports } = React.useContext(reportsContext);
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([
     {
+      Field: "Date",
+    },
+    {
       field: "Employee",
     },
-    { field: "Application" },
+    {
+      field: "Client",
+    },
+    { field: "Project" },
+    { field: "From" },
+    { field: "To" },
+    {
+      field: "Duration",
+    },
     { field: "Activity" },
+    { field: "Money" },
   ]);
   const defaultColDef = useMemo(() => {
     return {
@@ -36,14 +48,19 @@ export default function ByAppsUrl() {
     console.log(savedReports.reports[0]?.byPR);
 
     let arr = [];
-    savedReports.reports[0]?.byA?.map((emp) => {
-      emp.screenshots.map((ss) => {
-        const activity = ss.avgPerformanceData;
-        arr.push({
-          Employee: `${emp._id.firstName} ${emp._id.lastName}`,
-          Application: ss.title.split("-").slice(0),
-          Activity: (activity / 1).toFixed(2), // eslint-disable-next-line no-use-before-define
-        });
+    savedReports.reports[0]?.byD?.map((d) => {
+      const activity = d.performanceData;
+      arr.push({
+        Date: d?.createdAt,
+        Client: `${d.client?.name ? d?.client.name : "Deleted client"}`,
+        Project: d.project.name,
+        From: timeC(d.startTime),
+        To: timeC(d.endTime),
+        Employee: `${d.employee.firstName} ${d.employee.lastName}`,
+        Duration: (d.consumeTime / 3600).toFixed(2),
+        Activity: (activity / 1).toFixed(2), // eslint-disable-next-line no-use-before-define
+
+        Money: ((d.consumeTime / 3600) * d.employee?.payRate).toFixed(2),
       });
     });
     setRowData(arr);
