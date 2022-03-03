@@ -43,7 +43,6 @@ export default function ByEp() {
   }, []);
   React.useEffect(() => {
     // setRowData(savedReports.reports[0]?.byEP);
-    console.log(savedReports.reports[0]?.byEP);
 
     let arr = [];
     savedReports.reports[0]?.byEP?.map((emp) => {

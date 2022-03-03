@@ -107,9 +107,7 @@ export default function Main() {
       groupBy,
     };
     setSaveReportOptions(options);
-    console.log(options);
     getReports(dispatchGetReports, options);
-    console.log(reports);
   };
 
   //   make select employee options
@@ -226,7 +224,6 @@ export default function Main() {
         </Box>
         {!reports.loader ? (
           <>
-            {console.log(group.filter((grp) => grp.value === "A").length === 0)}
             <Graphs style={{ margin: 10 }}></Graphs>
             {group.filter((grp) => grp.value === "E").length !== 0 ? (
               <ByEp sx={{ height: "auto" }} reports={reports} />

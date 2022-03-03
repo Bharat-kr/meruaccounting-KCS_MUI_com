@@ -48,8 +48,6 @@ export default function ByDetailed(props) {
     };
   }, []);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     reports.reports[0]?.byD?.map((d) => {
       const activity = d.performanceData;

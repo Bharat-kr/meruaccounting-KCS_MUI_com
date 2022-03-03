@@ -5,7 +5,6 @@ import { render } from "react-dom";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
-
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
 
@@ -45,12 +44,10 @@ export default function ByEp(props) {
   }, []);
   React.useEffect(() => {
     // setRowData(savedReports.reports[0]?.byEP);
-    console.log(savedReports.reports[0]?.byEP);
 
     let arr = [];
     reports.reports[0]?.byEP?.map((emp) => {
       emp.projects.map((pro) => {
-        console.log(emp?.totalHours);
         arr.push({
           Employee: `${emp._id.firstName} ${emp._id.lastName}`,
           Project: `${pro.project}`,

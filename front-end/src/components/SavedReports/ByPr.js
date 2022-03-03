@@ -42,8 +42,6 @@ export default function ByPr() {
     };
   }, []);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     savedReports.reports[0]?.byPE?.map((pro) => {
       pro.users.map((emp) => {

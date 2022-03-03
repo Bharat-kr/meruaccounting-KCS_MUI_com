@@ -35,8 +35,6 @@ export default function ByAppsUrl(props) {
     };
   }, []);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     reports.reports[0]?.byA?.map((emp) => {
       emp.screenshots.map((ss) => {

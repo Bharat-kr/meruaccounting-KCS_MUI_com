@@ -20,6 +20,10 @@ export default function ByCl(props) {
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([
     {
+      field: "Employee",
+      minWidth: 100,
+    },
+    {
       field: "Client",
       minWidth: 300,
       rowGroup: true,
@@ -27,10 +31,6 @@ export default function ByCl(props) {
       // cellRenderer: function (params) {
       //   return <span style={{ marginLeft: 10 }}>{params.value}</span>;
       // },
-    },
-    {
-      field: "Employee",
-      minWidth: 100,
     },
     {
       field: "Duration",
@@ -49,8 +49,6 @@ export default function ByCl(props) {
     };
   }, []);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     reports.reports[0]?.byCE?.map((cli) => {
       cli.users.map((emp) => {
