@@ -9,6 +9,7 @@ export default function ProjectsCharts() {
   const [chartData, setchartData] = useState([]);
   const [totalHours, settotalHours] = useState(null);
   const [totalPData, settotalPData] = useState(null);
+  const [totalPRate, settotalPRate] = useState(null);
 
   useEffect(() => {
     let arr = reports.reports[0].byProjects.map((project) => {
@@ -21,8 +22,8 @@ export default function ProjectsCharts() {
     setchartData(arr);
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
+    settotalPRate(reports?.reports[0]?.total[0]?.avgPayRate);
   }, [reports]);
-
   const config = {
     autoFit: true,
     data: chartData,
@@ -68,6 +69,9 @@ export default function ProjectsCharts() {
           </Typography>
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
             {Math.trunc(totalPData)}%
+          </Typography>
+          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
+            {Math.trunc((totalPRate * totalHours) / 3600)}
           </Typography>
         </Box>
         <div>

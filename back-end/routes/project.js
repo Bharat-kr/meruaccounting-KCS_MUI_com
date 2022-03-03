@@ -9,6 +9,7 @@ import {
   addMember,
   removeMember,
   assignProjectLeader,
+  removeProjectLeader
 } from "../controllers/project.js";
 
 const router = express.Router();
@@ -23,7 +24,7 @@ router.route("/addMember/:id").post(authPass, addMember);
 
 router.route("/removeMember/:id").patch(authPass, removeMember);
 
-router.route("/projectLeader/:id").post(authPass, assignProjectLeader);
+router.route("/projectLeader/:id").post(authPass, assignProjectLeader).patch(authPass , removeProjectLeader);
 
 router.route("/:id").get(authPass, getProjectById).patch(authPass, editProject);
 
