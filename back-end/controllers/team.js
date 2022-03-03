@@ -113,7 +113,7 @@ const updateTeam = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).updateOwn("team");
   if (permission.granted) {
     try {
-      const { teamId , newManager } = req.body;
+      const { teamId, newManager } = req.body;
 
       const team = await Team.findById(teamId);
       if (!team) {
@@ -261,7 +261,7 @@ const getTeam = asyncHandler(async (req, res) => {
             populate: {
               path: "projects",
               model: "Project",
-              select: ["name"],
+              select: ["name","projectLeader"],
             },
           })
           .populate({
@@ -291,7 +291,7 @@ const getTeam = asyncHandler(async (req, res) => {
               populate: {
                 path: "projects",
                 model: "Project",
-                select: ["name"],
+                select: ["name", "projectLeader"],
               },
             },
           })
@@ -424,5 +424,5 @@ export {
   getTeam,
   deleteTeam,
   getTeamMemberData,
-  updateTeam
+  updateTeam,
 };

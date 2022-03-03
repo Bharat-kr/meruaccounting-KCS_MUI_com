@@ -19,6 +19,8 @@ import { employeeContext } from "src/contexts/EmployeeContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { loginContext } from "src/contexts/LoginContext";
 import { useSnackbar } from "notistack";
+import { projectContext } from "src/contexts/ProjectsContext";
+import { addProjectLeader } from "src/api/projects api/projects";
 
 const style = {
   position: "absolute",
@@ -47,14 +49,20 @@ const ChangeModal = ({
 }) => {
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchgetTeam, updatedMember } = useContext(teamContext);
+  const { dispatchaddProjectLeader } = useContext(projectContext);
   const { loginC } = useContext(loginContext);
   const [newManager, setNewManager] = React.useState("");
+  const [newProject, setNewProject] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();
 
   const handleChange = (event) => {
     setNewManager(event.target.value);
   };
+  const handleProjectChange = (event) => {
+    setNewProject(event.target.value);
+  };
   console.log(currTeam);
+  console.log(currMember);
 
   const changeManager = async () => {
     try {
@@ -88,18 +96,9 @@ const ChangeModal = ({
 
   const changeProjectLeader = async () => {
     try {
-      const data = {
-        role: "projectLeader",
-      };
-      console.log(data, newManager);
       //new projectLeader
-      await employeeUpdate(newManager, data, dispatchEmployeeUpdate);
-      //changing role of the curr person
-      await employeeUpdate(
-        currMember._id,
-        { role: newRole },
-        dispatchEmployeeUpdate
-      );
+      const data = [newProject, currMember.email];
+      await addProjectLeader(data, dispatchaddProjectLeader);
 
       //updating project
       await getTeam(dispatchgetTeam);
@@ -114,6 +113,10 @@ const ChangeModal = ({
     );
     handleModalClose();
   };
+  const changeManagerToProjectLeader = async () => {
+    changeManager();
+    changeProjectLeader();
+  };
   return (
     <Modal
       open={modal}
@@ -125,7 +128,7 @@ const ChangeModal = ({
       }}
     >
       <Box sx={style}>
-        {prevRole === "manager" ? (
+        {prevRole === "manager" && newRole !== "projectLeader" ? (
           <>
             <Box
               sx={{
@@ -137,7 +140,7 @@ const ChangeModal = ({
               }}
             >
               <Typography variant="h4" color="primary">
-                Who will be the new Manager ?
+                Assign a new Manager
               </Typography>
               <IconButton>
                 <CloseIcon onClick={handleModalClose} />
@@ -209,7 +212,7 @@ const ChangeModal = ({
         ) : (
           ""
         )}
-        {prevRole === "projectLeader" ? (
+        {prevRole !== "manager" && newRole === "projectLeader" ? (
           <>
             <Box
               sx={{
@@ -221,7 +224,7 @@ const ChangeModal = ({
               }}
             >
               <Typography variant="h4" color="primary">
-                Who will be the new Project Leader ?
+                Assign a new Project Leader
               </Typography>
               <IconButton>
                 <CloseIcon onClick={handleModalClose} />
@@ -248,15 +251,20 @@ const ChangeModal = ({
                   <Select
                     labelId="demo-simple-select-filled-label"
                     id="demo-simple-select-filled"
-                    value={newManager}
-                    onChange={handleChange}
+                    value={newProject}
+                    onChange={handleProjectChange}
                   >
-                    {currTeam?.members.map((member) => {
-                      return (
-                        <MenuItem value={member._id}>
-                          {getFullName(member.firstName, member.lastName)}
-                        </MenuItem>
-                      );
+                    {currMember?.projects.map((project) => {
+                      if (
+                        project.projectLeader === null ||
+                        project.projectLeader === undefined
+                      ) {
+                        return (
+                          <MenuItem value={project._id}>
+                            {project.name}
+                          </MenuItem>
+                        );
+                      }
                     })}
                   </Select>
                 </FormControl>
@@ -277,9 +285,126 @@ const ChangeModal = ({
                 sx={{
                   mr: 2,
                 }}
-                  onClick={changeProjectLeader}
+                onClick={changeProjectLeader}
               >
-                Change Project Leader
+                Choose a project
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleModalClose}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </>
+        ) : (
+          ""
+        )}
+
+        {prevRole === "manager" && newRole === "projectLeader" ? (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                bgcolor: "primary.lighter",
+                p: 2,
+              }}
+            >
+              <Typography variant="h4" color="primary">
+                Choose
+              </Typography>
+              <IconButton>
+                <CloseIcon onClick={handleModalClose} />
+              </IconButton>
+            </Box>
+            <Divider />
+            <Box
+              sx={{
+                px: 2,
+                py: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mt: 1,
+                }}
+              >
+                <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
+                  <InputLabel id="demo-simple-select-filled-label">
+                    New Manager for Team
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-filled-label"
+                    id="demo-simple-select-filled"
+                    value={newManager}
+                    onChange={handleChange}
+                  >
+                    {currTeam?.members.map((member) => {
+                      return (
+                        <MenuItem value={member._id}>
+                          {getFullName(member.firstName, member.lastName)}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mt: 1,
+                }}
+              >
+                <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
+                  <InputLabel id="demo-simple-select-filled-label">
+                    Project
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-filled-label"
+                    id="demo-simple-select-filled"
+                    value={newProject}
+                    onChange={handleProjectChange}
+                  >
+                    {currMember?.projects.map((project) => {
+                      if (
+                        project.projectLeader === null ||
+                        project.projectLeader === undefined
+                      ) {
+                        return (
+                          <MenuItem value={project._id}>
+                            {project.name}
+                          </MenuItem>
+                        );
+                      }
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                bgcolor: "grey.200",
+                p: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{
+                  mr: 2,
+                }}
+                onClick={changeManagerToProjectLeader}
+              >
+                Continue
               </Button>
               <Button
                 variant="outlined"

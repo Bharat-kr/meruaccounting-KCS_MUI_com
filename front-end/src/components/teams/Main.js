@@ -35,7 +35,11 @@ import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { UserContext } from "../../contexts/UserContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
-import { removeProjectMember } from "src/api/projects api/projects";
+import {
+  addProjectLeader,
+  removeProjectLeader,
+  removeProjectMember,
+} from "src/api/projects api/projects";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
@@ -68,8 +72,11 @@ export default function Main(props) {
   const { loginC } = useContext(loginContext);
 
   const { changeTab } = useContext(UserContext);
-  const { dispatchremoveProjectMember, removeProjectMember } =
-    useContext(projectContext);
+  const {
+    dispatchremoveProjectMember,
+    removeProjectMember,
+    dispatchaddProjectLeader,
+  } = useContext(projectContext);
   const [Checked, setChecked] = useState();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -120,7 +127,7 @@ export default function Main(props) {
   const updateRole = async (e) => {
     try {
       if (loginC.userData.role === "manager" || "projectLeader")
-        throw new Error("Changing Role will delete all data for the role");
+        alert("Changing Role will delete all data for the role");
 
       const data = {
         role: e.target.value,
@@ -158,8 +165,17 @@ export default function Main(props) {
   const handleRoleChange = async (e, value) => {
     console.log(e.target.value, value, prevRole);
     setNewRole(value);
-    if (prevRole === "manager" || prevRole === "projectLeader") {
+    if (prevRole === "manager" || newRole === "projectLeader") {
       handleModalOpen();
+    } else if (prevRole === "projectLeader") {
+      let project = currMember.projects.filter((project) => {
+        return project.projectLeader === currMember._id;
+      });
+      if (project.length > 0) {
+        //make the project leader of that project to null
+        await removeProjectLeader(project[0]._id);
+      }
+      await updateRole(e);
     } else {
       await updateRole(e);
     }
