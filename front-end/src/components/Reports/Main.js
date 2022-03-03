@@ -74,9 +74,10 @@ export default function Main() {
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
   const [group, setgroup] = React.useState([
-    "Group by employee",
-    "Group by project",
+    { label: "Group by project", value: "P" },
+    { label: "Group by employee", value: "E" },
   ]);
+  const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -88,7 +89,10 @@ export default function Main() {
     const userIds = employees.length ? employees : null;
     const projectIds = projects.length ? projects : null;
     const clientIds = clients.length ? clients : null;
-    const groupBy = group;
+    let groupBy = "";
+    group.forEach((g) => {
+      groupBy = groupBy.concat(g.value);
+    });
     const options = {
       clientIds,
       projectIds,
@@ -97,6 +101,7 @@ export default function Main() {
       dateTwo,
       groupBy,
     };
+    setSaveReportOptions(options);
     console.log(options);
     getReports(dispatchGetReports, options);
     console.log(reports);
@@ -211,7 +216,9 @@ export default function Main() {
           >
             generate Reports
           </Button>
-          {!reports.loader ? <SaveReport></SaveReport> : null}
+          {!reports.loader ? (
+            <SaveReport options={saveReportsOptions}></SaveReport>
+          ) : null}
         </Box>
         {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
       </TabPanel>

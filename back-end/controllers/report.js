@@ -307,15 +307,11 @@ const generateReport = asyncHandler(async (req, res) => {
                   project: "$project",
                   client: "$client",
                 },
-                actCount: {
-                  $sum: 1,
-                },
-                totalHours: {
-                  $sum: "$consumeTime",
-                },
-                avgPerformanceData: {
-                  $avg: "$performanceData",
-                },
+                payRate: { $first: "$employee.payRate" },
+                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPerformanceData: { $avg: "$performanceData" },
+                screenshots: { $first: "$screenshots" },
               },
             },
             {
@@ -335,6 +331,14 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
             {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
               $unwind: {
                 path: "$client",
               },
@@ -344,6 +348,7 @@ const generateReport = asyncHandler(async (req, res) => {
                 path: "$project",
               },
             },
+
             {
               $group: {
                 _id: {
@@ -351,15 +356,81 @@ const generateReport = asyncHandler(async (req, res) => {
                   firstName: "$_id.firstName",
                   lastName: "$_id.lastName",
                 },
+                payRate: { $first: "$payRate" },
                 projects: {
                   $push: {
                     client: "$client.name",
                     project: "$project.name",
                     count: "$actCount",
                     totalHours: "$totalHours",
-                    avgPerformanceData: "$performanceData",
+                    avgPerformanceData: "$avgPerformanceData",
+                    screenshots: "$screenshots",
                   },
                 },
+              },
+            },
+          ],
+          byCE: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  userId: "$employee._id",
+                  firstName: "$employee.firstName",
+                  lastName: "$employee.lastName",
+                  client: "$client",
+                },
+                screenshots: { $first: "$screenshots" },
+                payRate: { $first: "$employee.payRate" },
+                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPerformanceData: { $avg: "$performanceData" },
+              },
+            },
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
+              $group: {
+                _id: "$_id.client",
+
+                users: {
+                  $push: {
+                    screenshots: "$screenshots",
+                    payRate: "$payRate",
+                    user: "$_id.userId",
+                    firstName: "$_id.firstName",
+                    lastName: "$_id.lastName",
+                    count: "$actCount",
+                    totalHours: "$totalHours",
+                    avgPerformanceData: "$avgPerformanceData",
+                  },
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: "clients",
+                localField: "_id",
+                foreignField: "_id",
+                as: "client",
               },
             },
           ],
@@ -379,20 +450,159 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
           ],
+          byD: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
+              $lookup: {
+                from: "clients",
+                localField: "client",
+                foreignField: "_id",
+                as: "client",
+              },
+            },
+            {
+              $unwind: {
+                path: "$client",
+              },
+            },
+            {
+              $lookup: {
+                from: "projects",
+                localField: "project",
+                foreignField: "_id",
+                as: "project",
+              },
+            },
+            {
+              $unwind: {
+                path: "$project",
+              },
+            },
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                startTime: 1,
+                endTime: 1,
+                consumeTime: 1,
+                performanceData: 1,
+                activityOn: 1,
+                screenshots: 1,
+                "project.name": 1,
+                "client.name": 1,
+                "employee.firstName": 1,
+                "employee.lastName": 1,
+                "employee.payRate": 1,
+              },
+            },
+          ],
           total: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
             {
               $group: {
                 _id: null,
+                actCount: { $sum: 1 },
                 internal: {
                   $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
                 },
                 external: {
                   $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
                 },
-                actCount: { $sum: 1 },
+                totalHours: { $sum: "$consumeTime" },
+                avgPayRate: { $avg: "$employee.payRate" },
+                avgPerformanceData: { $avg: "$performanceData" },
+              },
+            },
+          ],
+          byA: [
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
+              },
+            },
 
+            {
+              $unwind: {
+                path: "$screenshots",
+              },
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "employee",
+                foreignField: "_id",
+                as: "employee",
+              },
+            },
+            {
+              $unwind: {
+                path: "$employee",
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  ss: "$screenshots.title",
+                  employee: "$employee._id",
+                  firstName: "$employee.firstName",
+                  lastName: "$employee.lastName",
+                },
+                actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
                 avgPerformanceData: { $avg: "$performanceData" },
+                actCount: { $sum: 1 },
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  employee: "$_id.employee",
+                  firstName: "$_id.firstName",
+                  lastName: "$_id.lastName",
+                },
+                actCount: { $sum: 1 },
+                screenshots: {
+                  $push: {
+                    title: "$_id.ss",
+                    actCount: { $sum: 1 },
+                    totalHours: { $sum: "$consumeTime" },
+                    avgPerformanceData: { $avg: "$avgPerformanceData" },
+                  },
+                },
               },
             },
           ],
@@ -487,6 +697,8 @@ const saveReports = asyncHandler(async (req, res) => {
       options,
     } = req.body;
     let userId = req.user._id;
+    console.log(options);
+    let { firstName, lastName } = await User.findById(userId);
     console.log(reports);
     let fileName = userId + "-" + new Date().getTime();
 
@@ -505,7 +717,7 @@ const saveReports = asyncHandler(async (req, res) => {
       includeAL,
       includePR,
       includeApps,
-      name,
+      name: `${firstName} ${lastName}`,
       fileName,
     });
 
@@ -525,9 +737,19 @@ const fetchReports = asyncHandler(async (req, res) => {
   try {
     let { url } = req.body;
 
-    const report = await Reports.find({ url: url });
-
-    console.log(report[0].fileName);
+    const report = await Reports.find({ url: url }).populate({
+      path: "user",
+      model: "User",
+      select: {
+        password: 0,
+        projects: 0,
+        days: 0,
+        clients: 0,
+        teams: 0,
+        settings: 0,
+        notifications: 0,
+      },
+    });
 
     // Read users.json file
     let data = JSON.parse(

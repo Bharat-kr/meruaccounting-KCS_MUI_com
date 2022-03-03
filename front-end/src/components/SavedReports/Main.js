@@ -19,7 +19,9 @@ import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
-import GridExample from "./Datagrid";
+import ByEp from "./ByEp";
+import ByPr from "./ByPr";
+import GridExample from "../../components/SavedReports/ByEp";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,6 +75,10 @@ export default function Main() {
   const [employees, setemployees] = React.useState([]);
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
+  const [group, setgroup] = React.useState([
+    "Group by employee",
+    "Group by project",
+  ]);
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -96,18 +102,14 @@ export default function Main() {
     console.log(reports);
   };
 
-  //   make select employee options
-
-  //   make select project options
-
-  //   make select client options
-
   return (
     <>
       {true ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
           <Graphs style={{ margin: 10 }}></Graphs>
-          <GridExample sx={{ height: "auto" }} />
+          {/* <ByEp sx={{ height: "auto" }} /> */}
+          <ByPr sx={{ height: "auto" }} />
+          {/* <GridExample /> */}
           {/* </TabPanel> */}
         </Box>
       ) : null}
