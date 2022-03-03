@@ -57,6 +57,7 @@ export default function UserPage() {
             return act.isInternal === isInternal;
           })
       );
+      setactivities(prev=> [...prev.sort(function(a, b){return a.startTime - b.startTime})])
     } else {
       return;
     }
