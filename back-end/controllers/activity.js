@@ -132,12 +132,12 @@ const splitActivity = asyncHandler(async (req, res) => {
   const intialActivity = await Activity.findById(activityId).populate(
     "screenshots"
   );
-  console.log("These are intitialActivity", intialActivity);
+  // console.log("These are intitialActivity", intialActivity);
 
   const intitialActivityTime = parseInt(intialActivity.startTime);
   const finalActivityTime = intialActivity.endTime;
   const screenShots = intialActivity.screenshots;
-  console.log("These are screenShots", screenShots);
+  // console.log("These are screenShots", screenShots);
 
   const activity1 = await Activity.create({
     employee: req.user._id,
@@ -160,12 +160,9 @@ const splitActivity = asyncHandler(async (req, res) => {
     isInternal,
   });
 
-  console.log("This is activity 1", activity1);
-  console.log("This is activity 2", activity2);
-
   if (activity1) {
     const user = await User.findById(req.user._id);
-    console.log(user);
+    // console.log(user);
 
     let today = dayjs().format("DD/MM/YYYY");
 

@@ -37,7 +37,7 @@ const generateReport = asyncHandler(async (req, res) => {
       });
     }
 
-    console.log(clientIds, projectIds, userIds, dateOne, dateTwo);
+    // console.log(clientIds, projectIds, userIds, dateOne, dateTwo);
 
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
@@ -684,9 +684,9 @@ const saveReports = asyncHandler(async (req, res) => {
       options,
     } = req.body;
     let userId = req.user._id;
-    console.log(options);
+    // console.log(options);
     let { firstName, lastName } = await User.findById(userId);
-    console.log(reports);
+    // console.log(reports);
     let fileName = userId + "-" + new Date().getTime();
 
     // STEP : Writing to a file

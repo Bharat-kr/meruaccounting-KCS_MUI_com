@@ -300,7 +300,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     const manager = req.user;
     const teamId = req.params.id;
     try {
-      console.log(req.body);
+      // console.log(req.body);
       const team = await Team.findByIdAndRemove(teamId);
       if (!team) throw new Error("No team found", teamId);
 
