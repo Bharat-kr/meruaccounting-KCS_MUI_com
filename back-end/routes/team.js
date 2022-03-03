@@ -10,6 +10,7 @@ import {
   getTeam,
   deleteTeam,
   getTeamMemberData,
+  updateTeam,
 } from "../controllers/team.js";
 import { makePause } from "../controllers/pause.js";
 
@@ -18,6 +19,8 @@ const router = express.Router();
 router.route("/create").post(authPass, createTeam);
 
 router.route("/updateMember").patch(authPass, updateMember);
+
+router.route("/updateTeam").patch(authPass, updateTeam);
 
 router.route("/removeMember").delete(authPass, removeMember);
 
