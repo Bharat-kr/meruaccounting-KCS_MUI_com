@@ -56,7 +56,10 @@ export default function UserPage() {
           .filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
-          }).sort(function(a, b){return a.startTime - b.startTime})
+          })
+          .sort(function (a, b) {
+            return a.startTime - b.startTime;
+          })
       );
       // setactivities(prev => [...prev.sort(function(a, b){return a.startTime - b.startTime})])
     } else {
@@ -98,7 +101,9 @@ export default function UserPage() {
           }
         />
         <ScreenShots activities={activities} date={date} />
-        <OfflineTime/>
+        {commonData?.commonData?.user?.settings.OfflineTime.individualValue && (
+          <OfflineTime date={dateObj} />
+        )}
       </Box>
     </CssBaseline>
   );

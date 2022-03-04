@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -7,12 +7,16 @@ import {
   MenuItem,
   Modal,
   Select,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import Link from "@mui/material/Link";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import timeDiff from "src/_helpers/timeDifference";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -31,13 +35,84 @@ const style = {
   },
 };
 
-const OfflineTime = () => {
+const OfflineTime = ({ date }) => {
+  const [projectSelected, setProjectSelected] = React.useState("");
+  const [clientSelected, setClientSelected] = React.useState("");
+  const [startTime, setStartTime] = React.useState("");
+  const [endTime, setEndTime] = React.useState("");
+  const [internal, setInternal] = React.useState(true);
   const [modal, setModal] = useState(false);
+  const { commonData } = useContext(CurrentUserContext);
+
+  //open modal
   const handleOpen = () => {
     setModal(true);
   };
+
+  //close modal
   const handleClose = () => {
     setModal(false);
+  };
+
+  //change client
+  const handleClientChange = (event) => {
+    setClientSelected(event.target.value);
+  };
+
+  //change project
+  const handleChange = (event) => {
+    setProjectSelected(event.target.value);
+  };
+
+  //change start time
+  const handleStartChange = (e) => {
+    setStartTime(e.target.value);
+  };
+
+  //change end time
+  const handleEndChange = (e) => {
+    setEndTime(e.target.value);
+  };
+
+  //caling api
+  const addTime = async (e) => {
+    e.preventDefault();
+    let year = date.format("YYYY");
+    let month = date.format("M");
+    let day = date.format("D");
+    let dateValues = startTime.split(":");
+    let dateValues2 = endTime.split(":");
+    let hrs = dateValues[0];
+    let mins = dateValues[1];
+    let endhrs = dateValues2[0];
+    let endmins = dateValues2[1];
+    let startValue = `${new Date(year, month, day, hrs, mins, 0, 0).getTime()}`;
+    let endValue = `${new Date(
+      year,
+      month,
+      day,
+      endhrs,
+      endmins,
+      0,
+      0
+    ).getTime()}`;
+    let data = {
+      clientId: clientSelected,
+      task: "offline",
+      projectId: projectSelected,
+      startTime: startValue,
+      endTime: endValue,
+      performanceData: 100,
+      isInternal: internal,
+    };
+    console.log(data);
+    await axios
+      .post("/activity", data)
+      .then((res) => console.log(res))
+      .catch((err) => {
+        console.log(err);
+      });
+    handleClose();
   };
   return (
     <>
@@ -93,7 +168,77 @@ const OfflineTime = () => {
                 alignItems: "center",
                 mt: 1,
               }}
-            ></Box>
+            >
+              <TextField
+                hiddenLabel
+                id="filled-hidden-label-small"
+                placeholder="From"
+                variant="filled"
+                size="small"
+                onChange={handleStartChange}
+                sx={{
+                  width: "20%",
+                }}
+              />
+              -
+              <TextField
+                hiddenLabel
+                id="filled-hidden-label-small"
+                placeholder="To"
+                variant="filled"
+                size="small"
+                onChange={handleEndChange}
+                sx={{
+                  width: "20%",
+                }}
+              />
+            </Box>
+            <Select
+              value={clientSelected}
+              onChange={handleClientChange}
+              displayEmpty
+              fullWidth
+              inputProps={{ "aria-label": "Without label" }}
+              sx={{
+                my: 1,
+              }}
+            >
+              {commonData?.commonData?.user?.clients.map((project) => {
+                return <MenuItem value={project}>{project}</MenuItem>;
+              })}
+            </Select>
+            <Select
+              value={projectSelected}
+              onChange={handleChange}
+              displayEmpty
+              fullWidth
+              inputProps={{ "aria-label": "Without label" }}
+              sx={{
+                my: 1,
+              }}
+            >
+              {commonData?.commonData?.user?.projects.map((project) => {
+                return <MenuItem value={project}>{project}</MenuItem>;
+              })}
+            </Select>
+            {/* <TextField
+              disabled
+              id="filled-disabled"
+              label="Disabled"
+              defaultValue="Activity Name"
+              variant="filled"
+              size="large"
+              fullWidth
+            /> */}
+            <Box>
+              Internal
+              <Switch
+                onClick={(e) => {
+                  setInternal(e.target.checked);
+                }}
+              />
+              External
+            </Box>
           </Box>
 
           <Box
@@ -111,6 +256,7 @@ const OfflineTime = () => {
               sx={{
                 mr: 2,
               }}
+              onClick={addTime}
             >
               Save Changes
             </Button>
