@@ -193,6 +193,7 @@ const OfflineTime = ({ date }) => {
                 }}
               />
             </Box>
+            Client
             <Select
               value={clientSelected}
               onChange={handleClientChange}
@@ -207,6 +208,7 @@ const OfflineTime = ({ date }) => {
                 return <MenuItem value={client._id}>{client.name}</MenuItem>;
               })}
             </Select>
+            Project
             <Select
               value={projectSelected}
               onChange={handleChange}

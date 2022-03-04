@@ -180,7 +180,7 @@ const SplitActivity = ({
               }}
             >
               {commonData.commonData.user.projects.map((project) => {
-                return <MenuItem value={project}>{project}</MenuItem>;
+                return <MenuItem value={project._id}>{project.name}</MenuItem>;
               })}
             </Select>
             <TextField
