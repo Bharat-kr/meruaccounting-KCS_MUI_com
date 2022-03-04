@@ -52,7 +52,7 @@ export default function UserPage() {
           ?.filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
-          })
+          }).sort(function(a, b){return a.startTime - b.startTime})
       );
     } else {
       return;

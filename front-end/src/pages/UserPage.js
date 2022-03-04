@@ -18,6 +18,7 @@ import { loginContext } from "../contexts/LoginContext";
 import { getCommonData } from "../api/auth api/commondata";
 import moment from "moment";
 import { useLocation } from "react-router-dom";
+import OfflineTime from "src/components/UserPage/OfflineTime";
 
 export default function UserPage() {
   const { loginC } = useContext(loginContext);
@@ -55,9 +56,9 @@ export default function UserPage() {
           .filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
-          })
+          }).sort(function(a, b){return a.startTime - b.startTime})
       );
-      setactivities(prev=> [...prev.sort(function(a, b){return a.startTime - b.startTime})])
+      // setactivities(prev => [...prev.sort(function(a, b){return a.startTime - b.startTime})])
     } else {
       return;
     }
@@ -97,6 +98,7 @@ export default function UserPage() {
           }
         />
         <ScreenShots activities={activities} date={date} />
+        <OfflineTime/>
       </Box>
     </CssBaseline>
   );
