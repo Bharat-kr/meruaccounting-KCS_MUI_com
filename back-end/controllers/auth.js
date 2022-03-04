@@ -107,6 +107,15 @@ const commondata = asyncHandler(async (req, res) => {
             },
           ],
         },
+      })
+      .populate({
+        path: "projects",
+        model: "Project",
+        select: ["name"],
+      }).populate({
+        path: "clients",
+        model: "Client",
+        select: ["name"],
       });
     const yersterdayHours = await Activity.aggregate([
       {

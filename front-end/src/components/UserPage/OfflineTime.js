@@ -203,8 +203,8 @@ const OfflineTime = ({ date }) => {
                 my: 1,
               }}
             >
-              {commonData?.commonData?.user?.clients.map((project) => {
-                return <MenuItem value={project}>{project}</MenuItem>;
+              {commonData?.commonData?.user?.clients.map((client) => {
+                return <MenuItem value={client._id}>{client.name}</MenuItem>;
               })}
             </Select>
             <Select
@@ -218,7 +218,7 @@ const OfflineTime = ({ date }) => {
               }}
             >
               {commonData?.commonData?.user?.projects.map((project) => {
-                return <MenuItem value={project}>{project}</MenuItem>;
+                return <MenuItem value={project._id}>{project.name}</MenuItem>;
               })}
             </Select>
             {/* <TextField
