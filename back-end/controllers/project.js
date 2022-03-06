@@ -371,6 +371,36 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Remove project leader to the given project id
+// @route   Patch /project/projectLeader/:id
+// @access  Private
+
+const removeProjectLeader = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).updateOwn("project");
+  if (permission.granted) {
+    const projectId = req.params.id;
+    try {
+      const project = await Project.findById(projectId);
+      if (!project) {
+        res.status(404);
+        throw new Error(`Not found project ${projectId}`);
+      }
+
+      project.projectLeader = null;
+      await project.save();
+
+      res.status(200).json({
+        status: "ok",
+        data: project,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
 export {
   createProject,
   deleteProject,
@@ -380,4 +410,5 @@ export {
   addMember,
   assignProjectLeader,
   removeMember,
+  removeProjectLeader
 };

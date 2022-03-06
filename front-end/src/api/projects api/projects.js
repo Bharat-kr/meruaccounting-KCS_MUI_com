@@ -171,6 +171,24 @@ export const addProjectLeader = async (incomingData, dispatch) => {
     });
   }
 };
+export const removeProjectLeader = async (id, dispatch) => {
+  try {
+    // console.log(incomingData[0], incomingData[1]);
+    const { data } = await axios.patch(
+      `/project/projectLeader/${id}`,
+    );
+    // dispatch({ type: ADD_PROJECTLEADER_SUCCESS, payload: data });
+    console.log("project leader added");
+  } catch (error) {
+    // dispatch({
+    //   type: ADD_PROJECTLEADER_FAILED,
+    //   payload:
+    //     error.response && error.response.data.message
+    //       ? error.response.data.message
+    //       : error.message,
+    // });
+  }
+};
 
 export const removeProjectMem = async (incomingData, dispatch) => {
   try {
