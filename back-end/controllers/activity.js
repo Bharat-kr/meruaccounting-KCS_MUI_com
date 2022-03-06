@@ -422,6 +422,12 @@ const deleteActivity = asyncHandler(async (req, res) => {
     );
 
     let activity = await Activity.findById(activityId);
+    let projectId = activity.project;
+    const project = await Project.findById(projectId);
+    project.activities = project.activities.filter(
+      (_id) => _id.toHexString() !== activityId
+    );
+    await project.save();
 
     if (!activity) {
       res.status(404);
