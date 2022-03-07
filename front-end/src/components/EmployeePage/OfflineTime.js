@@ -14,11 +14,11 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import Link from "@mui/material/Link";
-import { CurrentUserContext } from "src/contexts/CurrentUserContext";
-import timeDiff from "src/_helpers/timeDifference";
 import axios from "axios";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 import { useSnackbar } from "notistack";
-import { getCommonData } from "src/api/auth api/commondata";
+import { getCommonData } from "src/api/employee api/employeePage";
+import { useParams } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -44,8 +44,9 @@ const OfflineTime = ({ date }) => {
   const [endTime, setEndTime] = React.useState("");
   const [internal, setInternal] = React.useState(false);
   const [modal, setModal] = useState(false);
-  const { commonData , dispatchCommonData} = useContext(CurrentUserContext);
+  const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
   const { enqueueSnackbar } = useSnackbar();
+  const { id } = useParams();
 
   //get projects
   useEffect(() => {
@@ -123,7 +124,7 @@ const OfflineTime = ({ date }) => {
           enqueueSnackbar("Time added", {
             variant: "success",
           });
-          getCommonData(dispatchCommonData);
+          getCommonData(id, dispatchCommonData);
         }
       })
       .catch((err) => {
