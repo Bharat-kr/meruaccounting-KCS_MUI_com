@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+
 import CloseIcon from "@mui/icons-material/Close";
 import timeC from "src/_helpers/timeConverter";
 import timeDiff from "src/_helpers/timeDifference";
@@ -179,7 +180,7 @@ const SplitActivity = ({
               }}
             >
               {commonData.commonData.user.projects.map((project) => {
-                return <MenuItem value={project}>{project}</MenuItem>;
+                return <MenuItem value={project._id}>{project.name}</MenuItem>;
               })}
             </Select>
             <TextField

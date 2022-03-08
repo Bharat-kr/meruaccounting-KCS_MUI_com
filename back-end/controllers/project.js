@@ -59,7 +59,8 @@ const getProject = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).readOwn("project");
   if (permission.granted) {
     try {
-      const { projects } = await User.findById(req.user._id)
+      const employeeId = req.body.employeeId ? req.body.employeeId : req.user._id;
+      const { projects } = await User.findById(employeeId)
         .populate({
           path: "projects",
           model: "Project",

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { noCase } from "change-case";
 import { useRef, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 import { formatDistanceToNow } from "date-fns";
 
 //icons
@@ -115,7 +116,7 @@ NotificationItem.propTypes = {
   notification: PropTypes.object.isRequired,
 };
 
-function NotificationItem({ notification, markAsRead }) {
+function NotificationItem({ notification, markAsRead, deleteNotification }) {
   const { avatar, title } = renderContent(notification);
   const { loginC } = useContext(loginContext);
   const navigate = useNavigate();
@@ -163,6 +164,13 @@ function NotificationItem({ notification, markAsRead }) {
           </Typography>
         }
       />
+      <IconButton
+        onClick={() => {
+          deleteNotification(notification._id);
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
     </ListItemButton>
   );
 }
@@ -212,6 +220,19 @@ export default function NotificationsPopover() {
 
     await getCommonData(dispatchCommonData);
   };
+
+  // delete noti
+  const deleteNotification = async (id) => {
+    await axios
+      .delete(`/notify/${id}`)
+      .then((res) => {
+        console.log(res);
+        // setNotifications(res);
+      })
+      .catch((err) => console.log(err));
+
+    await getCommonData(dispatchCommonData);
+  };
   return (
     <>
       <IconButton
@@ -251,6 +272,7 @@ export default function NotificationsPopover() {
               key={notification._id}
               notification={notification}
               markAsRead={markAsRead}
+              deleteNotification={deleteNotification}
             />
           );
         })}
