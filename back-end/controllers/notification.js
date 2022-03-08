@@ -55,4 +55,25 @@ const readNotification = asyncHandler(async (req, res) => {
   }
 });
 
-export { sendNotification, readNotification };
+// @desc    To delete notifications by user
+// @route   DELETE notify/:id
+// @access  Private
+
+const deleteNotification = asyncHandler(async (req, res) => {
+  try {
+    const notificationId = req.params.id;
+    const employeeId = req.user._id;
+    const employee = await User.findById(employeeId);
+
+    employee.notifications = employee.notifications.filter(
+      (not) => not._id.toHexString() !== notificationId
+    );
+    await employee.save();
+
+    res.status(200).json({ message: "deleted" });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { sendNotification, readNotification, deleteNotification };
