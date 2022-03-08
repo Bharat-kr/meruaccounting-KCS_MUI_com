@@ -76,10 +76,11 @@ export default function UserDetails() {
   //for getting intitial profile url
   useEffect(() => {
     if (commonData.loader === false) {
-      setimageUrl(
-        `http://monitor.meruaccounting.com:8000/${commonData.commonData.user.avatar}`
-      );
-      // setimageUrl(`https://ssmonitor-backend.herokuapp.com/${commonData.commonData.user.avatar}`);
+      // setimageUrl(
+      //   `http://monitor.meruaccounting.com:8000/${commonData.commonData.user.avatar}`
+      // );
+      setimageUrl(`http://localhost:8000/${commonData.commonData.user.avatar}`);
+      // setimageUrl(`https://monitoring-meru.herokuapp.com/${commonData.commonData.user.avatar}`);
     }
   }, [commonData]);
 

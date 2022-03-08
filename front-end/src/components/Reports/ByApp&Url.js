@@ -10,7 +10,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ScreenShotRender from "./ScreenShotRender";
-import timeC from "../../_helpers/timeConverter";
+import { timeCC } from "../../_helpers/timeConverter";
 
 export default function ByAppsUrl(props) {
   const { reports } = props;

@@ -116,11 +116,11 @@ export default function Main() {
             <ByEp sx={{ height: "auto" }} />
           )}
           {group.includes("Group by project") && (
-            )}
             <ByPr sx={{ height: "auto" }} />
+          )}
           {group.includes("Group by client") && ( */}
-          <ByCl sx={{ height: "auto" }} />
-          <ByD sx={{ height: "auto" }} />
+          {/* <ByCl sx={{ height: "auto" }} /> */}
+          {/* <ByD sx={{ height: "auto" }} /> */}
           <ByAppUrl sx={{ height: "auto" }} />
           {/* )} */}
 

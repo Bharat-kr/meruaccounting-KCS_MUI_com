@@ -10,7 +10,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 // import ScreenShotRender from "./ScreenShotRender";
-import timeC from "../../_helpers/timeConverter";
+import timeCC from "../../_helpers/timeConverter";
 
 export default function ByDetailed(props) {
   const { reports } = props;
@@ -55,8 +55,8 @@ export default function ByDetailed(props) {
         Date: d?.createdAt,
         Client: `${d.client?.name ? d?.client.name : "Deleted client"}`,
         Project: d.project.name,
-        From: timeC(d.startTime),
-        To: timeC(d.endTime),
+        From: timeCC(d.startTime),
+        To: timeCC(d.endTime),
         Employee: `${d.employee.firstName} ${d.employee.lastName}`,
         Duration: `${(d.consumeTime / 3600).toFixed(2)} hr`,
         Activity: (activity / 1).toFixed(2), // eslint-disable-next-line no-use-before-define
