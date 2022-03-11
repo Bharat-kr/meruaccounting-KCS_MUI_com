@@ -766,4 +766,159 @@ const fetchReports = asyncHandler(async (req, res) => {
   }
 });
 
-export { generateReport, saveReports, fetchReports };
+// @desc    Report Options
+// @route   POST /report/options
+// @access  Private
+const reportOptions = asyncHandler(async (req, res) => {
+  try {
+    const _id = req.user._id;
+    const user = await User.findById(_id);
+    let employeesOptions;
+    let projectsClientsOptions;
+    if (user.role === "manager") {
+      employeesOptions = await User.aggregate([
+        {
+          $match: {
+            _id: {
+              $eq: user._id,
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "teams",
+            localField: "teams",
+            foreignField: "_id",
+            as: "teams",
+          },
+        },
+        {
+          $unwind: {
+            path: "$teams",
+          },
+        },
+        {
+          $unwind: {
+            path: "$teams.members",
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            members: {
+              $addToSet: "$teams.members",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "members",
+            foreignField: "_id",
+            as: "members",
+          },
+        },
+        {
+          $addFields: {
+            name: "$members.firstName" + "$members.lastName",
+          },
+        },
+        {
+          $project: {
+            "members._id": 1,
+            "members.firstName": 1,
+            "members.lastName": 1,
+          },
+        },
+      ]);
+
+      projectsClientsOptions = await User.aggregate([
+        {
+          $match: {
+            _id: user._id,
+          },
+        },
+        {
+          $lookup: {
+            from: "projects",
+            localField: "projects",
+            foreignField: "_id",
+            as: "projects",
+          },
+        },
+        {
+          $unwind: {
+            path: "$projects",
+            includeArrayIndex: "string",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "projects.employees",
+            foreignField: "_id",
+            as: "projects.employees",
+          },
+        },
+        {
+          $lookup: {
+            from: "clients",
+            localField: "projects.client",
+            foreignField: "_id",
+            as: "projects.client",
+          },
+        },
+        {
+          $unwind: {
+            path: "$projects.client",
+            includeArrayIndex: "string",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            firstName: {
+              $first: "$firstName",
+            },
+            lastName: {
+              $first: "$lastName",
+            },
+            projects: {
+              $addToSet: "$projects",
+            },
+            clients: {
+              $addToSet: "$projects.client",
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+            "projects.client.name": 1,
+            "projects.client._id": 1,
+            "projects.employees.firstName": 1,
+            "projects.employees.lastName": 1,
+            "projects.employees._id": 1,
+            "projects.name": 1,
+            "projects._id": 1,
+            "clients._id": 1,
+            "clients.name": 1,
+          },
+        },
+      ]);
+    }
+    res.json({
+      status: "options generated",
+      employeesOptions,
+      projectsClientsOptions,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { generateReport, saveReports, fetchReports, reportOptions };

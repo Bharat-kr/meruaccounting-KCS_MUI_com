@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import DatePicker from "./DatePicker";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
+import axios from "axios";
 // components
 import Graphs from "./Graphs";
 import SelectEmployees from "./SelectEmployees";
@@ -78,6 +79,32 @@ export default function Main() {
     { label: "Group by employee", value: "E" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
+  const componentMounted = React.useRef(true); // (3) component is mounted
+
+  // ////////////////////////////////
+  const [ans, setAns] = React.useState([]);
+
+  const getAns = async () => {
+    const { data } = await axios.post("/report/options");
+    console.log(data.employeeOptions[0]);
+    console.log([1, 2]);
+    setAns(data.employeeOptions[0].members);
+  };
+
+  React.useEffect(() => {
+    getAns();
+  }, []);
+  // ////////////////////////////////
+
+  // React.useEffect(async () => {
+  //   const { data } = await axios.post("/report/options");
+  //   if (componentMounted.current) {
+  //     // setemployeeOptions(data?.employeeOptions?.members);
+  //   }
+  //   return () => {
+  //     componentMounted.current = false; // This worked for me
+  //   };
+  // }, []);
 
   // tab panels value
   const handleChange = (event, newValue) => {
@@ -107,7 +134,7 @@ export default function Main() {
     console.log(reports);
   };
 
-  //   make select employee options
+  // make select employee options
   React.useEffect(() => {
     let array = [];
     getTeams.getTeam.map((team) => {
