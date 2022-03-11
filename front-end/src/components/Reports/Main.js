@@ -20,8 +20,7 @@ import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
-// import ByEp from "./ByEp";
-import { ByLL } from "./ByEp";
+import ByEp from "./ByEp";
 import ByPr from "./ByPr";
 import ByCl from "./ByCL";
 import ByDetailed from "./ByDetailed";
@@ -163,7 +162,6 @@ export default function Main() {
       });
     } else return;
   }, [clientDetails, projects, employees]);
-
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -228,9 +226,8 @@ export default function Main() {
           <>
             <Graphs style={{ margin: 10 }}></Graphs>
             {group.filter((grp) => grp.value === "E").length !== 0 ? (
-              console.log("hey")
-            ) : // <ByEp sx={{ height: "auto" }} reports={reports} />
-            group.filter((grp) => grp.value === "P").length !== 0 ? (
+              <ByEp sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "P").length !== 0 ? (
               <ByPr sx={{ height: "auto" }} reports={reports} />
             ) : group.filter((grp) => grp.value === "C").length !== 0 ? (
               <ByCl sx={{ height: "auto" }} reports={reports} />
@@ -243,9 +240,9 @@ export default function Main() {
             )}
           </>
         ) : null}
-        <div>
+        {/* <div>
           <ByLL sx={{ height: "auto" }} reports={reports} />
-        </div>
+        </div> */}
       </TabPanel>
       {/* <TabPanel value={value} index={1}>
         hello

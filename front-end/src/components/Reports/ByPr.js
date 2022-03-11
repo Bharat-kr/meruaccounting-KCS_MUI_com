@@ -1,88 +1,151 @@
-"use strict";
+import React from "react";
+import { useEffect, useState } from "react";
+import { groupBy as rowGrouper, random } from "lodash";
+import faker from "faker";
+import { reportsContext } from "src/contexts/ReportsContext";
 
-import React, { useCallback, useMemo, useState } from "react";
-import { render } from "react-dom";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-enterprise";
-import "ag-grid-community/dist/styles/ag-grid.css";
+import DataGrid, { SelectColumn } from "react-data-grid";
+import { Box, Typography } from "@mui/material";
+import { fontSize } from "@mui/system";
 
-import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import { reportsContext } from "../../contexts/ReportsContext";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+const columns = [
+  {
+    key: "employee",
+    name: "Employee",
+  },
+  {
+    key: "project",
+    name: "Project",
+  },
+  {
+    key: "duration",
+    name: "Duration",
+    groupFormatter({ childRows }) {
+      return (
+        <>
+          {childRows.reduce(
+            (prev, { duration }) => Number((prev + duration).toFixed(2)),
+            0
+          )}
+        </>
+      );
+    },
+  },
+  {
+    key: "activity",
+    name: "Activity",
+    // groupFormatter({ childRows }) {
+    //   return (
+    //     <>
+    //       {childRows.reduce(
+    //         (prev, { activity }) => Number((prev + activity).toFixed(2)),
+    //         0
+    //       )}
+    //     </>
+    //   );
+    // },
+  },
+  {
+    key: "money",
+    name: "Money",
+    groupFormatter({ childRows }) {
+      return (
+        <>
+          {childRows.reduce(
+            (prev, { money }) => Number((prev + money).toFixed(2)),
+            0
+          )}
+        </>
+      );
+    },
+  },
+];
 
-export default function ByPr(props) {
+function rowKeyGetter(row) {
+  return row.id;
+}
+
+const options = ["employee", "project"];
+
+export default function ByEp(props) {
   const { reports } = props;
-  const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
-  const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
-  const { savedReports } = React.useContext(reportsContext);
-  const [rowData, setRowData] = useState([]);
-  const [columnDefs, setColumnDefs] = useState([
-    {
-      field: "Project",
-      minWidth: 300,
-      rowGroup: true,
 
-      cellRenderer: function (params) {
-        return <span style={{ marginLeft: 10 }}>{params.value}</span>;
-      },
-    },
-    {
-      field: "Employee",
-      minWidth: 100,
-    },
-    { field: "Duration", minWidth: 100 },
-    { field: "Activity", minWidth: 100 },
-    { field: "Money", minWidth: 100 },
-  ]);
-  const defaultColDef = useMemo(() => {
-    return {
-      flex: 1,
-      minWidth: 100,
-      sortable: true,
-      resizable: true,
-    };
-  }, []);
+  const [rows, setRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(() => new Set());
+  const [selectedOptions, setSelectedOptions] = useState([options[1]]);
+  const [expandedGroupIds, setExpandedGroupIds] = useState(
+    () => new Set(["Projects"])
+  );
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     reports.reports[0]?.byPE?.map((pro) => {
       pro.users.map((emp) => {
         arr.push({
-          Project: `${
+          id: pro._id.project + random(100),
+          project: `${
             pro.client[0]?.name ? pro?.client[0].name : "Deleted client"
           } :
               ${
                 pro.project[0]?.name ? pro?.project[0]?.name : "Deleted project"
               }`,
 
-          Employee: `${emp.firstName} ${emp.lastName}`,
-          Duration: (emp.totalHours / 3600).toFixed(2),
-          Money:
-            (emp?.toalHours / 3600 / emp?.payRate).toFixed(2) === Number
-              ? (emp?.toalHours / 3600 / emp?.payRate).toFixed(2)
-              : "",
-          Activity: emp.performanceData,
+          employee: `${emp.firstName} ${emp.lastName}`,
+          duration: Number((emp.totalHours / 3600).toFixed(2)),
+          money: Number((emp?.toalHours / 3600 / emp?.payRate).toFixed(2)),
+          activity: emp.performanceData,
         });
       });
     });
-    setRowData(arr);
+    setRows(arr);
   }, [reports]);
-  const onGridReady = useCallback((savedReports) => {}, []);
+
+  function toggleOption(option, enabled) {
+    const index = selectedOptions.indexOf(option);
+    if (enabled) {
+      if (index === -1) {
+        setSelectedOptions((options) => [...options, option]);
+      }
+    } else if (index !== -1) {
+      setSelectedOptions((options) => {
+        const newOptions = [...options];
+        newOptions.splice(index, 1);
+        return newOptions;
+      });
+    }
+    setExpandedGroupIds(new Set());
+  }
 
   return (
-    <div style={{ height: "70vh" }}>
-      <div style={gridStyle} className="ag-theme-alpine">
-        <AgGridReact
-          style={{ height: "70vh" }}
-          rowData={rowData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          groupDisplayType={"groupRows"}
-          animateRows={true}
-          onGridReady={onGridReady}
-        ></AgGridReact>
+    <Box sx={{ mt: 3 }}>
+      <Typography varinat="h3" sx={{ fontWeight: "700", fontSize: "1.5rem" }}>
+        Group by columns:
+      </Typography>
+      <div>
+        {options.map((option) => (
+          <label key={option}>
+            <input
+              style={{ marginLeft: "1rem" }}
+              type="checkbox"
+              checked={selectedOptions.includes(option)}
+              onChange={(event) => toggleOption(option, event.target.checked)}
+            />{" "}
+            {option}
+          </label>
+        ))}
       </div>
-    </div>
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        rowKeyGetter={rowKeyGetter}
+        selectedRows={selectedRows}
+        onSelectedRowsChange={setSelectedRows}
+        groupBy={selectedOptions}
+        rowGrouper={rowGrouper}
+        expandedGroupIds={expandedGroupIds}
+        onExpandedGroupIdsChange={setExpandedGroupIds}
+        defaultColumnOptions={{ resizable: true }}
+        // direction={direction}
+      />
+    </Box>
   );
 }

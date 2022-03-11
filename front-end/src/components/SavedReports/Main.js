@@ -68,64 +68,40 @@ export default function Main() {
   //
   const { clientDetails } = React.useContext(ClientsContext);
   //
-  const { reports, dispatchGetReports } = React.useContext(reportsContext);
+  const { reports, savedReports, dispatchGetReports } =
+    React.useContext(reportsContext);
 
   // variable for date, employees, and projects
   const [date, setdate] = React.useState(null);
-  const [employeeOptions, setemployeeOptions] = React.useState([]);
-  const [projectOptions, setprojectOptions] = React.useState([]);
-  const [clientOptions, setclientOptions] = React.useState([]);
+  const [options, setOptions] = React.useState([]);
   const [employees, setemployees] = React.useState([]);
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
-  const [group, setgroup] = React.useState([
-    "Group by employee",
-    "Group by project",
-  ]);
+
+  React.useEffect(() => {
+    setOptions(savedReports?.data[0]);
+  }, [savedReports]);
 
   // tab panels value
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const handleReportClick = async () => {
-    const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
-    const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
-    const userIds = employees.length ? employees : null;
-    const projectIds = projects.length ? projects : null;
-    const clientIds = clients.length ? clients : null;
-    const options = {
-      clientIds,
-      projectIds,
-      userIds,
-      dateOne,
-      dateTwo,
-    };
-    console.log(options);
-    getReports(dispatchGetReports, options);
-    console.log(reports);
-  };
-  if (group.includes("Group by employee")) {
-    console.log("hey");
-  }
+
   return (
     <>
-      {true ? (
+      {savedReports?.data[0] ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
           <Graphs style={{ margin: 10 }}></Graphs>
-          {/* {group.includes("Group by employee") && (
+          {options?.options.groupBy === "E" ? (
             <ByEp sx={{ height: "auto" }} />
-          )}
-          {group.includes("Group by project") && (
+          ) : options?.options.groupBy === "Pr" ? (
             <ByPr sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "Cl" ? (
+            <ByCl sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "D" ? (
+            <ByD sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "A" ? (
+            <ByAppUrl sx={{ height: "auto" }} />
+          ) : (
+            ""
           )}
-          {group.includes("Group by client") && ( */}
-          {/* <ByCl sx={{ height: "auto" }} /> */}
-          {/* <ByD sx={{ height: "auto" }} /> */}
-          <ByAppUrl sx={{ height: "auto" }} />
-          {/* )} */}
-
-          {/* <GridExample /> */}
-          {/* </TabPanel> */}
         </Box>
       ) : null}
     </>
