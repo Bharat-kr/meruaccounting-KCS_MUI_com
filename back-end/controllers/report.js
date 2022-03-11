@@ -733,6 +733,19 @@ const saveReports = asyncHandler(async (req, res) => {
       options,
     } = req.body;
 
+    if (!options.userIds) {
+      options.userIds = "All Employees";
+    }
+    if (!options.projectIds) {
+      options.projectIds = "All Projects";
+    }
+    if (!options.clientIds) {
+      options.clientIds = "All Clients";
+    }
+    if (!options.dateTwo) {
+      options.dateTwo = dayjs().format("DD/MM/YYYY");
+    }
+
     let userId = req.user._id;
     // console.log(options);
     let { firstName, lastName } = await User.findById(userId);
