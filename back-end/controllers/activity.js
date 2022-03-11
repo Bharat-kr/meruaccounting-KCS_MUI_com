@@ -4,6 +4,7 @@ import Project from "../models/project.js";
 import Screenshot from "../models/screenshot.js";
 import asyncHandler from "express-async-handler";
 import dayjs from "dayjs";
+import mongoose from "mongoose";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -272,12 +273,12 @@ const updateActivity = asyncHandler(async (req, res) => {
     const updateProjectTime = await Activity.aggregate([
       {
         $match: {
-          project: projectId,
+          project: mongoose.Types.ObjectId(projectId),
         },
       },
       {
         $group: {
-          _id: project,
+          _id: "$project",
           internal: {
             $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
           },
@@ -291,7 +292,7 @@ const updateActivity = asyncHandler(async (req, res) => {
       },
     ]);
     // updateProjectTime[0].consumeTime
-
+    console.log(updateProjectTime);
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
       {
@@ -420,6 +421,12 @@ const deleteActivity = asyncHandler(async (req, res) => {
     );
 
     let activity = await Activity.findById(activityId);
+    let projectId = activity.project;
+    const project = await Project.findById(projectId);
+    project.activities = project.activities.filter(
+      (_id) => _id.toHexString() !== activityId
+    );
+    await project.save();
 
     if (!activity) {
       res.status(404);

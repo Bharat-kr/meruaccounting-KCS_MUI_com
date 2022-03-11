@@ -8,7 +8,7 @@ import YAML from "yamljs";
 import cors from "cors";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
-
+import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.js";
 import clientRoutes from "./routes/client.js";
 import teamRoutes from "./routes/team.js";
@@ -34,8 +34,10 @@ const app = express();
 
 app.use(cors());
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json({ limit: "100mb" }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+// app.use(express.urlencoded({ extended: false, limit: "100mb" }));
+app.use(express.json());
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
