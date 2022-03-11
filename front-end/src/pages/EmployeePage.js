@@ -17,6 +17,7 @@ import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 //api
 import { getCommonData } from "../api/employee api/employeePage";
 import { getFullName } from "src/_helpers/getFullName";
+import OfflineTime from "src/components/EmployeePage/OfflineTime";
 
 export default function UserPage() {
   const [activities, setactivities] = useState([]);
@@ -52,7 +53,7 @@ export default function UserPage() {
           ?.filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
-          })
+          }).sort(function(a, b){return a.startTime - b.startTime})
       );
     } else {
       return;
@@ -98,6 +99,9 @@ export default function UserPage() {
           }
         />
         <ScreenShots activities={activities} date={date} />
+        {commonData?.commonData?.user?.settings.OfflineTime.individualValue && (
+          <OfflineTime date={dateObj} />
+        )}
       </Box>
     </CssBaseline>
   );
