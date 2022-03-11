@@ -61,7 +61,7 @@ BootstrapDialogTitle.propTypes = {
 export default function SaveReport(props) {
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("");
+  const [name, setName] = React.useState("hello");
   const [url, setUrl] = React.useState(uuidv4());
 
   React.useEffect(() => {
@@ -113,7 +113,7 @@ export default function SaveReport(props) {
           <Typography gutterBottom>
             Description: summary by (group by) get from props, also get other
             details from props and make options here to send as save reports
-            options
+            options.Set
           </Typography>
           <FormControl>
             <InputLabel htmlFor="component-outlined">Name</InputLabel>
