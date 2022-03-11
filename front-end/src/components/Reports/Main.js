@@ -86,18 +86,23 @@ export default function Main() {
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
   const componentMounted = React.useRef(true); // (3) component is mounted
 
-  // ////////////////////////////////
-  const [ans, setAns] = React.useState([]);
-
-  const getAns = async () => {
+  // for options
+  const getOptions = async () => {
     const { data } = axios.post("/report/options").then((res) => {
       setprojectOptions(res.data.projectsClientsOptions[0].projects);
       setclientOptions(res.data.projectsClientsOptions[0].clients);
+      const empArr = Array.from(
+        res.data.employeesOptions[0].members,
+        function mapFn(mem, index) {
+          return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
+        }
+      );
+      setemployeeOptions(empArr);
     });
   };
 
   React.useEffect(() => {
-    getAns();
+    getOptions();
   }, []);
 
   const handleChange = (event, newValue) => {
@@ -126,22 +131,22 @@ export default function Main() {
   };
 
   // make select employee options
-  React.useEffect(() => {
-    let array = [];
-    getTeams.getTeam.map((team) => {
-      team.members.map((member) => {
-        let newOption = {
-          _id: member._id,
-          name: `${member.firstName} ${member.lastName}`,
-        };
-        let exists = array.some((el) => el._id === newOption._id);
-        if (!exists) {
-          array.push(newOption);
-        }
-      });
-      setemployeeOptions((prev) => [...array]);
-    });
-  }, [getTeams, clients, projects]);
+  // React.useEffect(() => {
+  //   let array = [];
+  //   getTeams.getTeam.map((team) => {
+  //     team.members.map((member) => {
+  //       let newOption = {
+  //         _id: member._id,
+  //         name: `${member.firstName} ${member.lastName}`,
+  //       };
+  //       let exists = array.some((el) => el._id === newOption._id);
+  //       if (!exists) {
+  //         array.push(newOption);
+  //       }
+  //     });
+  //     setemployeeOptions((prev) => [...array]);
+  //   });
+  // }, [getTeams, clients, projects]);
 
   //   make select project options
   // React.useEffect(() => {
@@ -165,18 +170,18 @@ export default function Main() {
   // }, [clientDetails, clients, employees]);
 
   //   make select client options
-  React.useEffect(() => {
-    if (clientDetails.loader === false) {
-      clientDetails?.client?.data.map((client) => {
-        let newOption = {
-          _id: client._id,
-          name: client.name,
-        };
-        let index = clientOptions.findIndex((x) => x._id === client._id);
-        if (index === -1) setclientOptions((prev) => [...prev, newOption]);
-      });
-    } else return;
-  }, [clientDetails, projects, employees]);
+  // React.useEffect(() => {
+  //   if (clientDetails.loader === false) {
+  //     clientDetails?.client?.data.map((client) => {
+  //       let newOption = {
+  //         _id: client._id,
+  //         name: client.name,
+  //       };
+  //       let index = clientOptions.findIndex((x) => x._id === client._id);
+  //       if (index === -1) setclientOptions((prev) => [...prev, newOption]);
+  //     });
+  //   } else return;
+  // }, [clientDetails, projects, employees]);
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -217,7 +222,6 @@ export default function Main() {
         />
         <SelectGroup
           setGroup={(newValue) => {
-            console.log(newValue);
             setgroup(newValue);
           }}
         />

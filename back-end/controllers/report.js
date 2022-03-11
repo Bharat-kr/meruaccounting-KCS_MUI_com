@@ -659,6 +659,8 @@ const generateReport = asyncHandler(async (req, res) => {
                 external: {
                   $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
                 },
+                screenshots: { $first: "$screenshots" },
+                payRate: { $first: "$employee.payRate" },
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
                 avgPerformanceData: { $avg: "$performanceData" },
@@ -670,6 +672,8 @@ const generateReport = asyncHandler(async (req, res) => {
                 _id: { project: "$_id.project", client: "$_id.client" },
                 users: {
                   $push: {
+                    payRate: "$payRate",
+                    screenshots: "$screenshots",
                     internal: "$internal",
                     external: "$external",
                     user: "$_id.userId",
