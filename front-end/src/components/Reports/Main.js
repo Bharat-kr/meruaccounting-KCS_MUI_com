@@ -85,28 +85,16 @@ export default function Main() {
   const [ans, setAns] = React.useState([]);
 
   const getAns = async () => {
-    const { data } = await axios.post("/report/options");
-    console.log(data.employeeOptions[0]);
-    console.log([1, 2]);
-    setAns(data.employeeOptions[0].members);
+    const { data } = axios.post("/report/options").then((res) => {
+      setprojectOptions(res.data.projectsClientsOptions[0].projects);
+      setclientOptions(res.data.projectsClientsOptions[0].clients);
+    });
   };
 
   React.useEffect(() => {
     getAns();
   }, []);
-  // ////////////////////////////////
 
-  // React.useEffect(async () => {
-  //   const { data } = await axios.post("/report/options");
-  //   if (componentMounted.current) {
-  //     // setemployeeOptions(data?.employeeOptions?.members);
-  //   }
-  //   return () => {
-  //     componentMounted.current = false; // This worked for me
-  //   };
-  // }, []);
-
-  // tab panels value
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -153,25 +141,25 @@ export default function Main() {
   }, [getTeams, clients, projects]);
 
   //   make select project options
-  React.useEffect(() => {
-    let array = [];
+  // React.useEffect(() => {
+  //   let array = [];
 
-    if (clientDetails?.loader === false) {
-      clientDetails.client.data.map((client) => {
-        client.projects.map((project) => {
-          let newOption = {
-            _id: project._id,
-            name: project.name,
-          };
-          let exists = array.some((el) => el._id === newOption._id);
-          if (!exists) {
-            array.push(newOption);
-          }
-        });
-        setprojectOptions((prev) => [...array]);
-      });
-    } else return;
-  }, [clientDetails, clients, employees]);
+  //   if (clientDetails?.loader === false) {
+  //     clientDetails.client.data.map((client) => {
+  //       client.projects.map((project) => {
+  //         let newOption = {
+  //           _id: project._id,
+  //           name: project.name,
+  //         };
+  //         let exists = array.some((el) => el._id === newOption._id);
+  //         if (!exists) {
+  //           array.push(newOption);
+  //         }
+  //       });
+  //       setprojectOptions((prev) => [...array]);
+  //     });
+  //   } else return;
+  // }, [clientDetails, clients, employees]);
 
   //   make select client options
   console.log(clientDetails?.client?.data);

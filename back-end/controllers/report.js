@@ -307,6 +307,12 @@ const generateReport = asyncHandler(async (req, res) => {
                   project: "$project",
                   client: "$client",
                 },
+                internal: {
+                  $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
+                },
+                external: {
+                  $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
+                },
                 payRate: { $first: "$employee.payRate" },
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
@@ -359,6 +365,8 @@ const generateReport = asyncHandler(async (req, res) => {
                 payRate: { $first: "$payRate" },
                 projects: {
                   $push: {
+                    internal: "$internal",
+                    external: "$external",
                     client: "$client.name",
                     project: "$project.name",
                     count: "$actCount",
@@ -397,6 +405,12 @@ const generateReport = asyncHandler(async (req, res) => {
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
                 avgPerformanceData: { $avg: "$performanceData" },
+                internal: {
+                  $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
+                },
+                external: {
+                  $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
+                },
               },
             },
             {
@@ -413,6 +427,8 @@ const generateReport = asyncHandler(async (req, res) => {
 
                 users: {
                   $push: {
+                    internal: "$internal",
+                    external: "$external",
                     screenshots: "$screenshots",
                     payRate: "$payRate",
                     user: "$_id.userId",
@@ -583,6 +599,12 @@ const generateReport = asyncHandler(async (req, res) => {
                 },
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
+                internal: {
+                  $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
+                },
+                external: {
+                  $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
+                },
                 avgPerformanceData: { $avg: "$performanceData" },
                 actCount: { $sum: 1 },
               },
@@ -597,6 +619,8 @@ const generateReport = asyncHandler(async (req, res) => {
                 actCount: { $sum: 1 },
                 screenshots: {
                   $push: {
+                    internal: "$internal",
+                    external: "$external",
                     title: "$_id.ss",
                     actCount: { $sum: 1 },
                     totalHours: { $sum: "$consumeTime" },
@@ -629,6 +653,12 @@ const generateReport = asyncHandler(async (req, res) => {
                   project: "$project",
                   client: "$client",
                 },
+                internal: {
+                  $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
+                },
+                external: {
+                  $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
+                },
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
                 avgPerformanceData: { $avg: "$performanceData" },
@@ -640,6 +670,8 @@ const generateReport = asyncHandler(async (req, res) => {
                 _id: { project: "$_id.project", client: "$_id.client" },
                 users: {
                   $push: {
+                    internal: "$internal",
+                    external: "$external",
                     user: "$_id.userId",
                     firstName: "$_id.firstName",
                     lastName: "$_id.lastName",
@@ -699,7 +731,6 @@ const saveReports = asyncHandler(async (req, res) => {
     let userId = req.user._id;
     console.log(options);
     let { firstName, lastName } = await User.findById(userId);
-    console.log(reports);
     let fileName = userId + "-" + new Date().getTime();
 
     // STEP : Writing to a file
@@ -720,7 +751,7 @@ const saveReports = asyncHandler(async (req, res) => {
       name: `${firstName} ${lastName}`,
       fileName,
     });
-
+    console.log(saved);
     res.json({
       status: "Report saved",
       data: saved,
