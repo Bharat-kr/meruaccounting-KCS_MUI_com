@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import DatePicker from "./DatePicker";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
+import axios from "axios";
 // components
 import Graphs from "./Graphs";
 import SelectEmployees from "./SelectEmployees";
@@ -78,8 +79,22 @@ export default function Main() {
     { label: "Group by employee", value: "E" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
+  const componentMounted = React.useRef(true); // (3) component is mounted
 
-  // tab panels value
+  // ////////////////////////////////
+  const [ans, setAns] = React.useState([]);
+
+  const getAns = async () => {
+    const { data } = axios.post("/report/options").then((res) => {
+      setprojectOptions(res.data.projectsClientsOptions[0].projects);
+      setclientOptions(res.data.projectsClientsOptions[0].clients);
+    });
+  };
+
+  React.useEffect(() => {
+    getAns();
+  }, []);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -107,7 +122,7 @@ export default function Main() {
     console.log(reports);
   };
 
-  //   make select employee options
+  // make select employee options
   React.useEffect(() => {
     let array = [];
     getTeams.getTeam.map((team) => {
@@ -126,25 +141,25 @@ export default function Main() {
   }, [getTeams, clients, projects]);
 
   //   make select project options
-  React.useEffect(() => {
-    let array = [];
+  // React.useEffect(() => {
+  //   let array = [];
 
-    if (clientDetails?.loader === false) {
-      clientDetails.client.data.map((client) => {
-        client.projects.map((project) => {
-          let newOption = {
-            _id: project._id,
-            name: project.name,
-          };
-          let exists = array.some((el) => el._id === newOption._id);
-          if (!exists) {
-            array.push(newOption);
-          }
-        });
-        setprojectOptions((prev) => [...array]);
-      });
-    } else return;
-  }, [clientDetails, clients, employees]);
+  //   if (clientDetails?.loader === false) {
+  //     clientDetails.client.data.map((client) => {
+  //       client.projects.map((project) => {
+  //         let newOption = {
+  //           _id: project._id,
+  //           name: project.name,
+  //         };
+  //         let exists = array.some((el) => el._id === newOption._id);
+  //         if (!exists) {
+  //           array.push(newOption);
+  //         }
+  //       });
+  //       setprojectOptions((prev) => [...array]);
+  //     });
+  //   } else return;
+  // }, [clientDetails, clients, employees]);
 
   //   make select client options
   console.log(clientDetails?.client?.data);
