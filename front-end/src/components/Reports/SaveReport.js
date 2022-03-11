@@ -95,6 +95,15 @@ export default function SaveReport(props) {
   return (
     <div style={{ marginRight: "2.5%" }}>
       <Button variant="outlined" onClick={handleClickOpen}>
+        Export pdf
+      </Button>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+        Export excel
+      </Button>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+        Share Report
+      </Button>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
         Save Report
       </Button>
       <BootstrapDialog
