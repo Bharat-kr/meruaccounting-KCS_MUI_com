@@ -87,9 +87,9 @@ export default function Main() {
   const getAns = async () => {
     const { data } = axios.post("/report/options").then((res) => {
       setprojectOptions(res.data.projectsClientsOptions[0].projects);
-      setprojects(res.data.projectsClientsOptions[0].projects);
+      // setprojects(res.data.projectsClientsOptions[0].projects);
       setclientOptions(res.data.projectsClientsOptions[0].clients);
-      setclients(res.data.projectsClientsOptions[0].clients);
+      // setclients(res.data.projectsClientsOptions[0].clients);
       const empArr = Array.from(
         res.data.employeesOptions[0].members,
         function mapFn(mem, index) {
@@ -97,7 +97,7 @@ export default function Main() {
         }
       );
       setemployeeOptions(empArr);
-      setemployees(empArr);
+      // setemployees(empArr);
     });
   };
 
@@ -111,9 +111,9 @@ export default function Main() {
   const handleReportClick = async () => {
     const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
     const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
-    const userIds = employees.length ? employees : employeeOptions;
-    const projectIds = projects.length ? projects : projectOptions;
-    const clientIds = clients.length ? clients : clientOptions;
+    const userIds = employees.length ? employees : null;
+    const projectIds = projects.length ? projects : null;
+    const clientIds = clients.length ? clients : null;
     let groupBy = "";
     group.forEach((g) => {
       groupBy = groupBy.concat(g.value);

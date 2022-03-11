@@ -61,7 +61,7 @@ BootstrapDialogTitle.propTypes = {
 export default function SaveReport(props) {
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("");
+  const [name, setName] = React.useState(`${props.options.groupBy}`);
   const [url, setUrl] = React.useState(uuidv4());
 
   React.useEffect(() => {
