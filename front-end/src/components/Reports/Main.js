@@ -111,9 +111,9 @@ export default function Main() {
   const handleReportClick = async () => {
     const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
     const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
-    const userIds = employees.length ? employees : null;
-    const projectIds = projects.length ? projects : null;
-    const clientIds = clients.length ? clients : null;
+    const userIds = employees.length ? employees : employeeOptions;
+    const projectIds = projects.length ? projects : projectOptions;
+    const clientIds = clients.length ? clients : clientOptions;
     let groupBy = "";
     group.forEach((g) => {
       groupBy = groupBy.concat(g.value);
