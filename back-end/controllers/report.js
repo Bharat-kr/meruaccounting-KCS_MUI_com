@@ -960,6 +960,90 @@ const reportOptions = asyncHandler(async (req, res) => {
         },
       ]);
     }
+
+    if (user.role === "employee") {
+      employeesOptions = [
+        {
+          _id: user._id,
+          members: [
+            {
+              _id: user._id,
+              firstName: user.firstName,
+              lastName: user.lastName,
+            },
+          ],
+        },
+      ];
+
+      projectsClientsOptions = await User.aggregate([
+        {
+          $match: {
+            _id: user._id,
+          },
+        },
+        {
+          $lookup: {
+            from: "projects",
+            localField: "projects",
+            foreignField: "_id",
+            as: "projects",
+          },
+        },
+        {
+          $unwind: {
+            path: "$projects",
+            includeArrayIndex: "string",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "clients",
+            localField: "projects.client",
+            foreignField: "_id",
+            as: "projects.client",
+          },
+        },
+        {
+          $unwind: {
+            path: "$projects.client",
+            includeArrayIndex: "string",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            firstName: {
+              $first: "$firstName",
+            },
+            lastName: {
+              $first: "$lastName",
+            },
+            projects: {
+              $addToSet: "$projects",
+            },
+            clients: {
+              $addToSet: "$projects.client",
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+            "projects.client.name": 1,
+            "projects.client._id": 1,
+            "projects.name": 1,
+            "projects._id": 1,
+            "clients._id": 1,
+            "clients.name": 1,
+          },
+        },
+      ]);
+    }
+
     res.json({
       status: "options generated",
       employeesOptions,
