@@ -88,6 +88,50 @@ export default function Main() {
     <>
       {savedReports?.data[0] ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
+          {options?.user && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                heigth: "5rem",
+                width: "100%",
+              }}
+            >
+              <Typography variant="h3" sx={{ color: "color.primary" }}>
+                {options.user.firstName} {options.user.lastName}
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Name:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Date range:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.options.dateOne}-{options.options.dateTwo}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Employees:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Projects:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Group by:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+            </Box>
+          )}
           <Graphs style={{ margin: 10 }}></Graphs>
           {options?.options.groupBy === "E" ? (
             <ByEp sx={{ height: "auto" }} />
