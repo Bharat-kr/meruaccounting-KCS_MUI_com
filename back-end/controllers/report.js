@@ -732,6 +732,7 @@ const saveReports = asyncHandler(async (req, res) => {
       includeApps,
       options,
     } = req.body;
+
     let userId = req.user._id;
     console.log(options);
     let { firstName, lastName } = await User.findById(userId);
@@ -752,7 +753,7 @@ const saveReports = asyncHandler(async (req, res) => {
       includeAL,
       includePR,
       includeApps,
-      name: `${firstName} ${lastName}`,
+      name: name === "" ? `${firstName} ${lastName}` : name,
       fileName,
     });
     console.log(saved);
