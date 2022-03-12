@@ -76,7 +76,7 @@ export default function Main() {
   const { loginC } = React.useContext(loginContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState(null);
+  const [date, setdate] = React.useState([null, null]);
   const [employeeOptions, setemployeeOptions] = React.useState([]);
   const [projectOptions, setprojectOptions] = React.useState([]);
   const [clientOptions, setclientOptions] = React.useState([]);
@@ -115,8 +115,8 @@ export default function Main() {
     setValue(newValue);
   };
   const handleReportClick = async () => {
-    const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
-    const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
+    const dateOne = date[0] ? date[0].format("DD/MM/YYYY") : null;
+    const dateTwo = date[1] ? date[1].format("DD/MM/YYYY") : null;
     const userIds = employees.length ? employees : null;
     const projectIds = projects.length ? projects : null;
     const clientIds = clients.length ? clients : null;
