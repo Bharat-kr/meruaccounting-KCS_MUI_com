@@ -88,18 +88,10 @@ export default function Main() {
     // { label: "Group by project", value: "P" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
-<<<<<<< HEAD
-  const componentMounted = React.useRef(true); // (3) component is mounted
-
-  // for options
-  const getOptions = async () => {
-    const { data } = axios.post("/report/options").then((res) => {
-=======
 
   // get report options
   const getOptions = async () => {
     axios.post("/report/options").then((res) => {
->>>>>>> 94b2bc96fa275036f502779d2fc445c594f745c2
       setprojectOptions(res.data.projectsClientsOptions[0].projects);
       setprojects(res.data.projectsClientsOptions[0].projects);
       setclientOptions(res.data.projectsClientsOptions[0].clients);
@@ -277,12 +269,9 @@ export default function Main() {
           <ByLL sx={{ height: "auto" }} reports={reports} />
         </div> */}
       </TabPanel>
-<<<<<<< HEAD
       {/* <TabPanel value={value} index={1}>
         hello
       </TabPanel>
-=======
->>>>>>> 94b2bc96fa275036f502779d2fc445c594f745c2
       <TabPanel value={value} index={2}>
         hello
       </TabPanel> */}
