@@ -17,6 +17,8 @@ import SelectGroup from "./SelectGroup";
 import SaveReport from "./SaveReport";
 
 // contexts and apis
+
+import { loginContext } from "../../contexts/LoginContext";
 import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
@@ -70,6 +72,8 @@ export default function Main() {
   const { clientDetails } = React.useContext(ClientsContext);
   //
   const { reports, dispatchGetReports } = React.useContext(reportsContext);
+  //
+  const { loginC } = React.useContext(loginContext);
 
   // variable for date, employees, and projects
   const [date, setdate] = React.useState(null);
@@ -84,15 +88,22 @@ export default function Main() {
     // { label: "Group by project", value: "P" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
+<<<<<<< HEAD
   const componentMounted = React.useRef(true); // (3) component is mounted
 
   // for options
   const getOptions = async () => {
     const { data } = axios.post("/report/options").then((res) => {
+=======
+
+  // get report options
+  const getOptions = async () => {
+    axios.post("/report/options").then((res) => {
+>>>>>>> 94b2bc96fa275036f502779d2fc445c594f745c2
       setprojectOptions(res.data.projectsClientsOptions[0].projects);
-      // setprojects(res.data.projectsClientsOptions[0].projects);
+      setprojects(res.data.projectsClientsOptions[0].projects);
       setclientOptions(res.data.projectsClientsOptions[0].clients);
-      // setclients(res.data.projectsClientsOptions[0].clients);
+      setclients(res.data.projectsClientsOptions[0].clients);
       const empArr = Array.from(
         res.data.employeesOptions[0].members,
         function mapFn(mem, index) {
@@ -100,7 +111,7 @@ export default function Main() {
         }
       );
       setemployeeOptions(empArr);
-      // setemployees(empArr);
+      setemployees(empArr);
     });
   };
 
@@ -194,9 +205,7 @@ export default function Main() {
           aria-label="basic tabs example"
         >
           <Tab label="Summary" {...a11yProps(0)} />
-          <Tab label="Details" {...a11yProps(1)} />
-          <Tab label="Weekly Report" {...a11yProps(2)} />
-          <Tab label="Saved Report" {...a11yProps(3)} />
+          <Tab label="Saved Report" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -211,12 +220,14 @@ export default function Main() {
             setemployees(newValue);
           }}
         />
-        <SelectClients
-          options={clientOptions}
-          setClients={(newValue) => {
-            setclients(newValue);
-          }}
-        />
+        {loginC?.userData?.role !== "employee" ? (
+          <SelectClients
+            options={clientOptions}
+            setClients={(newValue) => {
+              setclients(newValue);
+            }}
+          />
+        ) : null}
         <SelectProjects
           options={projectOptions}
           setProjects={(newValue) => {
@@ -266,15 +277,13 @@ export default function Main() {
           <ByLL sx={{ height: "auto" }} reports={reports} />
         </div> */}
       </TabPanel>
+<<<<<<< HEAD
       {/* <TabPanel value={value} index={1}>
         hello
       </TabPanel>
+=======
+>>>>>>> 94b2bc96fa275036f502779d2fc445c594f745c2
       <TabPanel value={value} index={2}>
-        {" "}
-        hello
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        {" "}
         hello
       </TabPanel> */}
 
