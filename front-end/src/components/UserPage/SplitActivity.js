@@ -173,16 +173,28 @@ const SplitActivity = ({
 
     if (deleteActivity) {
       await deleteAct(act._id, date, dispatchCommonData);
+      enqueueSnackbar("Deleted Activity", {
+        variant: "success",
+      });
+      await getCommonData(dispatchCommonData);
     } else {
       await axios
         .patch(`/activity/${act._id}`, data)
         .then((res) => {
           console.log(res);
+          enqueueSnackbar("Time Edited", {
+            variant: "success",
+          });
         })
         .catch((err) => {
+          enqueueSnackbar("Error occured", {
+            variant: "error",
+          });
           console.log(err);
         });
+      await getCommonData(dispatchCommonData);
     }
+    handleClose();
   };
 
   return (

@@ -44,7 +44,7 @@ const OfflineTime = ({ date }) => {
   const [endTime, setEndTime] = React.useState("");
   const [internal, setInternal] = React.useState(false);
   const [modal, setModal] = useState(false);
-  const { commonData , dispatchCommonData} = useContext(CurrentUserContext);
+  const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
   const { enqueueSnackbar } = useSnackbar();
 
   //get projects
@@ -111,6 +111,7 @@ const OfflineTime = ({ date }) => {
       task: "offline",
       projectId: projectSelected.split("-")[0],
       startTime: startValue,
+      consumeTime: (endValue - startValue) / 1000,
       endTime: endValue,
       performanceData: 100,
       isInternal: internal,
@@ -128,6 +129,9 @@ const OfflineTime = ({ date }) => {
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar("Error occured", {
+          variant: "error",
+        });
       });
     handleClose();
   };

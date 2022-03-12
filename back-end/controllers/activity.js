@@ -61,6 +61,7 @@ const createActivity = asyncHandler(async (req, res) => {
     projectId,
     task,
     startTime,
+    consumeTime,
     endTime,
     performanceData,
     isInternal,
@@ -78,6 +79,7 @@ const createActivity = asyncHandler(async (req, res) => {
     performanceData,
     startTime,
     endTime,
+    consumeTime,
     isInternal,
     activityOn: today,
   });
