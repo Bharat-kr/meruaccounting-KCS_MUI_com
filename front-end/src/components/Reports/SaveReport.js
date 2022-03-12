@@ -1,7 +1,12 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
+import {
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -16,6 +21,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 // context
 import { reportsContext } from "../../contexts/ReportsContext";
@@ -61,9 +67,60 @@ BootstrapDialogTitle.propTypes = {
 export default function SaveReport(props) {
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("");
+  const [name, setName] = React.useState(`${props.options.groupBy}`);
+  const [checked, setChecked] = React.useState([false, ""]);
+  const [ssval, setSsval] = React.useState([false, ""]);
+  const [moneyval, setMoneyval] = React.useState([false, ""]);
+  const [alval, setAlval] = React.useState([false, ""]);
+  const [appurl, setAppurl] = React.useState([false, ""]);
+  const { enqueueSnackbar } = useSnackbar();
+
   const [url, setUrl] = React.useState(uuidv4());
 
+  // console.log(props);
+  // Default name of the saved report
+  React.useEffect(() => {
+    if (props.options.groupBy === "E") {
+      props.options?.userIds?.length
+        ? setName(
+            `${props.options.userIds?.length} employee - Summary by employees`
+          )
+        : setName(`Summary by employees`);
+      return;
+    }
+    if (props.options.groupBy === "D") {
+      props.options.userIds?.length
+        ? setName(
+            `${props.options.userIds.length} employee - Summary by details`
+          )
+        : setName(`Summary by Details`);
+      return;
+    }
+    if (props.options.groupBy === "P") {
+      props.options.userIds?.length
+        ? setName(
+            `${props.options?.userIds.length} employee - Summary by projects`
+          )
+        : setName(`Summary by projects`);
+      return;
+    }
+    if (props.options.groupBy === "C") {
+      props.options.userIds?.length
+        ? setName(
+            `${props.options?.userIds?.length} employee - Summary by Clients`
+          )
+        : setName(`Summary by Clients`);
+      return;
+    }
+    if (props.options.groupBy === "A") {
+      props.options?.userIds?.length
+        ? setName(
+            `${props.options?.userIds?.length} employee - Summary by Apps&Url`
+          )
+        : setName(`Summary by App&Urls`);
+      return;
+    }
+  }, [props.options]);
   React.useEffect(() => {
     setUrl(uuidv4());
   }, [open]);
@@ -78,23 +135,82 @@ export default function SaveReport(props) {
   const handleClickSave = async () => {
     setOpen(false);
     const data = {
+      includeSS: ssval[0],
+      includeAL: alval[0],
+      includePR: moneyval[0],
+      includeApps: appurl[0],
       reports: reports.reports,
       url,
       name,
       options: props.options,
     };
+
     const savedData = await axios.post("/report/save", data);
     navigator.clipboard.writeText(
       `http://localhost:3000/reports/sharedReports/${url}`
     );
+    enqueueSnackbar("link copied", { variant: "success" });
   };
   const handleClose = () => {
     setOpen(false);
   };
 
+  const handleChange1 = (event) => {
+    setChecked([!checked[0], event.target.value]);
+  };
+
+  const handleChange2 = (event) => {
+    setSsval([!ssval[0], event.target.value]);
+    console.log(event.target.value);
+  };
+
+  const handleChange3 = (event) => {
+    setMoneyval([!moneyval[0], event.target.value]);
+    console.log(event.target.value);
+  };
+  const handleChange4 = (event) => {
+    setAlval([!alval[0], event.target.value]);
+    console.log(event.target.value);
+  };
+  const handleChange5 = (event) => {
+    setAppurl([!appurl[0], event.target.value]);
+    console.log(event.target.value);
+  };
+
+  const children = (
+    <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+      <FormControlLabel
+        label="Include screenshots"
+        control={<Checkbox checked={ssval[0]} onChange={handleChange2} />}
+      />
+      <FormControlLabel
+        label="Include money"
+        control={<Checkbox checked={moneyval[0]} onChange={handleChange3} />}
+      />
+      <FormControlLabel
+        label="Include activity level"
+        control={<Checkbox checked={alval[0]} onChange={handleChange4} />}
+      />
+
+      <FormControlLabel
+        label="Include Apps&Url"
+        control={<Checkbox checked={appurl[0]} onChange={handleChange5} />}
+      />
+    </Box>
+  );
+
   return (
     <div style={{ marginRight: "2.5%" }}>
       <Button variant="outlined" onClick={handleClickOpen}>
+        Export pdf
+      </Button>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+        Export excel
+      </Button>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+        Share Report
+      </Button>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
         Save Report
       </Button>
       <BootstrapDialog
@@ -113,7 +229,7 @@ export default function SaveReport(props) {
           <Typography gutterBottom>
             Description: summary by (group by) get from props, also get other
             details from props and make options here to send as save reports
-            options
+            options.Set
           </Typography>
           <FormControl>
             <InputLabel htmlFor="component-outlined">Name</InputLabel>
@@ -134,10 +250,17 @@ export default function SaveReport(props) {
               }}
             />
           </Box>
+          <div>
+            <FormControlLabel
+              label="Share Report"
+              control={<Checkbox checked={checked} onChange={handleChange1} />}
+            />
+            {children}
+          </div>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClickSave}>
-            Save
+            Save and Copy
           </Button>
         </DialogActions>
       </BootstrapDialog>

@@ -71,9 +71,8 @@ export default function BasicTabs() {
           aria-label="basic tabs example"
         >
           <Tab label="Summary" {...a11yProps(0)} />
-          <Tab label="Details" {...a11yProps(1)} />
-          <Tab label="Weekly Report" {...a11yProps(2)} />
-          <Tab label="Saved Report" {...a11yProps(3)} />
+          <Tab label="Weekly Report" {...a11yProps(1)} />
+          <Tab label="Saved Report" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>

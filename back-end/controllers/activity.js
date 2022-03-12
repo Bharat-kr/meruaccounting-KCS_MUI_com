@@ -4,6 +4,7 @@ import Project from "../models/project.js";
 import Screenshot from "../models/screenshot.js";
 import asyncHandler from "express-async-handler";
 import dayjs from "dayjs";
+import mongoose from "mongoose";
 
 // @desc    Add a new screenshot
 // @route   POST /activity/screenshot
@@ -134,12 +135,12 @@ const splitActivity = asyncHandler(async (req, res) => {
   const intialActivity = await Activity.findById(activityId).populate(
     "screenshots"
   );
-  console.log("These are intitialActivity", intialActivity);
+  // console.log("These are intitialActivity", intialActivity);
 
   const intitialActivityTime = parseInt(intialActivity.startTime);
   const finalActivityTime = intialActivity.endTime;
   const screenShots = intialActivity.screenshots;
-  console.log("These are screenShots", screenShots);
+  // console.log("These are screenShots", screenShots);
 
   const activity1 = await Activity.create({
     employee: req.user._id,
@@ -162,12 +163,9 @@ const splitActivity = asyncHandler(async (req, res) => {
     isInternal,
   });
 
-  console.log("This is activity 1", activity1);
-  console.log("This is activity 2", activity2);
-
   if (activity1) {
     const user = await User.findById(req.user._id);
-    console.log(user);
+    // console.log(user);
 
     let today = dayjs().format("DD/MM/YYYY");
 
@@ -275,12 +273,12 @@ const updateActivity = asyncHandler(async (req, res) => {
     const updateProjectTime = await Activity.aggregate([
       {
         $match: {
-          project: projectId,
+          project: mongoose.Types.ObjectId(projectId),
         },
       },
       {
         $group: {
-          _id: project,
+          _id: "$project",
           internal: {
             $sum: { $cond: ["$isInternal", "$consumeTime", 0] },
           },
@@ -294,7 +292,7 @@ const updateActivity = asyncHandler(async (req, res) => {
       },
     ]);
     // updateProjectTime[0].consumeTime
-
+    console.log(updateProjectTime);
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
       {
@@ -423,6 +421,12 @@ const deleteActivity = asyncHandler(async (req, res) => {
     );
 
     let activity = await Activity.findById(activityId);
+    let projectId = activity.project;
+    const project = await Project.findById(projectId);
+    project.activities = project.activities.filter(
+      (_id) => _id.toHexString() !== activityId
+    );
+    await project.save();
 
     if (!activity) {
       res.status(404);

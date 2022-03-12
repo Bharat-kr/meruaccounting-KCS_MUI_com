@@ -19,7 +19,7 @@ const ac = new AccessControl(grantsObject);
 // @access  Private
 
 const getAllEmployee = asyncHandler(async (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
   const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
     try {

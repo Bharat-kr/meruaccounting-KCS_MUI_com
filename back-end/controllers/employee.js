@@ -73,16 +73,15 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
           const dayObj = dayArr[j];
           let today = dayjs().format("DD/MM/YYYY").toString();
           // let today = dayjs().format("DD/MM/YYYY");
-          console.log("Today:", today);
+          // console.log("Today:", today);
           if (dayObj.date == today) {
-            console.log("Inside If");
+            // console.log("Inside If");
             todayHours = dayObj.dailyHours;
 
-            console.log("todayHours", todayHours);
+            // console.log("todayHours", todayHours);
 
             yesterday = dayArr[j - 1];
             yesterdayHours = yesterday.dailyHours;
-            console.log("yesterdayHours", yesterdayHours);
 
             // tomorrow = dayArr[j + 1];
             // tomorrowHours = tomorrow.dailyHours;
@@ -93,7 +92,7 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
         let today = dayjs().format("DD/MM/YYYY").toString();
         let thisMonth = dayjs().month();
         let thisYear = dayjs().year();
-        console.log("This Month", thisMonth);
+        // console.log("This Month", thisMonth);
         const firstDate = dayjs()
           .date(1)
           .month(thisMonth)
@@ -107,7 +106,7 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
 
         // console.log("This is Day:", dayObj);
 
-        console.log("First And Loss", firstDate, lastDate);
+        // console.log("First And Loss", firstDate, lastDate);
         dayjs.extend(weekday);
 
         // when Sunday is the first day of the week
@@ -115,7 +114,7 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
         const weekStart = dayjs().weekday(-7).format("DD/MM/YYYY");
         const weekEnd = dayjs().weekday(7).format("DD/MM/YYYY"); // next Sunday
 
-        console.log("Week Start And WekkEnd", weekStart, weekEnd);
+        // console.log("Week Start And WekkEnd", weekStart, weekEnd);
 
         const totalMonth = await User.aggregate([
           {
@@ -317,7 +316,7 @@ const deleteEmployee = asyncHandler(async (req, res) => {
 // @access  Private
 
 const editEmployee = asyncHandler(async (req, res) => {
-  console.log("Inside Route");
+  // console.log("Inside Route");
   const permission = ac.can(req.user.role).updateOwn("members");
   if (permission.granted) {
     const employeeId = req.params.id;

@@ -21,6 +21,9 @@ import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
 import ByPr from "./ByPr";
+import ByCl from "./ByCL";
+import ByD from "./ByDetailed";
+import ByAppUrl from "./ByApp&Url";
 import GridExample from "../../components/SavedReports/ByEp";
 
 function TabPanel(props) {
@@ -65,52 +68,84 @@ export default function Main() {
   //
   const { clientDetails } = React.useContext(ClientsContext);
   //
-  const { reports, dispatchGetReports } = React.useContext(reportsContext);
+  const { reports, savedReports, dispatchGetReports } =
+    React.useContext(reportsContext);
 
   // variable for date, employees, and projects
   const [date, setdate] = React.useState(null);
-  const [employeeOptions, setemployeeOptions] = React.useState([]);
-  const [projectOptions, setprojectOptions] = React.useState([]);
-  const [clientOptions, setclientOptions] = React.useState([]);
+  const [options, setOptions] = React.useState([]);
   const [employees, setemployees] = React.useState([]);
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
-  const [group, setgroup] = React.useState([
-    "Group by employee",
-    "Group by project",
-  ]);
+
+  React.useEffect(() => {
+    setOptions(savedReports?.data[0]);
+  }, [savedReports]);
 
   // tab panels value
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const handleReportClick = async () => {
-    const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
-    const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
-    const userIds = employees.length ? employees : null;
-    const projectIds = projects.length ? projects : null;
-    const clientIds = clients.length ? clients : null;
-    const options = {
-      clientIds,
-      projectIds,
-      userIds,
-      dateOne,
-      dateTwo,
-    };
-    console.log(options);
-    getReports(dispatchGetReports, options);
-    console.log(reports);
-  };
 
   return (
     <>
-      {true ? (
+      {savedReports?.data[0] ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
+          {options?.user && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                heigth: "5rem",
+                width: "100%",
+              }}
+            >
+              <Typography variant="h3" sx={{ color: "color.primary" }}>
+                {options.user.firstName} {options.user.lastName}
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Name:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Date range:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.options.dateOne}-{options.options.dateTwo}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Employees:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Projects:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+                <Typography variant="h6">Group by:</Typography>
+                <Typography varinat="" sx={{ ml: 1 }}>
+                  {options.fileName}
+                </Typography>
+              </Box>
+            </Box>
+          )}
           <Graphs style={{ margin: 10 }}></Graphs>
-          {/* <ByEp sx={{ height: "auto" }} /> */}
-          <ByPr sx={{ height: "auto" }} />
-          {/* <GridExample /> */}
-          {/* </TabPanel> */}
+          {options?.options.groupBy === "E" ? (
+            <ByEp sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "Pr" ? (
+            <ByPr sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "Cl" ? (
+            <ByCl sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "D" ? (
+            <ByD sx={{ height: "auto" }} />
+          ) : options?.options.groupBy === "A" ? (
+            <ByAppUrl sx={{ height: "auto" }} />
+          ) : (
+            ""
+          )}
         </Box>
       ) : null}
     </>

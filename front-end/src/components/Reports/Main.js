@@ -1,12 +1,13 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { Tabs } from "@mui/material";
+import { Tabs, Paper } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DatePicker from "./DatePicker";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
+import axios from "axios";
 // components
 import Graphs from "./Graphs";
 import SelectEmployees from "./SelectEmployees";
@@ -16,10 +17,17 @@ import SelectGroup from "./SelectGroup";
 import SaveReport from "./SaveReport";
 
 // contexts and apis
+
+import { loginContext } from "../../contexts/LoginContext";
 import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
+import ByEp from "./ByEp";
+import ByPr from "./ByPr";
+import ByCl from "./ByCL";
+import ByDetailed from "./ByDetailed";
+import ByAppsUrl from "./ByApp&Url";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -64,6 +72,8 @@ export default function Main() {
   const { clientDetails } = React.useContext(ClientsContext);
   //
   const { reports, dispatchGetReports } = React.useContext(reportsContext);
+  //
+  const { loginC } = React.useContext(loginContext);
 
   // variable for date, employees, and projects
   const [date, setdate] = React.useState(null);
@@ -74,12 +84,33 @@ export default function Main() {
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
   const [group, setgroup] = React.useState([
-    { label: "Group by project", value: "P" },
     { label: "Group by employee", value: "E" },
+    // { label: "Group by project", value: "P" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
-  // tab panels value
+  // get report options
+  const getOptions = async () => {
+    axios.post("/report/options").then((res) => {
+      setprojectOptions(res.data.projectsClientsOptions[0].projects);
+      setprojects(res.data.projectsClientsOptions[0].projects);
+      setclientOptions(res.data.projectsClientsOptions[0].clients);
+      setclients(res.data.projectsClientsOptions[0].clients);
+      const empArr = Array.from(
+        res.data.employeesOptions[0].members,
+        function mapFn(mem, index) {
+          return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
+        }
+      );
+      setemployeeOptions(empArr);
+      setemployees(empArr);
+    });
+  };
+
+  React.useEffect(() => {
+    getOptions();
+  }, []);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -102,65 +133,61 @@ export default function Main() {
       groupBy,
     };
     setSaveReportOptions(options);
-    console.log(options);
     getReports(dispatchGetReports, options);
-    console.log(reports);
   };
 
-  //   make select employee options
-  React.useEffect(() => {
-    let array = [];
-    getTeams.getTeam.map((team) => {
-      team.members.map((member) => {
-        let newOption = {
-          _id: member._id,
-          name: `${member.firstName} ${member.lastName}`,
-        };
-        let exists = array.some((el) => el._id === newOption._id);
-        if (!exists) {
-          array.push(newOption);
-        }
-      });
-      setemployeeOptions((prev) => [...array]);
-    });
-  }, [getTeams, clients, projects]);
+  // make select employee options
+  // React.useEffect(() => {
+  //   let array = [];
+  //   getTeams.getTeam.map((team) => {
+  //     team.members.map((member) => {
+  //       let newOption = {
+  //         _id: member._id,
+  //         name: `${member.firstName} ${member.lastName}`,
+  //       };
+  //       let exists = array.some((el) => el._id === newOption._id);
+  //       if (!exists) {
+  //         array.push(newOption);
+  //       }
+  //     });
+  //     setemployeeOptions((prev) => [...array]);
+  //   });
+  // }, [getTeams, clients, projects]);
 
   //   make select project options
-  React.useEffect(() => {
-    let array = [];
+  // React.useEffect(() => {
+  //   let array = [];
 
-    if (clientDetails?.loader === false) {
-      clientDetails.client.data.map((client) => {
-        client.projects.map((project) => {
-          let newOption = {
-            _id: project._id,
-            name: project.name,
-          };
-          let exists = array.some((el) => el._id === newOption._id);
-          if (!exists) {
-            array.push(newOption);
-          }
-        });
-        setprojectOptions((prev) => [...array]);
-      });
-    } else return;
-  }, [clientDetails, clients, employees]);
+  //   if (clientDetails?.loader === false) {
+  //     clientDetails.client.data.map((client) => {
+  //       client.projects.map((project) => {
+  //         let newOption = {
+  //           _id: project._id,
+  //           name: project.name,
+  //         };
+  //         let exists = array.some((el) => el._id === newOption._id);
+  //         if (!exists) {
+  //           array.push(newOption);
+  //         }
+  //       });
+  //       setprojectOptions((prev) => [...array]);
+  //     });
+  //   } else return;
+  // }, [clientDetails, clients, employees]);
 
   //   make select client options
-  console.log(clientDetails?.client?.data);
-  React.useEffect(() => {
-    if (clientDetails.loader === false) {
-      clientDetails.client.data.map((client) => {
-        let newOption = {
-          _id: client._id,
-          name: client.name,
-        };
-        let index = clientOptions.findIndex((x) => x._id === client._id);
-        if (index === -1) setclientOptions((prev) => [...prev, newOption]);
-      });
-    } else return;
-  }, [clientDetails, projects, employees]);
-
+  // React.useEffect(() => {
+  //   if (clientDetails.loader === false) {
+  //     clientDetails?.client?.data.map((client) => {
+  //       let newOption = {
+  //         _id: client._id,
+  //         name: client.name,
+  //       };
+  //       let index = clientOptions.findIndex((x) => x._id === client._id);
+  //       if (index === -1) setclientOptions((prev) => [...prev, newOption]);
+  //     });
+  //   } else return;
+  // }, [clientDetails, projects, employees]);
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -170,9 +197,7 @@ export default function Main() {
           aria-label="basic tabs example"
         >
           <Tab label="Summary" {...a11yProps(0)} />
-          <Tab label="Details" {...a11yProps(1)} />
-          <Tab label="Weekly Report" {...a11yProps(2)} />
-          <Tab label="Saved Report" {...a11yProps(3)} />
+          <Tab label="Saved Report" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -187,12 +212,14 @@ export default function Main() {
             setemployees(newValue);
           }}
         />
-        <SelectClients
-          options={clientOptions}
-          setClients={(newValue) => {
-            setclients(newValue);
-          }}
-        />
+        {loginC?.userData?.role !== "employee" ? (
+          <SelectClients
+            options={clientOptions}
+            setClients={(newValue) => {
+              setclients(newValue);
+            }}
+          />
+        ) : null}
         <SelectProjects
           options={projectOptions}
           setProjects={(newValue) => {
@@ -201,7 +228,6 @@ export default function Main() {
         />
         <SelectGroup
           setGroup={(newValue) => {
-            console.log(newValue);
             setgroup(newValue);
           }}
         />
@@ -220,19 +246,38 @@ export default function Main() {
             <SaveReport options={saveReportsOptions}></SaveReport>
           ) : null}
         </Box>
-        {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
+
+        {!reports.loader ? (
+          <>
+            <Graphs style={{ margin: 10 }}></Graphs>
+            {group.filter((grp) => grp.value === "E").length !== 0 ? (
+              <ByEp sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "P").length !== 0 ? (
+              <ByPr sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "C").length !== 0 ? (
+              <ByCl sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "D").length !== 0 ? (
+              <ByDetailed sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "A").length !== 0 ? (
+              <ByAppsUrl sx={{ height: "auto" }} reports={reports} />
+            ) : (
+              ""
+            )}
+          </>
+        ) : null}
+        {/* <div>
+          <ByLL sx={{ height: "auto" }} reports={reports} />
+        </div> */}
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      {/* <TabPanel value={value} index={1}>
         hello
       </TabPanel>
       <TabPanel value={value} index={2}>
-        {" "}
         hello
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        {" "}
-        hello
-      </TabPanel>
+      </TabPanel> */}
+
+      {/* <GridExample /> */}
+      {/* </TabPanel> */}
     </Box>
   );
 }

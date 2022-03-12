@@ -607,7 +607,7 @@ import mongoose from "mongoose";
 const generateReportByIds = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     const employeeDetails = [];
 
     if (!projectIds) {
@@ -632,7 +632,7 @@ const generateReportByIds = asyncHandler(async (req, res) => {
       });
     }
 
-    console.log(projectIds);
+    // console.log(projectIds);
 
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
