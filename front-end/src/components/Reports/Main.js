@@ -1,6 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { Tabs } from "@mui/material";
+import { Tabs, Paper } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -23,6 +23,11 @@ import { teamContext } from "../../contexts/TeamsContext";
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
+import ByEp from "./ByEp";
+import ByPr from "./ByPr";
+import ByCl from "./ByCL";
+import ByDetailed from "./ByDetailed";
+import ByAppsUrl from "./ByApp&Url";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -79,8 +84,8 @@ export default function Main() {
   const [projects, setprojects] = React.useState([]);
   const [clients, setclients] = React.useState([]);
   const [group, setgroup] = React.useState([
-    { label: "Group by project", value: "P" },
     { label: "Group by employee", value: "E" },
+    // { label: "Group by project", value: "P" },
   ]);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
@@ -128,9 +133,7 @@ export default function Main() {
       groupBy,
     };
     setSaveReportOptions(options);
-    // console.log(options);
     getReports(dispatchGetReports, options);
-    // console.log(reports);
   };
 
   // make select employee options
@@ -173,10 +176,9 @@ export default function Main() {
   // }, [clientDetails, clients, employees]);
 
   //   make select client options
-  // console.log(clientDetails?.client?.data);
   // React.useEffect(() => {
   //   if (clientDetails.loader === false) {
-  //     clientDetails.client.data.map((client) => {
+  //     clientDetails?.client?.data.map((client) => {
   //       let newOption = {
   //         _id: client._id,
   //         name: client.name,
@@ -186,7 +188,6 @@ export default function Main() {
   //     });
   //   } else return;
   // }, [clientDetails, projects, employees]);
-
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -245,11 +246,38 @@ export default function Main() {
             <SaveReport options={saveReportsOptions}></SaveReport>
           ) : null}
         </Box>
-        {!reports.loader ? <Graphs style={{ margin: 10 }}></Graphs> : null}
+
+        {!reports.loader ? (
+          <>
+            <Graphs style={{ margin: 10 }}></Graphs>
+            {group.filter((grp) => grp.value === "E").length !== 0 ? (
+              <ByEp sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "P").length !== 0 ? (
+              <ByPr sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "C").length !== 0 ? (
+              <ByCl sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "D").length !== 0 ? (
+              <ByDetailed sx={{ height: "auto" }} reports={reports} />
+            ) : group.filter((grp) => grp.value === "A").length !== 0 ? (
+              <ByAppsUrl sx={{ height: "auto" }} reports={reports} />
+            ) : (
+              ""
+            )}
+          </>
+        ) : null}
+        {/* <div>
+          <ByLL sx={{ height: "auto" }} reports={reports} />
+        </div> */}
+      </TabPanel>
+      {/* <TabPanel value={value} index={1}>
+        hello
       </TabPanel>
       <TabPanel value={value} index={2}>
         hello
-      </TabPanel>
+      </TabPanel> */}
+
+      {/* <GridExample /> */}
+      {/* </TabPanel> */}
     </Box>
   );
 }

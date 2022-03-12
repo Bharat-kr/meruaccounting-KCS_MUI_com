@@ -78,9 +78,9 @@ function Row(props) {
           </ImageIcon>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.Project}
+          {row.Employee}
         </TableCell>
-        <TableCell align="left">{row.Employee}</TableCell>
+        <TableCell align="left">{row.Project}</TableCell>
         <TableCell align="left">{row.Duration}</TableCell>
         <TableCell align="left">{row.Money}</TableCell>
         <TableCell align="left">{row.Activity}</TableCell>
@@ -183,31 +183,28 @@ Row.propTypes = {
   }).isRequired,
 };
 
-export default function ByPr() {
+export default function ByD() {
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
   React.useEffect(() => {
-    let arr = [];
-    savedReports.reports[0]?.byPE?.map((pro) => {
-      pro.users.map((emp) => {
-        arr.push({
-          Project: `${
-            pro.client[0]?.name ? pro?.client[0].name : "Deleted client"
-          } :
-              ${
-                pro.project[0]?.name ? pro?.project[0]?.name : "Deleted project"
-              }`,
+    console.log(savedReports.reports[0]?.byPR);
 
-          Employee: `${emp.firstName} ${emp.lastName}`,
-          Duration: `${(emp.totalHours / 3600).toFixed(2)} hr`,
-          Money: ((emp?.totalHours / 3600) * emp?.payRate).toFixed(2),
-          Activity: emp.performanceData,
-          Ss: pro.screenshots,
-        });
+    let arr = [];
+    savedReports.reports[0]?.byD?.map((emp) => {
+      const act = emp.performanceData;
+      arr.push({
+        Employee: `${emp.employee.firstName} ${emp.employee.lastName}`,
+        Project: `${emp?.project?.name ? emp.project.name : "Deleted project"}`,
+
+        Duration: (emp.totalHours / 3600).toFixed(2),
+        Activity: (act / 1).toFixed(2),
+        Money: ((emp?.totalHours / 3600) * emp.employee.payRate).toFixed(2),
+        Ss: emp.screenshots[0],
       });
     });
     setRowData(arr);
   }, [savedReports]);
+  console.log(rowData);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -219,8 +216,8 @@ export default function ByPr() {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Project</TableCell>
-            <TableCell align="left">Employee</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell align="left">Project</TableCell>
             <TableCell align="left">Duration</TableCell>
             <TableCell align="left">Money</TableCell>
             <TableCell align="left">Activity</TableCell>

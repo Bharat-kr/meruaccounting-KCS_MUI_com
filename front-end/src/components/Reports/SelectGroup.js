@@ -11,10 +11,7 @@ export default function SelectGroup({ setGroup }) {
     { label: "Group by client", value: "C" },
   ];
 
-  const [value, setvalue] = React.useState([
-    selectGroupOptions[1],
-    selectGroupOptions[0],
-  ]);
+  const [value, setvalue] = React.useState([selectGroupOptions[0]]);
   const typoStyle = {
     m: 1,
     opacity: 0.8,
@@ -33,7 +30,7 @@ export default function SelectGroup({ setGroup }) {
             ...typoStyle,
           }}
           onClick={() => {
-            setvalue([selectGroupOptions[1], selectGroupOptions[0]]);
+            setvalue([selectGroupOptions[1]]);
           }}
         >
           Summary by project
@@ -43,7 +40,7 @@ export default function SelectGroup({ setGroup }) {
             ...typoStyle,
           }}
           onClick={() => {
-            setvalue([selectGroupOptions[4], selectGroupOptions[0]]);
+            setvalue([selectGroupOptions[4]]);
           }}
         >
           Summary by client
@@ -54,7 +51,7 @@ export default function SelectGroup({ setGroup }) {
           }}
           onClick={() => {
             console.log("two");
-            setvalue([selectGroupOptions[0], selectGroupOptions[1]]);
+            setvalue([selectGroupOptions[1]]);
           }}
         >
           Summary by employee

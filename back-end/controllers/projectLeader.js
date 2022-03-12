@@ -14,7 +14,7 @@ import weekday from "dayjs/plugin/weekday.js";
 const ac = new AccessControl(grantsObject);
 
 const getProjectMembers = asyncHandler(async (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
   const permission = ac.can(req.user.role).readOwn("project");
   if (permission.granted) {
     try {
@@ -39,7 +39,7 @@ const getProjectMembers = asyncHandler(async (req, res) => {
         },
       ]);
 
-      console.log(members);
+      // console.log(members);
       let userIds;
       if (members.length !== 0) {
         userIds = members[0].employees;
