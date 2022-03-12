@@ -77,7 +77,8 @@ export default function SaveReport(props) {
 
   const [url, setUrl] = React.useState(uuidv4());
 
-  console.log(props);
+  // console.log(props);
+  // Default name of the saved report
   React.useEffect(() => {
     if (props.options.groupBy === "E") {
       props.options?.userIds?.length
@@ -134,6 +135,10 @@ export default function SaveReport(props) {
   const handleClickSave = async () => {
     setOpen(false);
     const data = {
+      includeSS: ssval[0],
+      includeAL: alval[0],
+      includePR: moneyval[0],
+      includeApps: appurl[0],
       reports: reports.reports,
       url,
       name,
