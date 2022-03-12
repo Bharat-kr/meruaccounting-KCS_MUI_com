@@ -187,6 +187,7 @@ export default function Activity({
         </Box>
       </Box>
       <SplitActivity
+        date={date}
         open={open}
         act={act}
         handleClose={handleClose}
