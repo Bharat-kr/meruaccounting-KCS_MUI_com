@@ -193,7 +193,7 @@ export default function SaveReport(props) {
       />
 
       <FormControlLabel
-        label="Include Apps&Url"
+        label="Include Apps&Url charts"
         control={<Checkbox checked={appurl[0]} onChange={handleChange5} />}
       />
     </Box>

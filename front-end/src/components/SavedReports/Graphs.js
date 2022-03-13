@@ -44,22 +44,19 @@ function a11yProps(index) {
   };
 }
 
-export default function Graphs({ reports }) {
+export default function Graphs(props) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  console.log(props.options);
   return (
     <Box sx={{ mt: 2, width: "100%" }}>
       <Box>
-        <Typography>
-          
-        </Typography>
+        <Typography></Typography>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-
         <Tabs
           value={value}
           onChange={handleChange}
@@ -69,7 +66,9 @@ export default function Graphs({ reports }) {
           <Tab label="Employees" {...a11yProps(1)} />
           <Tab label="Projects" {...a11yProps(2)} />
           <Tab label="Clients" {...a11yProps(3)} />
-          <Tab label="Apps & Urls" {...a11yProps(4)} />
+          {props.options?.includeApps === true && (
+            <Tab label="Apps & Urls" {...a11yProps(4)} />
+          )}
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -84,9 +83,11 @@ export default function Graphs({ reports }) {
       <TabPanel value={value} index={3}>
         <ClientsCharts></ClientsCharts>
       </TabPanel>
-      <TabPanel value={value} index={4}>
-        <AppsCharts></AppsCharts>
-      </TabPanel>
+      {props.options?.includeApps === true && (
+        <TabPanel value={value} index={4}>
+          <AppsCharts></AppsCharts>
+        </TabPanel>
+      )}
     </Box>
   );
 }

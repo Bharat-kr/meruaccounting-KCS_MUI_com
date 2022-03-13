@@ -38,136 +38,122 @@ import timeC from "src/_helpers/timeConverter";
 import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
 
-function createData(name, calories, fat, carbs, protein, price) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: "2020-01-05",
-        customerId: "11091700",
-        amount: 3,
-      },
-      {
-        date: "2020-01-02",
-        customerId: "Anonymous",
-        amount: 1,
-      },
-    ],
-  };
-}
-
 function Row(props) {
-  const { row } = props;
+  const { row, options } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
-          <ImageIcon
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </ImageIcon>
+          {options.options.includeSS === true && (
+            <ImageIcon
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </ImageIcon>
+          )}
         </TableCell>
         <TableCell component="th" scope="row">
           {row.Employee}
         </TableCell>
         <TableCell align="left">{row.Application}</TableCell>
-        <TableCell align="left">{row.Activity}</TableCell>
+        {options.options.includePR === true && (
+          <TableCell align="left">{row.Money}</TableCell>
+        )}
+        {options.options.includeAL === true && (
+          <TableCell align="left">{row.Activity}</TableCell>
+        )}
       </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              {
-                <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
-                  <Tooltip
-                    title={`${row.Ss?.title}`}
-                    placement="top"
-                    followCursor
-                  >
+      {options.options.includeSS === true && (
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                {
+                  <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
+                    <Tooltip
+                      title={`${row.Ss?.title}`}
+                      placement="top"
+                      followCursor
+                    >
+                      <CardContent
+                        sx={{
+                          pb: 0,
+                          mb: 0,
+                          mt: -2,
+                          ml: -1.5,
+                          background: "#A5B9D9",
+                          maxHeight: "50px",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {/* use ref to checkbox, perform onClick */}
+                        <span>
+                          <Box
+                            sx={{
+                              width: "75%",
+                              display: "inline-block",
+                              maxWidth: "90%",
+                              typography: "caption",
+                              fontWeight: "bold",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {/* {row.Ss?.title} */}
+                          </Box>
+                        </span>
+                      </CardContent>
+                    </Tooltip>
+
+                    <Tooltip
+                      title={`${timeC(row.Ss?.activityAt)}, ${Math.ceil(
+                        row.Ss?.performanceData
+                      )}%`}
+                      placement="top"
+                      followCursor
+                    >
+                      <CardActionArea>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={`${row.Ss?.image}`}
+                          alt="green iguana"
+                        />
+                      </CardActionArea>
+                    </Tooltip>
+
                     <CardContent
                       sx={{
-                        pb: 0,
-                        mb: 0,
-                        mt: -2,
+                        pt: 0,
+                        mb: -3,
                         ml: -1.5,
                         background: "#A5B9D9",
-                        maxHeight: "50px",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
                       }}
                     >
-                      {/* use ref to checkbox, perform onClick */}
-                      <span>
-                        <Box
-                          sx={{
-                            width: "75%",
-                            display: "inline-block",
-                            maxWidth: "90%",
-                            typography: "caption",
-                            fontWeight: "bold",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {row.Ss?.title}
-                        </Box>
-                      </span>
+                      <Typography
+                        color="text.primary"
+                        gutterBottom
+                        variant="subtitle2"
+                      >
+                        {/* {`${Math.ceil(
+                          row.Ss?.performanceData
+                        )}%, Taken at ${timeC(row.Ss?.activityAt)}`} */}
+                      </Typography>
                     </CardContent>
-                  </Tooltip>
-
-                  <Tooltip
-                    title={`${timeC(row.Ss?.activityAt)}, ${Math.ceil(
-                      row.Ss?.performanceData
-                    )}%`}
-                    placement="top"
-                    followCursor
-                  >
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={`${row.Ss?.image}`}
-                        alt="green iguana"
-                      />
-                    </CardActionArea>
-                  </Tooltip>
-
-                  <CardContent
-                    sx={{
-                      pt: 0,
-                      mb: -3,
-                      ml: -1.5,
-                      background: "#A5B9D9",
-                    }}
-                  >
-                    <Typography
-                      color="text.primary"
-                      gutterBottom
-                      variant="subtitle2"
-                    >
-                      {`${Math.ceil(
-                        row.Ss?.performanceData
-                      )}%, Taken at ${timeC(row.Ss?.activityAt)}`}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              }
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+                  </Card>
+                }
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
     </React.Fragment>
   );
 }
@@ -175,14 +161,14 @@ function Row(props) {
 Row.propTypes = {
   row: PropTypes.shape({
     Name: PropTypes.string.isRequired,
-    // Duration: PropTypes.string.isRequired,
-    // Money: PropTypes.number.isRequired,
+    Duration: PropTypes.string.isRequired,
+    Money: PropTypes.number.isRequired,
     Activity: PropTypes.number.isRequired,
     Application: PropTypes.string.isRequired,
   }).isRequired,
 };
 
-export default function ByAppUrl() {
+export default function ByAppUrl(props) {
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
   React.useEffect(() => {
@@ -221,13 +207,18 @@ export default function ByAppUrl() {
             <TableCell />
             <TableCell>Name</TableCell>
             <TableCell align="left">Application</TableCell>
-            <TableCell align="left">Activity</TableCell>
+            {props.includePR === true && (
+              <TableCell align="left">Money</TableCell>
+            )}
+            {props.includeAL === true && (
+              <TableCell align="left">Activity</TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rowData.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
+          {/* {rowData.map((row) => (
+            <Row options={props} key={row.name} row={row} />
+          ))} */}
         </TableBody>
       </Table>
     </TableContainer>
