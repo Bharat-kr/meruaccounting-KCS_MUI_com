@@ -76,7 +76,8 @@ export default function Main() {
   const { loginC } = React.useContext(loginContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState(null);
+  const [date, setdate] = React.useState([null, null]);
+  const [allOptions, setAllOptions] = React.useState([]);
   const [employeeOptions, setemployeeOptions] = React.useState([]);
   const [projectOptions, setprojectOptions] = React.useState([]);
   const [clientOptions, setclientOptions] = React.useState([]);
@@ -92,6 +93,7 @@ export default function Main() {
   // get report options
   const getOptions = async () => {
     axios.post("/report/options").then((res) => {
+      setAllOptions(res.data);
       setprojectOptions(res.data.projectsClientsOptions[0].projects);
       setprojects(res.data.projectsClientsOptions[0].projects);
       setclientOptions(res.data.projectsClientsOptions[0].clients);
@@ -106,17 +108,18 @@ export default function Main() {
       setemployees(empArr);
     });
   };
-
   React.useEffect(() => {
     getOptions();
   }, []);
 
+  // tabs and tab panels
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  // generate options, todo: put it in useEffect to get rid of the button.
   const handleReportClick = async () => {
-    const dateOne = date ? date[0]?.format("DD/MM/YYYY") : null;
-    const dateTwo = date ? date[1]?.format("DD/MM/YYYY") : null;
+    const dateOne = date[0] ? date[0].format("DD/MM/YYYY") : null;
+    const dateTwo = date[1] ? date[1].format("DD/MM/YYYY") : null;
     const userIds = employees.length ? employees : null;
     const projectIds = projects.length ? projects : null;
     const clientIds = clients.length ? clients : null;
@@ -135,6 +138,17 @@ export default function Main() {
     setSaveReportOptions(options);
     getReports(dispatchGetReports, options);
   };
+
+  // recalibrate project options only for clients
+  // React.useEffect(() => {
+  //   if (clients) {
+  //     let newProOptions = allOptions.projectsClientsOptions[0].projects.filter(
+  //       (pro) => {
+  //         // in clients objects
+  //       }
+  //     );
+  //   }
+  // }, []);
 
   // make select employee options
   // React.useEffect(() => {
