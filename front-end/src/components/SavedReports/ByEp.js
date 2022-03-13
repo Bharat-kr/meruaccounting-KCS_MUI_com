@@ -1,15 +1,6 @@
 // "use strict";
 
-// import React, { useCallback, useMemo, useState } from "react";
-// import { render } from "react-dom";
-// import { AgGridReact } from "ag-grid-react";
-// import "ag-grid-enterprise";
-// import "ag-grid-community/dist/styles/ag-grid.css";
-
-// import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
-// import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-// import ScreenShotRender from "./ScreenShotRender";
 
 import * as React from "react";
 import PropTypes from "prop-types";
@@ -38,58 +29,40 @@ import timeC from "src/_helpers/timeConverter";
 import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
 
-function createData(name, calories, fat, carbs, protein, price) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: "2020-01-05",
-        customerId: "11091700",
-        amount: 3,
-      },
-      {
-        date: "2020-01-02",
-        customerId: "Anonymous",
-        amount: 1,
-      },
-    ],
-  };
-}
-
 function Row(props) {
-  const { row } = props;
+  const { row, options } = props;
   const [open, setOpen] = React.useState(false);
-
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
-          <ImageIcon
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </ImageIcon>
+          {options.options.includeSS === true && (
+            <ImageIcon
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </ImageIcon>
+          )}
         </TableCell>
         <TableCell component="th" scope="row">
           {row.Employee}
         </TableCell>
         <TableCell align="left">{row.Project}</TableCell>
         <TableCell align="left">{row.Duration}</TableCell>
-        <TableCell align="left">{row.Money}</TableCell>
-        <TableCell align="left">{row.Activity}</TableCell>
+        {options.options.includePR === true && (
+          <TableCell align="left">{row.Money}</TableCell>
+        )}
+        {options.options.includeAL === true && (
+          <TableCell align="left">{row.Activity}</TableCell>
+        )}
       </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              {
+      {options.options.includeSS === true && (
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
                 <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
                   <Tooltip
                     title={`${row.Ss?.title}`}
@@ -165,25 +138,26 @@ function Row(props) {
                     </Typography>
                   </CardContent>
                 </Card>
-              }
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
     </React.Fragment>
   );
 }
 
 Row.propTypes = {
   row: PropTypes.shape({
-    Name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     Duration: PropTypes.string.isRequired,
-    Money: PropTypes.number.isRequired,
+    Money: PropTypes.string.isRequired,
     Activity: PropTypes.number.isRequired,
   }).isRequired,
 };
 
-export default function ByEp() {
+export default function ByEp(props) {
+  const { options } = props;
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
   React.useEffect(() => {
@@ -193,6 +167,7 @@ export default function ByEp() {
     savedReports.reports[0]?.byEP?.map((emp) => {
       emp.projects.map((pro) => {
         arr.push({
+          Name: pro.project,
           Employee: `${emp._id.firstName} ${emp._id.lastName}`,
           Project: `${pro.project}`,
           Duration: (pro.totalHours / 3600).toFixed(2),
@@ -209,6 +184,7 @@ export default function ByEp() {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -218,14 +194,18 @@ export default function ByEp() {
             <TableCell>Name</TableCell>
             <TableCell align="left">Project</TableCell>
             <TableCell align="left">Duration</TableCell>
-            <TableCell align="left">Money</TableCell>
-            <TableCell align="left">Activity</TableCell>
+            {/* {options.includePR === true && (
+              <TableCell align="left">Money</TableCell>
+            )}
+            {options.includeAL === true && (
+              <TableCell align="left">Activity</TableCell>
+            )} */}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rowData.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
+          {/* {rowData.map((row) => (
+            <Row options={options} key={row.name} row={row} />
+          ))} */}
         </TableBody>
       </Table>
     </TableContainer>

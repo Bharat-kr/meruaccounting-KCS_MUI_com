@@ -115,8 +115,8 @@ export default function Main() {
     setValue(newValue);
   };
   const handleReportClick = async () => {
-    const dateOne = date ? date[0].format("DD/MM/YYYY") : null;
-    const dateTwo = date ? date[1].format("DD/MM/YYYY") : null;
+    const dateOne = date ? date[0]?.format("DD/MM/YYYY") : null;
+    const dateTwo = date ? date[1]?.format("DD/MM/YYYY") : null;
     const userIds = employees.length ? employees : null;
     const projectIds = projects.length ? projects : null;
     const clientIds = clients.length ? clients : null;
