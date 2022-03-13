@@ -87,23 +87,8 @@ export default function Main() {
 
   return (
     <>
-      {/* <Graphs style={{ margin: 10 }} options={options}></Graphs> */}
-      {options?.options?.groupBy === "E" ? (
-        <ByEp sx={{ height: "auto" }} options={options} />
-      ) : options?.options?.groupBy === "P" ? (
-        <ByPr sx={{ height: "auto" }} options={options} />
-      ) : options?.options?.groupBy === "C" ? (
-        <ByCl sx={{ height: "auto" }} options={options} />
-      ) : options?.options?.groupBy === "D" ? (
-        <ByD sx={{ height: "auto" }} options={options} />
-      ) : options?.options?.groupBy === "A" ? (
-        <ByAppUrl sx={{ height: "auto" }} options={options} />
-      ) : (
-        ""
-      )}
-      {savedReports?.data[0]
-        ? {
-            /*  <Box sx={{ width: "100%", scroll: "visible" }}>
+      {savedReports?.data[0] ? (
+        <Box sx={{ width: "100%", scroll: "visible" }}>
           {options?.user && (
             <Box
               sx={{
@@ -164,7 +149,8 @@ export default function Main() {
                           ? ` ${user.name} .`
                           : ` ${user.name} ,`
                       )
-                    : options.options.userIds}
+                    : "All Employees"}
+                  {/*  : options.options.userIds} */}
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
@@ -183,7 +169,8 @@ export default function Main() {
                           ? ` ${user.name} .`
                           : ` ${user.name} ,`
                       )
-                    : options.options.projectIds}
+                    : "All Projects"}
+                  {/* : options.options.projectIds} */}
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
@@ -211,7 +198,7 @@ export default function Main() {
               </Box>
             </Box>
           )}
-          // <Graphs style={{ margin: 10 }} options={options}></Graphs>
+          <Graphs style={{ margin: 10 }} options={options}></Graphs>
           {options?.options.groupBy === "E" ? (
             <ByEp sx={{ height: "auto" }} options={options} />
           ) : options?.options.groupBy === "P" ? (
@@ -225,9 +212,8 @@ export default function Main() {
           ) : (
             ""
           )}
-        </Box>*/
-          }
-        : null}
+        </Box>
+      ) : null}
     </>
   );
 }
