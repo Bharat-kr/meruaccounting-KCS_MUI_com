@@ -159,6 +159,17 @@ const SplitActivity = ({
       0,
       0
     ).getTime()}`;
+    let consumeTime = (startValue, endValue, startTime, endTime) => {
+      if (startValue !== "NaN" && endValue !== "NaN") {
+        return endValue - startValue;
+      } else if (startValue !== "NaN") {
+        return endTime - startValue;
+      } else if (endValue !== "NaN") {
+        return endValue - startTime;
+      } else {
+        return endTime - startTime;
+      }
+    };
     let data = {
       activityId: act._id,
       clientId: projectSelected.split("-")[1],
@@ -167,6 +178,7 @@ const SplitActivity = ({
       performanceData: act.performanceData,
       startTime: startValue !== "NaN" ? startValue : startTime,
       endTime: endValue !== "NaN" ? endValue : endTime,
+      consumeTime: consumeTime(startValue, endValue, startTime, endTime) / 1000,
       isInternal: act.isInternal,
     };
     console.log(data);
