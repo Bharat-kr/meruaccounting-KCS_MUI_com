@@ -65,6 +65,7 @@ const createActivity = asyncHandler(async (req, res) => {
     endTime,
     performanceData,
     isInternal,
+    activityOn,
   } = req.body;
 
   const employeeId = req.body.employeeId ? req.body.employeeId : req.user._id;
@@ -81,7 +82,7 @@ const createActivity = asyncHandler(async (req, res) => {
     endTime,
     consumeTime,
     isInternal,
-    activityOn: today,
+    activityOn: activityOn ? activityOn : today,
   });
 
   if (activity) {

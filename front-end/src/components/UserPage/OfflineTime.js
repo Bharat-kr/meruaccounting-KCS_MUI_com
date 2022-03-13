@@ -82,7 +82,7 @@ const OfflineTime = ({ date }) => {
   const handleEndChange = (e) => {
     setEndTime(e.target.value);
   };
-
+  console.log(date.format("DD/MM/YYYY"));
   //caling api
   const addTime = async (e) => {
     e.preventDefault();
@@ -115,8 +115,9 @@ const OfflineTime = ({ date }) => {
       endTime: endValue,
       performanceData: 100,
       isInternal: internal,
+      activityOn: date.format("DD/MM/YYYY"),
     };
-    console.log(data);
+ 
     await axios
       .post("/activity", data)
       .then((res) => {
