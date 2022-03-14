@@ -93,7 +93,15 @@ export default function Overview({ date, dateObj, days, activities }) {
           justifyContent: "space-evenly",
         }}
       >
-        <AppItemOrders Total={(todaysHours / (60 * 60)).toFixed(2)} />
+        <AppItemOrders Total={
+            commonData?.commonData?.dailyHours &&
+            commonData?.commonData?.dailyHours.length > 0
+              ? (
+                  commonData?.commonData?.dailyHours[0].totalHours /
+                  (60 * 60)
+                ).toFixed(2)
+              : 0
+          } />
         <Weeklyhours
           Total={
             commonData?.commonData?.weeklyTime &&
