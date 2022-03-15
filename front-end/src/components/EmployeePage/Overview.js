@@ -20,19 +20,19 @@ export default function Overview({ date, dateObj, days, activities }) {
   const [value, setValue] = React.useState("1");
   const [apps, setApps] = React.useState([]);
   const [appsMap, setAppsMap] = React.useState([]);
-  const [todaysHours, setTodaysHours] = useState(0);
+  // const [todaysHours, setTodaysHours] = useState(0);
 
-  useEffect(() => {
-    let Data = [];
-    Data = days?.filter((day) => {
-      return day.date === date;
-    });
-    if (Data && Data.length > 0) {
-      setTodaysHours(Data[0].dailyHours);
-    } else {
-      setTodaysHours(0);
-    }
-  }, [date]);
+  // useEffect(() => {
+  //   let Data = [];
+  //   Data = days?.filter((day) => {
+  //     return day.date === date;
+  //   });
+  //   if (Data && Data.length > 0) {
+  //     setTodaysHours(Data[0].dailyHours);
+  //   } else {
+  //     setTodaysHours(0);
+  //   }
+  // }, [date]);
 
   //Getting apps and URL's
   useEffect(() => {

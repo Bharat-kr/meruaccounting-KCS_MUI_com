@@ -15,10 +15,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import Link from "@mui/material/Link";
 import axios from "axios";
-import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 import { useSnackbar } from "notistack";
-import { getCommonData } from "src/api/employee api/employeePage";
-import { useParams } from "react-router-dom";
+import { getCommonData } from "src/api/auth api/commondata";
+import { EmployeePageContext } from "src/contexts/EmployeePageContext";
 
 const style = {
   position: "absolute",
@@ -46,7 +45,6 @@ const OfflineTime = ({ date }) => {
   const [modal, setModal] = useState(false);
   const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
   const { enqueueSnackbar } = useSnackbar();
-  const { id } = useParams();
 
   //get projects
   useEffect(() => {
@@ -83,7 +81,7 @@ const OfflineTime = ({ date }) => {
   const handleEndChange = (e) => {
     setEndTime(e.target.value);
   };
-
+  console.log(date.format("DD/MM/YYYY"));
   //caling api
   const addTime = async (e) => {
     e.preventDefault();
@@ -112,9 +110,11 @@ const OfflineTime = ({ date }) => {
       task: "offline",
       projectId: projectSelected.split("-")[0],
       startTime: startValue,
+      consumeTime: (endValue - startValue) / 1000,
       endTime: endValue,
       performanceData: 100,
       isInternal: internal,
+      activityOn: date.format("DD/MM/YYYY"),
     };
     console.log(data);
     await axios
@@ -124,11 +124,14 @@ const OfflineTime = ({ date }) => {
           enqueueSnackbar("Time added", {
             variant: "success",
           });
-          getCommonData(id, dispatchCommonData);
+          getCommonData(dispatchCommonData);
         }
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar("Error occured", {
+          variant: "error",
+        });
       });
     handleClose();
   };

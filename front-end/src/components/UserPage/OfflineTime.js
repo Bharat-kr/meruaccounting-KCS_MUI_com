@@ -117,7 +117,7 @@ const OfflineTime = ({ date }) => {
       isInternal: internal,
       activityOn: date.format("DD/MM/YYYY"),
     };
- 
+    console.log(data)
     await axios
       .post("/activity", data)
       .then((res) => {
