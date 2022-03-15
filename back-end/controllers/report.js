@@ -299,6 +299,11 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
             {
+              $unwind: {
+                path: "$screenshots",
+              },
+            },
+            {
               $group: {
                 _id: {
                   userId: "$employee._id",
@@ -317,7 +322,7 @@ const generateReport = asyncHandler(async (req, res) => {
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
                 avgPerformanceData: { $avg: "$performanceData" },
-                screenshots: { $first: "$screenshots" },
+                screenshots: { $push: "$screenshots" },
               },
             },
             {
@@ -393,6 +398,11 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
             {
+              $unwind: {
+                path: "$screenshots",
+              },
+            },
+            {
               $group: {
                 _id: {
                   userId: "$employee._id",
@@ -400,7 +410,7 @@ const generateReport = asyncHandler(async (req, res) => {
                   lastName: "$employee.lastName",
                   client: "$client",
                 },
-                screenshots: { $first: "$screenshots" },
+                screenshots: { $push: "$screenshots" },
                 payRate: { $first: "$employee.payRate" },
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
@@ -645,6 +655,11 @@ const generateReport = asyncHandler(async (req, res) => {
               },
             },
             {
+              $unwind: {
+                path: "$screenshots",
+              },
+            },
+            {
               $group: {
                 _id: {
                   userId: "$employee._id",
@@ -659,7 +674,7 @@ const generateReport = asyncHandler(async (req, res) => {
                 external: {
                   $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
                 },
-                screenshots: { $first: "$screenshots" },
+                screenshots: { $push: "$screenshots" },
                 payRate: { $first: "$employee.payRate" },
                 actCount: { $sum: 1 },
                 totalHours: { $sum: "$consumeTime" },
@@ -701,6 +716,14 @@ const generateReport = asyncHandler(async (req, res) => {
                 localField: "_id.client",
                 foreignField: "_id",
                 as: "client",
+              },
+            },
+            {
+              $lookup: {
+                from: "screenshots",
+                localField: "screenshots",
+                foreignField: "_id",
+                as: "screenshots",
               },
             },
           ],
