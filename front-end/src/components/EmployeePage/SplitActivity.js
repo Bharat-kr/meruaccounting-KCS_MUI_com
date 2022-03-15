@@ -16,9 +16,10 @@ import React, { useContext, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import timeC from "src/_helpers/timeConverter";
 import timeDiff from "src/_helpers/timeDifference";
-import { deleteAct, getCommonData } from "src/api/auth api/commondata";
+import { deleteAct, getCommonData } from "../../api/employee api/employeePage";
 import { useSnackbar } from "notistack";
 import { EmployeePageContext } from "src/contexts/EmployeePageContext";
+import { useParams } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -54,6 +55,7 @@ const SplitActivity = ({
   const [newTask, setNewTask] = React.useState("");
   const [deleteActivity, setDeleteActivity] = React.useState(false);
   const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
+  const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
   const handleChange = (event) => {
     setProjectSelected(event.target.value);
@@ -124,7 +126,7 @@ const SplitActivity = ({
       .post("/activity/splitActivity", data)
       .then((res) => {
         if (res.status === 200) {
-          getCommonData(dispatchCommonData);
+          getCommonData(id, dispatchCommonData);
           enqueueSnackbar("Activity Splited", { variant: "success" });
         }
       })
@@ -188,7 +190,7 @@ const SplitActivity = ({
       enqueueSnackbar("Deleted Activity", {
         variant: "success",
       });
-      await getCommonData(dispatchCommonData);
+      await getCommonData(id, dispatchCommonData);
     } else {
       await axios
         .patch(`/activity/${act._id}`, data)
@@ -204,7 +206,7 @@ const SplitActivity = ({
           });
           console.log(err);
         });
-      await getCommonData(dispatchCommonData);
+      await getCommonData(id, dispatchCommonData);
     }
     handleClose();
   };

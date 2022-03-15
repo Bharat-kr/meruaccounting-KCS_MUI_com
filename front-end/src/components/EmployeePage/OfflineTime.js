@@ -16,8 +16,9 @@ import AddIcon from "@mui/icons-material/Add";
 import Link from "@mui/material/Link";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { getCommonData } from "src/api/auth api/commondata";
+import { getCommonData } from "src/api/employee api/employeePage";
 import { EmployeePageContext } from "src/contexts/EmployeePageContext";
+import { useParams } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -45,6 +46,7 @@ const OfflineTime = ({ date }) => {
   const [modal, setModal] = useState(false);
   const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
   const { enqueueSnackbar } = useSnackbar();
+  const { id } = useParams();
 
   //get projects
   useEffect(() => {
@@ -124,7 +126,7 @@ const OfflineTime = ({ date }) => {
           enqueueSnackbar("Time added", {
             variant: "success",
           });
-          getCommonData(dispatchCommonData);
+          getCommonData(id, dispatchCommonData);
         }
       })
       .catch((err) => {
