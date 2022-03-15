@@ -44,7 +44,7 @@ const OfflineTime = ({ date }) => {
   const [endTime, setEndTime] = React.useState("");
   const [internal, setInternal] = React.useState(false);
   const [modal, setModal] = useState(false);
-  const { commonData , dispatchCommonData} = useContext(CurrentUserContext);
+  const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
   const { enqueueSnackbar } = useSnackbar();
 
   //get projects
@@ -82,7 +82,7 @@ const OfflineTime = ({ date }) => {
   const handleEndChange = (e) => {
     setEndTime(e.target.value);
   };
-
+  console.log(date.format("DD/MM/YYYY"));
   //caling api
   const addTime = async (e) => {
     e.preventDefault();
@@ -111,11 +111,13 @@ const OfflineTime = ({ date }) => {
       task: "offline",
       projectId: projectSelected.split("-")[0],
       startTime: startValue,
+      consumeTime: (endValue - startValue) / 1000,
       endTime: endValue,
       performanceData: 100,
       isInternal: internal,
+      activityOn: date.format("DD/MM/YYYY"),
     };
-    console.log(data);
+ 
     await axios
       .post("/activity", data)
       .then((res) => {
@@ -128,6 +130,9 @@ const OfflineTime = ({ date }) => {
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar("Error occured", {
+          variant: "error",
+        });
       });
     handleClose();
   };
