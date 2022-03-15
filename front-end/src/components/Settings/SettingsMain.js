@@ -5,7 +5,6 @@ import {
   TextField,
   Typography,
   Divider,
-  Container,
   Radio,
   FormControlLabel,
   FormControl,
@@ -108,7 +107,9 @@ function checkheading(
         ScreenShotPerHour: {
           isTeamSetting: settings.ScreenShotPerHour.isTeamSetting,
           individualValue:
-            settings.ScreenShotPerHour.individualValue !== 0 ? 0 : value,
+            settings.ScreenShotPerHour.individualValue !== 0 && e.keyCode !== 13
+              ? 0
+              : value,
           teamValue: settings.ScreenShotPerHour.teamValue,
         },
       },
@@ -159,7 +160,9 @@ function checkheading(
         WeeklyTimeLimit: {
           isTeamSetting: settings.WeeklyTimeLimit.isTeamSetting,
           individualValue:
-            settings.WeeklyTimeLimit.individualValue !== 0 ? 0 : value,
+            settings.WeeklyTimeLimit.individualValue !== 0 && e.keyCode !== 13
+              ? 0
+              : value,
           teamValue: settings.WeeklyTimeLimit.teamValue,
         },
       },
@@ -182,7 +185,10 @@ function checkheading(
         ...settings,
         AutoPause: {
           isTeamSetting: settings.AutoPause.isTeamSetting,
-          individualValue: settings.AutoPause.individualValue !== 0 ? 0 : value,
+          individualValue:
+            settings.AutoPause.individualValue !== 0 && e.keyCode !== 13
+              ? 0
+              : value,
           teamValue: settings.AutoPause.teamValue,
         },
       },
@@ -294,6 +300,11 @@ function checkheading(
           id={`screenShotPerHour${id}`}
           label="Hours per week"
           type="number"
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              changeScreenShotPerHour(e);
+            }
+          }}
           defaultValue={
             settings?.ScreenShotPerHour && settings?.ScreenShotPerHour[isTeam]
           }
@@ -361,6 +372,11 @@ function checkheading(
           id={`weekLimit${id}`}
           label="Hours per week"
           type="number"
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              changeWeeklyTimeLimit(e);
+            }
+          }}
           defaultValue={settings.WeeklyTimeLimit[isTeam]}
           InputLabelProps={{
             shrink: true,
@@ -397,6 +413,11 @@ function checkheading(
           id={`autoPause${id}`}
           label="Time limit"
           type="number"
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              changeAutoPause(e);
+            }
+          }}
           defaultValue={settings.AutoPause[isTeam]}
           InputLabelProps={{
             shrink: true,
