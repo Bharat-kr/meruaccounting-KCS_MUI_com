@@ -14,6 +14,7 @@ import Reports from "./pages/Reports";
 import Clients from "./pages/Clients";
 import Projects from "./pages/Projects";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import UserSettings from "./pages/UserSettings";
 import UserPage from "./pages/UserPage";
 import EmployeePage from "./pages/EmployeePage";
@@ -99,6 +100,11 @@ export default function Router() {
         {
           path: "settings",
           element: <PrivateRoute component={Settings} roles={2} />,
+        },
+        // all
+        {
+          path: "profile",
+          element: <PrivateRoute component={Profile} roles={4} />,
         },
         // all
         {
