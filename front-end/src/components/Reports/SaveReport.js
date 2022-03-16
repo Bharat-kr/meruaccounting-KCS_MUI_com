@@ -161,20 +161,16 @@ export default function SaveReport(props) {
 
   const handleChange2 = (event) => {
     setSsval([!ssval[0], event.target.value]);
-    console.log(event.target.value);
   };
 
   const handleChange3 = (event) => {
     setMoneyval([!moneyval[0], event.target.value]);
-    console.log(event.target.value);
   };
   const handleChange4 = (event) => {
     setAlval([!alval[0], event.target.value]);
-    console.log(event.target.value);
   };
   const handleChange5 = (event) => {
     setAppurl([!appurl[0], event.target.value]);
-    console.log(event.target.value);
   };
 
   const children = (
