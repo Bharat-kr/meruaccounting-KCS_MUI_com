@@ -832,9 +832,9 @@ const fetchReports = asyncHandler(async (req, res) => {
     );
 
     res.json({
-      status: report.share ? "Report fetched" : "403",
-      report: report.share ? data : null,
-      data: report.share ? report : null,
+      status: report[0].share ? "Report fetched" : "403",
+      report: report[0].share ? data : null,
+      data: report[0].share ? report : null,
     });
   } catch (error) {
     throw new Error(error);
