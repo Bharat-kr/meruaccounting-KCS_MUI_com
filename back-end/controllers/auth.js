@@ -717,10 +717,13 @@ const dateHours = asyncHandler(async (req, res) => {
   try {
     const userId = req.body._id ? req.body._id : req.user._id;
     const user = await User.findById(userId);
-    console.log(
-      dayjs(incomingDate, "DD/MM/YYYY").format("DD/MM/YYYY"),
-      dayjs(incomingDate, "DD/MM/YYYY").add(-1, "day").format("DD/MM/YYYY")
-    );
+
+    let dateString = incomingDate;
+
+    let dateParts = dateString.split("/");
+
+    let dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+
     const yersterdayHours = await Activity.aggregate([
       {
         $match: {
@@ -730,9 +733,7 @@ const dateHours = asyncHandler(async (req, res) => {
             },
             {
               activityOn: {
-                $eq: dayjs(incomingDate, "DD/MM/YYYY")
-                  .add(-1, "day")
-                  .format("DD/MM/YYYY"),
+                $eq: dayjs(dateObject).add(-1, "day").format("DD/MM/YYYY"),
               },
             },
           ],
@@ -756,7 +757,7 @@ const dateHours = asyncHandler(async (req, res) => {
             },
             {
               activityOn: {
-                $eq: dayjs(incomingDate, "DD/MM/YYYY").format("DD/MM/YYYY"),
+                $eq: dayjs(dateObject).format("DD/MM/YYYY"),
               },
             },
           ],
@@ -802,7 +803,7 @@ const dateHours = asyncHandler(async (req, res) => {
                       },
                       {
                         $dateFromString: {
-                          dateString: dayjs(incomingDate, "DD/MM/YYYY")
+                          dateString: dayjs(dateObject)
                             .startOf("week")
                             .format("DD/MM/YYYY"),
                           format: "%d/%m/%Y",
@@ -821,9 +822,7 @@ const dateHours = asyncHandler(async (req, res) => {
                       },
                       {
                         $dateFromString: {
-                          dateString: dayjs(incomingDate, "DD/MM/YYYY").format(
-                            "DD/MM/YYYY"
-                          ),
+                          dateString: dayjs(dateObject).format("DD/MM/YYYY"),
                           format: "%d/%m/%Y",
                         },
                       },
@@ -875,7 +874,7 @@ const dateHours = asyncHandler(async (req, res) => {
                       },
                       {
                         $dateFromString: {
-                          dateString: dayjs(incomingDate, "DD/MM/YYYY")
+                          dateString: dayjs(dateObject)
                             .startOf("month")
                             .format("DD/MM/YYYY"),
                           format: "%d/%m/%Y",
@@ -894,9 +893,7 @@ const dateHours = asyncHandler(async (req, res) => {
                       },
                       {
                         $dateFromString: {
-                          dateString: dayjs(incomingDate, "DD/MM/YYYY").format(
-                            "DD/MM/YYYY"
-                          ),
+                          dateString: dayjs(dateObject).format("DD/MM/YYYY"),
                           format: "%d/%m/%Y",
                         },
                       },

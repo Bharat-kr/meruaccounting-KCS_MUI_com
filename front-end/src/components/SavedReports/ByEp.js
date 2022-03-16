@@ -64,8 +64,8 @@ function Row(props) {
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               {row.Ss.length !== 0 ? (
-                row.Ss.map((ss) => (
-                  <Box sx={{ margin: 1 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                  {row.Ss.map((ss) => (
                     <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
                       <Tooltip
                         title={`${ss?.title}`}
@@ -141,8 +141,8 @@ function Row(props) {
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Box>
-                ))
+                  ))}
+                </Box>
               ) : (
                 <Typography
                   sx={{
