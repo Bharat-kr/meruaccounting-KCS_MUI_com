@@ -67,7 +67,7 @@ BootstrapDialogTitle.propTypes = {
 export default function SaveReport(props) {
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState(`${props.options.groupBy}`);
+  const [name, setName] = React.useState(`${props.options?.groupBy}`);
   const [checked, setChecked] = React.useState([false, ""]);
   const [ssval, setSsval] = React.useState([false, ""]);
   const [moneyval, setMoneyval] = React.useState([false, ""]);
@@ -80,7 +80,7 @@ export default function SaveReport(props) {
   // console.log(props);
   // Default name of the saved report
   React.useEffect(() => {
-    if (props.options.groupBy === "E") {
+    if (props.options?.groupBy === "E") {
       props.options?.userIds?.length
         ? setName(
             `${props.options.userIds?.length} employee - Summary by employees`
