@@ -616,7 +616,7 @@ const generateReport = asyncHandler(async (req, res) => {
                   $sum: { $cond: ["$isInternal", 0, "$consumeTime"] },
                 },
                 avgPerformanceData: { $avg: "$performanceData" },
-                actCount: { $sum: 1 },
+                screenshots: { $push: "$screenshots" },
               },
             },
             {
@@ -629,6 +629,7 @@ const generateReport = asyncHandler(async (req, res) => {
                 actCount: { $sum: 1 },
                 screenshots: {
                   $push: {
+                    screenshots: "$screenshots",
                     internal: "$internal",
                     external: "$external",
                     title: "$_id.ss",
