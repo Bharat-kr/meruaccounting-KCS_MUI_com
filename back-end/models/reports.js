@@ -6,6 +6,7 @@ const reportsSchema = new mongoose.Schema(
     includeAL: { type: Boolean, default: false },
     includePR: { type: Boolean, default: false },
     includeApps: { type: Boolean, default: false },
+    share: { type: Boolean, default: true },
     // dateRange: [{ type: String }],
     // employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     // clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Client" }],

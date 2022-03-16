@@ -747,6 +747,7 @@ const generateReport = asyncHandler(async (req, res) => {
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
+      share,
       url,
       reports,
       name,
@@ -783,6 +784,7 @@ const saveReports = asyncHandler(async (req, res) => {
 
     // make a new document for reports schema
     const saved = await Reports.create({
+      share,
       options,
       user: userId,
       url,
@@ -830,9 +832,9 @@ const fetchReports = asyncHandler(async (req, res) => {
     );
 
     res.json({
-      status: "Report fetched",
-      report: data,
-      data: report,
+      status: report.share ? "Report fetched" : "403",
+      report: report.share ? data : null,
+      data: report.share ? report : null,
     });
   } catch (error) {
     throw new Error(error);
