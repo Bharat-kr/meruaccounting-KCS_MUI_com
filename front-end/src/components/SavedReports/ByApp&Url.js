@@ -71,85 +71,115 @@ function Row(props) {
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                {
-                  <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
-                    <Tooltip
-                      title={`${row.Ss?.title}`}
-                      placement="top"
-                      followCursor
-                    >
-                      <CardContent
-                        sx={{
-                          pb: 0,
-                          mb: 0,
-                          mt: -2,
-                          ml: -1.5,
-                          background: "#A5B9D9",
-                          maxHeight: "50px",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {/* use ref to checkbox, perform onClick */}
-                        <span>
-                          <Box
-                            sx={{
-                              width: "75%",
-                              display: "inline-block",
-                              maxWidth: "90%",
-                              typography: "caption",
-                              fontWeight: "bold",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {/* {row.Ss?.title} */}
-                          </Box>
-                        </span>
-                      </CardContent>
-                    </Tooltip>
-
-                    <Tooltip
-                      title={`${timeC(row.Ss?.activityAt)}, ${Math.ceil(
-                        row.Ss?.performanceData
-                      )}%`}
-                      placement="top"
-                      followCursor
-                    >
-                      <CardActionArea>
-                        <CardMedia
-                          component="img"
-                          height="140"
-                          image={`${row.Ss?.image}`}
-                          alt="green iguana"
-                        />
-                      </CardActionArea>
-                    </Tooltip>
-
-                    <CardContent
+              {row.Ss.length !== 0 ? (
+                row.Ss.map((ss) => (
+                  <Box
+                    sx={{
+                      margin: 1,
+                      display: "flex",
+                      flexGrow: "1",
+                      flexDirection: "row",
+                      // justifyContent: "center",
+                      // alignItems: "center",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <Card
                       sx={{
-                        pt: 0,
-                        mb: -3,
-                        ml: -1.5,
-                        background: "#A5B9D9",
+                        width: 260,
+                        maxWidth: 260,
+                        m: 1.8,
                       }}
                     >
-                      <Typography
-                        color="text.primary"
-                        gutterBottom
-                        variant="subtitle2"
+                      <Tooltip
+                        title={`${ss?.title}`}
+                        placement="top"
+                        followCursor
                       >
-                        {/* {`${Math.ceil(
-                          row.Ss?.performanceData
-                        )}%, Taken at ${timeC(row.Ss?.activityAt)}`} */}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                }
-              </Box>
+                        <CardContent
+                          sx={{
+                            pb: 0,
+                            mb: 0,
+                            mt: -2,
+                            ml: -1.5,
+                            background: "#A5B9D9",
+                            maxHeight: "50px",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {/* use ref to checkbox, perform onClick */}
+                          <span>
+                            <Box
+                              sx={{
+                                width: "75%",
+                                display: "inline-block",
+                                maxWidth: "90%",
+                                typography: "caption",
+                                fontWeight: "bold",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {ss?.title}
+                            </Box>
+                          </span>
+                        </CardContent>
+                      </Tooltip>
+
+                      <Tooltip
+                        title={`${timeC(ss?.activityAt)}, ${Math.ceil(
+                          ss?.performanceData
+                        )}%`}
+                        placement="top"
+                        followCursor
+                      >
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image={`${ss?.image}`}
+                            alt="green iguana"
+                          />
+                        </CardActionArea>
+                      </Tooltip>
+
+                      <CardContent
+                        sx={{
+                          pt: 0,
+                          mb: -3,
+                          ml: -1.5,
+                          background: "#A5B9D9",
+                        }}
+                      >
+                        <Typography
+                          color="text.primary"
+                          gutterBottom
+                          variant="subtitle2"
+                        >
+                          {`${Math.ceil(
+                            ss?.performanceData
+                          )}%, Taken at ${timeC(ss?.activityAt)}`}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Box>
+                ))
+              ) : (
+                <Typography
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // wordWrap: "initial",
+                    width: "100%",
+                  }}
+                >
+                  {" "}
+                  No screenshots available
+                </Typography>
+              )}
             </Collapse>
           </TableCell>
         </TableRow>
@@ -176,17 +206,12 @@ export default function ByAppUrl(props) {
 
     let arr = [];
     savedReports.reports[0]?.byA?.map((emp) => {
-      const act = emp.performanceData;
-      emp.screenshots((ss) => {
+      emp?.screenshots.map((ss) => {
+        const act = ss.avgPerformanceData;
         arr.push({
-          Employee: `${emp.employee.firstName} ${emp.employee.lastName}`,
-          Project: `${
-            emp?.project?.name ? emp.project.name : "Deleted project"
-          }`,
+          Employee: `${emp._id.firstName} ${emp._id.lastName}`,
           Application: ss.title.split("-").slice(0),
-          Duration: (emp.totalHours / 3600).toFixed(2),
           Activity: (act / 1).toFixed(2),
-          Money: ((emp?.totalHours / 3600) * emp.employee.payRate).toFixed(2),
           Ss: emp.screenshots,
         });
       });
@@ -216,9 +241,9 @@ export default function ByAppUrl(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {/* {rowData.map((row) => (
+          {rowData.map((row) => (
             <Row options={props} key={row.name} row={row} />
-          ))} */}
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
