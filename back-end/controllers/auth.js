@@ -112,7 +112,8 @@ const commondata = asyncHandler(async (req, res) => {
         path: "projects",
         model: "Project",
         select: ["name"],
-      }).populate({
+      })
+      .populate({
         path: "clients",
         model: "Client",
         select: ["name"],
@@ -707,4 +708,260 @@ const generateReportByIds = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, register, commondata, teamCommondata, generateReportByIds };
+// @desc    Get hours by date
+// @route   GET /dateHours
+// @access  Private
+
+const dateHours = asyncHandler(async (req, res) => {
+  const incomingDate = req.body.incomingDate;
+  try {
+    const userId = req.body._id ? req.body._id : req.user._id;
+    const user = await User.findById(userId);
+    console.log(
+      dayjs(incomingDate, "DD/MM/YYYY").format("DD/MM/YYYY"),
+      dayjs(incomingDate, "DD/MM/YYYY").add(-1, "day").format("DD/MM/YYYY")
+    );
+    const yersterdayHours = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+            {
+              activityOn: {
+                $eq: dayjs(incomingDate, "DD/MM/YYYY")
+                  .add(-1, "day")
+                  .format("DD/MM/YYYY"),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+    const dailyHours = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+            {
+              activityOn: {
+                $eq: dayjs(incomingDate, "DD/MM/YYYY").format("DD/MM/YYYY"),
+              },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const weeklyTime = await Activity.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $eq: ["$employee", user._id],
+              },
+              {
+                $and: [
+                  {
+                    $ne: ["$activityOn", null],
+                  },
+                  {
+                    $ne: ["$activityOn", ""],
+                  },
+                  {
+                    $ne: ["$activityOn", "null"],
+                  },
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs(incomingDate, "DD/MM/YYYY")
+                            .startOf("week")
+                            .format("DD/MM/YYYY"),
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs(incomingDate, "DD/MM/YYYY").format(
+                            "DD/MM/YYYY"
+                          ),
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const monthlyTime = await Activity.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $eq: ["$employee", user._id],
+              },
+              {
+                $and: [
+                  {
+                    $ne: ["$activityOn", null],
+                  },
+                  {
+                    $ne: ["$activityOn", ""],
+                  },
+                  {
+                    $ne: ["$activityOn", "null"],
+                  },
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs(incomingDate, "DD/MM/YYYY")
+                            .startOf("month")
+                            .format("DD/MM/YYYY"),
+                          format: "%d/%m/%Y",
+                          onNull: new Date(0),
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$activityOn",
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                      {
+                        $dateFromString: {
+                          dateString: dayjs(incomingDate, "DD/MM/YYYY").format(
+                            "DD/MM/YYYY"
+                          ),
+                          format: "%d/%m/%Y",
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const totalTime = await Activity.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              employee: { $eq: user._id },
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: user._id,
+          totalHours: { $sum: "$consumeTime" },
+          avgPerformanceData: { $avg: "$performanceData" },
+          docCount: { $sum: 1 },
+        },
+      },
+    ]);
+
+    if (!user) {
+      res.status(404);
+      throw new Error("No such user found");
+    }
+
+    res.status(200).json({
+      status: "Fetched hours by date",
+      // user,
+      yersterdayHours,
+      dailyHours,
+      weeklyTime,
+      monthlyTime,
+      totalTime,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export {
+  login,
+  register,
+  commondata,
+  dateHours,
+  teamCommondata,
+  generateReportByIds,
+};
