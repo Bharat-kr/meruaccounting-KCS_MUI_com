@@ -62,95 +62,109 @@ function Row(props) {
         <TableCell align="left">{row.Employee}</TableCell>
         <TableCell align="left">{row.Duration}</TableCell>
         {props.options.includePR === true && (
-          <TableCell align="left">Money</TableCell>
+          <TableCell align="left">{row.Money}</TableCell>
         )}
         {props.options.includeAL === true && (
-          <TableCell align="left">Activity</TableCell>
+          <TableCell align="left">{row.Activity}</TableCell>
         )}
       </TableRow>
       {props.options.includeSS === true && (
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                {
-                  <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
-                    <Tooltip
-                      title={`${row.Ss?.title}`}
-                      placement="top"
-                      followCursor
-                    >
+              {row.Ss.length !== 0 ? (
+                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                  {row.Ss.map((ss) => (
+                    <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
+                      <Tooltip
+                        title={`${ss?.title}`}
+                        placement="top"
+                        followCursor
+                      >
+                        <CardContent
+                          sx={{
+                            pb: 0,
+                            mb: 0,
+                            mt: -2,
+                            ml: -1.5,
+                            background: "#A5B9D9",
+                            maxHeight: "50px",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {/* use ref to checkbox, perform onClick */}
+                          <span>
+                            <Box
+                              sx={{
+                                width: "75%",
+                                display: "inline-block",
+                                maxWidth: "90%",
+                                typography: "caption",
+                                fontWeight: "bold",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {ss?.title}
+                            </Box>
+                          </span>
+                        </CardContent>
+                      </Tooltip>
+
+                      <Tooltip
+                        title={`${timeC(ss?.activityAt)}, ${Math.ceil(
+                          ss?.avgPerformanceData
+                        )}%`}
+                        placement="top"
+                        followCursor
+                      >
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image={`${ss?.image}`}
+                            alt="green iguana"
+                          />
+                        </CardActionArea>
+                      </Tooltip>
+
                       <CardContent
                         sx={{
-                          pb: 0,
-                          mb: 0,
-                          mt: -2,
+                          pt: 0,
+                          mb: -3,
                           ml: -1.5,
                           background: "#A5B9D9",
-                          maxHeight: "50px",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
                         }}
                       >
-                        {/* use ref to checkbox, perform onClick */}
-                        <span>
-                          <Box
-                            sx={{
-                              width: "75%",
-                              display: "inline-block",
-                              maxWidth: "90%",
-                              typography: "caption",
-                              fontWeight: "bold",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {row.Ss?.title}
-                          </Box>
-                        </span>
+                        <Typography
+                          color="text.primary"
+                          gutterBottom
+                          variant="subtitle2"
+                        >
+                          {`${Math.ceil(
+                            ss?.avgPerformanceData
+                          )}%, Taken at ${timeC(ss?.activityAt)}`}
+                        </Typography>
                       </CardContent>
-                    </Tooltip>
-
-                    <Tooltip
-                      title={`${timeC(row.Ss?.activityAt)}, ${Math.ceil(
-                        row.Ss?.performanceData
-                      )}%`}
-                      placement="top"
-                      followCursor
-                    >
-                      <CardActionArea>
-                        <CardMedia
-                          component="img"
-                          height="140"
-                          image={`${row.Ss?.image}`}
-                          alt="green iguana"
-                        />
-                      </CardActionArea>
-                    </Tooltip>
-
-                    <CardContent
-                      sx={{
-                        pt: 0,
-                        mb: -3,
-                        ml: -1.5,
-                        background: "#A5B9D9",
-                      }}
-                    >
-                      <Typography
-                        color="text.primary"
-                        gutterBottom
-                        variant="subtitle2"
-                      >
-                        {`${Math.ceil(
-                          row.Ss?.performanceData
-                        )}%, Taken at ${timeC(row.Ss?.activityAt)}`}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                }
-              </Box>
+                    </Card>
+                  ))}
+                </Box>
+              ) : (
+                <Typography
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // wordWrap: "initial",
+                    width: "100%",
+                  }}
+                >
+                  {" "}
+                  No screenshots available
+                </Typography>
+              )}
             </Collapse>
           </TableCell>
         </TableRow>
