@@ -70,7 +70,7 @@ const createActivity = asyncHandler(async (req, res) => {
 
   const employeeId = req.body.employeeId ? req.body.employeeId : req.user._id;
 
-  let today = dayjs().format("DD/MM/YYYY");
+  let today = activityOn ? activityOn : dayjs().format("DD/MM/YYYY");
 
   const activity = await Activity.create({
     employee: employeeId,
@@ -82,7 +82,7 @@ const createActivity = asyncHandler(async (req, res) => {
     endTime,
     consumeTime,
     isInternal,
-    activityOn: activityOn ? activityOn : today,
+    activityOn: today,
   });
 
   if (activity) {
