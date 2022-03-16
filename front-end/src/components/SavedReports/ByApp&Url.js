@@ -72,26 +72,9 @@ function Row(props) {
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               {row.Ss.length !== 0 ? (
-                row.Ss.map((ss) => (
-                  <Box
-                    sx={{
-                      margin: 1,
-                      display: "flex",
-                      // hello mf
-                      flexGrow: "1",
-                      flexDirection: "row",
-                      // justifyContent: "center",
-                      // alignItems: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <Card
-                      sx={{
-                        width: 260,
-                        maxWidth: 260,
-                        m: 1.8,
-                      }}
-                    >
+                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                  {row.Ss.map((ss) => (
+                    <Card sx={{ width: 260, maxWidth: 260, m: 1.8 }}>
                       <Tooltip
                         title={`${ss?.title}`}
                         placement="top"
@@ -132,7 +115,7 @@ function Row(props) {
 
                       <Tooltip
                         title={`${timeC(ss?.activityAt)}, ${Math.ceil(
-                          ss?.performanceData
+                          ss?.avgPerformanceData
                         )}%`}
                         placement="top"
                         followCursor
@@ -161,13 +144,13 @@ function Row(props) {
                           variant="subtitle2"
                         >
                           {`${Math.ceil(
-                            ss?.performanceData
+                            ss?.avgPerformanceData
                           )}%, Taken at ${timeC(ss?.activityAt)}`}
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Box>
-                ))
+                  ))}
+                </Box>
               ) : (
                 <Typography
                   sx={{
