@@ -11,21 +11,22 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+
 import CloseIcon from "@mui/icons-material/Close";
 import timeC from "src/_helpers/timeConverter";
 import timeDiff from "src/_helpers/timeDifference";
+import { deleteAct, getCommonData } from "../../api/employee api/employeePage";
 import { useSnackbar } from "notistack";
-import { useParams } from "react-router-dom";
-import { getCommonData } from "src/api/employee api/employeePage";
 import { EmployeePageContext } from "src/contexts/EmployeePageContext";
+import { useParams } from "react-router-dom";
 
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  minWidth: 600,
+  width: 600,
   bgcolor: "#fff",
   borderRadius: 2,
   border: "none",
@@ -38,6 +39,7 @@ const style = {
 };
 
 const SplitActivity = ({
+  date,
   open,
   act,
   handleClose,
@@ -47,20 +49,52 @@ const SplitActivity = ({
 }) => {
   const [projectSelected, setProjectSelected] = React.useState("");
   const [splitTime, setSplitTime] = React.useState("");
+  const [projects, setProjects] = React.useState([]);
+  const [newStartTime, setNewStartTime] = React.useState("");
+  const [newEndTime, setNewEndTime] = React.useState("");
+  const [newTask, setNewTask] = React.useState("");
+  const [deleteActivity, setDeleteActivity] = React.useState(false);
   const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
-  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const handleChange = (event) => {
     setProjectSelected(event.target.value);
   };
-  console.log(project);
   const [splitModal, setSplitModal] = useState(false);
+
+  //get projects
+  useEffect(() => {
+    axios
+      .get("/project", { employeeId: commonData.commonData.user._id })
+      .then((res) => {
+        setProjects(res.data.data);
+        console.log(res.data.data);
+      })
+      .catch((err) => console.log(err));
+    setNewStartTime(startTime);
+    setNewEndTime(endTime);
+  }, []);
+
   const handleSplitOpen = () => {
     handleClose();
     setSplitModal(true);
   };
   const handleSplitClose = () => {
     setSplitModal(false);
+  };
+  //change start time
+  const handleStartChange = (e) => {
+    setNewStartTime(e.target.value);
+  };
+
+  //change end time
+  const handleEndChange = (e) => {
+    setNewEndTime(e.target.value);
+  };
+
+  //change task change
+  const handleTaskChange = (e) => {
+    setNewTask(e.target.value);
   };
 
   //api for splitting activity
@@ -103,6 +137,78 @@ const SplitActivity = ({
   //handling splittime change
   const handleSplitChange = (e) => {
     setSplitTime(e.target.value);
+  };
+
+  //Edit time
+  const handleEdit = async () => {
+    let date_obj = new Date(new Number(startTime));
+    let year = date_obj.getFullYear();
+    let month = date_obj.getMonth();
+    let day = date_obj.getDate();
+    let dateValues = newStartTime.split(":");
+    let dateValues2 = newEndTime.split(":");
+    let hrs = dateValues[0];
+    let mins = dateValues[1];
+    let endhrs = dateValues2[0];
+    let endmins = dateValues2[1];
+    let startValue = `${new Date(year, month, day, hrs, mins, 0, 0).getTime()}`;
+    let endValue = `${new Date(
+      year,
+      month,
+      day,
+      endhrs,
+      endmins,
+      0,
+      0
+    ).getTime()}`;
+    let consumeTime = (startValue, endValue, startTime, endTime) => {
+      if (startValue !== "NaN" && endValue !== "NaN") {
+        return endValue - startValue;
+      } else if (startValue !== "NaN") {
+        return endTime - startValue;
+      } else if (endValue !== "NaN") {
+        return endValue - startTime;
+      } else {
+        return endTime - startTime;
+      }
+    };
+    let data = {
+      activityId: act._id,
+      clientId: projectSelected.split("-")[1],
+      projectId: projectSelected.split("-")[0],
+      task: newTask ? newTask : act.task,
+      performanceData: act.performanceData,
+      startTime: startValue !== "NaN" ? startValue : startTime,
+      endTime: endValue !== "NaN" ? endValue : endTime,
+      consumeTime: consumeTime(startValue, endValue, startTime, endTime) / 1000,
+      isInternal: act.isInternal,
+    };
+    console.log(data);
+
+    if (deleteActivity) {
+      await deleteAct(act._id, date, dispatchCommonData);
+      enqueueSnackbar("Deleted Activity", {
+        variant: "success",
+      });
+      await getCommonData(id, dispatchCommonData);
+    } else {
+      await axios
+        .patch(`/activity/${act._id}`, data)
+        .then((res) => {
+          console.log(res);
+          enqueueSnackbar("Time Edited", {
+            variant: "success",
+          });
+        })
+        .catch((err) => {
+          enqueueSnackbar("Error occured", {
+            variant: "error",
+          });
+          console.log(err);
+        });
+      await getCommonData(id, dispatchCommonData);
+    }
+    handleClose();
   };
 
   return (
@@ -153,6 +259,7 @@ const SplitActivity = ({
                 id="filled-hidden-label-small"
                 defaultValue={timeC(startTime)}
                 variant="filled"
+                onChange={handleStartChange}
                 size="small"
                 sx={{
                   width: "20%",
@@ -163,6 +270,7 @@ const SplitActivity = ({
                 hiddenLabel
                 id="filled-hidden-label-small"
                 defaultValue={timeC(endTime)}
+                onChange={handleEndChange}
                 variant="filled"
                 size="small"
                 sx={{
@@ -181,21 +289,24 @@ const SplitActivity = ({
                 my: 1,
               }}
             >
-              {commonData.commonData.user.projects.map((project) => {
-                return <MenuItem value={project}>{project}</MenuItem>;
+              {projects.map((project) => {
+                return (
+                  <MenuItem value={project._id + "-" + project?.client?._id}>
+                    {project.name}-{project?.client?.name}
+                  </MenuItem>
+                );
               })}
             </Select>
             <TextField
-              disabled
               id="filled-disabled"
-              label="Disabled"
-              defaultValue="Activity Name"
+              label="Task Name"
+              default={act.task}
+              onChange={handleTaskChange}
               variant="filled"
               size="large"
               fullWidth
             />
           </Box>
-
           <Box
             sx={{
               display: "flex",
@@ -205,7 +316,10 @@ const SplitActivity = ({
             }}
           >
             <span>
-              <Checkbox color="success" />
+              <Checkbox
+                color="success"
+                onChange={(e) => setDeleteActivity(e.target.checked)}
+              />
               Delete this Activity
             </span>
             <span
@@ -234,6 +348,7 @@ const SplitActivity = ({
               sx={{
                 mr: 2,
               }}
+              onClick={handleEdit}
             >
               Save Changes
             </Button>

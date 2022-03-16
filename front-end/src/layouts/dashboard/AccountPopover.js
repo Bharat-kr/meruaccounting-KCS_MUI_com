@@ -14,11 +14,8 @@ import {
   Avatar,
   IconButton,
 } from "@mui/material";
-import { loginContext } from "src/contexts/LoginContext";
 // components
 import MenuPopover from "../../components/MenuPopover";
-//
-import account from "../../_mocks_/account";
 import { getFullName } from "src/_helpers/getFullName";
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
@@ -33,7 +30,7 @@ const MENU_OPTIONS = [
   {
     label: "Profile",
     icon: personFill,
-    linkTo: "#",
+    linkTo: "/dashboard/profile",
   },
   {
     label: "Settings",
