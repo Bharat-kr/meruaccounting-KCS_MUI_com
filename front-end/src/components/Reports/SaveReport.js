@@ -68,7 +68,7 @@ export default function SaveReport(props) {
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState(`${props.options?.groupBy}`);
-  const [checked, setChecked] = React.useState([false, ""]);
+  const [checked, setChecked] = React.useState([true, ""]);
   const [ssval, setSsval] = React.useState([false, ""]);
   const [moneyval, setMoneyval] = React.useState([false, ""]);
   const [alval, setAlval] = React.useState([false, ""]);
@@ -135,6 +135,7 @@ export default function SaveReport(props) {
   const handleClickSave = async () => {
     setOpen(false);
     const data = {
+      share: checked[0],
       includeSS: ssval[0],
       includeAL: alval[0],
       includePR: moneyval[0],
@@ -146,10 +147,12 @@ export default function SaveReport(props) {
     };
 
     const savedData = await axios.post("/report/save", data);
-    navigator.clipboard.writeText(
-      `http://localhost:3000/reports/sharedReports/${url}`
-    );
-    enqueueSnackbar("link copied", { variant: "success" });
+    if (checked[0]) {
+      navigator.clipboard.writeText(
+        `http://localhost:3000/reports/sharedReports/${url}`
+      );
+      enqueueSnackbar("link copied", { variant: "success" });
+    }
   };
   const handleClose = () => {
     setOpen(false);
@@ -236,8 +239,10 @@ export default function SaveReport(props) {
               label="Name"
             />
           </FormControl>
+
           <Box sx={{ mt: 1.5 }}>
             <TextField
+              disabled={!checked[0]}
               fullWidth
               label="Sharing link"
               defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
@@ -246,12 +251,19 @@ export default function SaveReport(props) {
               }}
             />
           </Box>
+
           <div>
             <FormControlLabel
               label="Share Report"
-              control={<Checkbox checked={checked} onChange={handleChange1} />}
+              control={
+                <Checkbox
+                  defaultChecked={checked}
+                  checked={checked[0]}
+                  onChange={handleChange1}
+                />
+              }
             />
-            {children}
+            {checked[0] ? children : null}
           </div>
         </DialogContent>
         <DialogActions>
