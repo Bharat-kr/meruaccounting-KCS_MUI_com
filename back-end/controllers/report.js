@@ -824,7 +824,6 @@ const fetchReports = asyncHandler(async (req, res) => {
         notifications: 0,
       },
     });
-    console.log(report);
 
     // Read users.json file
     let data = JSON.parse(
@@ -832,9 +831,9 @@ const fetchReports = asyncHandler(async (req, res) => {
     );
 
     res.json({
-      status: report.share ? "Report fetched" : "403",
-      report: report.share ? data : null,
-      data: report.share ? report : null,
+      status: report[0].share ? "Report fetched" : "403",
+      report: report[0].share ? data : "403",
+      data: report[0].share ? report : "403",
     });
   } catch (error) {
     throw new Error(error);
@@ -1316,4 +1315,35 @@ const reportOptions = asyncHandler(async (req, res) => {
   }
 });
 
-export { generateReport, saveReports, fetchReports, reportOptions };
+// @desc    Fetch Saved Reports
+// @route   GET /report/saved
+// @access  Private
+const savedReports = asyncHandler(async (req, res) => {
+  try {
+    let { _id } = req.user;
+
+    const data = await Reports.aggregate([
+      {
+        $match: {
+          user: _id,
+        },
+      },
+      { $unset: ["options", "user", "updatedAt", "__v"] },
+    ]);
+
+    res.json({
+      status: "Fetched Saved Reports",
+      data,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export {
+  generateReport,
+  saveReports,
+  fetchReports,
+  reportOptions,
+  savedReports,
+};
