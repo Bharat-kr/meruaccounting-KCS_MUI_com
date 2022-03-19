@@ -5,6 +5,7 @@ import {
   fetchReports,
   reportOptions,
   savedReports,
+  deleteReports,
 } from "../controllers/report.js";
 
 import { authPass } from "../middleware/authMiddleware.js";
@@ -16,5 +17,6 @@ router.route("/save").post(authPass, saveReports);
 router.route("/saved").get(authPass, savedReports);
 router.route("/fetch").post(fetchReports);
 router.route("/options").post(authPass, reportOptions);
+router.route("/delete").delete(authPass, deleteReports);
 
 export default router;

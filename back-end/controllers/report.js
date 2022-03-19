@@ -804,6 +804,61 @@ const saveReports = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+// @desc    Delete Report
+// @route   delete /report/delete
+// @access  Private
+const deleteReports = asyncHandler(async (req, res) => {
+  try {
+    let { url } = req.body;
+    // let _id;
+    const report = await Reports.find({ url: url }).populate({
+      path: "user",
+      model: "User",
+      select: {
+        password: 0,
+        projects: 0,
+        days: 0,
+        clients: 0,
+        teams: 0,
+        settings: 0,
+        notifications: 0,
+      },
+    });
+    // check whether the file exists or not.
+    //   fs.stat('./server/upload/my.csv', function (err, stats) {
+    //     console.log(stats);//here we got all information of file in stats variable
+
+    //     if (err) {
+    //         return console.error(err);
+    //     }
+
+    //     fs.unlink('./server/upload/my.csv',function(err){
+    //          if(err) return console.log(err);
+    //          console.log('file deleted successfully');
+    //     });
+    //  });
+
+    // Delete a file
+    let filename = `./saved reports/${report[0].fileName}.json`;
+    let tempFile = fs.openSync(filename, "r");
+    // try commenting out the following line to see the different behavior
+    fs.closeSync(tempFile);
+    fs.unlinkSync(filename);
+
+    // Delete from database
+    if (report) {
+      // _id = report[0]._id;
+      await Reports.deleteOne({ _id: report[0]._id });
+    }
+
+    res.json({
+      status: "Report Deleted",
+      report,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
 
 // @desc    Fetch Report
 // @route   POST /report/fetch
@@ -1341,6 +1396,7 @@ const savedReports = asyncHandler(async (req, res) => {
 });
 
 export {
+  deleteReports,
   generateReport,
   saveReports,
   fetchReports,
