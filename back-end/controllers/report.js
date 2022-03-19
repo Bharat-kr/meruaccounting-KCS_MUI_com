@@ -824,26 +824,24 @@ const deleteReports = asyncHandler(async (req, res) => {
         notifications: 0,
       },
     });
-    // check whether the file exists or not.
-    //   fs.stat('./server/upload/my.csv', function (err, stats) {
-    //     console.log(stats);//here we got all information of file in stats variable
 
-    //     if (err) {
-    //         return console.error(err);
-    //     }
+    fs.stat(
+      `./saved reports/${report[0].fileName}.json`,
+      function (err, stats) {
+        console.log(stats); //here we got all information of file in stats variable
 
-    //     fs.unlink('./server/upload/my.csv',function(err){
-    //          if(err) return console.log(err);
-    //          console.log('file deleted successfully');
-    //     });
-    //  });
+        if (err) {
+          return console.error(err);
+        }
 
-    // Delete a file
-    let filename = `./saved reports/${report[0].fileName}.json`;
-    let tempFile = fs.openSync(filename, "r");
-    // try commenting out the following line to see the different behavior
-    fs.closeSync(tempFile);
-    fs.unlinkSync(filename);
+        // Delete a file
+        let filename = `./saved reports/${report[0].fileName}.json`;
+        let tempFile = fs.openSync(filename, "r");
+        // try commenting out the following line to see the different behavior
+        fs.closeSync(tempFile);
+        fs.unlinkSync(filename);
+      }
+    );
 
     // Delete from database
     if (report) {
@@ -1395,6 +1393,41 @@ const savedReports = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Edit Saved Reports
+// @route   PATCH /report/edit
+// @access  Private
+const editReports = asyncHandler(async (req, res) => {
+  try {
+    let { url, includeSS, includeAL, includePR, includeApps, name, share } =
+      req.body;
+
+    const report = await Reports.find({ url: url });
+
+    let options = {
+      includeSS: includeSS ? includeSS : report[0].includeSS,
+      includeAL: includeAL ? includeAL : report[0].includeAL,
+      includePR: includePR ? includePR : report[0].includePR,
+      includeApps: includeApps ? includeApps : report[0].includeApps,
+      name: name ? name : report[0].name,
+      share: share ? share : report[0].share,
+    };
+
+    console.log(options);
+
+    const data = await Reports.updateOne({ url: url }, [
+      {
+        $set: options,
+      },
+    ]);
+
+    res.json({
+      status: "Edited Saved Reports",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
   deleteReports,
   generateReport,
@@ -1402,4 +1435,5 @@ export {
   fetchReports,
   reportOptions,
   savedReports,
+  editReports,
 };
