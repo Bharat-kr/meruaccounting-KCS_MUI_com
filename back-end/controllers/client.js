@@ -83,6 +83,50 @@ const getClient = asyncHandler(async (req, res) => {
           },
           { path: "createdBy", select: ["firstName", "lastName"] },
         ]);
+      }
+
+      if (user.role === "projectLeader") {
+        let clientsList = await Project.aggregate([
+          {
+            $match: {
+              projectLeader: req.user._id,
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              clients: {
+                $addToSet: "$client",
+              },
+            },
+          },
+        ]);
+        console.log(clientsList[0].clients);
+        client = await Client.find({
+          _id: { $in: clientsList[0].clients },
+        }).populate([
+          {
+            path: "projects",
+            match: { projectLeader: user._id },
+            populate: [
+              {
+                path: "employees",
+                select: ["firstName", "lastName", "email", "projects"],
+                populate: {
+                  path: "projects",
+                  model: "Project",
+                  select: ["name", "budgetTime"],
+                },
+              },
+              {
+                path: "projectLeader",
+                select: ["firstName", "lastName", "email"],
+              },
+              { path: "createdBy", select: ["firstName", "lastName"] },
+            ],
+          },
+          { path: "createdBy", select: ["firstName", "lastName"] },
+        ]);
       } else {
         client = await Client.find({ manager: req.user._id }).populate([
           {

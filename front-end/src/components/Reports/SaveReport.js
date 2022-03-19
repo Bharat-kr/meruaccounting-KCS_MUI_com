@@ -88,7 +88,7 @@ export default function SaveReport(props) {
         : setName(`Summary by employees`);
       return;
     }
-    if (props.options.groupBy === "D") {
+    if (props.options?.groupBy === "D") {
       props.options.userIds?.length
         ? setName(
             `${props.options.userIds.length} employee - Summary by details`
@@ -96,7 +96,7 @@ export default function SaveReport(props) {
         : setName(`Summary by Details`);
       return;
     }
-    if (props.options.groupBy === "P") {
+    if (props.options?.groupBy === "P") {
       props.options.userIds?.length
         ? setName(
             `${props.options?.userIds.length} employee - Summary by projects`
@@ -104,7 +104,7 @@ export default function SaveReport(props) {
         : setName(`Summary by projects`);
       return;
     }
-    if (props.options.groupBy === "C") {
+    if (props.options?.groupBy === "C") {
       props.options.userIds?.length
         ? setName(
             `${props.options?.userIds?.length} employee - Summary by Clients`
@@ -112,7 +112,7 @@ export default function SaveReport(props) {
         : setName(`Summary by Clients`);
       return;
     }
-    if (props.options.groupBy === "A") {
+    if (props.options?.groupBy === "A") {
       props.options?.userIds?.length
         ? setName(
             `${props.options?.userIds?.length} employee - Summary by Apps&Url`
@@ -164,20 +164,16 @@ export default function SaveReport(props) {
 
   const handleChange2 = (event) => {
     setSsval([!ssval[0], event.target.value]);
-    console.log(event.target.value);
   };
 
   const handleChange3 = (event) => {
     setMoneyval([!moneyval[0], event.target.value]);
-    console.log(event.target.value);
   };
   const handleChange4 = (event) => {
     setAlval([!alval[0], event.target.value]);
-    console.log(event.target.value);
   };
   const handleChange5 = (event) => {
     setAppurl([!appurl[0], event.target.value]);
-    console.log(event.target.value);
   };
 
   const children = (
