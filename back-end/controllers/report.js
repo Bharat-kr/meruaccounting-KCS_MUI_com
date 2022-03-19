@@ -697,7 +697,7 @@ const generateReport = asyncHandler(async (req, res) => {
                     lastName: "$_id.lastName",
                     count: "$actCount",
                     totalHours: "$totalHours",
-                    avgPerformanceData: "$performanceData",
+                    avgPerformanceData: "$avgPerformanceData",
                   },
                 },
               },

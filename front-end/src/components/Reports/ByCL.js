@@ -133,6 +133,16 @@ const columns = [
   {
     key: "activity",
     name: "Activity",
+    groupFormatter({ childRows }) {
+      return (
+        <>
+          {childRows.reduce(
+            (prev, { activity }) => Number((prev + activity).toFixed(2)),
+            0
+          )}
+        </>
+      );
+    },
   },
   {
     key: "money",
@@ -177,7 +187,7 @@ export default function ByCl(props) {
 
           employee: `${emp.firstName} ${emp.lastName}`,
           duration: Number((emp.totalHours / 3600).toFixed(2)),
-          activity: emp.avgPerformanceData.toFixed(2),
+          activity: Number(emp.avgPerformanceData.toFixed(2)),
           money: Number((emp?.totalHours / 3600).toFixed(2)),
         });
       });

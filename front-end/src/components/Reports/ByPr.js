@@ -34,16 +34,16 @@ const columns = [
   {
     key: "activity",
     name: "Activity",
-    // groupFormatter({ childRows }) {
-    //   return (
-    //     <>
-    //       {childRows.reduce(
-    //         (prev, { activity }) => Number((prev + activity).toFixed(2)),
-    //         0
-    //       )}
-    //     </>
-    //   );
-    // },
+    groupFormatter({ childRows }) {
+      return (
+        <>
+          {childRows.reduce(
+            (prev, { activity }) => Number((prev + activity).toFixed(2)),
+            0
+          )}
+        </>
+      );
+    },
   },
   {
     key: "money",
@@ -91,8 +91,8 @@ export default function ByEp(props) {
 
           employee: `${emp.firstName} ${emp.lastName}`,
           duration: Number((emp.totalHours / 3600).toFixed(2)),
-          money: Number((emp?.toalHours / 3600 / emp?.payRate).toFixed(2)),
-          activity: emp.performanceData,
+          money: Number(((emp?.totalHours / 3600) * emp?.payRate).toFixed(2)),
+          activity: Number((emp.avgPerformanceData / 1).toFixed(2)),
         });
       });
     });
