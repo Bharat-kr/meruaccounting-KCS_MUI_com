@@ -298,7 +298,7 @@ function checkheading(
         <TextField
           sx={{ m: 1.5 }}
           id={`screenShotPerHour${id}`}
-          label="Hours per week"
+          label="screenshot per hour"
           type="number"
           onKeyDown={(e) => {
             if (e.keyCode === 13) {

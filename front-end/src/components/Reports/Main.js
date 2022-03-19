@@ -15,6 +15,7 @@ import SelectProjects from "./SelectProjects";
 import SelectClients from "./SelectClients";
 import SelectGroup from "./SelectGroup";
 import SaveReport from "./SaveReport";
+import SavedR from "./SavedR";
 
 // contexts and apis
 
@@ -283,15 +284,9 @@ export default function Main() {
           <ByLL sx={{ height: "auto" }} reports={reports} />
         </div> */}
       </TabPanel>
-      {/* <TabPanel value={value} index={1}>
-        hello
+      <TabPanel value={value} index={1}>
+        <SavedR />
       </TabPanel>
-      <TabPanel value={value} index={2}>
-        hello
-      </TabPanel> */}
-
-      {/* <GridExample /> */}
-      {/* </TabPanel> */}
     </Box>
   );
 }
