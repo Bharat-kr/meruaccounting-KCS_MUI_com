@@ -1393,6 +1393,41 @@ const savedReports = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Edit Saved Reports
+// @route   PATCH /report/edit
+// @access  Private
+const editReports = asyncHandler(async (req, res) => {
+  try {
+    let { url, includeSS, includeAL, includePR, includeApps, name, share } =
+      req.body;
+
+    const report = await Reports.find({ url: url });
+
+    let options = {
+      includeSS: includeSS ? includeSS : report[0].includeSS,
+      includeAL: includeAL ? includeAL : report[0].includeAL,
+      includePR: includePR ? includePR : report[0].includePR,
+      includeApps: includeApps ? includeApps : report[0].includeApps,
+      name: name ? name : report[0].name,
+      share: share ? share : report[0].share,
+    };
+
+    console.log(options);
+
+    const data = await Reports.updateOne({ url: url }, [
+      {
+        $set: options,
+      },
+    ]);
+
+    res.json({
+      status: "Edited Saved Reports",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
   deleteReports,
   generateReport,
@@ -1400,4 +1435,5 @@ export {
   fetchReports,
   reportOptions,
   savedReports,
+  editReports,
 };
