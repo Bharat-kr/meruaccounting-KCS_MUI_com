@@ -29,7 +29,7 @@ import EdiText from "react-editext";
 import { convertString } from "../../contexts/UserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
-import { getTeam, removeMember } from "src/api/teams api/teams";
+import { getTeam, removeTeamMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
@@ -44,6 +44,7 @@ import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
 import ChangeModal from "./ChangeModal";
+import Confirmation from "../Confirmation";
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -162,6 +163,20 @@ export default function Main(props) {
   const handleModalClose = () => {
     setModal(false);
   };
+
+  //confirmation modal
+  const [ConfirmModal, setConfirmModal] = React.useState(false);
+
+  //handle modal open
+  const handleOpen = () => {
+    setConfirmModal(true);
+  };
+
+  //handle modal close
+  const handleClose = () => {
+    setConfirmModal(false);
+  };
+
   const handleRoleChange = async (e, value) => {
     console.log(e.target.value, value, prevRole);
     setNewRole(value);
@@ -210,7 +225,7 @@ export default function Main(props) {
         teamId: currTeam._id,
       };
       console.log(data);
-      await removeMember(data, dispatchRemoveMember);
+      await removeTeamMember(data, dispatchRemoveMember);
       await getTeam(dispatchgetTeam);
       // enqueueSnackbar("Member removed", { variant: "success" });
     } catch (err) {
@@ -409,7 +424,7 @@ export default function Main(props) {
                     </Typography>
                   </Box>
                   <Box>
-                    <Typography sx={{ padding: 1 }} onClick={deleteMember}>
+                    <Typography sx={{ padding: 1 }} onClick={handleOpen}>
                       <Link>
                         <DeleteIcon sx={{ fontSize: "small" }} /> Delete
                       </Link>
@@ -567,6 +582,11 @@ export default function Main(props) {
           </Typography>
         </Container>
       )}
+      <Confirmation
+        open={ConfirmModal}
+        handleClose={handleClose}
+        onConfirm={deleteMember}
+      />
       <ChangeModal
         modal={modal}
         handleModalClose={handleModalClose}
