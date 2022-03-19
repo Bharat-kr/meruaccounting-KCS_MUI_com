@@ -824,26 +824,24 @@ const deleteReports = asyncHandler(async (req, res) => {
         notifications: 0,
       },
     });
-    // check whether the file exists or not.
-    //   fs.stat('./server/upload/my.csv', function (err, stats) {
-    //     console.log(stats);//here we got all information of file in stats variable
 
-    //     if (err) {
-    //         return console.error(err);
-    //     }
+    fs.stat(
+      `./saved reports/${report[0].fileName}.json`,
+      function (err, stats) {
+        console.log(stats); //here we got all information of file in stats variable
 
-    //     fs.unlink('./server/upload/my.csv',function(err){
-    //          if(err) return console.log(err);
-    //          console.log('file deleted successfully');
-    //     });
-    //  });
+        if (err) {
+          return console.error(err);
+        }
 
-    // Delete a file
-    let filename = `./saved reports/${report[0].fileName}.json`;
-    let tempFile = fs.openSync(filename, "r");
-    // try commenting out the following line to see the different behavior
-    fs.closeSync(tempFile);
-    fs.unlinkSync(filename);
+        // Delete a file
+        let filename = `./saved reports/${report[0].fileName}.json`;
+        let tempFile = fs.openSync(filename, "r");
+        // try commenting out the following line to see the different behavior
+        fs.closeSync(tempFile);
+        fs.unlinkSync(filename);
+      }
+    );
 
     // Delete from database
     if (report) {
