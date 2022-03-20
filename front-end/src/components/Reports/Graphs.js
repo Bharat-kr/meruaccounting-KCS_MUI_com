@@ -9,7 +9,6 @@ import ProjectsCharts from "./ProjectsCharts";
 import ClientsCharts from "./ClientsCharts";
 import EmployeesCharts from "./EmployeesCharts";
 import AppsCharts from "./AppsCharts";
-import FloatingForm from "./FloatingForm";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
