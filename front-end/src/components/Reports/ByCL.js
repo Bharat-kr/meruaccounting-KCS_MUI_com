@@ -161,7 +161,7 @@ const columns = [
 ];
 
 function rowKeyGetter(row) {
-  return row.id;
+  return Math.floor(Math.random() * 1000);
 }
 
 const options = ["employee", "client"];

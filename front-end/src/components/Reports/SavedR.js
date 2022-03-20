@@ -23,16 +23,25 @@ import ShareIcon from "@mui/icons-material/Share";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import MailIcon from "@mui/icons-material/Mail";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { random } from "lodash";
 
 //-------------------------------------------------------------------------------------------------------------------
 
 function Row(props) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { row } = props;
+  const { row, value } = props;
   const [open, setOpen] = React.useState(false);
-
-  const handleDelete = () => {};
+  // console.log(value);
+  const handleDelete = async (e) => {
+    console.log(row.url);
+    const res = await axios.delete(
+      `${axios.defaults.baseURL}report/delete`,
+      row.url
+    );
+    console.log(res.data);
+  };
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -84,7 +93,11 @@ function Row(props) {
             </Box>
           }
         </TableCell>
-        <TableCell onClick={handleDelete}>
+        <TableCell value={row.url} onClick={handleDelete}>
+          <Typography>Edit report </Typography>
+          <ModeEditIcon />
+        </TableCell>
+        <TableCell value={row.url} onClick={handleDelete}>
           <DeleteIcon />
         </TableCell>
       </TableRow>
@@ -99,10 +112,6 @@ export default function SavedR() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rowsData, setRowsData] = React.useState([]);
 
-  //   let data;
-  //   const savedReports = async () => {
-
-  //   };
   React.useEffect(async () => {
     // savedReports();
     try {
@@ -139,7 +148,9 @@ export default function SavedR() {
         </TableHead>
         <TableBody>
           {rowsData.length !== 0 &&
-            rowsData?.map((row) => <Row key={row._id} row={row} />)}
+            rowsData?.map((row) => (
+              <Row key={row._id + random(10)} row={row} value={row.url} />
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

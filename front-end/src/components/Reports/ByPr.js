@@ -62,7 +62,7 @@ const columns = [
 ];
 
 function rowKeyGetter(row) {
-  return row.id;
+  return Math.floor(Math.random() * 1000 * Math.random() * 200);
 }
 
 const options = ["employee", "project"];
@@ -128,7 +128,7 @@ export default function ByEp(props) {
               type="checkbox"
               checked={selectedOptions.includes(option)}
               onChange={(event) => toggleOption(option, event.target.checked)}
-            />{" "}
+            />
             {option}
           </label>
         ))}
