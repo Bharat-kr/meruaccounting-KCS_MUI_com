@@ -1122,7 +1122,7 @@ const reportOptions = asyncHandler(async (req, res) => {
       ]);
     }
     if (user.role === "projectLeader") {
-      employeesOptions = [
+      employeesOptions = await User.aggregate([
         {
           $match: {
             _id: user._id,
@@ -1183,7 +1183,7 @@ const reportOptions = asyncHandler(async (req, res) => {
             "members.lastName": 1,
           },
         },
-      ];
+      ]);
 
       projectsClientsOptions = await User.aggregate([
         {
