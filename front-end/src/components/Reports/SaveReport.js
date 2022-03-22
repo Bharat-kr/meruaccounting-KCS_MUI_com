@@ -65,6 +65,7 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function SaveReport(props) {
+  console.log(props);
   const { reports } = React.useContext(reportsContext);
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState(`${props.options?.groupBy}`);
@@ -131,9 +132,11 @@ export default function SaveReport(props) {
   };
   const handleClickOpen = () => {
     setOpen(true);
+    setChecked([true, ""]);
   };
   const handleClickSave = async () => {
-    setOpen(false);
+    setOpen(true);
+    setChecked([false, ""]);
     const data = {
       share: checked[0],
       includeSS: ssval[0],
@@ -209,7 +212,7 @@ export default function SaveReport(props) {
       <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
         Share Report
       </Button>
-      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+      <Button variant="outlined" onClick={handleClickSave} sx={{ ml: 1 }}>
         Save Report
       </Button>
       <BootstrapDialog
@@ -224,12 +227,13 @@ export default function SaveReport(props) {
           Save Report
         </BootstrapDialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>Date Range: get date from props</Typography>
           <Typography gutterBottom>
-            Description: summary by (group by) get from props, also get other
-            details from props and make options here to send as save reports
-            options.Set
+            Date range :
+            {`${props.options.dateOne === null ? "" : props.options.dateOne}-${
+              props.options.dateTwo ? "" : props.options.dateTwo
+            }`}
           </Typography>
+          <Typography gutterBottom>Description: {name}</Typography>
           <FormControl>
             <InputLabel htmlFor="component-outlined">Name</InputLabel>
             <OutlinedInput
@@ -268,7 +272,7 @@ export default function SaveReport(props) {
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClickSave}>
-            Save and Copy
+            Save & Copy
           </Button>
         </DialogActions>
       </BootstrapDialog>
