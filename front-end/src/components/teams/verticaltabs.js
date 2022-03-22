@@ -23,6 +23,7 @@ import { getFullName } from "src/_helpers/getFullName";
 import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 import { useSnackbar } from "notistack";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Confirmation from "../Confirmation";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -50,7 +51,6 @@ export default function VerticalTabs() {
     dispatchDeleteTeam,
     teamCreate,
     updatedMember,
-
   } = useContext(teamContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
@@ -154,6 +154,9 @@ export default function VerticalTabs() {
     } catch (err) {
       console.log(err);
     }
+    enqueueSnackbar(deletedTeam.error ? deletedTeam.error : "Team deleted", {
+      variant: deletedTeam.error ? "info" : "success",
+    });
   };
 
   //Creating New Team
@@ -241,6 +244,19 @@ export default function VerticalTabs() {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  //confirmation modal
+  const [ConfirmModal, setConfirmModal] = React.useState(false);
+
+  //handle modal open
+  const handleOpen = () => {
+    setConfirmModal(true);
+  };
+
+  //handle modal close
+  const handleClose = () => {
+    setConfirmModal(false);
   };
 
   return (
@@ -458,7 +474,7 @@ export default function VerticalTabs() {
             />
             {currTeam !== null && (
               <Box
-                onClick={handleTeamDelete}
+                onClick={handleOpen}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -505,6 +521,11 @@ export default function VerticalTabs() {
           </Box>
         </Paper>
       </Box>
+      <Confirmation
+        open={ConfirmModal}
+        handleClose={handleClose}
+        onConfirm={handleTeamDelete}
+      />
     </div>
   );
 }

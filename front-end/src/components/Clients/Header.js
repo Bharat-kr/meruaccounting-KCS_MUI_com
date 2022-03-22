@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Paper, Typography } from "@mui/material";
+import { IconButton, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,6 +14,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import { useSnackbar } from "notistack";
+import Confirmation from "../Confirmation";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -91,12 +92,9 @@ export default function Header(props) {
       console.log(err);
       // enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(
-      editClient.error ? editClient.error : "Client edited ",
-      {
-        variant: editClient.error ? "info" : "success",
-      }
-    );
+    enqueueSnackbar(editClient.error ? editClient.error : "Client edited ", {
+      variant: editClient.error ? "info" : "success",
+    });
   };
 
   const handleDeleteClient = async (e) => {
@@ -128,6 +126,20 @@ export default function Header(props) {
     );
   };
   const createdOn = moment(currentClient?.createdAt).format("DD-MM-YYYY");
+
+  //confirmation modal
+  const [ConfirmModal, setConfirmModal] = React.useState(false);
+
+  //handle modal open
+  const handleOpen = () => {
+    setConfirmModal(true);
+  };
+
+  //handle modal close
+  const handleClose = () => {
+    setConfirmModal(false);
+  };
+
   return currentClient === undefined || "" ? (
     <Box
       component="div"
@@ -202,8 +214,12 @@ export default function Header(props) {
                   float: "right",
                 }}
               >
-                <EditIcon sx={{ mr: 2 }} onClick={handleEditClick} />
-                <DeleteIcon sx={{ mr: 3 }} onClick={handleDeleteClient} />
+                <IconButton>
+                  <EditIcon onClick={handleEditClick} />
+                </IconButton>
+                <IconButton>
+                  <DeleteIcon onClick={handleOpen} />
+                </IconButton>
               </div>
             </h1>
             <Typography sx={{}} variant="subtitle1">
@@ -311,6 +327,11 @@ export default function Header(props) {
           </Box>
         </Paper>
       </Box>
+      <Confirmation
+        open={ConfirmModal}
+        handleClose={handleClose}
+        onConfirm={handleDeleteClient}
+      />
     </>
   );
 }

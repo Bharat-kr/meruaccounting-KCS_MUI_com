@@ -94,7 +94,7 @@ export const updateTeam = async (incomingData) => {
   }
 };
 
-export const removeMember = async (incomingData, dispatch) => {
+export const removeTeamMember = async (incomingData, dispatch) => {
   try {
     const { data } = await axios.delete("/team/removeMember", {
       data: incomingData,

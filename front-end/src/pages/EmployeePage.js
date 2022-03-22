@@ -21,9 +21,8 @@ import OfflineTime from "src/components/EmployeePage/OfflineTime";
 
 export default function UserPage() {
   const [activities, setactivities] = useState([]);
-  const { dispatchCommonData } = useContext(EmployeePageContext);
+  const { commonData, dispatchCommonData } = useContext(EmployeePageContext);
   const [isInternal, setisInternal] = useState(false);
-  const { commonData } = useContext(EmployeePageContext);
   const { id } = useParams();
   const location = useLocation();
   const [date, setdate] = useState(
@@ -53,7 +52,10 @@ export default function UserPage() {
           ?.filter((day) => day.date === date)[0]
           ?.activities.filter((act) => {
             return act.isInternal === isInternal;
-          }).sort(function(a, b){return a.startTime - b.startTime})
+          })
+          .sort(function (a, b) {
+            return a.startTime - b.startTime;
+          })
       );
     } else {
       return;
