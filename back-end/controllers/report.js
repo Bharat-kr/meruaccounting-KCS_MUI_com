@@ -697,7 +697,7 @@ const generateReport = asyncHandler(async (req, res) => {
                     lastName: "$_id.lastName",
                     count: "$actCount",
                     totalHours: "$totalHours",
-                    avgPerformanceData: "$performanceData",
+                    avgPerformanceData: "$avgPerformanceData",
                   },
                 },
               },
@@ -805,26 +805,14 @@ const saveReports = asyncHandler(async (req, res) => {
   }
 });
 // @desc    Delete Report
-// @route   delete /report/delete
+// @route   delete /report/delete/:url
 // @access  Private
 const deleteReports = asyncHandler(async (req, res) => {
   try {
-    let { url } = req.body;
+    let { url } = req.params;
     // let _id;
-    const report = await Reports.find({ url: url }).populate({
-      path: "user",
-      model: "User",
-      select: {
-        password: 0,
-        projects: 0,
-        days: 0,
-        clients: 0,
-        teams: 0,
-        settings: 0,
-        notifications: 0,
-      },
-    });
-
+    const report = await Reports.find({ url: url });
+    console.log(req.body);
     fs.stat(
       `./saved reports/${report[0].fileName}.json`,
       function (err, stats) {

@@ -34,16 +34,16 @@ const columns = [
   {
     key: "activity",
     name: "Activity",
-    // groupFormatter({ childRows }) {
-    //   return (
-    //     <>
-    //       {childRows.reduce(
-    //         (prev, { activity }) => Number((prev + activity).toFixed(2)),
-    //         0
-    //       )}
-    //     </>
-    //   );
-    // },
+    groupFormatter({ childRows }) {
+      return (
+        <>
+          {childRows.reduce(
+            (prev, { activity }) => Number((prev + activity).toFixed(2)),
+            0
+          )}
+        </>
+      );
+    },
   },
   {
     key: "money",
@@ -62,7 +62,7 @@ const columns = [
 ];
 
 function rowKeyGetter(row) {
-  return row.id;
+  return Math.floor(Math.random() * 1000 * Math.random() * 200);
 }
 
 const options = ["employee", "project"];
@@ -91,8 +91,8 @@ export default function ByEp(props) {
 
           employee: `${emp.firstName} ${emp.lastName}`,
           duration: Number((emp.totalHours / 3600).toFixed(2)),
-          money: Number((emp?.toalHours / 3600 / emp?.payRate).toFixed(2)),
-          activity: emp.performanceData,
+          money: Number(((emp?.totalHours / 3600) * emp?.payRate).toFixed(2)),
+          activity: Number((emp.avgPerformanceData / 1).toFixed(2)),
         });
       });
     });
@@ -128,7 +128,7 @@ export default function ByEp(props) {
               type="checkbox"
               checked={selectedOptions.includes(option)}
               onChange={(event) => toggleOption(option, event.target.checked)}
-            />{" "}
+            />
             {option}
           </label>
         ))}

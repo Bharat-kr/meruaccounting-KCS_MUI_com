@@ -116,7 +116,7 @@ function Row(props) {
 
                       <Tooltip
                         title={`${timeC(ss?.activityAt)}, ${Math.ceil(
-                          ss?.avgPerformanceData
+                          ss?.performanceData
                         )}%`}
                         placement="top"
                         followCursor
@@ -145,7 +145,7 @@ function Row(props) {
                           variant="subtitle2"
                         >
                           {`${Math.ceil(
-                            ss?.avgPerformanceData
+                            ss?.performanceData
                           )}%, Taken at ${timeC(ss?.activityAt)}`}
                         </Typography>
                       </CardContent>

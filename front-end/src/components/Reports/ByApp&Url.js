@@ -23,8 +23,8 @@ const columns = [
   },
 ];
 
-function rowKeyGetter(row) {
-  return row.id;
+function rowKeyGetter(rows) {
+  return Math.floor(Math.random() * 1000);
 }
 
 const options = ["employee"];

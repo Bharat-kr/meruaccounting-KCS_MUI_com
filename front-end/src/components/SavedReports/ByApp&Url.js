@@ -115,7 +115,7 @@ function Row(props) {
 
                       <Tooltip
                         title={`${timeC(ss?.activityAt)}, ${Math.ceil(
-                          ss?.avgPerformanceData
+                          ss?.performanceData
                         )}%`}
                         placement="top"
                         followCursor
@@ -144,7 +144,7 @@ function Row(props) {
                           variant="subtitle2"
                         >
                           {`${Math.ceil(
-                            ss?.avgPerformanceData
+                            ss?.performanceData
                           )}%, Taken at ${timeC(ss?.activityAt)}`}
                         </Typography>
                       </CardContent>
@@ -190,13 +190,15 @@ export default function ByAppUrl(props) {
 
     let arr = [];
     savedReports.reports[0]?.byA?.map((emp) => {
-      emp?.screenshots.map((ss) => {
-        const act = ss.avgPerformanceData;
-        arr.push({
-          Employee: `${emp._id.firstName} ${emp._id.lastName}`,
-          Application: ss.title.split("-").slice(0),
-          Activity: (act / 1).toFixed(2),
-          Ss: emp.screenshots,
+      emp?.screenshots.map((acti) => {
+        acti.screenshots.map((ss) => {
+          const act = ss.performanceData;
+          arr.push({
+            Employee: `${emp._id.firstName} ${emp._id.lastName}`,
+            Application: ss.title.split("-").slice(0),
+            Activity: (act / 1).toFixed(2),
+            Ss: acti.screenshots,
+          });
         });
       });
     });

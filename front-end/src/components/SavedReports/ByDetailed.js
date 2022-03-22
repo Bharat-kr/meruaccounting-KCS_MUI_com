@@ -38,29 +38,6 @@ import timeC from "src/_helpers/timeConverter";
 import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
 
-function createData(name, calories, fat, carbs, protein, price) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        date: "2020-01-05",
-        customerId: "11091700",
-        amount: 3,
-      },
-      {
-        date: "2020-01-02",
-        customerId: "Anonymous",
-        amount: 1,
-      },
-    ],
-  };
-}
-
 function Row(props) {
   const { row, options } = props;
   const [open, setOpen] = React.useState(false);
@@ -139,7 +116,7 @@ function Row(props) {
 
                       <Tooltip
                         title={`${timeC(ss?.activityAt)}, ${Math.ceil(
-                          ss?.avgPerformanceData
+                          ss?.performanceData
                         )}%`}
                         placement="top"
                         followCursor
@@ -168,7 +145,7 @@ function Row(props) {
                           variant="subtitle2"
                         >
                           {`${Math.ceil(
-                            ss?.avgPerformanceData
+                            ss?.performanceData
                           )}%, Taken at ${timeC(ss?.activityAt)}`}
                         </Typography>
                       </CardContent>
@@ -218,9 +195,12 @@ export default function ByD(props) {
         Employee: `${emp.employee.firstName} ${emp.employee.lastName}`,
         Project: `${emp?.project?.name ? emp.project.name : "Deleted project"}`,
 
-        Duration: (emp.totalHours / 3600).toFixed(2),
+        Duration: `${timeC(emp.startTime)}-${timeC(emp.endTime)}`,
         Activity: (act / 1).toFixed(2),
-        Money: ((emp?.totalHours / 3600) * emp.employee.payRate).toFixed(2),
+        Money: (
+          ((emp.endTime - emp.startTime) / (1000 * 60 * 60)) *
+          emp.employee.payRate
+        ).toFixed(2),
         Ss: emp.screenshots,
       });
     });
