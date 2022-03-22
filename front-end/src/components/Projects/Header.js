@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Paper, Typography, TextField, Link } from "@mui/material";
+import { Paper, Typography, TextField, Link, IconButton } from "@mui/material";
 import EdiText from "react-editext";
 import SearchBar from "../SearchBar";
 import { makeStyles } from "@mui/styles";
@@ -22,6 +22,7 @@ import { useLayoutEffect } from "react";
 import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
 import { reportsContext } from "../../contexts/ReportsContext";
+import Confirmation from "../Confirmation";
 
 //---------------------------------------------------------------
 
@@ -262,6 +263,19 @@ export default function Header(props) {
   };
   console.log(currentProject);
 
+  //confirmation modal
+  const [ConfirmModal, setConfirmModal] = React.useState(false);
+
+  //handle modal open
+  const handleOpen = () => {
+    setConfirmModal(true);
+  };
+
+  //handle modal close
+  const handleClose = () => {
+    setConfirmModal(false);
+  };
+
   return currentProject === undefined ? (
     <Box
       component="div"
@@ -336,16 +350,12 @@ export default function Header(props) {
                   float: "right",
                 }}
               >
-                {/* <button
-                  type="button"
-                  style={{ marginRight: "5px" }}
-                  
-                > */}
-                <EditIcon onClick={handleEditClick} sx={{ mr: 2 }} />
-                {/* </button> */}
-                {/* <button type="button" style={{}}> */}
-                <DeleteIcon onClick={handleProjectDelete} />
-                {/* </button> */}
+                <IconButton>
+                  <EditIcon onClick={handleEditClick} />
+                </IconButton>
+                <IconButton>
+                  <DeleteIcon onClick={handleOpen} />
+                </IconButton>
               </div>
             </div>
             <hr></hr>
@@ -504,6 +514,11 @@ export default function Header(props) {
           </Box>
         </Paper>
       </Box>
+      <Confirmation
+        open={ConfirmModal}
+        handleClose={handleClose}
+        onConfirm={handleProjectDelete}
+      />
     </>
   );
 }
