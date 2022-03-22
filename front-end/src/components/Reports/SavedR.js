@@ -272,13 +272,12 @@ function Row(props) {
             </BootstrapDialogTitle>
             <DialogContent dividers>
               <Typography gutterBottom>
-                Date Range: get date from props
+                Date range :
+                {`${
+                  props?.options?.dateOne === null ? "" : props.options.dateOne
+                }-${props?.options?.dateTwo ? "" : props.options.dateTwo}`}
               </Typography>
-              <Typography gutterBottom>
-                Description: summary by (group by) get from props, also get
-                other details from props and make options here to send as save
-                reports options.Set
-              </Typography>
+              <Typography gutterBottom>Description: {name}</Typography>
               <FormControl>
                 <InputLabel htmlFor="component-outlined">Name</InputLabel>
                 <OutlinedInput
