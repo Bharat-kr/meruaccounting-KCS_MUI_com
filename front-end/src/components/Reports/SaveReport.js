@@ -5,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  Autocomplete,
   Checkbox,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
@@ -22,9 +23,12 @@ import Typography from "@mui/material/Typography";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import dayjs from "dayjs";
+import { loginContext } from "../../contexts/LoginContext";
 
 // context
 import { reportsContext } from "../../contexts/ReportsContext";
+import PdfExport from "./Export";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -67,6 +71,8 @@ BootstrapDialogTitle.propTypes = {
 export default function SaveReport(props) {
   console.log(props);
   const { reports } = React.useContext(reportsContext);
+  const { loginC } = React.useContext(loginContext);
+
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState(`${props.options?.groupBy}`);
   const [checked, setChecked] = React.useState([true, ""]);
@@ -74,11 +80,15 @@ export default function SaveReport(props) {
   const [moneyval, setMoneyval] = React.useState([false, ""]);
   const [alval, setAlval] = React.useState([false, ""]);
   const [appurl, setAppurl] = React.useState([false, ""]);
+  const [scheduleChecked, setScheduleChecked] = React.useState([false, ""]);
+  const [expdf, setExPdf] = React.useState(false);
+  const [timeint, setTimeint] = React.useState("");
+  const [dayint, setDayint] = React.useState("");
+  const [hourint, setHourint] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();
 
   const [url, setUrl] = React.useState(uuidv4());
-
-  // console.log(props);
+  console.log(timeint, dayint, hourint);
   // Default name of the saved report
   React.useEffect(() => {
     if (props.options?.groupBy === "E") {
@@ -130,6 +140,9 @@ export default function SaveReport(props) {
   const handleChange = (event) => {
     setName(event.target.value);
   };
+  const handleExportPdf = () => {
+    setExPdf(!expdf);
+  };
   const handleClickOpen = () => {
     setOpen(true);
     setChecked([true, ""]);
@@ -178,7 +191,84 @@ export default function SaveReport(props) {
   const handleChange5 = (event) => {
     setAppurl([!appurl[0], event.target.value]);
   };
+  const handleScheduleChange = (e) => {
+    setScheduleChecked([!scheduleChecked[0], ""]);
+  };
+  const timelog = [
+    "12:00 am",
+    "1:00 am",
+    "2:00 am",
+    "3:00 am",
+    "4:00 am",
+    "5:00 am",
+    "6:00 am",
+    "7:00 am",
+    "8:00 am",
+    "9:00 am",
+    "10:00 am",
+    "11:00 am",
+    "12:00 pm",
+    "1:00 pm",
+    "2:00 pm",
+    "3:00 pm",
+    "4:00 pm",
+    "5:00 pm",
+    "6:00 pm",
+    "7:00 pm",
+    "8:00 pm",
+    "9:00 pm",
+    "10:00 pm",
+    "11:00 pm",
+  ];
 
+  const children2 = (
+    <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+      <OutlinedInput
+        id="component-outlined"
+        value={loginC?.userData?.email}
+        onChange={handleChange}
+        label="mail"
+      />
+      <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
+        <Autocomplete
+          onChange={(e, value) => setTimeint(value)}
+          disablePortal
+          id="combo-box-demo"
+          options={["Monthly", "Weekly", "daily"]}
+          sx={{ width: 300 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Select interval" />
+          )}
+        />
+        <Autocomplete
+          onChange={(e, value) => setDayint(value)}
+          disablePortal
+          id="combo-box-demo"
+          options={[
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ]}
+          sx={{ width: 300, ml: 1 }}
+          renderInput={(params) => <TextField {...params} label="Select Day" />}
+        />
+        <Autocomplete
+          onChange={(e, value) => setHourint(value)}
+          disablePortal
+          id="combo-box-demo"
+          options={timelog}
+          sx={{ width: 300, ml: 1 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Select Time" />
+          )}
+        />
+      </Box>
+    </Box>
+  );
   const children = (
     <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
       <FormControlLabel
@@ -202,80 +292,96 @@ export default function SaveReport(props) {
   );
 
   return (
-    <div style={{ marginRight: "2.5%" }}>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Export pdf
-      </Button>
-      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
-        Export excel
-      </Button>
-      <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
-        Share Report
-      </Button>
-      <Button variant="outlined" onClick={handleClickSave} sx={{ ml: 1 }}>
-        Save Report
-      </Button>
-      <BootstrapDialog
-        onClose={handleClose}
-        aria-labelledby="customized-dialog-title"
-        open={open}
-      >
-        <BootstrapDialogTitle
-          id="customized-dialog-title"
-          onClose={handleClose}
-        >
+    <>
+      {expdf ? <PdfExport options={props.options} /> : ""}
+      <div style={{ marginRight: "2.5%" }}>
+        <Button variant="outlined" onClick={handleExportPdf}>
+          Export pdf
+        </Button>
+        <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+          Export excel
+        </Button>
+        <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+          Share Report
+        </Button>
+        <Button variant="outlined" onClick={handleClickSave} sx={{ ml: 1 }}>
           Save Report
-        </BootstrapDialogTitle>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Date range :
-            {`${
-              props?.options?.dateOne === null ? "" : props.options.dateOne
-            }-${props?.options?.dateTwo ? "" : props.options.dateTwo}`}
-          </Typography>
-          <Typography gutterBottom>Description: {name}</Typography>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">Name</InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              value={name}
-              onChange={handleChange}
-              label="Name"
-            />
-          </FormControl>
+        </Button>
+        <BootstrapDialog
+          onClose={handleClose}
+          aria-labelledby="customized-dialog-title"
+          open={open}
+        >
+          <BootstrapDialogTitle
+            id="customized-dialog-title"
+            onClose={handleClose}
+          >
+            Save Report
+          </BootstrapDialogTitle>
+          <DialogContent dividers>
+            <Typography gutterBottom>
+              Date range :
+              {`${
+                props?.options?.dateOne === null ? "" : props.options.dateOne
+              }-${props?.options?.dateTwo ? "" : props.options.dateTwo}`}
+            </Typography>
+            <Typography gutterBottom>Description: {name}</Typography>
+            <FormControl>
+              <InputLabel htmlFor="component-outlined">Name</InputLabel>
+              <OutlinedInput
+                id="component-outlined"
+                value={name}
+                onChange={handleChange}
+                label="Name"
+              />
+            </FormControl>
 
-          <Box sx={{ mt: 1.5 }}>
-            <TextField
-              disabled={!checked[0]}
-              fullWidth
-              label="Sharing link"
-              defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </Box>
+            <Box sx={{ mt: 1.5 }}>
+              <TextField
+                disabled={!checked[0]}
+                fullWidth
+                label="Sharing link"
+                defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Box>
 
-          <div>
-            <FormControlLabel
-              label="Share Report"
-              control={
-                <Checkbox
-                  defaultChecked={checked}
-                  checked={checked[0]}
-                  onChange={handleChange1}
-                />
-              }
-            />
-            {checked[0] ? children : null}
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClickSave}>
-            Save & Copy
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
-    </div>
+            <div>
+              <FormControlLabel
+                label="Share Report"
+                control={
+                  <Checkbox
+                    defaultChecked={checked}
+                    checked={checked[0]}
+                    onChange={handleChange1}
+                  />
+                }
+              />
+              {checked[0] ? children : null}
+            </div>
+            <div>
+              <FormControlLabel
+                label="Schedule Email"
+                control={
+                  <Checkbox
+                    defaultChecked={false}
+                    checked={scheduleChecked[0]}
+                    onChange={handleScheduleChange}
+                  />
+                }
+              />
+              {scheduleChecked[0] ? children2 : null}
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleClickSave}>
+              Save & Copy
+            </Button>
+          </DialogActions>
+        </BootstrapDialog>
+      </div>
+    </>
   );
 }
