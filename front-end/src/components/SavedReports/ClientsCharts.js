@@ -55,8 +55,8 @@ export default function ClientsCharts() {
     ],
   };
   return (
-    <Box>
-      <Box sx={{}}>
+    <Box sx={{ mt: 8 }}>
+      <Box>
         <Typography variant="h2" sx={{ opacity: 1, textAlign: "left", mb: 2 }}>
           Clients Reports
         </Typography>
