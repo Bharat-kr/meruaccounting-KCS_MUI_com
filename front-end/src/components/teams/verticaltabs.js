@@ -13,7 +13,7 @@ import {
   updateMember,
   deleteTeam,
 } from "../../api/teams api/teams";
-import Treeview from "../Treeview";
+import { capitalize } from "../../_helpers/Capitailze";
 import { LoadingButton, TreeView } from "@mui/lab";
 import { TreeItem } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -121,7 +121,9 @@ export default function VerticalTabs() {
       // eslint-disable-next-line prefer-template
       team.members?.map((member) =>
         teamsList.push(
-          team.name + ":" + getFullName(member.firstName, member.lastName)
+          capitalize(team.name) +
+            ":" +
+            getFullName(member.firstName, member.lastName)
         )
       );
     });
@@ -370,7 +372,7 @@ export default function VerticalTabs() {
                           fontWeight: "700",
                         }}
                       >
-                        {el.name}
+                        {capitalize(el.name)}
                       </Typography>
                     }
                     key={el._id}

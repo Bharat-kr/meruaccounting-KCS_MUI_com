@@ -4,7 +4,6 @@ import {
   Paper,
   Autocomplete,
   Typography,
-  Button,
   CircularProgress,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -17,6 +16,8 @@ import { addClient, getClient } from "../../api/clients api/clients";
 import Header from "./Header";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
+import { capitalize } from "../../_helpers/Capitailze";
+
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -88,7 +89,7 @@ export default function Sidebar() {
   }, [clientDetails]);
   if (clientDetails?.loader === false) {
     clientsList = clientDetails?.client?.data;
-    clientDetails?.client?.data?.map((cli) => clientNameList.push(cli.name));
+    clientDetails?.client?.data?.map((cli) => clientNameList.push(capitalize(cli.name)));
   }
   // labels for search box(autocomplete)
   // const clientsList = clients.map((client) => client.name);
@@ -145,7 +146,7 @@ export default function Sidebar() {
       } else {
         setnewClientError(true);
       }
-      setLoaderAddClient(false); 
+      setLoaderAddClient(false);
       // enqueueSnackbar("Client added ", { variant: "success" });
     } catch (err) {
       console.log(err);
@@ -260,7 +261,7 @@ export default function Sidebar() {
                         fontWeight: "700",
                       }}
                     >
-                      {client.name}
+                      {capitalize(client.name)}
                     </Typography>
                   }
                 ></TreeItem>

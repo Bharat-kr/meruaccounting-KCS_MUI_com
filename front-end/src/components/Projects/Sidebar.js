@@ -14,7 +14,7 @@ import { getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
 import Header from "./Header";
 import Snackbars from "../../_helpers/snackBar";
-import zIndex from "@mui/material/styles/zIndex";
+import { capitalize } from "../../_helpers/Capitailze";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
@@ -96,7 +96,7 @@ export default function Sidebar() {
     if (clientDetails.loader === false) {
       clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
-          projectList.push(client.name + ":" + pro.name);
+          projectList.push(capitalize(client.name) + ":" + capitalize(pro.name));
         });
       });
     }
@@ -277,7 +277,7 @@ export default function Sidebar() {
                           fontWeight: "700",
                         }}
                       >
-                        {client.name}
+                        {capitalize(client.name)}
                       </Typography>
                     }
                     key={client._id}
@@ -301,7 +301,7 @@ export default function Sidebar() {
                               data-project={project.name}
                               onClick={handleProjectClick}
                             >
-                              {project.name}
+                              {capitalize(project.name)}
                             </Typography>
                           }
                         />
