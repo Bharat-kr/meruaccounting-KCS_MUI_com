@@ -5,7 +5,7 @@ import faker from "faker";
 import { reportsContext } from "src/contexts/ReportsContext";
 
 import DataGrid, { SelectColumn } from "react-data-grid";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { fontSize } from "@mui/system";
 
 const columns = [
@@ -24,7 +24,7 @@ const columns = [
 ];
 
 function rowKeyGetter(rows) {
-  return Math.floor(Math.random() * 1000);
+  return Math.floor(Math.random() * 1000 * Math.random() * 200);
 }
 
 const options = ["employee"];
@@ -70,7 +70,7 @@ export default function ByAppsUrl(props) {
     setExpandedGroupIds(new Set());
   }
 
-  return (
+  return reports.reports[0].byA.length !== 0 ? (
     <Box sx={{ mt: 3 }}>
       <Typography varinat="h3" sx={{ fontWeight: "700", fontSize: "1.5rem" }}>
         Group by columns:
@@ -102,5 +102,14 @@ export default function ByAppsUrl(props) {
         // direction={direction}
       />
     </Box>
+  ) : (
+    <>
+      <Divider />
+      <Box sx={{ display: "flex", flexDirection: "row", m: 10 }}>
+        <Typography varinat="h1" sx={{ fontWeight: "bold" }}>
+          No tracked time found matching the criteria
+        </Typography>
+      </Box>
+    </>
   );
 }

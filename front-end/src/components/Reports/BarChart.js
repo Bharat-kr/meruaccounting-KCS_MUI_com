@@ -14,18 +14,18 @@ export default function Bar() {
 
   useEffect(() => {
     let t = 0;
-    reports.reports[0].byScreenshots.forEach((ss) => {
+    reports?.reports[0]?.byScreenshots?.forEach((ss) => {
       t = t + ss.actCount;
     });
     console.log(t);
-    let arr = reports.reports[0].byScreenshots.map((ss) => {
+    let arr = reports?.reports[0]?.byScreenshots?.map((ss) => {
       let o = {
         type: `${ss._id}`,
         value: ss.actCount,
       };
       return o;
     });
-    setData(reports.reports[0].byDates);
+    setData(reports.reports[0]?.byDates);
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
     settotalCount(reports?.reports[0]?.total[0]?.actCount);
@@ -67,7 +67,7 @@ export default function Bar() {
           </Typography>
         </Box>
         <div>
-          <Column {...config} />;
+          <Column {...config} />
         </div>
       </Box>
     </Box>

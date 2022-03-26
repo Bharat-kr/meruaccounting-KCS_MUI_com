@@ -274,8 +274,8 @@ function Row(props) {
               <Typography gutterBottom>
                 Date range :
                 {`${
-                  props?.options?.dateOne === null ? "" : props.options.dateOne
-                }-${props?.options?.dateTwo ? "" : props.options.dateTwo}`}
+                  props?.options?.dateOne === null ? "" : props.options?.dateOne
+                }-${props?.options?.dateTwo ? "" : props.options?.dateTwo}`}
               </Typography>
               <Typography gutterBottom>Description: {name}</Typography>
               <FormControl>

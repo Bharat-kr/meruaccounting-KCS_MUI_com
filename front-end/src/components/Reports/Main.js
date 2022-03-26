@@ -1,6 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { Tabs } from "@mui/material";
+import { Divider, Tabs } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -203,6 +203,8 @@ export default function Main() {
   //     });
   //   } else return;
   // }, [clientDetails, projects, employees]);
+  console.log(reports);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -265,6 +267,8 @@ export default function Main() {
         {!reports.loader ? (
           <>
             <Graphs style={{ margin: 10 }}></Graphs>
+            <Divider />
+
             {group.filter((grp) => grp.value === "E").length !== 0 ? (
               <ByEp sx={{ height: "auto" }} reports={reports} />
             ) : group.filter((grp) => grp.value === "P").length !== 0 ? (
@@ -279,7 +283,9 @@ export default function Main() {
               ""
             )}
           </>
-        ) : null}
+        ) : (
+          ""
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
         <SavedR />

@@ -92,29 +92,17 @@ import faker from "faker";
 import { reportsContext } from "src/contexts/ReportsContext";
 
 import DataGrid, { SelectColumn } from "react-data-grid";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import { fontSize } from "@mui/system";
 
 const columns = [
   {
     key: "employee",
     name: "Employee",
-    // groupFormatter({ childRows }) {
-    //   return (
-    //     <>{childRows.reduce((prev, { employee }) => prev + employee, 0)}</>
-    //   );
-    // },
   },
   {
     key: "client",
     name: "Client",
-    // groupFormatter({ childRows }) {
-    //   return (
-    //     <>
-    //       {childRows.reduce((prev, { application }) => prev + application, 0)}
-    //     </>
-    //   );
-    // },
   },
   {
     key: "duration",
@@ -161,7 +149,7 @@ const columns = [
 ];
 
 function rowKeyGetter(row) {
-  return Math.floor(Math.random() * 1000);
+  return Math.floor(Math.random() * 1000 * Math.random() * 200);
 }
 
 const options = ["employee", "client"];
@@ -211,7 +199,7 @@ export default function ByCl(props) {
     setExpandedGroupIds(new Set());
   }
 
-  return (
+  return reports.reports[0].byCE?.length !== 0 ? (
     <Box sx={{ mt: 3 }}>
       <Typography varinat="h3" sx={{ fontWeight: "700", fontSize: "1.5rem" }}>
         Group by columns:
@@ -243,5 +231,14 @@ export default function ByCl(props) {
         // direction={direction}
       />
     </Box>
+  ) : (
+    <>
+      <Divider />
+      <Box sx={{ display: "flex", flexDirection: "row", m: 10 }}>
+        <Typography varinat="h1" sx={{ fontWeight: "bold" }}>
+          No tracked time found matching the criteria
+        </Typography>
+      </Box>
+    </>
   );
 }
