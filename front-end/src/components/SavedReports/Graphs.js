@@ -10,6 +10,8 @@ import ClientsCharts from "./ClientsCharts";
 import EmployeesCharts from "./EmployeesCharts";
 import AppsCharts from "./AppsCharts";
 import FloatingForm from "./FloatingForm";
+import { reportsContext } from "../../contexts/ReportsContext";
+import secondsToHms from "../../_helpers/secondsToHms";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,8 +47,21 @@ function a11yProps(index) {
 }
 
 export default function Graphs(props) {
+  const { savedReports } = React.useContext(reportsContext);
   const [value, setValue] = React.useState(0);
+  const [totalPRate, settotalPRate] = React.useState(null);
+  const [totalPData, settotalPData] = React.useState(null);
+  const [totalHours, settotalHours] = React.useState(null);
 
+  React.useEffect(() => {
+    try {
+      settotalHours(savedReports?.reports[0]?.total[0]?.totalHours);
+      settotalPData(savedReports?.reports[0]?.total[0]?.avgPerformanceData);
+      settotalPRate(savedReports?.reports[0]?.total[0]?.avgPayRate);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [savedReports]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -54,7 +69,52 @@ export default function Graphs(props) {
   return (
     <Box sx={{ mt: 2, width: "100%" }}>
       <Box>
-        <Typography></Typography>
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h3">Total hours : </Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              ml: 1,
+              display: "flex",
+              opacity: 0.6,
+              textAlign: "left",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            {secondsToHms(totalHours)}
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h3">Activity level : </Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              ml: 1,
+              display: "flex",
+              opacity: 0.6,
+              textAlign: "left",
+              alignItems: "center",
+            }}
+          >
+            {Math.trunc(totalPData)} %
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <Typography variant="h3">Money : </Typography>
+          <Typography
+            variant="h3"
+            sx={{
+              ml: 1,
+              display: "flex",
+              opacity: 0.6,
+              textAlign: "left",
+              alignItems: "center",
+            }}
+          >
+            {Math.trunc((totalPRate * totalHours) / 3600)}
+          </Typography>
+        </Box>
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
@@ -72,20 +132,20 @@ export default function Graphs(props) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Bars></Bars>
+        <Bars reports={savedReports}></Bars>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <EmployeesCharts></EmployeesCharts>
+        <EmployeesCharts reports={savedReports}></EmployeesCharts>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <ProjectsCharts />
+        <ProjectsCharts reports={savedReports} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <ClientsCharts></ClientsCharts>
+        <ClientsCharts reports={savedReports}></ClientsCharts>
       </TabPanel>
       {props.options?.includeApps === true && (
         <TabPanel value={value} index={4}>
-          <AppsCharts></AppsCharts>
+          <AppsCharts reports={savedReports}></AppsCharts>
         </TabPanel>
       )}
     </Box>

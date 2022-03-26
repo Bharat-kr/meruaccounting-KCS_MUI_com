@@ -70,7 +70,7 @@ BootstrapDialogTitle.propTypes = {
 
 export default function SaveReport(props) {
   console.log(props);
-  const { reports } = React.useContext(reportsContext);
+  const { reports, savedReports } = React.useContext(reportsContext);
   const { loginC } = React.useContext(loginContext);
 
   const [open, setOpen] = React.useState(false);
@@ -136,12 +136,33 @@ export default function SaveReport(props) {
     setUrl(uuidv4());
   }, [open]);
 
+  const data = {
+    share: checked[0],
+    includeSS: ssval[0],
+    includeAL: alval[0],
+    includePR: moneyval[0],
+    includeApps: appurl[0],
+    reports: reports.reports,
+    url,
+    name,
+    options: props.options,
+  };
+
   //   console.log(reports);
   const handleChange = (event) => {
     setName(event.target.value);
   };
-  const handleExportPdf = () => {
-    setExPdf(!expdf);
+  const handleExportPdf = async () => {
+    try {
+      const savedData = await axios.post("/report/save", data);
+      console.log(savedData);
+      window.open(
+        `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
+        "_blank"
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
   const handleClickOpen = () => {
     setOpen(true);
@@ -273,6 +294,7 @@ export default function SaveReport(props) {
       </Box>
     </Box>
   );
+  console.log(savedReports);
   const children = (
     <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
       <FormControlLabel
