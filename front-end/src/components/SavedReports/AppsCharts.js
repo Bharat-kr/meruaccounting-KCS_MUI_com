@@ -4,7 +4,7 @@ import { reportsContext } from "../../contexts/ReportsContext";
 import secondsToHms from "../../_helpers/secondsToHms";
 import { Box, Typography } from "@mui/material";
 
-export default function AppsCharts() {
+export default function AppsCharts(props) {
   const { savedReports } = React.useContext(reportsContext);
   const [chartData, setchartData] = useState([]);
   const [totalHours, settotalHours] = useState(null);
@@ -62,21 +62,13 @@ export default function AppsCharts() {
     ],
   };
   return (
-    <Box>
-      <Box sx={{}}>
-        <Typography variant="h2" sx={{ opacity: 1, textAlign: "left" }}>
+    <Box sx={{ mt: 8 }}>
+      <Box>
+        <Typography variant="h2" sx={{ opacity: 1, textAlign: "left", mb: 2 }}>
           Apps Reports
         </Typography>
       </Box>
       <Box>
-        <Box>
-          <Typography variant="h3" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {secondsToHms(totalHours)}
-          </Typography>
-          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {Math.trunc(totalPData)}%
-          </Typography>
-        </Box>
         <div>
           <Pie style={{ flexGrow: "2" }} {...config} />
         </div>
