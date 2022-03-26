@@ -34,6 +34,7 @@ import {
 import { getClient } from "./api/clients api/clients";
 
 import SavedReports from "./pages/SavedReports";
+import DownloadReport from "./pages/DownloadReport";
 
 // ----------------------------------------------------------------------
 
@@ -142,6 +143,7 @@ export default function Router() {
         { path: "/", element: <Navigate to="/login" /> },
         { path: "*", element: <Navigate to="/404" /> },
         { path: "/reports/sharedReports/:id", element: <SavedReports /> },
+        { path: "/downloadReportPdf/:id", element: <DownloadReport /> },
       ],
     },
     // { path: '#', element: <Navigate to="/UserDetails" /> },

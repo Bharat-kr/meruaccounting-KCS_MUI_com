@@ -55,21 +55,13 @@ export default function EmployeesCharts() {
     ],
   };
   return (
-    <Box>
-      <Box sx={{}}>
-        <Typography variant="h2" sx={{ opacity: 1, textAlign: "left" }}>
-          Employees savedReports
+    <Box sx={{ mt: 8 }}>
+      <Box>
+        <Typography variant="h2" sx={{ opacity: 1, textAlign: "left", mb: 2 }}>
+          Employees reports
         </Typography>
       </Box>
       <Box>
-        <Box>
-          <Typography variant="h3" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {secondsToHms(totalHours)}
-          </Typography>
-          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {Math.trunc(totalPData)}%
-          </Typography>
-        </Box>
         <div>
           <Pie style={{ flexGrow: "2" }} {...config} />
         </div>

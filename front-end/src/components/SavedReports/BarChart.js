@@ -1,52 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { BarChart, Bar, XAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import React, { useState, useEffect } from "react";
+import { Column } from "@ant-design/plots";
 import { reportsContext } from "../../contexts/ReportsContext";
+import secondsToHms from "../../_helpers/secondsToHms";
+import { Box, Typography } from "@mui/material";
 
-// const data = [
-//   {
-//     date: "2 Nov",
-//     totalHours: 2400,
-//   },
-// ];
+export default function Bar() {
+  const { savedReports } = React.useContext(reportsContext);
+  const [totalHours, settotalHours] = useState(null);
+  const [totalActCount, settotalCount] = useState(null);
+  const [totalPData, settotalPData] = useState(null);
+  const [totalPRate, settotalPRate] = useState(null);
+  const [data, setData] = useState([]);
 
-export default function Bars() {
-  const { reports } = React.useContext(reportsContext);
-  console.log(reports);
-  const [data, setdata] = useState([]);
   useEffect(() => {
-    setdata([
-      {
-        date: "2 Nov",
-        totalHours: "20",
+    let t = 0;
+    savedReports?.reports[0]?.byScreenshots?.forEach((ss) => {
+      t = t + ss.actCount;
+    });
+    console.log(t);
+    let arr = savedReports?.reports[0]?.byScreenshots?.map((ss) => {
+      let o = {
+        type: `${ss._id}`,
+        value: ss.actCount,
+      };
+      return o;
+    });
+    setData(savedReports.reports[0]?.byDates);
+    settotalHours(savedReports?.reports[0]?.total[0]?.totalHours);
+    settotalPData(savedReports?.reports[0]?.total[0]?.avgPerformanceData);
+    settotalCount(savedReports?.reports[0]?.total[0]?.actCount);
+    settotalPRate(savedReports?.reports[0]?.total[0]?.avgPayRate);
+  }, [savedReports]);
+
+  const config = {
+    data,
+    xField: "_id",
+    yField: "totalHours",
+    xAxis: {
+      label: {
+        autoRotate: false,
       },
-    ]);
-  }, []);
-  console.log(data);
+    },
+    slider: {
+      start: 0.1,
+      end: 0.2,
+    },
+  };
 
   return (
-    <div>
-      <BarChart
-        width={500}
-        height={300}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-        barSize={20}
-      >
-        <XAxis dataKey="date" scale="point" padding={{ left: 10, right: 10 }} />
-        <Tooltip />
-        <Legend />
-        <CartesianGrid strokeDasharray="3 3" />
-        <Bar
-          dataKey="totalHours"
-          fill="#8884d8"
-          background={{ fill: "#eee" }}
-        />
-      </BarChart>
-    </div>
+    <Box sx={{ mt: 6 }}>
+      <Box>
+        <Typography variant="h2" sx={{ opacity: 1, textAlign: "left", mb: 2 }}>
+          Timeline
+        </Typography>
+      </Box>
+      <Box>
+        <div>
+          <Column {...config} />
+        </div>
+      </Box>
+    </Box>
   );
 }

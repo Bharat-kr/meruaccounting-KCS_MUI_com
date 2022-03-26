@@ -1,136 +1,108 @@
 import * as React from "react";
-import { useRef, useState, useEffect, useCallback } from "react";
-
-// import "@progress/kendo-theme-material/dist/all.css";
-// import "./style.css";
-import { Box, Typography } from "@mui/material";
-import ByEp from "./ByEp";
-import ByPr from "./ByPr";
-import ByCl from "./ByCL";
-import ByDetailed from "./ByDetailed";
-import ByAppsUrl from "./ByApp&Url";
-import { reportsContext } from "../../contexts/ReportsContext";
+import PropTypes from "prop-types";
+import { Tabs } from "@mui/material";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import DatePicker from "./DatePicker";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+// components
 import Graphs from "./Graphs";
+import SelectEmployees from "./SelectEmployees";
+import SelectProjects from "./SelectProjects";
+import SelectClients from "./SelectClients";
+import SaveReport from "./SaveReport";
+
+// contexts and apis
+import { teamContext } from "../../contexts/TeamsContext";
+import { ClientsContext } from "../../contexts/ClientsContext";
+import { reportsContext } from "../../contexts/ReportsContext";
+import { getReports } from "../../api/reports api/reports";
+import ByEp from "../SavedReports/ByEp";
+import ByPr from "../SavedReports/ByPr";
+import ByCl from "../SavedReports/ByCL";
+import ByD from "../SavedReports/ByDetailed";
+import ByAppUrl from "../SavedReports/ByApp&Url";
+import Bar from "../SavedReports/BarChart";
+import ProjectsCharts from "../SavedReports/ProjectsCharts";
+import ClientsCharts from "../SavedReports/ClientsCharts";
+import EmployeesCharts from "../SavedReports/EmployeesCharts";
+import AppsCharts from "../SavedReports/AppsCharts";
+import GridExample from "../../components/SavedReports/ByEp";
 import { lastIndexOf } from "lodash";
-import { GridPDFExport } from "@progress/kendo-react-pdf";
+import secondsToHms from "../../_helpers/secondsToHms";
 
-import { Button } from "@progress/kendo-react-buttons";
-// import { TreeListPDFExport } from "@progress/kendo-react-pdf";
-// import { treeListSampleEmployees } from "./treelist-sample-employees.jsx";
+// function TabPanel(props) {
+//   const { children, value, index, ...other } = props;
 
-export default function PdfExport(props) {
-  console.log(props);
-  const [data, setData] = useState([]);
-  const [expanded, setExpanded] = useState([]);
-  const [isPdfExporting, setIsPdfExporting] = useState(false);
-  const pdfExportRef = useRef(null);
+//   return (
+//     <div
+//       // role="tabpanel"
+//       hidden={value !== index}
+//       // id={`simple-tabpanel-${index}`}
+//       aria-labelledby={`simple-tab-${index}`}
+//       {...other}
+//     >
+//       {value === index && (
+//         <Box sx={{ p: 3 }}>
+//           <Typography>{children}</Typography>
+//         </Box>
+//       )}
+//     </div>
+//   );
+// }
 
-  const expandField = "expanded";
-  const subItemsField = "employees";
+// TabPanel.propTypes = {
+//   children: PropTypes.node,
+//   index: PropTypes.number.isRequired,
+//   value: PropTypes.number.isRequired,
+// };
 
-  const { savedReports } = React.useContext(reportsContext);
+// function a11yProps(index) {
+//   return {
+//     id: `simple-tab-${index}`,
+//     "aria-controls": `simple-tabpanel-${index}`,
+//   };
+// }
+
+//////////////////////////panelllllll
+export default function ExportPdf() {
+  // tab panels value
+  const [value, setValue] = React.useState(0);
+  //
+  const { getTeams } = React.useContext(teamContext);
+  //
+  const { clientDetails } = React.useContext(ClientsContext);
+  //
+  const { reports, savedReports, dispatchGetReports } =
+    React.useContext(reportsContext);
 
   // variable for date, employees, and projects
+  const [date, setdate] = React.useState(null);
   const [options, setOptions] = React.useState([]);
+  const [employees, setemployees] = React.useState([]);
+  const [projects, setprojects] = React.useState([]);
+  const [clients, setclients] = React.useState([]);
+  const [totalPRate, settotalPRate] = React.useState(null);
+  const [totalPData, settotalPData] = React.useState(null);
+  const [totalHours, settotalHours] = React.useState(null);
 
-  useEffect(() => {
-    setOptions(savedReports?.data[0]);
-    pdfex();
-  }, [savedReports]);
-  const pdfex = useCallback(() => {
-    if (pdfExportRef.current) {
-      pdfExportRef.current.save();
-      console.log(pdfExportRef.current);
+  React.useEffect(() => {
+    try {
+      setOptions(savedReports?.data[0]);
+      settotalHours(savedReports?.reports[0]?.total[0]?.totalHours);
+      settotalPData(savedReports?.reports[0]?.total[0]?.avgPerformanceData);
+      settotalPRate(savedReports?.reports[0]?.total[0]?.avgPayRate);
+    } catch (err) {
+      console.log(err);
     }
-  }, []);
-
-  //   useEffect(() => {
-  //     // setData(treeListSampleEmployees);
-  //     // setExpanded([1, 2, 32]);
-  //   }, []);
-
-  /*
-    This function takes in the current "dataTree", which currently is just our data from the
-    `treelist-sample-employees.jsx` file. Then, it goes through our current expanded items
-    (1, 2, and 32) and uses the mapTree() helper method to create a new array that the TreeList
-    can use, now including designated subItemsField, `employees` in our case, (this determines if there)
-    are child data items, and also adds the `expanded` field to each item, checking if the item's ID is the same
-    as any of the items in the `expanded` array (1, 2, or 32 in our case).
-
-    This new and transformed hierarchical data structure is then returned to out TreeList, letting the component
-    have a set of pre-expanded data items.
-  */
-  //   const addExpandField = (dataTree) => {
-  //     const currentExpanded = expanded;
-  //     return mapTree(dataTree, subItemsField, (item) =>
-  //       extendDataItem(item, subItemsField, {
-  //         [expandField]: currentExpanded.includes(item.id),
-  //       })
-  //     );
-  //   };
-
-  //   const processData = () => {
-  //     return addExpandField(data);
-  //   };
-
-  /*
-    This event checks if the current is expanded (event.value === true) or is collapsed
-    (event.value === false). If it's true we simply filter out the item from our expanded array since
-    we should not collapse the item. If the current item is instead collapsed, we now want to expand it
-    by adding the dataItem's id to our existing list `expandedList`
-  */
-  //   const onExpandChange = useCallback(
-  //     (event) => {
-  //       let expandedList = expanded;
-  //       expandedList = event.value
-  //         ? expandedList.filter((id) => id !== event.dataItem.id)
-  //         : [...expandedList, event.dataItem.id];
-  //       setExpanded(expandedList);
-  //     },
-  //     [expanded]
-  //   );
-
-  //   const treeListColumns = [
-  //     {
-  //       field: "name",
-  //       title: "Name",
-  //       width: 250,
-  //       expandable: true,
-  //     },
-  //     {
-  //       field: "hireDate",
-  //       title: "Hire Date",
-  //       width: 200,
-  //     },
-  //     {
-  //       field: "timeInPosition",
-  //       title: "Year(s) in Position",
-  //       width: 200,
-  //     },
-  //     {
-  //       field: "fullTime",
-  //       title: "Full Time",
-  //       width: 100,
-  //     },
-  //   ];
-
-  //   const treeListElement = (
-  //     <TreeList
-  //       data={processData()}
-  //       columns={treeListColumns}
-  //       expandField={expandField}
-  //       subItemsField={subItemsField}
-  //       onExpandChange={onExpandChange}
-  //       toolbar={
-  //         <TreeListToolbar>
-  //           <Button icon="pdf" onClick={onPdfExport} disabled={isPdfExporting} />
-  //         </TreeListToolbar>
-  //       }
-  //     />
-  //   );
+  }, [savedReports]);
+  console.log(savedReports);
+  // tab panels value
 
   return (
-    <GridPDFExport ref={pdfExportRef} options={savedReports.options}>
+    <>
       {savedReports?.data[0] ? (
         <Box sx={{ width: "100%", scroll: "visible" }}>
           {options?.user && (
@@ -140,6 +112,7 @@ export default function PdfExport(props) {
                 flexDirection: "column",
                 heigth: "5rem",
                 width: "100%",
+                mb: 5,
               }}
             >
               <Typography variant="h3" sx={{ color: "color.primary" }}>
@@ -242,22 +215,77 @@ export default function PdfExport(props) {
               </Box>
             </Box>
           )}
-          <Graphs style={{ margin: 10 }} options={options}></Graphs>
-          {options?.options.groupBy === "E" ? (
-            <ByEp sx={{ height: "auto" }} options={options} />
-          ) : options?.options.groupBy === "P" ? (
-            <ByPr sx={{ height: "auto" }} options={options} />
-          ) : options?.options.groupBy === "C" ? (
-            <ByCl sx={{ height: "auto" }} options={options} />
-          ) : options?.options.groupBy === "D" ? (
-            <ByDetailed sx={{ height: "auto" }} options={options} />
-          ) : options?.options.groupBy === "A" ? (
-            <ByAppsUrl sx={{ height: "auto" }} options={options} />
-          ) : (
-            ""
-          )}
+          <Box sx={{ mb: 4 }}>
+            <Box sx={{ display: "flex" }}>
+              <Typography variant="h3">Total hours : </Typography>
+              <Typography
+                variant="h3"
+                sx={{
+                  ml: 1,
+                  display: "flex",
+                  opacity: 0.6,
+                  textAlign: "left",
+                  alignItems: "center",
+                }}
+              >
+                {" "}
+                {secondsToHms(totalHours)}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <Typography variant="h3">Activity level : </Typography>
+              <Typography
+                variant="h3"
+                sx={{
+                  ml: 1,
+                  display: "flex",
+                  opacity: 0.6,
+                  textAlign: "left",
+                  alignItems: "center",
+                }}
+              >
+                {Math.trunc(totalPData)} %
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <Typography variant="h3">Money : </Typography>
+              <Typography
+                variant="h3"
+                sx={{
+                  ml: 1,
+                  display: "flex",
+                  opacity: 0.6,
+                  textAlign: "left",
+                  alignItems: "center",
+                }}
+              >
+                {Math.trunc((totalPRate * totalHours) / 3600)}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Bar reports={savedReports} sx={{ mt: 5 }} />
+          <ProjectsCharts reports={savedReports} sx={{ mt: 5 }} />
+          <ClientsCharts reports={savedReports} sx={{ mt: 5 }} />
+          <EmployeesCharts reports={savedReports} sx={{ mt: 5 }} />
+          <AppsCharts reports={savedReports} sx={{ mt: 5 }} />
+          <Box sx={{ mt: 6 }}>
+            {options?.options.groupBy === "E" ? (
+              <ByEp sx={{ height: "auto" }} options={options} />
+            ) : options?.options.groupBy === "P" ? (
+              <ByPr sx={{ height: "auto" }} options={options} />
+            ) : options?.options.groupBy === "C" ? (
+              <ByCl sx={{ height: "auto" }} options={options} />
+            ) : options?.options.groupBy === "D" ? (
+              <ByD sx={{ height: "auto" }} options={options} />
+            ) : options?.options.groupBy === "A" ? (
+              <ByAppUrl sx={{ height: "auto" }} options={options} />
+            ) : (
+              ""
+            )}
+          </Box>
         </Box>
       ) : null}
-    </GridPDFExport>
+    </>
   );
 }
