@@ -151,6 +151,10 @@ export default function SaveReport(props) {
     setOpen(true);
     setChecked([false, ""]);
     const data = {
+      schedule: scheduleChecked[0],
+      scheduleType: timeint,
+      // scheduledTime: ,
+      scheduledEmail: loginC?.userData?.email,
       share: checked[0],
       includeSS: ssval[0],
       includeAL: alval[0],

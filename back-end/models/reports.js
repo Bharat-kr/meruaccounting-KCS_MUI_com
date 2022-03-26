@@ -10,6 +10,7 @@ const reportsSchema = new mongoose.Schema(
     schedule: { type: Boolean, default: true },
     scheduleType: { type: String, default: "weekly" },
     scheduledTime: { type: mongoose.Schema.Types.Mixed },
+    scheduledEmail: { type: String, default: "" },
     // dateRange: [{ type: String }],
     // employees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     // clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Client" }],
