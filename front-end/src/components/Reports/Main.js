@@ -113,6 +113,30 @@ export default function Main() {
     getOptions();
   }, []);
 
+  // reset the getoptions thing when no option is selected
+  React.useEffect(() => {
+    if (!employees.length) {
+      axios.post("/report/options").then((res) => {
+        const empArr = Array.from(
+          res.data.employeesOptions[0].members,
+          function mapFn(mem, index) {
+            return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
+          }
+        );
+        setemployees(empArr);
+      });
+    }
+    if (!projects.length) {
+      axios.post("/report/options").then((res) => {
+        setprojects(res.data.projectsClientsOptions[0].projects);
+      });
+    }
+    if (!clients.length) {
+      axios.post("/report/options").then((res) => {
+        setclients(res.data.projectsClientsOptions[0].clients);
+      });
+    }
+  }, [employees, projects, clients]);
   // tabs and tab panels
   const handleChange = (event, newValue) => {
     setValue(newValue);
