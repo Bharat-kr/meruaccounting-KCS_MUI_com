@@ -1,16 +1,4 @@
-// "use strict";
-
-// import React, { useCallback, useMemo, useState } from "react";
-// import { render } from "react-dom";
-// import { AgGridReact } from "ag-grid-react";
-// import "ag-grid-enterprise";
-// import "ag-grid-community/dist/styles/ag-grid.css";
-
-// import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { reportsContext } from "../../contexts/ReportsContext";
-// import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-// import ScreenShotRender from "./ScreenShotRender";
-
 import * as React from "react";
 import PropTypes from "prop-types";
 import {
