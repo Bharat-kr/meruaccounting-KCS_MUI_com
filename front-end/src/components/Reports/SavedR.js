@@ -226,19 +226,19 @@ function Row(props) {
             }}
             onClick={() => {
               window.open(
-                `http://localhost:3000/reports/sharedReports/${row.fileName}`,
+                `http://localhost:3000/reports/sharedReports/${row.url}`,
                 "_blank"
               );
             }}
             variant="body2"
           >
-            {`http://localhost:3000/reports/sharedReports/${row.fileName}`}
+            {`http://localhost:3000/reports/sharedReports/${row.url}`}
           </Typography>
           <ContentCopyIcon
             sx={{ fontSize: "medium" }}
             onClick={() => {
               navigator.clipboard.writeText(
-                `http://localhost:3000/reports/sharedReports/${row.fileName}`
+                `http://localhost:3000/reports/sharedReports/${row.url}`
               );
               enqueueSnackbar("Link copied", { variant: "success" });
             }}

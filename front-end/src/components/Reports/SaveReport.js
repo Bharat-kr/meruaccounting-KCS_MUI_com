@@ -82,9 +82,10 @@ export default function SaveReport(props) {
   const [appurl, setAppurl] = React.useState([false, ""]);
   const [scheduleChecked, setScheduleChecked] = React.useState([false, ""]);
   const [expdf, setExPdf] = React.useState(false);
-  const [timeint, setTimeint] = React.useState("");
-  const [dayint, setDayint] = React.useState("");
-  const [hourint, setHourint] = React.useState("");
+  const [timeint, setTimeint] = React.useState([]);
+  const [dayint, setDayint] = React.useState([]);
+  const [hourint, setHourint] = React.useState([]);
+  const [monthlyDate, setMonthlyDate] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
   const [url, setUrl] = React.useState(uuidv4());
@@ -265,22 +266,40 @@ export default function SaveReport(props) {
             <TextField {...params} label="Select interval" />
           )}
         />
-        <Autocomplete
-          onChange={(e, value) => setDayint(value)}
-          disablePortal
-          id="combo-box-demo"
-          options={[
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-          ]}
-          sx={{ width: 300, ml: 1 }}
-          renderInput={(params) => <TextField {...params} label="Select Day" />}
-        />
+        {timeint === "Weekly" && (
+          <Autocomplete
+            onChange={(e, value) => setDayint(value)}
+            disablePortal
+            id="combo-box-demo"
+            options={[
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday",
+            ]}
+            sx={{ width: 300, ml: 1 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Select Day" />
+            )}
+          />
+        )}
+        {timeint === "Monthly" && (
+          <Autocomplete
+            onChange={(e, value) => setDayint(value)}
+            disablePortal
+            id="combo-box-demo"
+            options={Array(28)
+              .fill()
+              .map((x, i) => i + 1)}
+            sx={{ width: 300, ml: 1 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Select date" />
+            )}
+          />
+        )}
         <Autocomplete
           onChange={(e, value) => setHourint(value)}
           disablePortal
@@ -348,8 +367,8 @@ export default function SaveReport(props) {
             <Typography gutterBottom>
               Date range :
               {`${
-                props?.options?.dateOne === null ? "" : props.options.dateOne
-              }-${props?.options?.dateTwo ? "" : props.options.dateTwo}`}
+                props?.options?.dateOne === null ? "" : props.options?.dateOne
+              }-${props?.options?.dateTwo ? "" : props.options?.dateTwo}`}
             </Typography>
             <Typography gutterBottom>Description: {name}</Typography>
             <FormControl>

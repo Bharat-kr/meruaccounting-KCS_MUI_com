@@ -29,6 +29,7 @@ import ByPr from "./ByPr";
 import ByCl from "./ByCL";
 import ByDetailed from "./ByDetailed";
 import ByAppsUrl from "./ByApp&Url";
+import { useSnackbar } from "notistack";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,7 +66,7 @@ function a11yProps(index) {
 
 //////////////////////////panelllllll
 export default function Main() {
-  // tab panels value
+  const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = React.useState(0);
   //
   const { getTeams } = React.useContext(teamContext);
@@ -89,6 +90,7 @@ export default function Main() {
     { label: "Group by employee", value: "E" },
     // { label: "Group by project", value: "P" },
   ]);
+  const [disableState, setDisableState] = React.useState(true);
   const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
   // get report options
@@ -112,6 +114,18 @@ export default function Main() {
   React.useEffect(() => {
     getOptions();
   }, []);
+  React.useEffect(() => {
+    setDisableState(false);
+  }, [
+    employeeOptions,
+    projectOptions,
+    projects,
+    clientOptions,
+    clients,
+    employees,
+    date,
+    group,
+  ]);
 
   // reset the getoptions thing when no option is selected
   React.useEffect(() => {
@@ -143,25 +157,30 @@ export default function Main() {
   };
   // generate options, todo: put it in useEffect to get rid of the button.
   const handleReportClick = async () => {
-    const dateOne = date[0] ? date[0].format("DD/MM/YYYY") : null;
-    const dateTwo = date[1] ? date[1].format("DD/MM/YYYY") : null;
-    const userIds = employees.length ? employees : null;
-    const projectIds = projects.length ? projects : null;
-    const clientIds = clients.length ? clients : null;
-    let groupBy = "";
-    group.forEach((g) => {
-      groupBy = groupBy.concat(g.value);
-    });
-    const options = {
-      clientIds,
-      projectIds,
-      userIds,
-      dateOne,
-      dateTwo,
-      groupBy,
-    };
-    setSaveReportOptions(options);
-    getReports(dispatchGetReports, options);
+    try {
+      const dateOne = date[0] ? date[0].format("DD/MM/YYYY") : null;
+      const dateTwo = date[1] ? date[1].format("DD/MM/YYYY") : null;
+      const userIds = employees.length ? employees : null;
+      const projectIds = projects.length ? projects : null;
+      const clientIds = clients.length ? clients : null;
+      let groupBy = "";
+      group.forEach((g) => {
+        groupBy = groupBy.concat(g.value);
+      });
+      const options = {
+        clientIds,
+        projectIds,
+        userIds,
+        dateOne,
+        dateTwo,
+        groupBy,
+      };
+      setSaveReportOptions(options);
+      getReports(dispatchGetReports, options);
+      setDisableState(true);
+    } catch (err) {
+      enqueueSnackbar(err.message, { variant: "error" });
+    }
   };
 
   // recalibrate project options only for clients
@@ -277,6 +296,7 @@ export default function Main() {
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
           <Button
+            disabled={disableState}
             onClick={handleReportClick}
             variant="contained"
             endIcon={<SendIcon />}
