@@ -1,28 +1,128 @@
-import mongoose from "mongoose";
-// models
+import cron from "node-cron";
+import schedule from "node-schedule";
+import Client from "../models/client.js";
 import Activity from "../models/activity.js";
-import User from "../models/user.js";
-import Project from "../models/project.js";
 import Reports from "../models/reports.js";
-// utils
+import Project from "../models/project.js";
 import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
+import mongoose from "mongoose";
 import dayjs from "dayjs";
-import moment from "moment";
-import fs from "fs";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import puppeteer from "puppeteer";
 import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
+import puppeteer from "puppeteer";
+import PDFDocument from "pdfkit";
+import { reportOptions } from "../controllers/report.js";
+import { Console } from "console";
+import sgMail from "@sendgrid/mail";
 
-// @desc    Generate Report
-// @route   GET /report
-// @access  Private
+// edit generate report function
+// edit save report function
+// fetch is called from the website so no need to edit the fetch option
+// a funtion to generate pdf from url(puppeteer)
+// a function to mail
+// delete report function
+// a function to combine these all
+
+function combineFn() {
+  // let report = await generateReport({ body: { ...schedule.options } });
+}
+
+async function test() {
+  const schedules = await Reports.aggregate([
+    {
+      $match: {
+        url: "71b44beb-a189-42ce-b904-5cffeabbc797",
+      },
+    },
+    // {
+    //   $lookup: {
+    //     from: "users",
+    //     localField: "user",
+    //     foreignField: "_id",
+    //     as: "user",
+    //   },
+    // },
+    {
+      $unwind: {
+        path: "$user",
+        includeArrayIndex: "string",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $limit: 1,
+    },
+  ]);
+  schedules.map(async (schedule) => {
+    //   generate report from the scheduled report to save the json file
+    let reports = await generateReport({ body: { ...schedule.options } });
+
+    //   save the report with appropriate url
+    let saved = await saveReports({
+      body: { ...schedule, reports, userId: schedule.user },
+    });
+    console.log(saved.url);
+    // generate pdf
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(`http://localhost:3000/downloadReportPdf/${saved.url}`, {
+      waitUntil: "networkidle2",
+    });
+    await page.setViewport({ width: 1680, height: 1050 });
+    let uniquePdf = uuidv4();
+    await page.pdf({
+      path: `./pdf/${uniquePdf}.pdf`,
+      format: "A4",
+    });
+    // mail the pdf
+    browser.close().then(mail(uniquePdf));
+
+    // delete the saved report and pdf
+    deleteReports(saved.url);
+    deletePdf(uniquePdf);
+  });
+}
+// test();
+
+// cron.schedule("* * * * *", async () => {
+//   console.log("running a task every minute");
+//   console.log("running a task");
+//   //   const schedules = await Reports.aggregate([
+//   //     {
+//   //       $match: {
+//   //         share: true,
+//   //       },
+//   //     },
+//   //     {
+//   //       $lookup: {
+//   //         from: "users",
+//   //         localField: "user",
+//   //         foreignField: "_id",
+//   //         as: "user",
+//   //       },
+//   //     },
+//   //     {
+//   //       $unwind: {
+//   //         path: "$user",
+//   //         includeArrayIndex: "string",
+//   //         preserveNullAndEmptyArrays: true,
+//   //       },
+//   //     },
+//   //     {
+//   //       $limit: 1,
+//   //     },
+//   //   ]);
+//   //   console.log(schedules);
+//   //   schedules.map(async (schedule) => {
+//   //     let report = await generateReport({ body: { ...schedule.options } });
+//   //   });
+// });
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
       req.body;
-
     if (projectIds) {
       projectIds = projectIds.map((id) => {
         return mongoose.Types.ObjectId(id._id);
@@ -39,14 +139,8 @@ const generateReport = asyncHandler(async (req, res) => {
       });
     }
 
-    // console.log(clientIds, projectIds, userIds, dateOne, dateTwo);
-
     if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
     if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
-
-    // let user;
-    // if (userId) user = await User.findById(userId);
-    // else user = req.user;
 
     const activity = await Activity.aggregate([
       {
@@ -734,21 +828,16 @@ const generateReport = asyncHandler(async (req, res) => {
       },
     ]);
 
-    res.json({
-      status: "ok",
-      data: activity,
-    });
+    return activity;
   } catch (error) {
     throw new Error(error);
   }
 });
 
-// @desc    Save Report
-// @route   POST /report/save
-// @access  Private
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
+      userId,
       share,
       url,
       reports,
@@ -759,22 +848,14 @@ const saveReports = asyncHandler(async (req, res) => {
       includeApps,
       options,
     } = req.body;
+    // change url for a new url to be generated
+    url = uuidv4();
+    reports = reports;
 
-    // if (!options.userIds) {
-    //   options.userIds = "All Employees";
-    // }
-    // if (!options.projectIds) {
-    //   options.projectIds = "All Projects";
-    // }
-    // if (!options.clientIds) {
-    //   options.clientIds = "All Clients";
-    // }
     if (!options.dateTwo) {
       options.dateTwo = dayjs().format("DD/MM/YYYY");
     }
 
-    let userId = req.user._id;
-    // console.log(options);
     let { firstName, lastName } = await User.findById(userId);
     let fileName = userId + "-" + new Date().getTime();
 
@@ -797,30 +878,20 @@ const saveReports = asyncHandler(async (req, res) => {
       name: name === "" ? `${firstName} ${lastName}` : name,
       fileName,
     });
-    console.log(saved);
-    res.json({
-      status: "Report saved",
-      data: saved,
-    });
+
+    return saved;
   } catch (error) {
     throw new Error(error);
   }
 });
 
-// @desc    Delete Report
-// @route   delete /report/delete/:url
-// @access  Private
-const deleteReports = asyncHandler(async (req, res) => {
+const deleteReports = asyncHandler(async (url, res) => {
   try {
-    let { url } = req.params;
-    // let _id;
     const report = await Reports.find({ url: url });
-    console.log(req.body);
+
     fs.stat(
       `./saved reports/${report[0].fileName}.json`,
       function (err, stats) {
-        console.log(stats); //here we got all information of file in stats variable
-
         if (err) {
           return console.error(err);
         }
@@ -839,628 +910,47 @@ const deleteReports = asyncHandler(async (req, res) => {
       // _id = report[0]._id;
       await Reports.deleteOne({ _id: report[0]._id });
     }
-
-    res.json({
-      status: "Report Deleted",
-      report,
-    });
   } catch (error) {
     throw new Error(error);
   }
 });
 
-// @desc    Fetch Report
-// @route   POST /report/fetch
-// @access  Private
-const fetchReports = asyncHandler(async (req, res) => {
-  try {
-    let { url } = req.body;
-    const report = await Reports.find({ url: url }).populate({
-      path: "user",
-      model: "User",
-      select: {
-        password: 0,
-        projects: 0,
-        days: 0,
-        clients: 0,
-        teams: 0,
-        settings: 0,
-        notifications: 0,
-      },
-    });
-
-    // Read users.json file
-    let data = JSON.parse(
-      fs.readFileSync(`./saved reports/${report[0].fileName}.json`, "utf8")
-    );
-
-    res.json({
-      status: report[0].share ? "Report fetched" : "403",
-      report: report[0].share ? data : "403",
-      data: report[0].share ? report : "403",
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-// @desc    Report Options
-// @route   POST /report/options
-// @access  Private
-const reportOptions = asyncHandler(async (req, res) => {
-  try {
-    const _id = req.user._id;
-    const user = await User.findById(_id);
-    let employeesOptions;
-    let projectsClientsOptions;
-    if (user.role === "manager") {
-      employeesOptions = await User.aggregate([
-        {
-          $match: {
-            _id: {
-              $eq: user._id,
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: "teams",
-            localField: "teams",
-            foreignField: "_id",
-            as: "teams",
-          },
-        },
-        {
-          $unwind: {
-            path: "$teams",
-          },
-        },
-        {
-          $unwind: {
-            path: "$teams.members",
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            members: {
-              $addToSet: "$teams.members",
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "members",
-            foreignField: "_id",
-            as: "members",
-          },
-        },
-        {
-          $addFields: {
-            name: "$members.firstName" + "$members.lastName",
-          },
-        },
-        {
-          $project: {
-            "members._id": 1,
-            "members.firstName": 1,
-            "members.lastName": 1,
-          },
-        },
-      ]);
-
-      projectsClientsOptions = await User.aggregate([
-        {
-          $match: {
-            _id: user._id,
-          },
-        },
-        {
-          $lookup: {
-            from: "projects",
-            localField: "projects",
-            foreignField: "_id",
-            as: "projects",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "projects.employees",
-            foreignField: "_id",
-            as: "projects.employees",
-          },
-        },
-        {
-          $lookup: {
-            from: "clients",
-            localField: "projects.client",
-            foreignField: "_id",
-            as: "projects.client",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects.client",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            firstName: {
-              $first: "$firstName",
-            },
-            lastName: {
-              $first: "$lastName",
-            },
-            projects: {
-              $addToSet: "$projects",
-            },
-            clients: {
-              $addToSet: "$projects.client",
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            firstName: 1,
-            lastName: 1,
-            "projects.client.name": 1,
-            "projects.client._id": 1,
-            "projects.employees.firstName": 1,
-            "projects.employees.lastName": 1,
-            "projects.employees._id": 1,
-            "projects.name": 1,
-            "projects._id": 1,
-            "clients._id": 1,
-            "clients.name": 1,
-          },
-        },
-      ]);
+const deletePdf = (name) => {
+  fs.stat(`./pdf/${name}.pdf`, function (err, stats) {
+    if (err) {
+      return console.error(err);
     }
 
-    if (user.role === "employee") {
-      employeesOptions = [
-        {
-          _id: user._id,
-          members: [
-            {
-              _id: user._id,
-              firstName: user.firstName,
-              lastName: user.lastName,
-            },
-          ],
-        },
-      ];
+    // Delete a file
+    let filename = `./pdf/${name}.pdf`;
+    let tempFile = fs.openSync(filename, "r");
+    // try commenting out the following line to see the different behavior
+    fs.closeSync(tempFile);
+    fs.unlinkSync(filename);
+  });
+};
 
-      projectsClientsOptions = await User.aggregate([
-        {
-          $match: {
-            _id: user._id,
-          },
-        },
-        {
-          $lookup: {
-            from: "projects",
-            localField: "projects",
-            foreignField: "_id",
-            as: "projects",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "clients",
-            localField: "projects.client",
-            foreignField: "_id",
-            as: "projects.client",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects.client",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            firstName: {
-              $first: "$firstName",
-            },
-            lastName: {
-              $first: "$lastName",
-            },
-            projects: {
-              $addToSet: "$projects",
-            },
-            clients: {
-              $addToSet: "$projects.client",
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            firstName: 1,
-            lastName: 1,
-            "projects.client.name": 1,
-            "projects.client._id": 1,
-            "projects.name": 1,
-            "projects._id": 1,
-            "clients._id": 1,
-            "clients.name": 1,
-          },
-        },
-      ]);
-    }
-    if (user.role === "projectLeader") {
-      employeesOptions = await User.aggregate([
-        {
-          $match: {
-            _id: user._id,
-          },
-        },
-        {
-          $lookup: {
-            from: "projects",
-            let: {
-              leader: "$_id",
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ["$projectLeader", "$$leader"],
-                  },
-                },
-              },
-            ],
-            as: "projects",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects.employees",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            members: {
-              $addToSet: "$projects.employees",
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "members",
-            foreignField: "_id",
-            as: "members",
-          },
-        },
-        {
-          $project: {
-            "members._id": 1,
-            "members.firstName": 1,
-            "members.lastName": 1,
-          },
-        },
-      ]);
+const mail = (uniquePdf) => {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  let pathToAttachment = `./pdf/${uniquePdf}.pdf`;
+  let attachment = fs.readFileSync(pathToAttachment).toString("base64");
 
-      projectsClientsOptions = await User.aggregate([
-        {
-          $match: {
-            _id: user._id,
-          },
-        },
-        {
-          $lookup: {
-            from: "projects",
-            let: {
-              leader: "$_id",
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ["$projectLeader", "$$leader"],
-                  },
-                },
-              },
-            ],
-            as: "projects",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "clients",
-            localField: "projects.client",
-            foreignField: "_id",
-            as: "projects.client",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects.client",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            firstName: {
-              $first: "$firstName",
-            },
-            lastName: {
-              $first: "$lastName",
-            },
-            projects: {
-              $addToSet: "$projects",
-            },
-            clients: {
-              $addToSet: "$projects.client",
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            firstName: 1,
-            lastName: 1,
-            "projects.client.name": 1,
-            "projects.client._id": 1,
-            "projects.name": 1,
-            "projects._id": 1,
-            "clients._id": 1,
-            "clients.name": 1,
-          },
-        },
-      ]);
-    }
-
-    if (user.role === "admin") {
-      const members = await User.aggregate([
-        {
-          $match: {},
-        },
-        {
-          $project: {
-            _id: 1,
-            firstName: 1,
-            lastName: 1,
-          },
-        },
-      ]);
-      employeesOptions = [
-        {
-          _id: user._id,
-          members,
-        },
-      ];
-
-      projectsClientsOptions = await User.aggregate([
-        {
-          $match: {
-            _id: user._id,
-          },
-        },
-        {
-          $lookup: {
-            from: "projects",
-            let: {
-              leader: "$_id",
-            },
-            pipeline: [
-              {
-                $match: {},
-              },
-            ],
-            as: "projects",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $lookup: {
-            from: "clients",
-            localField: "projects.client",
-            foreignField: "_id",
-            as: "projects.client",
-          },
-        },
-        {
-          $unwind: {
-            path: "$projects.client",
-            includeArrayIndex: "string",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            firstName: {
-              $first: "$firstName",
-            },
-            lastName: {
-              $first: "$lastName",
-            },
-            projects: {
-              $addToSet: "$projects",
-            },
-            clients: {
-              $addToSet: "$projects.client",
-            },
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            firstName: 1,
-            lastName: 1,
-            "projects.client.name": 1,
-            "projects.client._id": 1,
-            "projects.name": 1,
-            "projects._id": 1,
-            "clients._id": 1,
-            "clients.name": 1,
-          },
-        },
-      ]);
-    }
-    res.json({
-      status: "options generated",
-      employeesOptions,
-      projectsClientsOptions,
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-// @desc    Fetch Saved Reports
-// @route   GET /report/saved
-// @access  Private
-const savedReports = asyncHandler(async (req, res) => {
-  try {
-    let { _id } = req.user;
-
-    const data = await Reports.aggregate([
+  const msg = {
+    to: "it.meru02@gmail.com",
+    from: "it.meru02@gmail.com",
+    subject: "Sending with SendGrid is Fun",
+    text: "and easy to do anywhere, even with Node.js",
+    attachments: [
       {
-        $match: {
-          user: _id,
-        },
+        content: attachment,
+        filename: "attachment.pdf",
+        type: "application/pdf",
+        disposition: "attachment",
       },
-      { $unset: ["options", "user", "updatedAt", "__v"] },
-    ]);
+    ],
+  };
 
-    res.json({
-      status: "Fetched Saved Reports",
-      data,
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-// @desc    Edit Saved Reports
-// @route   PATCH /report/edit
-// @access  Private
-const editReports = asyncHandler(async (req, res) => {
-  try {
-    let { url, includeSS, includeAL, includePR, includeApps, name, share } =
-      req.body;
-
-    const report = await Reports.find({ url: url });
-
-    let options = {
-      includeSS: includeSS ? includeSS : report[0].includeSS,
-      includeAL: includeAL ? includeAL : report[0].includeAL,
-      includePR: includePR ? includePR : report[0].includePR,
-      includeApps: includeApps ? includeApps : report[0].includeApps,
-      name: name ? name : report[0].name,
-      share: share ? share : report[0].share,
-    };
-
-    console.log(options);
-
-    const data = await Reports.updateOne({ url: url }, [
-      {
-        $set: options,
-      },
-    ]);
-
-    res.json({
-      status: "Edited Saved Reports",
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-// @desc    Download report pdf
-// @route   GET /report/download/:url
-// @access  Private
-const downloadPdf = asyncHandler(async (req, res) => {
-  try {
-    let { url } = req.params;
-
-    // generate pdf
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(`http://localhost:3000/downloadReportPdf/${url}`, {
-      waitUntil: "networkidle2",
-    });
-    await page.setViewport({ width: 1680, height: 1050 });
-    let uniquePdf = uuidv4();
-    await page.pdf({
-      path: `./pdf/${uniquePdf}.pdf`,
-      format: "A4",
-    });
-    await browser.close();
-
-    let file = await fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
-    let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
-    res.writeHead(200, {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=sample.pdf",
-      "Content-Transfer-Encoding": "Binary",
-    });
-    file.pipe(res);
-    // delete pdf to do
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-export {
-  downloadPdf,
-  deleteReports,
-  generateReport,
-  saveReports,
-  fetchReports,
-  reportOptions,
-  savedReports,
-  editReports,
+  sgMail.send(msg).catch((err) => {
+    console.log(err);
+  });
 };

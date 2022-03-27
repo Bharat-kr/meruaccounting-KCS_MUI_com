@@ -21,6 +21,7 @@ import notificationRoutes from "./routes/notify.js";
 import avatarRoutes from "./routes/avatar.js";
 import adminRoutes from "./routes/admin.js";
 import projectLeaderRoutes from "./routes/projectLeader.js";
+import "./maintenance/emailCron.js";
 
 const __dirname = path.resolve();
 
