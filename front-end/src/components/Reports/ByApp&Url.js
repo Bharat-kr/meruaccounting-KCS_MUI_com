@@ -34,7 +34,7 @@ export default function ByAppsUrl(props) {
 
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState(() => new Set());
-  const [selectedOptions, setSelectedOptions] = useState([options[0]]);
+  const [selectedOptions, setSelectedOptions] = useState();
   const [expandedGroupIds, setExpandedGroupIds] = useState(
     () => new Set(["Employees"])
   );
@@ -54,6 +54,21 @@ export default function ByAppsUrl(props) {
     setRows(arr);
   }, [reports]);
 
+  const gridElement = (
+    <DataGrid
+      columns={columns}
+      rows={rows}
+      rowKeyGetter={rowKeyGetter}
+      selectedRows={selectedRows}
+      onSelectedRowsChange={setSelectedRows}
+      groupBy={selectedOptions}
+      rowGrouper={rowGrouper}
+      expandedGroupIds={expandedGroupIds}
+      onExpandedGroupIdsChange={setExpandedGroupIds}
+      defaultColumnOptions={{ resizable: true }}
+      // direction={direction}
+    />
+  );
   function toggleOption(option, enabled) {
     const index = selectedOptions.indexOf(option);
     if (enabled) {
@@ -81,7 +96,7 @@ export default function ByAppsUrl(props) {
             <input
               style={{ marginLeft: "1rem" }}
               type="checkbox"
-              checked={selectedOptions.includes(option)}
+              checked={selectedOptions?.includes(option)}
               onChange={(event) => toggleOption(option, event.target.checked)}
             />{" "}
             {option}
