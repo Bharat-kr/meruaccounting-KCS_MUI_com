@@ -83,7 +83,7 @@ async function test() {
     deletePdf(uniquePdf);
   });
 }
-test();
+// test();
 
 // cron.schedule("* * * * *", async () => {
 //   console.log("running a task every minute");

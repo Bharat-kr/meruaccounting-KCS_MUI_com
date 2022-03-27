@@ -9,7 +9,8 @@ import { useParams } from "react-router-dom";
 import { reportsContext } from "../contexts/ReportsContext";
 import { getSavedReports } from "../api/reports api/reports";
 // import Main from "../components/SavedReports/Main";
-
+import axios from "axios";
+import FileSaver from "file-saver";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -26,7 +27,7 @@ export default function DownloadReport() {
   const { id } = useParams();
   console.log(id);
 
-  React.useState(() => {
+  React.useEffect(() => {
     const options = {
       url: id,
     };

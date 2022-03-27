@@ -11,6 +11,8 @@ import moment from "moment";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import puppeteer from "puppeteer";
+import { v4 as uuidv4 } from "uuid";
 
 // @desc    Generate Report
 // @route   GET /report
@@ -1417,7 +1419,43 @@ const editReports = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Download report pdf
+// @route   GET /report/download/:url
+// @access  Private
+const downloadPdf = asyncHandler(async (req, res) => {
+  try {
+    let { url } = req.params;
+
+    // generate pdf
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(`http://localhost:3000/downloadReportPdf/${url}`, {
+      waitUntil: "networkidle2",
+    });
+    await page.setViewport({ width: 1680, height: 1050 });
+    let uniquePdf = uuidv4();
+    await page.pdf({
+      path: `./pdf/${uniquePdf}.pdf`,
+      format: "A4",
+    });
+    await browser.close();
+
+    let file = await fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
+    let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
+    res.writeHead(200, {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=sample.pdf",
+      "Content-Transfer-Encoding": "Binary",
+    });
+    file.pipe(res);
+    // delete pdf to do
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
+  downloadPdf,
   deleteReports,
   generateReport,
   saveReports,

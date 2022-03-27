@@ -25,6 +25,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 import { loginContext } from "../../contexts/LoginContext";
+import FileSaver from "file-saver";
 
 // context
 import { reportsContext } from "../../contexts/ReportsContext";
@@ -161,6 +162,20 @@ export default function SaveReport(props) {
         `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
+      axios
+        .get(`/report/download/${savedData.data.data.url}`, {
+          responseType: "arraybuffer",
+          headers: {
+            Accept: "application/pdf",
+          },
+        })
+        .then((res) => {
+          FileSaver.saveAs(
+            new Blob([res.data], { type: "application/pdf" }),
+            `sample.pdf`
+          );
+          // window.open(res.data, "_blank");
+        });
     } catch (err) {
       console.log(err);
     }
