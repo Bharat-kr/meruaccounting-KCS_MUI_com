@@ -1,9 +1,6 @@
 import cron from "node-cron";
-import schedule from "node-schedule";
-import Client from "../models/client.js";
 import Activity from "../models/activity.js";
 import Reports from "../models/reports.js";
-import Project from "../models/project.js";
 import asyncHandler from "express-async-handler";
 import User from "../models/user.js";
 import mongoose from "mongoose";
@@ -11,10 +8,18 @@ import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import puppeteer from "puppeteer";
-import PDFDocument from "pdfkit";
-import { reportOptions } from "../controllers/report.js";
-import { Console } from "console";
 import sgMail from "@sendgrid/mail";
+
+const dayNames = [
+  0,
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 // edit generate report function
 // edit save report function
@@ -24,25 +29,56 @@ import sgMail from "@sendgrid/mail";
 // delete report function
 // a function to combine these all
 
-function combineFn() {
-  // let report = await generateReport({ body: { ...schedule.options } });
-}
-
-async function test() {
+cron.schedule(`0 0 * * *`, async () => {
+  // match by schedule true
+  // match by todays day, date.
+  const dayName = dayNames[dayjs().day()];
+  const dayNo = dayjs().date();
   const schedules = await Reports.aggregate([
     {
       $match: {
-        url: "71b44beb-a189-42ce-b904-5cffeabbc797",
+        $expr: {
+          $and: [
+            {
+              $eq: ["$schedule", true],
+            },
+            {
+              $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Daily"],
+            },
+            {
+              $switch: {
+                branches: [
+                  {
+                    case: {
+                      $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Weekly"],
+                    },
+                    then: {
+                      $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayName],
+                    },
+                  },
+                  {
+                    case: {
+                      $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Monthly"],
+                    },
+                    then: {
+                      $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayNo],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
     },
-    // {
-    //   $lookup: {
-    //     from: "users",
-    //     localField: "user",
-    //     foreignField: "_id",
-    //     as: "user",
-    //   },
-    // },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
     {
       $unwind: {
         path: "$user",
@@ -50,79 +86,56 @@ async function test() {
         preserveNullAndEmptyArrays: true,
       },
     },
-    {
-      $limit: 1,
-    },
   ]);
   schedules.map(async (schedule) => {
-    //   generate report from the scheduled report to save the json file
-    let reports = await generateReport({ body: { ...schedule.options } });
+    const time = Number(schedule.scheduleType[2].split(":")[0]);
+    schedule.scheduleJob(`0 0 ${time} * * *`, async function () {
+      try {
+        //   generate report from the scheduled report to save the json file
+        let reports = await generateReport({
+          body: { dateRange: schedule.scheduleType[0], ...schedule.options },
+        });
 
-    //   save the report with appropriate url
-    let saved = await saveReports({
-      body: { ...schedule, reports, userId: schedule.user },
-    });
-    console.log(saved.url);
-    // generate pdf
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(`http://localhost:3000/downloadReportPdf/${saved.url}`, {
-      waitUntil: "networkidle2",
-    });
-    await page.setViewport({ width: 1680, height: 1050 });
-    let uniquePdf = uuidv4();
-    await page.pdf({
-      path: `./pdf/${uniquePdf}.pdf`,
-      format: "A4",
-    });
-    // mail the pdf
-    browser.close().then(mail(uniquePdf));
+        //   save the report with appropriate url
+        let saved = await saveReports({
+          body: { ...schedule, reports, userId: schedule.user },
+        });
+        console.log(saved.url);
 
-    // delete the saved report and pdf
-    deleteReports(saved.url);
-    deletePdf(uniquePdf);
+        // generate pdf
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto(
+          `http://localhost:3000/downloadReportPdf/${saved.url}`,
+          {
+            waitUntil: "networkidle2",
+          }
+        );
+        await page.setViewport({ width: 1680, height: 1050 });
+        let uniquePdf = uuidv4();
+        await page.pdf({
+          path: `./pdf/${uniquePdf}.pdf`,
+          format: "A4",
+        });
+
+        // mail the pdf
+        browser.close().then(mail(uniquePdf, schedule.scheduledEmail));
+
+        // delete the saved report and pdf
+        deleteReports(saved.url);
+        deletePdf(uniquePdf);
+      } catch (err) {
+        console.log(err);
+      }
+    });
   });
-}
-// test();
-
-// cron.schedule("* * * * *", async () => {
-//   console.log("running a task every minute");
-//   console.log("running a task");
-//   //   const schedules = await Reports.aggregate([
-//   //     {
-//   //       $match: {
-//   //         share: true,
-//   //       },
-//   //     },
-//   //     {
-//   //       $lookup: {
-//   //         from: "users",
-//   //         localField: "user",
-//   //         foreignField: "_id",
-//   //         as: "user",
-//   //       },
-//   //     },
-//   //     {
-//   //       $unwind: {
-//   //         path: "$user",
-//   //         includeArrayIndex: "string",
-//   //         preserveNullAndEmptyArrays: true,
-//   //       },
-//   //     },
-//   //     {
-//   //       $limit: 1,
-//   //     },
-//   //   ]);
-//   //   console.log(schedules);
-//   //   schedules.map(async (schedule) => {
-//   //     let report = await generateReport({ body: { ...schedule.options } });
-//   //   });
-// });
+});
 
 const generateReport = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
       req.body;
+    let { dateRange } = req.body;
     if (projectIds) {
       projectIds = projectIds.map((id) => {
         return mongoose.Types.ObjectId(id._id);
@@ -139,8 +152,18 @@ const generateReport = asyncHandler(async (req, res) => {
       });
     }
 
-    if (!dateOne) dateOne = dayjs(-1).format("DD/MM/YYYY");
-    if (!dateTwo) dateTwo = dayjs().format("DD/MM/YYYY");
+    if (dateRange === "Daily") {
+      dateOne = dayjs().format("DD/MM/YYYY");
+      dateTwo = dayjs().format("DD/MM/YYYY");
+    }
+    if (dateRange === "Weekly") {
+      dateOne = dayjs().startOf("week").format("DD/MM/YYYY");
+      dateTwo = dayjs().format("DD/MM/YYYY");
+    }
+    if (dateRange === "Monthly") {
+      dateOne = dayjs().startOf("month").format("DD/MM/YYYY");
+      dateTwo = dayjs().format("DD/MM/YYYY");
+    }
 
     const activity = await Activity.aggregate([
       {
@@ -930,13 +953,13 @@ const deletePdf = (name) => {
   });
 };
 
-const mail = (uniquePdf) => {
+const mail = (uniquePdf, email) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   let pathToAttachment = `./pdf/${uniquePdf}.pdf`;
   let attachment = fs.readFileSync(pathToAttachment).toString("base64");
 
   const msg = {
-    to: "it.meru02@gmail.com",
+    to: email,
     from: "it.meru02@gmail.com",
     subject: "Sending with SendGrid is Fun",
     text: "and easy to do anywhere, even with Node.js",
@@ -954,3 +977,60 @@ const mail = (uniquePdf) => {
     console.log(err);
   });
 };
+
+// async function test() {
+//   const schedules = await Reports.aggregate([
+//     {
+//       $match: {
+//         url: "71b44beb-a189-42ce-b904-5cffeabbc797",
+//       },
+//     },
+//     // {
+//     //   $lookup: {
+//     //     from: "users",
+//     //     localField: "user",
+//     //     foreignField: "_id",
+//     //     as: "user",
+//     //   },
+//     // },
+//     {
+//       $unwind: {
+//         path: "$user",
+//         includeArrayIndex: "string",
+//         preserveNullAndEmptyArrays: true,
+//       },
+//     },
+//     {
+//       $limit: 1,
+//     },
+//   ]);
+//   schedules.map(async (schedule) => {
+//     //   generate report from the scheduled report to save the json file
+//     let reports = await generateReport({ body: { ...schedule.options } });
+
+//     //   save the report with appropriate url
+//     let saved = await saveReports({
+//       body: { ...schedule, reports, userId: schedule.user },
+//     });
+//     console.log(saved.url);
+//     // generate pdf
+//     const browser = await puppeteer.launch();
+//     const page = await browser.newPage();
+//     await page.goto(`http://localhost:3000/downloadReportPdf/${saved.url}`, {
+//       waitUntil: "networkidle2",
+//     });
+//     await page.setViewport({ width: 1680, height: 1050 });
+//     let uniquePdf = uuidv4();
+//     await page.pdf({
+//       path: `./pdf/${uniquePdf}.pdf`,
+//       format: "A4",
+//     });
+//     // mail the pdf
+//     browser.close().then(mail(uniquePdf));
+
+//     // delete the saved report and pdf
+//     deleteReports(saved.url);
+//     deletePdf(uniquePdf);
+//   });
+// }
+// // test();

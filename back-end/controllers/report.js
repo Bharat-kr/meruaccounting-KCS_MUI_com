@@ -749,6 +749,9 @@ const generateReport = asyncHandler(async (req, res) => {
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
+      scheduleEmail,
+      schedule,
+      scheduleType,
       share,
       url,
       reports,
@@ -759,6 +762,16 @@ const saveReports = asyncHandler(async (req, res) => {
       includeApps,
       options,
     } = req.body;
+
+    // very inefficient coz not proper default values in frontend
+    if (!scheduleType[1]) {
+      if (scheduleType[0] === "Weekly") {
+        scheduleType[1] = "Monday";
+      }
+      if (scheduleType[0] === "Monthly") {
+        scheduleType[1] = 1;
+      }
+    }
 
     // if (!options.userIds) {
     //   options.userIds = "All Employees";
@@ -786,6 +799,9 @@ const saveReports = asyncHandler(async (req, res) => {
 
     // make a new document for reports schema
     const saved = await Reports.create({
+      schedule,
+      scheduleType,
+      scheduleEmail,
       share,
       options,
       user: userId,
