@@ -68,13 +68,13 @@ export default function ExportPdf() {
       settotalPRate(savedReports?.reports[0]?.total[0]?.avgPayRate);
 
       // const doc = new jsPDF();
-      const pdfElement = document.getElementById("printPdf");
+      // const pdfElement = document.getElementById("printPdf");
       // const html = htmlToPdfmake(pdfElement.innerHTML);
       // const documentDefinition = { content: html };
       // pdfMake.vfs = pdfFonts.pdfMake.vfs;
       // pdfMake.createPdf(documentDefinition).open();
       // html2pdf.from(pdfElement).save();
-      window.print();
+      // window.print();
     } catch (err) {
       console.log(err);
     }

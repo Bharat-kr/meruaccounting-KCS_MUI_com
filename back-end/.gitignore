@@ -4,3 +4,5 @@ node_modules
 /avatar
 .env
 /saved reports
+/pdf
+
