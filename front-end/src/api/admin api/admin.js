@@ -17,7 +17,6 @@ export const getAllEmployee = async (dispatch) => {
       type: ADMIN_GETALLEMPLOYEE_SUCCESS,
       payload: data,
     });
-    console.log("admin", data);
   } catch (err) {
     dispatch({
       type: ADMIN_GETALLEMPLOYEE_FAILED,

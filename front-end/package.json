@@ -77,6 +77,7 @@
     "date-fns": "^2.24.0",
     "devextreme-react": "^21.2.6",
     "faker": "^5.5.3",
+    "filefy": "^0.1.11",
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
     "history": "^5.0.1",
@@ -111,6 +112,7 @@
     "simplebar-react": "^2.3.5",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },
   "devDependencies": {

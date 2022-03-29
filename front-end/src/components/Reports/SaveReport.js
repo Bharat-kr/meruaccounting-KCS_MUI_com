@@ -89,7 +89,6 @@ export default function SaveReport(props) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [url, setUrl] = React.useState(uuidv4());
-  console.log(timeint, dayint, hourint);
   // Default name of the saved report
   React.useEffect(() => {
     if (props.options?.groupBy === "E") {
@@ -156,13 +155,24 @@ export default function SaveReport(props) {
   const handleExportPdf = async () => {
     try {
       const savedData = await axios.post("/report/save", data);
-      console.log(savedData);
       window.open(
         `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "error" });
+    }
+  };
+  console.log(reports);
+  const handleExportExcel = async () => {
+    try {
+      // props?.options?.groupBy ==='E' ?(
+      //   reports[0]?.byEP.
+      // ):
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "error" });
     }
   };
   const handleClickOpen = () => {
@@ -206,30 +216,30 @@ export default function SaveReport(props) {
     setScheduleChecked([!scheduleChecked[0], ""]);
   };
   const timelog = [
-    "12:00 am",
-    "1:00 am",
-    "2:00 am",
-    "3:00 am",
-    "4:00 am",
-    "5:00 am",
-    "6:00 am",
-    "7:00 am",
-    "8:00 am",
-    "9:00 am",
-    "10:00 am",
-    "11:00 am",
-    "12:00 pm",
-    "1:00 pm",
-    "2:00 pm",
-    "3:00 pm",
-    "4:00 pm",
-    "5:00 pm",
-    "6:00 pm",
-    "7:00 pm",
-    "8:00 pm",
-    "9:00 pm",
-    "10:00 pm",
-    "11:00 pm",
+    "00:00",
+    "01:00",
+    "02:00",
+    "03:00",
+    "04:00",
+    "05:00",
+    "06:00",
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+    "22:00",
+    "23:00",
   ];
 
   const children2 = (
@@ -298,7 +308,6 @@ export default function SaveReport(props) {
       </Box>
     </Box>
   );
-  console.log(savedReports);
   const children = (
     <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
       <FormControlLabel
@@ -328,7 +337,7 @@ export default function SaveReport(props) {
         <Button variant="outlined" onClick={handleExportPdf}>
           Export pdf
         </Button>
-        <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
+        <Button variant="outlined" onClick={handleExportExcel} sx={{ ml: 1 }}>
           Export excel
         </Button>
         <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>

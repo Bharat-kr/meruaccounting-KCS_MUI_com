@@ -83,17 +83,14 @@ export default function Main(props) {
 
   const handleLabelChange = (event) => {
     setChecked(event.target.checked);
-    console.log(event.target.checked);
   };
 
   useEffect(() => {
     try {
-      console.log(currTeam?._id, currMember._id);
       const teamIndex = teamsDetails?.findIndex((i) => i._id === currTeam?._id);
       const memberIndex = teamsDetails[teamIndex]?.members?.findIndex(
         (i) => i._id === currMember?._id
       );
-      console.log(teamIndex, memberIndex, "hello");
       if (teamsDetails !== null) {
         setCurrTeam(teamsDetails[teamIndex]);
         setMember(teamsDetails[teamIndex]?.members[memberIndex]);
@@ -133,7 +130,6 @@ export default function Main(props) {
       const data = {
         role: e.target.value,
       };
-      console.log(data);
       await employeeUpdate(currMember._id, data, dispatchEmployeeUpdate);
       await getTeam(dispatchgetTeam);
       // enqueueSnackbar("Role updated", { variant: "success" });
