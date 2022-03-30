@@ -7,7 +7,6 @@ import { reportsContext } from "src/contexts/ReportsContext";
 import DataGrid, { SelectColumn, Toolbar, PdfExport } from "react-data-grid";
 import { Box, Typography, Divider } from "@mui/material";
 import { fontSize } from "@mui/system";
-import { utils, writeFile } from "xlsx";
 
 const columns = [
   {
@@ -59,13 +58,6 @@ export default function ByAppsUrl(props) {
       });
       console.log(exp);
     });
-    exp.push(["Total", "", actiSum.toFixed(2)]);
-    let wb = utils.book_new();
-    let ws = utils.aoa_to_sheet(exp);
-
-    ws["!cols"] = [{ wch: 30 }, { wch: 30 }];
-    utils.book_append_sheet(wb, ws);
-    writeFile(wb, "Myexcel.xlsx");
 
     setRows(arr);
   }, [reports]);

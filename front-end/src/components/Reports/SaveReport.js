@@ -25,7 +25,9 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 import { loginContext } from "../../contexts/LoginContext";
-import FileSaver from "file-saver";
+import FileSaver from "filesaver";
+import { utils, writeFile } from "xlsx";
+import { timeCC } from "../../_helpers/timeConverter";
 
 // context
 import { reportsContext } from "../../contexts/ReportsContext";
@@ -87,6 +89,7 @@ export default function SaveReport(props) {
   const [dayint, setDayint] = React.useState([]);
   const [hourint, setHourint] = React.useState([]);
   const [monthlyDate, setMonthlyDate] = React.useState([]);
+  const [userEmail, setUserEmail] = React.useState(loginC.userData.email);
   const { enqueueSnackbar } = useSnackbar();
 
   const [url, setUrl] = React.useState(uuidv4());
@@ -153,6 +156,9 @@ export default function SaveReport(props) {
   const handleChange = (event) => {
     setName(event.target.value);
   };
+  const handleEmailChange = (event) => {
+    setUserEmail(event.target.value);
+  };
   const handleExportPdf = async () => {
     try {
       const savedData = await axios.post("/report/save", data);
@@ -182,9 +188,149 @@ export default function SaveReport(props) {
   console.log(reports);
   const handleExportExcel = async () => {
     try {
-      // props?.options?.groupBy ==='E' ?(
-      //   reports[0]?.byEP.
-      // ):
+      let arr = [];
+      let totalHoursSum = 0;
+      let activitySum = 0;
+      let moneySum = 0;
+      let durationSum = 0;
+      let noOfEmployees = 0;
+      if (props.options?.groupBy === "E") {
+        reports.reports[0]?.byEP?.map((emp, index) => {
+          return emp.projects.map((pro) => {
+            arr.push([
+              `${emp._id.firstName} ${emp._id.lastName}`,
+              `${pro.project}`,
+              Number((pro.totalHours / 3600).toFixed(2)),
+              Number((pro.avgPerformanceData / 1).toFixed(0)),
+              Number(((pro.totalHours / 3600) * emp.payRate).toFixed(2)),
+            ]);
+            noOfEmployees += 1;
+
+            totalHoursSum += pro.totalHours;
+            activitySum += pro.avgPerformanceData;
+            moneySum += (pro.totalHours / 3600) * emp.payRate;
+          });
+        });
+        arr.push([
+          "total",
+          "",
+          (totalHoursSum / 3600).toFixed(2),
+          (activitySum / noOfEmployees).toFixed(2),
+          moneySum.toFixed(2),
+        ]);
+      } else if (props.options?.groupBy === "C") {
+        reports.reports[0]?.byCE?.map((cli) => {
+          return cli.users.map((emp) => {
+            arr.push([
+              `${cli.client[0]?.name ? cli?.client[0].name : "Deleted client"}`,
+
+              `${emp.firstName} ${emp.lastName}`,
+              Number((emp.totalHours / 3600).toFixed(2)),
+              Number(emp.avgPerformanceData.toFixed(2)),
+              Number(((emp?.totalHours / 3600) * emp.payRate).toFixed(2)),
+            ]);
+            noOfEmployees += 1;
+            totalHoursSum += emp?.totalHours;
+            activitySum += emp?.avgPerformanceData;
+            moneySum += (emp?.totalHours / 3600) * emp.payRate;
+          });
+        });
+        arr.push([
+          "total",
+          "",
+          (totalHoursSum / 3600).toFixed(2),
+          (activitySum / noOfEmployees).toFixed(2),
+          moneySum.toFixed(2),
+        ]);
+      } else if (props.options?.groupBy === "P") {
+        reports.reports[0]?.byPE?.map((pro) => {
+          return pro.users.map((emp) => {
+            arr.push([
+              `${pro.client[0]?.name ? pro?.client[0].name : "Deleted client"} :
+                  ${
+                    pro.project[0]?.name
+                      ? pro?.project[0]?.name
+                      : "Deleted project"
+                  }`,
+
+              `${emp.firstName} ${emp.lastName}`,
+              Number((emp.totalHours / 3600).toFixed(2)),
+              Number((emp.avgPerformanceData / 1).toFixed(2)),
+              Number(((emp?.totalHours / 3600) * emp?.payRate).toFixed(2)),
+            ]);
+            noOfEmployees += 1;
+            totalHoursSum += emp?.totalHours;
+            activitySum += emp?.avgPerformanceData;
+            moneySum += (emp?.totalHours / 3600) * emp.payRate;
+          });
+        });
+        arr.push([
+          "total",
+          "",
+          (totalHoursSum / 3600).toFixed(2),
+          (activitySum / noOfEmployees).toFixed(2),
+          moneySum.toFixed(2),
+        ]);
+      } else if (props.options?.groupBy === "A") {
+        reports.reports[0]?.byA?.map((emp) => {
+          return emp.screenshots.map((ss) => {
+            const act = ss.avgPerformanceData;
+            ss = ss?.title?.split("-").splice(-1);
+            arr.push([`${emp._id.firstName} ${emp._id.lastName}`, ss[0], act]);
+            activitySum += act;
+          });
+        });
+        arr.push(["total", "", (activitySum / noOfEmployees).toFixed(2)]);
+      } else if (props.options?.groupBy === "D") {
+        reports.reports[0]?.byD?.map((d) => {
+          const activity = d.performanceData;
+          arr.push([
+            d?.createdAt,
+            `${d.client?.name ? d?.client.name : "Deleted client"}`,
+            d.project.name,
+            timeCC(d.startTime),
+            timeCC(d.endTime),
+            `${d.employee.firstName} ${d.employee.lastName}`,
+            `${(d.consumeTime / 3600).toFixed(2)} hr`,
+            (activity / 1).toFixed(2),
+            Number(((d.consumeTime / 3600) * d.employee?.payRate).toFixed(2)),
+          ]);
+          noOfEmployees += 1;
+          totalHoursSum += d.consumeTime;
+          activitySum += activity;
+          moneySum += (d.consumeTime / 3600) * d.employee?.payRate;
+          durationSum += d.endTime - d.startTime;
+        });
+        arr.push([
+          "total",
+          "",
+          "",
+          "",
+          timeCC(durationSum),
+          "",
+          (totalHoursSum / 3600).toFixed(2),
+          (activitySum / noOfEmployees).toFixed(2),
+          moneySum.toFixed(2),
+        ]);
+      }
+
+      let wb = utils.book_new();
+      let ws = utils.aoa_to_sheet(arr);
+      if (props.options.groupBy === "E" || "P" || "C" || "A") {
+        ws["!cols"] = [{ wch: 30 }, { wch: 30 }];
+      } else {
+        ws["!cols"] = [
+          { wch: 10 },
+          { wch: 30 },
+          { wch: 30 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 30 },
+        ];
+      }
+      console.log(arr);
+      utils.book_append_sheet(wb, ws);
+      writeFile(wb, `${name}.xlsx`);
     } catch (err) {
       console.log(err);
       enqueueSnackbar(err.message, { variant: "error" });
@@ -201,7 +347,7 @@ export default function SaveReport(props) {
       schedule: scheduleChecked[0],
       scheduleType: timeint,
       // scheduledTime: ,
-      scheduledEmail: loginC?.userData?.email,
+      scheduledEmail: loginC.userData.email,
       share: checked[0],
       includeSS: ssval[0],
       includeAL: alval[0],
@@ -276,8 +422,8 @@ export default function SaveReport(props) {
     <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
       <OutlinedInput
         id="component-outlined"
-        value={loginC?.userData?.email}
-        onChange={handleChange}
+        value={userEmail}
+        onChange={handleEmailChange}
         label="mail"
       />
       <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
