@@ -89,7 +89,12 @@ export default function Sidebar() {
   }, [clientDetails]);
   if (clientDetails?.loader === false) {
     clientsList = clientDetails?.client?.data;
-    clientDetails?.client?.data?.map((cli) => clientNameList.push(capitalize(cli.name)));
+    clientDetails?.client?.data?.map((cli) => {
+      <>
+        {console.log(cli.name)}
+        {clientNameList.push(cli.name)}
+      </>;
+    });
   }
   // labels for search box(autocomplete)
   // const clientsList = clients.map((client) => client.name);
@@ -111,11 +116,13 @@ export default function Sidebar() {
   };
 
   const handleClick = (e) => {
+    console.log(e.target.textContent);
     const client = clientsList.filter((client) =>
       client.name === e.target.textContent ? client : ""
     );
     changeClient(client[0]);
   };
+  console.log(clientDetails);
 
   // add client in submit
   // not working properly , add proper validation Dr. Kamal Singh
@@ -261,9 +268,10 @@ export default function Sidebar() {
                         fontWeight: "700",
                       }}
                     >
-                      {capitalize(client.name)}
+                      {client.name}
                     </Typography>
                   }
+                  // hello
                 ></TreeItem>
               ))}
             </TreeView>

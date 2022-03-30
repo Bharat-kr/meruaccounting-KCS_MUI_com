@@ -62,7 +62,6 @@ export default function Router() {
       projectMemberCommonData(dispatchProjectMemberData);
     getCommonData(dispatchCommonData);
   }, [commonData]);
-  console.log(projectMemberData);
   return useRoutes([
     {
       path: "/dashboard",

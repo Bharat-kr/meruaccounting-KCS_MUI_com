@@ -78,6 +78,8 @@
     "devextreme-react": "^21.2.6",
     "faker": "^5.5.3",
     "file-saver": "^2.0.5",
+    "filefy": "^0.1.11",
+    "filesaver": "^0.0.13",
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
     "history": "^5.0.1",
@@ -113,6 +115,7 @@
     "simplebar-react": "^2.3.5",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.9"
   },
   "devDependencies": {

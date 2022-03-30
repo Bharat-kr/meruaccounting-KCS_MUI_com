@@ -32,7 +32,6 @@ import ImageIcon from "@mui/icons-material/Image";
 function Row(props) {
   const { row, options } = props;
   const [open, setOpen] = React.useState(false);
-  console.log(options);
   return (
     <React.Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -201,7 +200,6 @@ export default function ByEp(props) {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-  console.log("hello");
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">

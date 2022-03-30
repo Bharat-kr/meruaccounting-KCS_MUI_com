@@ -4,7 +4,7 @@ import { groupBy as rowGrouper, random } from "lodash";
 import faker from "faker";
 import { reportsContext } from "src/contexts/ReportsContext";
 
-import DataGrid, { SelectColumn } from "react-data-grid";
+import DataGrid, { SelectColumn, Toolbar, PdfExport } from "react-data-grid";
 import { Box, Typography, Divider } from "@mui/material";
 import { fontSize } from "@mui/system";
 
@@ -34,26 +34,34 @@ export default function ByAppsUrl(props) {
 
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState(() => new Set());
-  const [selectedOptions, setSelectedOptions] = useState();
+  const [selectedOptions, setSelectedOptions] = useState(["Employees"]);
   const [expandedGroupIds, setExpandedGroupIds] = useState(
     () => new Set(["Employees"])
   );
   React.useEffect(() => {
     let arr = [];
+    let exp = [];
+    let actiSum = 0;
+    let ss;
     reports.reports[0]?.byA?.map((emp) => {
       emp.screenshots.map((ss) => {
-        const activity = ss.avgPerformanceData;
+        const act = ss.avgPerformanceData;
         arr.push({
-          id: emp.userId + random(100),
+          // id: emp.userId + random(100),
           employee: `${emp._id.firstName} ${emp._id.lastName}`,
           application: ss.title.split("-").slice(0),
-          activity: (activity / 1).toFixed(2), // eslint-disable-next-line no-use-before-define
+          activity: (act / 1).toFixed(2), // eslint-disable-next-line no-use-before-define
         });
+        ss = ss?.title?.split("-").splice(-1);
+        exp.push([`${emp._id.firstName} ${emp._id.lastName}`, ss[0], act]);
+        actiSum += act;
       });
+      console.log(exp);
     });
+
     setRows(arr);
   }, [reports]);
-
+  console.log(rows);
   const gridElement = (
     <DataGrid
       columns={columns}

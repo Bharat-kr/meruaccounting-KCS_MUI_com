@@ -25,8 +25,6 @@ export const getClientProjects = async (id, dispatch) => {
       type: GET_CLIENTPRO_SUCCESS,
       payload: data.data,
     });
-    console.log("clientProjects");
-    console.log(data);
   } catch (error) {
     dispatch({
       type: GET_CLIENTPRO_FAILED,
@@ -45,8 +43,6 @@ export const getClient = async (dispatch) => {
       type: GET_CLIENT_SUCCESS,
       payload: data,
     });
-    console.log(`Client details`);
-    console.log(data);
   } catch (error) {
     dispatch({
       type: GET_CLIENT_FAILED,
@@ -68,8 +64,6 @@ export const addClient = async (incomingData, dispatch) => {
       );
 
       dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
-      console.log(`add client`);
-      console.log(data);
     }
   } catch (error) {
     dispatch({
@@ -88,9 +82,6 @@ export const deleteClient = async (incomingData, dispatch) => {
     const { data } = await axios.delete(`/client/${incomingData}`, config);
 
     dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });
-
-    console.log(`delete client`);
-    console.log(data);
   } catch (error) {
     dispatch({
       type: DELETE_CLIENT_FAILED,

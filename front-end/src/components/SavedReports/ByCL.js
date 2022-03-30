@@ -174,8 +174,6 @@ export default function ByCl(props) {
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     savedReports.reports[0]?.byCE?.map((cli) => {
       cli.users.map((emp) => {
@@ -195,7 +193,6 @@ export default function ByCl(props) {
     });
     setRowData(arr);
   }, [savedReports]);
-  console.log(rowData);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {
