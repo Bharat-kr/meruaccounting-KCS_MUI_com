@@ -96,7 +96,7 @@ export default function Sidebar() {
     if (clientDetails.loader === false) {
       clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
-          projectList.push(capitalize(client.name) + ":" + capitalize(pro.name));
+          projectList.push(client.name + ":" + pro.name);
         });
       });
     }
@@ -277,7 +277,7 @@ export default function Sidebar() {
                           fontWeight: "700",
                         }}
                       >
-                        {capitalize(client.name)}
+                        {client.name}
                       </Typography>
                     }
                     key={client._id}
@@ -301,7 +301,7 @@ export default function Sidebar() {
                               data-project={project.name}
                               onClick={handleProjectClick}
                             >
-                              {capitalize(project.name)}
+                              {project.name}
                             </Typography>
                           }
                         />

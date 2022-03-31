@@ -16,7 +16,6 @@ import {
   TextField,
 } from "@mui/material";
 import PropTypes from "prop-types";
-
 import CloseIcon from "@mui/icons-material/Close";
 
 import Table from "@mui/material/Table";
@@ -226,19 +225,22 @@ function Row(props) {
             }}
             onClick={() => {
               window.open(
-                `http://localhost:3000/reports/sharedReports/${row.url}`,
+                // `http://localhost:3000/reports/sharedReports/${row.url}`,
+                `${axios.defaults.baseURL}reports/sharedReports/${row.url}`,
                 "_blank"
               );
             }}
             variant="body2"
           >
-            {`http://localhost:3000/reports/sharedReports/${row.url}`}
+            {`${axios.defaults.baseURL}reports/sharedReports/${row.url}`}
+            {/* {`http://localhost:3000/reports/sharedReports/${row.url}`} */}
           </Typography>
           <ContentCopyIcon
             sx={{ fontSize: "medium" }}
             onClick={() => {
               navigator.clipboard.writeText(
-                `http://localhost:3000/reports/sharedReports/${row.url}`
+                // `http://localhost:3000/reports/sharedReports/${row.url}`
+                `${axios.defaults.baseURL}reports/sharedReports/${row.url}`
               );
               enqueueSnackbar("Link copied", { variant: "success" });
             }}
@@ -293,7 +295,8 @@ function Row(props) {
                   disabled={!checked[0]}
                   fullWidth
                   label="Sharing link"
-                  defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                  // defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                  defaultValue={`${axios.defaults.baseURL}reports/sharedReports/${url}`}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -341,7 +344,8 @@ export default function SavedR() {
     // savedReports();
     try {
       const { data } = await axios
-        .get(`http://localhost:8000/report/saved`)
+        // .get(`http://localhost:8000/report/saved`)
+        .get(`${axios.defaults.baseURL}report/saved`)
         .then((response) => response.data);
       // console.log(data);
       setRowsData(data);
