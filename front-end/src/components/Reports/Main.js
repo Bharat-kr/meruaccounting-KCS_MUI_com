@@ -246,7 +246,6 @@ export default function Main() {
   //     });
   //   } else return;
   // }, [clientDetails, projects, employees]);
-  console.log(reports);
 
   return (
     <Box sx={{ width: "100%" }}>

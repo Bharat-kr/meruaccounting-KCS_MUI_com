@@ -79,7 +79,6 @@ export default function ExportPdf() {
       console.log(err);
     }
   }, [savedReports]);
-  console.log(savedReports);
   // tab panels value
 
   return (

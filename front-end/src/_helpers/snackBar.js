@@ -9,7 +9,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 export default function Snackbars(props) {
-  console.log("snackbar");
   const { message, open, setOpen, ...others } = props;
 
   //   const handleClick = () => {
@@ -23,7 +22,6 @@ export default function Snackbars(props) {
 
     setOpen(false);
   };
-  console.log("snackbar");
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>

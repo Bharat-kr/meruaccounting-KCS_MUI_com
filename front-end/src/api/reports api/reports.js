@@ -7,7 +7,6 @@ import {
 export const getReports = async (dispatch, options) => {
   try {
     const { data } = await axios.post(`/report`, options);
-    console.log(data);
     dispatch({
       type: GET_REPORTS_SUCCESS,
       payload: data.data,
@@ -25,7 +24,6 @@ export const getReports = async (dispatch, options) => {
 export const getSavedReports = async (dispatch, options) => {
   try {
     const { data } = await axios.post(`/report/fetch`, options);
-    console.log(data);
     dispatch({
       type: GET_REPORTS_SUCCESS,
       payload: data,

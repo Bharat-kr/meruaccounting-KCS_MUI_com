@@ -65,7 +65,6 @@ export default function Graphs(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  console.log(props.options);
   return (
     <Box sx={{ mt: 2, width: "100%" }}>
       <Box>

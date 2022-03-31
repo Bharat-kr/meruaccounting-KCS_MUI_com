@@ -163,6 +163,7 @@ export default function ByCl(props) {
   const [expandedGroupIds, setExpandedGroupIds] = useState(
     () => new Set(["Employees"])
   );
+  console.log(reports, "fix Money");
   React.useEffect(() => {
     let arr = [];
     reports.reports[0]?.byCE?.map((cli) => {
@@ -176,7 +177,7 @@ export default function ByCl(props) {
           employee: `${emp.firstName} ${emp.lastName}`,
           duration: Number((emp.totalHours / 3600).toFixed(2)),
           activity: Number(emp.avgPerformanceData.toFixed(2)),
-          money: Number((emp?.totalHours / 3600).toFixed(2)),
+          money: Number(((emp?.totalHours / 3600) * emp.payRate).toFixed(2)),
         });
       });
     });

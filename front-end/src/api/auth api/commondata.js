@@ -19,7 +19,6 @@ export const getCommonData = async (dispatch) => {
       type: GET_COMMONDATA_SUCCESS,
       payload: data,
     });
-    console.log("commondata success", data);
   } catch (err) {
     dispatch({
       type: GET_COMMONDATA_FAILED,
@@ -57,7 +56,6 @@ export const deleteSs = async (incomingData, dispatch) => {
     const { data } = await axios.delete(`/activity/screenshot`, {
       data: [...incomingData],
     });
-    console.log(data);
     const newCd = await axios.post(`/commondata`);
     dispatch({
       type: DELETE_SS_SUCCESS,
@@ -78,7 +76,6 @@ export const deleteAct = async (activityId, incomingDate, dispatch) => {
     const { data } = await axios.delete(`/activity`, {
       data: { activityId, incomingDate },
     });
-    console.log(data);
     const newCd = await axios.post(`/commondata`);
     dispatch({
       type: DELETE_ACT_SUCCESS,
