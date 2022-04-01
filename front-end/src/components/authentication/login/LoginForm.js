@@ -13,12 +13,38 @@ import {
   TextField,
   IconButton,
   InputAdornment,
+  Box,
+  Button,
+  Divider,
+  MenuItem,
+  Modal,
+  Select,
+  Switch,
+  Typography,
   FormControlLabel,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
 import { loginApi } from "../../../api/auth api/login";
 import { loginContext } from "../../../contexts/LoginContext";
 // ----------------------------------------------------------------------
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 600,
+  bgcolor: "#fff",
+  borderRadius: 2,
+  border: "none",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+  "@media (max-width: 600px)": {
+    maxWidth: "80%",
+  },
+};
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -59,6 +85,14 @@ export default function LoginForm() {
     getFieldProps,
   } = formik;
 
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
@@ -135,6 +169,17 @@ export default function LoginForm() {
     }
   };
 
+  //Forgot Password Call
+  const forgot = () => {
+    console.log({ ...getFieldProps("email") }.value);
+  };
+
+  //security Code
+  const [code, setCode] = useState("");
+  const changeCode = (e) => {
+    setCode(e.target.value);
+  };
+
   // console.log(loginC);
   return (
     <FormikProvider value={formik}>
@@ -186,7 +231,12 @@ export default function LoginForm() {
             label="Remember me"
           />
 
-          <Link component={RouterLink} variant="subtitle2" to="#">
+          <Link
+            component={RouterLink}
+            variant="subtitle2"
+            to="#"
+            onClick={handleOpen}
+          >
             Forgot password?
           </Link>
         </Stack>
@@ -202,6 +252,85 @@ export default function LoginForm() {
           Login
         </LoadingButton>
       </Form>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{
+          border: "none",
+        }}
+      >
+        <Box sx={style}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              bgcolor: "primary.lighter",
+              p: 2,
+            }}
+          >
+            <Typography variant="h4" color="primary">
+              Enter Your Email
+            </Typography>
+            <IconButton>
+              <CloseIcon onClick={handleClose} />
+            </IconButton>
+          </Box>
+          <Divider />
+          <Box
+            sx={{
+              px: 2,
+              py: 1,
+            }}
+          >
+            <TextField
+              fullWidth
+              autoComplete="username"
+              type="email"
+              label="Email address"
+              {...getFieldProps("email")}
+              error={touched.email && Boolean(errors?.email)}
+              helperText={touched.email && errors?.email}
+              sx={{
+                mb: 2,
+              }}
+            />
+
+            <TextField
+              fullWidth
+              type="code"
+              label="Security Code"
+              onChange={changeCode}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              bgcolor: "grey.200",
+              p: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="success"
+              sx={{
+                mr: 2,
+              }}
+              onClick={forgot}
+            >
+              Confirm
+            </Button>
+            <Button variant="outlined" color="primary" onClick={handleClose}>
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </FormikProvider>
   );
 }
