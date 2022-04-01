@@ -37,6 +37,8 @@ import Preview from "../UserPage/Preview";
 import timeC from "src/_helpers/timeConverter";
 import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
+import { CsvBuilder } from "filefy";
+//...
 
 function Row(props) {
   const { row, options } = props;
@@ -185,10 +187,10 @@ Row.propTypes = {
 export default function ByAppUrl(props) {
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
+  const [exportData, setExportData] = React.useState([]);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
+    let exp = [];
     savedReports.reports[0]?.byA?.map((emp) => {
       emp?.screenshots.map((acti) => {
         acti.screenshots.map((ss) => {
@@ -199,12 +201,25 @@ export default function ByAppUrl(props) {
             Activity: (act / 1).toFixed(2),
             Ss: acti.screenshots,
           });
+          exp.push([
+            `${emp._id.firstName} ${emp._id.lastName}`,
+            ss?.title?.split("-").splice(-1),
+            act,
+          ]);
         });
       });
+      console.log(exp);
+
+      const builder = new CsvBuilder("filename.csv");
+      builder
+        .setDelimeter(",")
+        .setColumns(["Name", "Application", "Activity"])
+        .addRows(exp)
+        .exportFile();
     });
     setRowData(arr);
   }, [savedReports]);
-  console.log(rowData);
+  console.log(savedReports.reports[0]);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {

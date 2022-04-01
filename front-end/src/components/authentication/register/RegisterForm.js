@@ -73,9 +73,7 @@ export default function RegisterForm() {
       const res = await axios({
         method: "post",
 
-        // url: "http://monitor.meruaccounting.com:8000/",
-        url: "http://localhost:8000/register",
-        // url: "https://monitoring-meru.herokuapp.com/",
+        url: `${axios.defaults.baseURL}/register`,
 
         data: {
           role: "admin",

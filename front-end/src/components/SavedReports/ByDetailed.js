@@ -186,8 +186,6 @@ export default function ByD(props) {
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
   React.useEffect(() => {
-    console.log(savedReports.reports[0]?.byPR);
-
     let arr = [];
     savedReports.reports[0]?.byD?.map((emp) => {
       const act = emp.performanceData;
@@ -206,7 +204,6 @@ export default function ByD(props) {
     });
     setRowData(arr);
   }, [savedReports]);
-  console.log(rowData);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {
