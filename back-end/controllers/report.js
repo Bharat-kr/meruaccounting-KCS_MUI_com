@@ -1456,6 +1456,28 @@ const downloadPdf = asyncHandler(async (req, res) => {
     });
     await browser.close();
 
+    // DELETE THE REPORT FIRST(unknown error, not working after sending response)
+    const report = await Reports.find({ url: url });
+    console.log(report);
+    fs.stat(
+      `./saved reports/${report[0].fileName}.json`,
+      function (err, stats) {
+        if (err) {
+          return console.error(err);
+        }
+
+        // Delete a file
+        let filename = `./saved reports/${report[0].fileName}.json`;
+        let tempFile = fs.openSync(filename, "r");
+        fs.closeSync(tempFile);
+        fs.unlinkSync(filename);
+      }
+    );
+    if (report) {
+      await Reports.deleteOne({ _id: report[0]._id });
+    }
+
+    // send the pdf
     let file = await fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
     let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
     res.writeHead(200, {
@@ -1464,7 +1486,17 @@ const downloadPdf = asyncHandler(async (req, res) => {
       "Content-Transfer-Encoding": "Binary",
     });
     file.pipe(res);
-    // delete pdf to do
+
+    // DELETE THE PDF
+    fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
+      if (err) {
+        return console.error(err);
+      }
+      let filename = `./pdf/${uniquePdf}.pdf`;
+      let tempFile = fs.openSync(filename, "r");
+      fs.closeSync(tempFile);
+      fs.unlinkSync(filename);
+    });
   } catch (error) {
     throw new Error(error);
   }
