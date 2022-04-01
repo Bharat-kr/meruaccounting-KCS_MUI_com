@@ -16,6 +16,7 @@ import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { getFullName } from "src/_helpers/getFullName";
+import axios from "axios"
 
 // ----------------------------------------------------------------------
 
@@ -87,8 +88,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           <AccountStyle>
             <Avatar
               // src={`https://monitoring-meru.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
-              // src={`http://monitor.meruaccounting.com:8000/${commonData?.commonData?.user?.avatar}`}
-              src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
+              src={`${axios.defaults.baseURL}${commonData?.commonData?.user?.avatar}`}
+              // src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
               alt="photoURL"
             />
             <Box sx={{ ml: 2 }}>
