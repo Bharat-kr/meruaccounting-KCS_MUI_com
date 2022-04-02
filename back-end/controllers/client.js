@@ -4,7 +4,6 @@ import asyncHandler from "express-async-handler";
 import User from "../models/user.js";
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
-import Capitalize from "../utils/helper.js";
 import mongoose from "mongoose";
 
 const ac = new AccessControl(grantsObject);
@@ -19,10 +18,9 @@ const createClient = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).createOwn("client");
   if (permission.granted) {
     try {
-      const { name } = req.body;
+      const name = req.body.name;
       const manager = req.user;
-      const client = new Client(Capitalize(name.name));
-
+      const client = new Client({ name });
       if (!client) throw new Error("Error creating a new client");
 
       client.createdBy = manager._id;
