@@ -174,12 +174,6 @@ export default function LoginForm() {
     console.log({ ...getFieldProps("email") }.value);
   };
 
-  //security Code
-  const [code, setCode] = useState("");
-  const changeCode = (e) => {
-    setCode(e.target.value);
-  };
-
   // console.log(loginC);
   return (
     <FormikProvider value={formik}>
@@ -296,13 +290,6 @@ export default function LoginForm() {
               sx={{
                 mb: 2,
               }}
-            />
-
-            <TextField
-              fullWidth
-              type="code"
-              label="Security Code"
-              onChange={changeCode}
             />
           </Box>
 
