@@ -344,8 +344,8 @@ export default function SavedR() {
     // savedReports();
     try {
       const { data } = await axios
-        // .get(`http://localhost:8000/report/saved`)
-        .get(`${axios.defaults.baseURL}report/saved`)
+        .get(`http://localhost:8000/report/saved`)
+        // .get(`${axios.defaults.baseURL}report/saved`)
         .then((response) => response.data);
       // console.log(data);
       setRowsData(data);

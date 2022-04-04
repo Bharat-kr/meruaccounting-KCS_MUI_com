@@ -84,8 +84,8 @@ export default function SaveReport() {
     };
     const savedData = await axios.post("/report/save", data);
     navigator.clipboard.writeText(
-      // `http://localhost:3000/reports/sharedReports/${url}`
-      `${axios.defaults.baseURL}reports/sharedReports/${url}`
+      `http://localhost:3000/reports/sharedReports/${url}`
+      // `${axios.defaults.baseURL}reports/sharedReports/${url}`
     );
   };
   const handleClose = () => {

@@ -25,7 +25,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 import { loginContext } from "../../contexts/LoginContext";
-import FileSaver from "filesaver";
+import FileSaver from "file-saver";
 import { utils, writeFile } from "xlsx";
 import { timeCC } from "../../_helpers/timeConverter";
 
@@ -163,8 +163,8 @@ export default function SaveReport(props) {
     try {
       const savedData = await axios.post("/report/save", data);
       window.open(
-        // `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
-        `${axios.defaults.baseURL}downloadReportPdf/${savedData.data.data.url}`,
+        `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
+        // `${axios.defaults.baseURL}downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
       axios
@@ -196,6 +196,13 @@ export default function SaveReport(props) {
       let durationSum = 0;
       let noOfEmployees = 0;
       if (props.options?.groupBy === "E") {
+        arr.push([
+          "Employee",
+          "Project",
+          "Total hours",
+          "Activity level",
+          "Cost ",
+        ]);
         reports.reports[0]?.byEP?.map((emp, index) => {
           return emp.projects.map((pro) => {
             arr.push([
@@ -212,14 +219,22 @@ export default function SaveReport(props) {
             moneySum += (pro.totalHours / 3600) * emp.payRate;
           });
         });
+        arr.push([]);
         arr.push([
           "total",
           "",
-          (totalHoursSum / 3600).toFixed(2),
-          (activitySum / noOfEmployees).toFixed(2),
+          `${(totalHoursSum / 3600).toFixed(2)} hr`,
+          `${(activitySum / noOfEmployees).toFixed(2)} %`,
           moneySum.toFixed(2),
         ]);
       } else if (props.options?.groupBy === "C") {
+        arr.push([
+          "Client",
+          "Employee",
+          "Total hours",
+          "Activity level",
+          "Cost ",
+        ]);
         reports.reports[0]?.byCE?.map((cli) => {
           return cli.users.map((emp) => {
             arr.push([
@@ -236,14 +251,23 @@ export default function SaveReport(props) {
             moneySum += (emp?.totalHours / 3600) * emp.payRate;
           });
         });
+        arr.push([]);
+
         arr.push([
           "total",
           "",
-          (totalHoursSum / 3600).toFixed(2),
-          (activitySum / noOfEmployees).toFixed(2),
+          `${(totalHoursSum / 3600).toFixed(2)} hr`,
+          `${(activitySum / noOfEmployees).toFixed(2)} %`,
           moneySum.toFixed(2),
         ]);
       } else if (props.options?.groupBy === "P") {
+        arr.push([
+          "Project",
+          "Employee",
+          "Total hours",
+          "Activity level",
+          "Cost ",
+        ]);
         reports.reports[0]?.byPE?.map((pro) => {
           return pro.users.map((emp) => {
             arr.push([
@@ -256,7 +280,7 @@ export default function SaveReport(props) {
 
               `${emp.firstName} ${emp.lastName}`,
               Number((emp.totalHours / 3600).toFixed(2)),
-              Number((emp.avgPerformanceData / 1).toFixed(2)),
+              `${(emp.avgPerformanceData / 1).toFixed(2)} %`,
               Number(((emp?.totalHours / 3600) * emp?.payRate).toFixed(2)),
             ]);
             noOfEmployees += 1;
@@ -265,24 +289,40 @@ export default function SaveReport(props) {
             moneySum += (emp?.totalHours / 3600) * emp.payRate;
           });
         });
+        arr.push([]);
         arr.push([
           "total",
           "",
-          (totalHoursSum / 3600).toFixed(2),
-          (activitySum / noOfEmployees).toFixed(2),
+          `${(totalHoursSum / 3600).toFixed(2)} hr`,
+          `${(activitySum / noOfEmployees).toFixed(2)} %`,
           moneySum.toFixed(2),
         ]);
       } else if (props.options?.groupBy === "A") {
+        arr.push(["Employee", "Application", "Activity level"]);
         reports.reports[0]?.byA?.map((emp) => {
           return emp.screenshots.map((ss) => {
             const act = ss.avgPerformanceData;
             ss = ss?.title?.split("-").splice(-1);
             arr.push([`${emp._id.firstName} ${emp._id.lastName}`, ss[0], act]);
             activitySum += act;
+            noOfEmployees += 1;
           });
         });
+        arr.push([]);
+
         arr.push(["total", "", (activitySum / noOfEmployees).toFixed(2)]);
       } else if (props.options?.groupBy === "D") {
+        arr.push([
+          "Date",
+          "Client",
+          "Project",
+          "Start time",
+          "End time",
+          "Employee",
+          "Total hours",
+          "Activity level %",
+          "Cost ",
+        ]);
         reports.reports[0]?.byD?.map((d) => {
           const activity = d.performanceData;
           arr.push([
@@ -293,7 +333,7 @@ export default function SaveReport(props) {
             timeCC(d.endTime),
             `${d.employee.firstName} ${d.employee.lastName}`,
             `${(d.consumeTime / 3600).toFixed(2)} hr`,
-            (activity / 1).toFixed(2),
+            `${(activity / 1).toFixed(2)} %`,
             Number(((d.consumeTime / 3600) * d.employee?.payRate).toFixed(2)),
           ]);
           noOfEmployees += 1;
@@ -309,8 +349,8 @@ export default function SaveReport(props) {
           "",
           timeCC(durationSum),
           "",
-          (totalHoursSum / 3600).toFixed(2),
-          (activitySum / noOfEmployees).toFixed(2),
+          `${(totalHoursSum / 3600).toFixed(2)} hr`,
+          `${(activitySum / noOfEmployees).toFixed(2)} %`,
           moneySum.toFixed(2),
         ]);
       }
@@ -363,8 +403,8 @@ export default function SaveReport(props) {
     const savedData = await axios.post("/report/save", data);
     if (checked[0]) {
       navigator.clipboard.writeText(
-        // `http://localhost:3000/reports/sharedReports/${url}`
-        `${axios.defaults.baseURL}reports/sharedReports/${url}`
+        `http://localhost:3000/reports/sharedReports/${url}`
+        // `${axios.defaults.baseURL}reports/sharedReports/${url}`
       );
       enqueueSnackbar("link copied", { variant: "success" });
     }
