@@ -197,7 +197,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 const addMember = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).updateOwn("project");
   if (permission.granted) {
-    const { employeeMail } = req.body;
+    const { employeeId } = req.body;
     const projectId = req.params.id;
     let alreadyMember = false;
     let alreadyProjectAdded = false;
@@ -208,12 +208,12 @@ const addMember = asyncHandler(async (req, res) => {
         throw new Error("Project not found");
       }
 
-      const newEmployee = await User.findOne({ email: employeeMail });
+      const newEmployee = await User.findById(employeeId);
       if (!newEmployee) {
         res.status(404);
         throw new Error("No such employee found");
       }
-      const employeeId = newEmployee._id;
+      // const employeeId = newEmployee._id;
       project.employees.forEach((employee) => {
         if (employee.equals(employeeId)) {
           alreadyMember = true;
@@ -238,7 +238,7 @@ const addMember = asyncHandler(async (req, res) => {
         await newEmployee.save();
       }
 
-      //notiifcation for the employee
+      //notification for the employee
       const notification = {
         title: "New Project",
         description: `Added to the team ${project.name}`,
