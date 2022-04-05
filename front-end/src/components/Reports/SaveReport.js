@@ -23,9 +23,8 @@ import Typography from "@mui/material/Typography";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import dayjs from "dayjs";
 import { loginContext } from "../../contexts/LoginContext";
-import FileSaver from "filesaver";
+import FileSaver from "file-saver";
 import { utils, writeFile } from "xlsx";
 import { timeCC } from "../../_helpers/timeConverter";
 
@@ -141,6 +140,10 @@ export default function SaveReport(props) {
   }, [open]);
 
   const data = {
+    schedule: scheduleChecked[0],
+    scheduleType: [timeint, dayint, hourint],
+    scheduledEmail: loginC?.userData?.email,
+    // scheduledTime: ,
     share: checked[0],
     includeSS: ssval[0],
     includeAL: alval[0],
@@ -175,6 +178,7 @@ export default function SaveReport(props) {
           },
         })
         .then((res) => {
+          console.log("working?");
           FileSaver.saveAs(
             new Blob([res.data], { type: "application/pdf" }),
             `sample.pdf`
@@ -346,14 +350,9 @@ export default function SaveReport(props) {
     setChecked([false, ""]);
     const data = {
       schedule: scheduleChecked[0],
-<<<<<<< HEAD
       scheduleType: [timeint, dayint, hourint],
       scheduledEmail: loginC?.userData?.email,
-=======
-      scheduleType: timeint,
       // scheduledTime: ,
-      scheduledEmail: loginC.userData.email,
->>>>>>> b2ee5eaa014947d76070c05e2c54e46fd010d092
       share: checked[0],
       includeSS: ssval[0],
       includeAL: alval[0],
