@@ -24,6 +24,7 @@ import FloatingForm from "../_dashboard/muicomponents/FloatingForm";
 import { useSnackbar } from "notistack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Confirmation from "../Confirmation";
+import { lowerCase } from "src/_helpers/LowerCase";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -228,7 +229,7 @@ export default function VerticalTabs() {
       const val = differentiateFunction(value);
       if (val !== null) {
         const teams = getTeams.getTeam?.filter((team) =>
-          team.name === val[0] ? team : ""
+          lowerCase(team.name) === lowerCase(val[0]) ? team : ""
         );
         setCurrTeam(teams[0]);
         setExpanded((oldExpanded) => [`${teams[0]._id}`]);

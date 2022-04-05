@@ -84,7 +84,8 @@ export default function SaveReport() {
     };
     const savedData = await axios.post("/report/save", data);
     navigator.clipboard.writeText(
-      `http://localhost:3000/reports/sharedReports/${url}`
+      // `http://localhost:3000/reports/sharedReports/${url}`
+      `${axios.defaults.baseURL}reports/sharedReports/${url}`
     );
   };
   const handleClose = () => {
@@ -127,7 +128,8 @@ export default function SaveReport() {
             <TextField
               fullWidth
               label="Sharing link"
-              defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+              // defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+              defaultValue={`${axios.defaults.baseURL}reports/sharedReports/${url}`}
               InputProps={{
                 readOnly: true,
               }}

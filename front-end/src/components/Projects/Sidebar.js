@@ -15,6 +15,7 @@ import { createProject } from "../../api/projects api/projects";
 import Header from "./Header";
 import Snackbars from "../../_helpers/snackBar";
 import { capitalize } from "../../_helpers/Capitailze";
+import { lowerCase } from "../../_helpers/LowerCase";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
@@ -122,11 +123,11 @@ export default function Sidebar() {
       const val = differentiateFunction(value);
       if (val !== null) {
         const client = clientsList?.filter((client) =>
-          client.name === val[0] ? client : ""
+          lowerCase(client.name) === lowerCase(val[0]) ? client : ""
         );
         setExpanded((oldExpanded) => [`${client[0]._id}`]);
         const project = client[0].projects?.filter((pro) =>
-          pro.name == val[1] ? pro : ""
+          lowerCase(pro.name) == lowerCase(val[1]) ? pro : ""
         );
         if (client.length === 0) {
           // eslint-disable-next-line no-useless-return

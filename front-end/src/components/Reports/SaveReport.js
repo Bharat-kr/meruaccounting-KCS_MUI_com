@@ -163,7 +163,8 @@ export default function SaveReport(props) {
     try {
       const savedData = await axios.post("/report/save", data);
       window.open(
-        `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
+        // `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
+        `${axios.defaults.baseURL}downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
       axios
@@ -367,7 +368,8 @@ export default function SaveReport(props) {
     const savedData = await axios.post("/report/save", data);
     if (checked[0]) {
       navigator.clipboard.writeText(
-        `http://localhost:3000/reports/sharedReports/${url}`
+        // `http://localhost:3000/reports/sharedReports/${url}`
+        `${axios.defaults.baseURL}reports/sharedReports/${url}`
       );
       enqueueSnackbar("link copied", { variant: "success" });
     }
@@ -565,7 +567,8 @@ export default function SaveReport(props) {
                 disabled={!checked[0]}
                 fullWidth
                 label="Sharing link"
-                defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                // defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                defaultValue={`${axios.defaults.baseURL}reports/sharedReports/${url}`}
                 InputProps={{
                   readOnly: true,
                 }}
