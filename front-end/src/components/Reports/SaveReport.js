@@ -85,9 +85,9 @@ export default function SaveReport(props) {
   const [appurl, setAppurl] = React.useState([false, ""]);
   const [scheduleChecked, setScheduleChecked] = React.useState([false, ""]);
   const [expdf, setExPdf] = React.useState(false);
-  const [timeint, setTimeint] = React.useState([]);
-  const [dayint, setDayint] = React.useState([]);
-  const [hourint, setHourint] = React.useState([]);
+  const [timeint, setTimeint] = React.useState("Daily");
+  const [dayint, setDayint] = React.useState(null);
+  const [hourint, setHourint] = React.useState("12:00 am");
   const [monthlyDate, setMonthlyDate] = React.useState([]);
   const [userEmail, setUserEmail] = React.useState(loginC.userData.email);
   const { enqueueSnackbar } = useSnackbar();
@@ -346,9 +346,14 @@ export default function SaveReport(props) {
     setChecked([false, ""]);
     const data = {
       schedule: scheduleChecked[0],
+<<<<<<< HEAD
+      scheduleType: [timeint, dayint, hourint],
+      scheduledEmail: loginC?.userData?.email,
+=======
       scheduleType: timeint,
       // scheduledTime: ,
       scheduledEmail: loginC.userData.email,
+>>>>>>> b2ee5eaa014947d76070c05e2c54e46fd010d092
       share: checked[0],
       includeSS: ssval[0],
       includeAL: alval[0],
@@ -359,7 +364,7 @@ export default function SaveReport(props) {
       name,
       options: props.options,
     };
-
+    console.log(data);
     const savedData = await axios.post("/report/save", data);
     if (checked[0]) {
       navigator.clipboard.writeText(
@@ -430,10 +435,11 @@ export default function SaveReport(props) {
       />
       <Box sx={{ display: "flex", flexDirection: "row", mt: 2 }}>
         <Autocomplete
+          defaultValue="Daily"
           onChange={(e, value) => setTimeint(value)}
           disablePortal
           id="combo-box-demo"
-          options={["Monthly", "Weekly", "daily"]}
+          options={["Monthly", "Weekly", "Daily"]}
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField {...params} label="Select interval" />
@@ -441,6 +447,7 @@ export default function SaveReport(props) {
         />
         {timeint === "Weekly" && (
           <Autocomplete
+            defaultValue="Monday"
             onChange={(e, value) => setDayint(value)}
             disablePortal
             id="combo-box-demo"
@@ -461,6 +468,7 @@ export default function SaveReport(props) {
         )}
         {timeint === "Monthly" && (
           <Autocomplete
+            defaultValue={1}
             onChange={(e, value) => setDayint(value)}
             disablePortal
             id="combo-box-demo"
@@ -474,6 +482,7 @@ export default function SaveReport(props) {
           />
         )}
         <Autocomplete
+          defaultValue="12:00 am"
           onChange={(e, value) => setHourint(value)}
           disablePortal
           id="combo-box-demo"
