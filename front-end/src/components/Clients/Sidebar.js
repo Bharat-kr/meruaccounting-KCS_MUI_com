@@ -140,7 +140,7 @@ export default function Sidebar() {
       // }
       // setnewClientError(false);
       if (newClientValue !== "") {
-        await addClient(newClientValue, dispatchAddClient);
+        await addClient(capitalize(newClientValue), dispatchAddClient);
         await getClient(dispatchClientDetails);
 
         changeClient(() =>
