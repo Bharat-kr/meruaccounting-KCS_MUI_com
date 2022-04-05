@@ -331,6 +331,7 @@ export default function Header(props) {
         open={ConfirmModal}
         handleClose={handleClose}
         onConfirm={handleDeleteClient}
+        detail={{ type: "Client", name: currentClient.name }}
       />
     </>
   );

@@ -518,6 +518,7 @@ export default function Header(props) {
         open={ConfirmModal}
         handleClose={handleClose}
         onConfirm={handleProjectDelete}
+        detail={{ type: "Project", name: currentProject?.name }}
       />
     </>
   );

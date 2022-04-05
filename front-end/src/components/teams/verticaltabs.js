@@ -526,6 +526,7 @@ export default function VerticalTabs() {
         open={ConfirmModal}
         handleClose={handleClose}
         onConfirm={handleTeamDelete}
+        detail={{ type: "Team", name: currTeam?.name }}
       />
     </div>
   );

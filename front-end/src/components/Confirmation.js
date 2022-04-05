@@ -15,6 +15,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
+  minWidth: "40%",
   bgcolor: "#fff",
   borderRadius: 2,
   border: "none",
@@ -26,7 +27,7 @@ const style = {
   },
 };
 
-const Confirmation = ({ open, handleClose, onConfirm }) => {
+const Confirmation = ({ open, handleClose, onConfirm, detail }) => {
   return (
     <Modal
       open={open}
@@ -48,7 +49,11 @@ const Confirmation = ({ open, handleClose, onConfirm }) => {
             Are You Sure ?
           </Typography>
           <br />
-          All the data will be lost.
+          All the data of{" "}
+          <b>
+            {detail.type} {detail.name}
+          </b>{" "}
+          will be lost.
         </Box>
         <Divider />
         <Box>
