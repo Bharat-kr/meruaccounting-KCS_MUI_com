@@ -276,6 +276,7 @@ export default function EnhancedTable(props) {
   const [rows, setRows] = useState([]);
   const [loaderAddMember, setLoaderAddMember] = useState(false);
   const [projectMember, setProjectMember] = useState([]);
+  const [employeeNameList, setEmployeeNameList] = useState([]);
   const addMemberRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -294,7 +295,6 @@ export default function EnhancedTable(props) {
 
   const tableListRef = useRef();
   const employeesList = [];
-  const employeeNameList = [];
 
   const reportsFunction = async (reportOptions) => {
     await getReports(dispatchGetReports, reportOptions);
@@ -320,6 +320,7 @@ export default function EnhancedTable(props) {
   }, [reports]);
   React.useEffect(async () => {
     try {
+      let nameList = [];
       currentProject
         ? currentProject.employees.map((emp, index) => {
             let o = {};
@@ -345,13 +346,14 @@ export default function EnhancedTable(props) {
             }
             employeesList.push(o);
 
-            employeeNameList.push(`${emp.firstName} ${emp.lastName}`);
+            nameList.push(`${emp.firstName} ${emp.lastName}`);
           })
         : employeesList.push("");
 
       console.log(employeesList);
       setRows(employeesList);
       setRowsPerPage(rows.length);
+      setEmployeeNameList(nameList);
       setSelected([]);
     } catch (err) {
       console.log(err);
@@ -409,9 +411,9 @@ export default function EnhancedTable(props) {
   const handleSearch = async (e, value) => {
     e.preventDefault();
     try {
-      const member = employeesList?.filter((emp) =>
-        emp.name === value ? emp : ""
-      );
+      console.log(e, value);
+      console.log(rows);
+      const member = rows?.filter((emp) => (emp.name === value ? emp : ""));
       if (member.length === 0) {
         // eslint-disable-next-line no-useless-return
         return;

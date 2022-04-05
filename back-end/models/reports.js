@@ -8,7 +8,7 @@ const reportsSchema = new mongoose.Schema(
     includeApps: { type: Boolean, default: false },
     share: { type: Boolean, default: true },
     schedule: { type: Boolean, default: true },
-    scheduleType: { type: String, default: "weekly" },
+    scheduleType: { type: Array, default: "" },
     scheduledTime: { type: mongoose.Schema.Types.Mixed },
     scheduledEmail: { type: String, default: "" },
     // dateRange: [{ type: String }],
