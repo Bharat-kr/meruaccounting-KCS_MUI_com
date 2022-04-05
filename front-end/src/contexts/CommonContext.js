@@ -32,7 +32,6 @@ export const CommonContextProvider = (props) => {
     loader: true,
     err: false,
   });
-  console.log("Context all employees",allEmployees);
 
   return (
     <div>

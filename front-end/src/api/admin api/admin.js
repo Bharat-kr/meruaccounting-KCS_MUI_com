@@ -35,7 +35,6 @@ export const getAllEmployee = async (dispatch) => {
 export const getAllEmployeeList = async (dispatch) => {
   try {
     const { data } = await axios.post(`/admin/getAllEmployee`);
-    console.log("all employees", data.data);
     dispatch({
       type: GET_ALLEMPLOYEES_SUCCESS,
       payload: data.data,
