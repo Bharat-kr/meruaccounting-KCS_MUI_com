@@ -208,7 +208,6 @@ export default function ByAppUrl(props) {
           ]);
         });
       });
-      console.log(exp);
 
       const builder = new CsvBuilder("filename.csv");
       builder
@@ -219,7 +218,6 @@ export default function ByAppUrl(props) {
     });
     setRowData(arr);
   }, [savedReports]);
-  console.log(savedReports.reports[0]);
   const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = (panel) => (event, isExpanded) => {

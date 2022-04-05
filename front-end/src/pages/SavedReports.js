@@ -33,7 +33,6 @@ export default function SavedReports() {
     };
     getSavedReports(dispatchGetSavedReports, options);
   }, []);
-  console.log(savedReports);
   return (
     <RootStyle title="SavedReports">
       <Container sx={{ width: "70%", mt: 8 }}>

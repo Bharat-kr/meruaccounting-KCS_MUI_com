@@ -291,6 +291,7 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
   const [proList, setProList] = useState([]);
+  const [projectNameList, setProjectNameList] = useState([]);
 
   const {
     clientDetails,
@@ -304,7 +305,6 @@ export default function EnhancedTable(props) {
 
   const tableListRef = useRef();
   const projectsList = [];
-  const projectNameList = [];
   const clientIndex = clientsList?.findIndex(
     (i) => i._id === currentClient?._id
   );
@@ -356,6 +356,7 @@ export default function EnhancedTable(props) {
 
   React.useEffect(async () => {
     try {
+      let nameList = [];
       currentClient
         ? currentClient.projects.map((pro) => {
             let o = {};
@@ -383,11 +384,12 @@ export default function EnhancedTable(props) {
             }
             projectsList.push(o);
 
-            projectNameList.push(`${pro.name}`);
+            nameList.push(`${pro.name}`);
           })
         : projectsList.push("");
 
       setRows(projectsList);
+      setProjectNameList(nameList);
       setRowsPerPage(rows.length);
       setSelected([]);
     } catch (err) {
