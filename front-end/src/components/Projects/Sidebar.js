@@ -173,7 +173,10 @@ export default function Sidebar() {
         setnewClientError(true);
       }
       if (currentClient !== null) {
-        const data = { name: newProjectValue, clientId: currentClient._id };
+        const data = {
+          name: capitalize(newProjectValue),
+          clientId: currentClient._id,
+        };
         await createProject(data, dispatchCreateProject);
         await getClient(dispatchClientDetails);
       }
