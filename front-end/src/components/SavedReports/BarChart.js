@@ -17,7 +17,6 @@ export default function Bar() {
     savedReports?.reports[0]?.byScreenshots?.forEach((ss) => {
       t = t + ss.actCount;
     });
-    console.log(t);
     let arr = savedReports?.reports[0]?.byScreenshots?.map((ss) => {
       let o = {
         type: `${ss._id}`,

@@ -95,7 +95,6 @@ export default function EmployeeApiRefRowsGrid() {
 
   const date = new Date();
   React.useEffect(() => {
-    console.log(commonData);
     if (commonData.commonData !== undefined) {
       setTData(commonData.commonData);
     }

@@ -50,7 +50,6 @@ export default function SelectGroup({ setGroup }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log("two");
             setvalue([selectGroupOptions[1]]);
           }}
         >
@@ -62,7 +61,6 @@ export default function SelectGroup({ setGroup }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log("two");
             setvalue([selectGroupOptions[2]]);
           }}
         >
@@ -73,7 +71,6 @@ export default function SelectGroup({ setGroup }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log("two");
             setvalue([selectGroupOptions[3]]);
           }}
         >

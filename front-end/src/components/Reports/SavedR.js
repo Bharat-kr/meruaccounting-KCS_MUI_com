@@ -225,22 +225,22 @@ function Row(props) {
             }}
             onClick={() => {
               window.open(
-                // `http://localhost:3000/reports/sharedReports/${row.url}`,
-                `${axios.defaults.baseURL}reports/sharedReports/${row.url}`,
+                `http://localhost:3000/reports/sharedReports/${row.url}`,
+                // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`,
                 "_blank"
               );
             }}
             variant="body2"
           >
-            {`${axios.defaults.baseURL}reports/sharedReports/${row.url}`}
-            {/* {`http://localhost:3000/reports/sharedReports/${row.url}`} */}
+            {/* {`https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`} */}
+            {`http://localhost:3000/reports/sharedReports/${row.url}`}
           </Typography>
           <ContentCopyIcon
             sx={{ fontSize: "medium" }}
             onClick={() => {
               navigator.clipboard.writeText(
                 // `http://localhost:3000/reports/sharedReports/${row.url}`
-                `${axios.defaults.baseURL}reports/sharedReports/${row.url}`
+                `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`
               );
               enqueueSnackbar("Link copied", { variant: "success" });
             }}
@@ -295,8 +295,8 @@ function Row(props) {
                   disabled={!checked[0]}
                   fullWidth
                   label="Sharing link"
-                  // defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
-                  defaultValue={`${axios.defaults.baseURL}reports/sharedReports/${url}`}
+                  defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                  // defaultValue={`https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${url}`}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -345,7 +345,7 @@ export default function SavedR() {
     try {
       const { data } = await axios
         .get(`http://localhost:8000/report/saved`)
-        // .get(`${axios.defaults.baseURL}report/saved`)
+        // .get(`https://monitor-meruaccounting-bf9db.web.app/report/saved`)
         .then((response) => response.data);
       // console.log(data);
       setRowsData(data);

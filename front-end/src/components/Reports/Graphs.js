@@ -9,7 +9,7 @@ import ProjectsCharts from "./ProjectsCharts";
 import ClientsCharts from "./ClientsCharts";
 import EmployeesCharts from "./EmployeesCharts";
 import AppsCharts from "./AppsCharts";
-
+import { reportsContext } from "src/contexts/ReportsContext";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -39,43 +39,47 @@ function a11yProps(index) {
   };
 }
 
-export default function Graphs({ reports }) {
+export default function Graphs() {
   const [value, setValue] = React.useState(0);
 
+  const { reports } = React.useContext(reportsContext);
+  console.log(reports);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <Box sx={{ mt: 2, width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Timeline" {...a11yProps(0)} />
-          <Tab label="Employees" {...a11yProps(1)} />
-          <Tab label="Projects" {...a11yProps(2)} />
-          <Tab label="Clients" {...a11yProps(3)} />
-          <Tab label="Apps & Urls" {...a11yProps(4)} />
-        </Tabs>
+    reports.reports[0].byEP.length !== 0 && (
+      <Box sx={{ mt: 2, width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+          >
+            <Tab label="Timeline" {...a11yProps(0)} />
+            <Tab label="Employees" {...a11yProps(1)} />
+            <Tab label="Projects" {...a11yProps(2)} />
+            <Tab label="Clients" {...a11yProps(3)} />
+            <Tab label="Apps & Urls" {...a11yProps(4)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+          <Bars></Bars>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <EmployeesCharts></EmployeesCharts>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <ProjectsCharts />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <ClientsCharts></ClientsCharts>
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          <AppsCharts></AppsCharts>
+        </TabPanel>
       </Box>
-      <TabPanel value={value} index={0}>
-        <Bars></Bars>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <EmployeesCharts></EmployeesCharts>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <ProjectsCharts />
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <ClientsCharts></ClientsCharts>
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        <AppsCharts></AppsCharts>
-      </TabPanel>
-    </Box>
+    )
   );
 }

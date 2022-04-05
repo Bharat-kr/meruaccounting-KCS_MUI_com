@@ -25,14 +25,12 @@ export default function DownloadReport() {
   const { savedReports, dispatchGetSavedReports } =
     React.useContext(reportsContext);
   const { id } = useParams();
-  console.log(id);
 
   React.useEffect(() => {
     const options = {
       url: id,
     };
     getSavedReports(dispatchGetSavedReports, options);
-    console.log(savedReports);
   }, []);
 
   return (

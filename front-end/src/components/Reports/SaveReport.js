@@ -164,7 +164,7 @@ export default function SaveReport(props) {
       const savedData = await axios.post("/report/save", data);
       window.open(
         `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
-        // `${axios.defaults.baseURL}downloadReportPdf/${savedData.data.data.url}`,
+        // `https://monitor-meruaccounting-bf9db.web.app/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
       axios
@@ -242,7 +242,7 @@ export default function SaveReport(props) {
 
               `${emp.firstName} ${emp.lastName}`,
               Number((emp.totalHours / 3600).toFixed(2)),
-              Number(emp.avgPerformanceData.toFixed(2)),
+              `${emp.avgPerformanceData.toFixed(2)} %`,
               Number(((emp?.totalHours / 3600) * emp.payRate).toFixed(2)),
             ]);
             noOfEmployees += 1;
@@ -326,7 +326,7 @@ export default function SaveReport(props) {
         reports.reports[0]?.byD?.map((d) => {
           const activity = d.performanceData;
           arr.push([
-            d?.createdAt,
+            d.activityOn,
             `${d.client?.name ? d?.client.name : "Deleted client"}`,
             d.project.name,
             timeCC(d.startTime),
@@ -369,7 +369,6 @@ export default function SaveReport(props) {
           { wch: 30 },
         ];
       }
-      console.log(arr);
       utils.book_append_sheet(wb, ws);
       writeFile(wb, `${name}.xlsx`);
     } catch (err) {
@@ -404,7 +403,7 @@ export default function SaveReport(props) {
     if (checked[0]) {
       navigator.clipboard.writeText(
         `http://localhost:3000/reports/sharedReports/${url}`
-        // `${axios.defaults.baseURL}reports/sharedReports/${url}`
+        // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${url}`
       );
       enqueueSnackbar("link copied", { variant: "success" });
     }
@@ -598,8 +597,8 @@ export default function SaveReport(props) {
                 disabled={!checked[0]}
                 fullWidth
                 label="Sharing link"
-                // defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
-                defaultValue={`${axios.defaults.baseURL}reports/sharedReports/${url}`}
+                defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                // defaultValue={`https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${url}`}
                 InputProps={{
                   readOnly: true,
                 }}
