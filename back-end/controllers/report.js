@@ -749,6 +749,9 @@ const generateReport = asyncHandler(async (req, res) => {
 const saveReports = asyncHandler(async (req, res) => {
   try {
     let {
+      scheduleEmail,
+      schedule,
+      scheduleType,
       share,
       url,
       reports,
@@ -759,6 +762,16 @@ const saveReports = asyncHandler(async (req, res) => {
       includeApps,
       options,
     } = req.body;
+
+    // very inefficient coz not proper default values in frontend
+    if (!scheduleType[1]) {
+      if (scheduleType[0] === "Weekly") {
+        scheduleType[1] = "Monday";
+      }
+      if (scheduleType[0] === "Monthly") {
+        scheduleType[1] = 1;
+      }
+    }
 
     // if (!options.userIds) {
     //   options.userIds = "All Employees";
@@ -786,6 +799,9 @@ const saveReports = asyncHandler(async (req, res) => {
 
     // make a new document for reports schema
     const saved = await Reports.create({
+      schedule,
+      scheduleType,
+      scheduleEmail,
       share,
       options,
       user: userId,
@@ -1440,6 +1456,28 @@ const downloadPdf = asyncHandler(async (req, res) => {
     });
     await browser.close();
 
+    // DELETE THE REPORT FIRST(unknown error, not working after sending response)
+    const report = await Reports.find({ url: url });
+    console.log(report);
+    fs.stat(
+      `./saved reports/${report[0].fileName}.json`,
+      function (err, stats) {
+        if (err) {
+          return console.error(err);
+        }
+
+        // Delete a file
+        let filename = `./saved reports/${report[0].fileName}.json`;
+        let tempFile = fs.openSync(filename, "r");
+        fs.closeSync(tempFile);
+        fs.unlinkSync(filename);
+      }
+    );
+    if (report) {
+      await Reports.deleteOne({ _id: report[0]._id });
+    }
+
+    // send the pdf
     let file = await fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
     let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
     res.writeHead(200, {
@@ -1448,7 +1486,17 @@ const downloadPdf = asyncHandler(async (req, res) => {
       "Content-Transfer-Encoding": "Binary",
     });
     file.pipe(res);
-    // delete pdf to do
+
+    // DELETE THE PDF
+    fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
+      if (err) {
+        return console.error(err);
+      }
+      let filename = `./pdf/${uniquePdf}.pdf`;
+      let tempFile = fs.openSync(filename, "r");
+      fs.closeSync(tempFile);
+      fs.unlinkSync(filename);
+    });
   } catch (error) {
     throw new Error(error);
   }
