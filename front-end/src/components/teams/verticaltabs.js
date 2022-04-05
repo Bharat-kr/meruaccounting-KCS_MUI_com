@@ -450,6 +450,7 @@ export default function VerticalTabs() {
               /> */}
               <Autocomplete
                 id="combo-box-demo"
+                inputRef={addMemberRef}
                 options={allEmployees.employees}
                 getOptionLabel={(option) =>
                   getFullName(option.firstName, option.lastName)
