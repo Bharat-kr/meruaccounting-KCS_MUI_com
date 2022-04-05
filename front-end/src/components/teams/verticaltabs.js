@@ -122,9 +122,7 @@ export default function VerticalTabs() {
       // eslint-disable-next-line prefer-template
       team.members?.map((member) =>
         teamsList.push(
-          capitalize(team.name) +
-            ":" +
-            getFullName(member.firstName, member.lastName)
+          team.name + ":" + getFullName(member.firstName, member.lastName)
         )
       );
     });
@@ -229,7 +227,7 @@ export default function VerticalTabs() {
       const val = differentiateFunction(value);
       if (val !== null) {
         const teams = getTeams.getTeam?.filter((team) =>
-          lowerCase(team.name) === lowerCase(val[0]) ? team : ""
+          team.name === val[0] ? team : ""
         );
         setCurrTeam(teams[0]);
         setExpanded((oldExpanded) => [`${teams[0]._id}`]);
@@ -373,7 +371,7 @@ export default function VerticalTabs() {
                           fontWeight: "700",
                         }}
                       >
-                        {capitalize(el.name)}
+                        {el.name}
                       </Typography>
                     }
                     key={el._id}

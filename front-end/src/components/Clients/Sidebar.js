@@ -93,7 +93,7 @@ export default function Sidebar() {
     clientDetails?.client?.data?.map((cli) => {
       <>
         {console.log(cli.name)}
-        {clientNameList.push(capitalize(cli.name))}
+        {clientNameList.push(cli.name)}
       </>;
     });
   }
@@ -103,7 +103,7 @@ export default function Sidebar() {
   // change currentclient on search
   const handleSearch = (e, value) => {
     const client = clientsList.filter((client) =>
-      lowerCase(client.name) === lowerCase(e.target.textContent) ? client : ""
+      client.name === e.target.textContent ? client : ""
     );
     if (client.length === 0) {
       // eslint-disable-next-line no-useless-return
@@ -269,7 +269,7 @@ export default function Sidebar() {
                       }}
                       data-client={client.name}
                     >
-                      {capitalize(client.name)}
+                      {client.name}
                     </Typography>
                   }
                   // hello
