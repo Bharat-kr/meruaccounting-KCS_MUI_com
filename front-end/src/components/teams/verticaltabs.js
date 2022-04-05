@@ -25,6 +25,8 @@ import { useSnackbar } from "notistack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Confirmation from "../Confirmation";
 import { lowerCase } from "src/_helpers/LowerCase";
+import { getAllEmployeeList } from "src/api/admin api/admin";
+import { CommonContext } from "src/contexts/CommonContext";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +55,7 @@ export default function VerticalTabs() {
     teamCreate,
     updatedMember,
   } = useContext(teamContext);
+  const { dispatchAllEmployees } = useContext(CommonContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
@@ -127,6 +130,11 @@ export default function VerticalTabs() {
       );
     });
   }, [getTeams, teamsList]);
+
+  //Fetching all Employees for autocomplete
+  React.useEffect(() => {
+    getAllEmployeeList(dispatchAllEmployees);
+  }, []);
 
   teamsDetails = getTeams?.getTeam;
 
