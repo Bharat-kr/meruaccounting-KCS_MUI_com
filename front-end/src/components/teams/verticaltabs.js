@@ -165,7 +165,7 @@ export default function VerticalTabs() {
     setLoaderAddTeam(true);
     try {
       e.preventDefault();
-      await createTeam({ name: newTeam }, dispatchTeam);
+      await createTeam({ name: capitalize(newTeam) }, dispatchTeam);
       await getTeam(dispatchgetTeam);
       setLoaderAddTeam(false);
       newTeamRef.current.value = "";
