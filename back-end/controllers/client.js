@@ -19,9 +19,11 @@ const createClient = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).createOwn("client");
   if (permission.granted) {
     try {
-      const name = req.body.name;
+      let { name } = req.body;
+      name = capitalize(name);
       const manager = req.user;
       const client = new Client({ name });
+
       if (!client) throw new Error("Error creating a new client");
 
       client.createdBy = manager._id;
