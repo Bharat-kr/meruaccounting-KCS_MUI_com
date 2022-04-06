@@ -172,11 +172,11 @@ const splitActivity = asyncHandler(async (req, res) => {
 
     let today = dayjs().format("DD/MM/YYYY");
 
-    console.log("Date of activity1", today);
+    // console.log("Date of activity1", today);
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
-      console.log(" for activity1", day.date, today);
+      // console.log(" for activity1", day.date, today);
       if (day.date == today) {
         found = true;
         day.activities.push(activity1);
@@ -184,7 +184,7 @@ const splitActivity = asyncHandler(async (req, res) => {
       }
     }
     if (found == false) {
-      console.log("Found False for activity1");
+      // console.log("Found False for activity1");
       const day = {
         date: today,
         activities: [activity1],
@@ -203,17 +203,17 @@ const splitActivity = asyncHandler(async (req, res) => {
     let found = false;
     for (let i = 0; i < user.days.length; i++) {
       const day = user.days[i];
-      console.log(" for activity2", day.date, today);
+      // console.log(" for activity2", day.date, today);
 
       if (day.date == today) {
-        console.log("Found true for activity2", day.date, today);
+        // console.log("Found true for activity2", day.date, today);
         found = true;
         day.activities.push(activity2);
         break;
       }
     }
     if (found == false) {
-      console.log("Found False for activity1");
+      // console.log("Found False for activity1");
       const day = {
         date: today,
         activities: [activity2],
@@ -225,18 +225,18 @@ const splitActivity = asyncHandler(async (req, res) => {
     throw new Error("Internal server error");
   }
   screenShots.forEach((screenShot) => {
-    console.log("These are Screenshots", screenShot);
+    // console.log("These are Screenshots", screenShot);
     const time = parseInt(screenShot.activityAt);
     let screenShotTime = new Date(time);
     let EndTime = parseInt(activity1.endTime);
     let endTime = new Date(EndTime);
     if (screenShotTime <= endTime) {
-      console.log("Inside if");
-      console.log("This is time and endTime", screenShotTime, endTime);
+      // console.log("Inside if");
+      // console.log("This is time and endTime", screenShotTime, endTime);
       activity1.screenshots.push(screenShot._id);
     } else {
-      console.log("Inside else");
-      console.log("This is time and endTime", screenShotTime, endTime);
+      // console.log("Inside else");
+      // console.log("This is time and endTime", screenShotTime, endTime);
       activity2.screenshots.push(screenShot._id);
     }
   });
@@ -263,7 +263,7 @@ const updateActivity = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.user;
     const { projectId } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
     const activityId = req.params.id;
     const unUpdatedactivity = await Activity.findByIdAndUpdate(
@@ -295,7 +295,7 @@ const updateActivity = asyncHandler(async (req, res) => {
       },
     ]);
     // updateProjectTime[0].consumeTime
-    console.log(updateProjectTime);
+    // console.log(updateProjectTime);
     const project = await Project.findByIdAndUpdate(
       { _id: projectId },
       {
@@ -307,10 +307,10 @@ const updateActivity = asyncHandler(async (req, res) => {
       },
       { multi: false }
     );
-    console.log(
-      "🚀 ~ file: activity.js ~ line 261 ~ updateActivity ~ project",
-      project
-    );
+    // console.log(
+    //   "🚀 ~ file: activity.js ~ line 261 ~ updateActivity ~ project",
+    //   project
+    // );
 
     // get the total time here from aggregation for user daily hours updatation
     const updateDailyTime = await Activity.aggregate([
