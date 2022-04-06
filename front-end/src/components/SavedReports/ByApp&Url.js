@@ -208,13 +208,6 @@ export default function ByAppUrl(props) {
           ]);
         });
       });
-
-      const builder = new CsvBuilder("filename.csv");
-      builder
-        .setDelimeter(",")
-        .setColumns(["Name", "Application", "Activity"])
-        .addRows(exp)
-        .exportFile();
     });
     setRowData(arr);
   }, [savedReports]);

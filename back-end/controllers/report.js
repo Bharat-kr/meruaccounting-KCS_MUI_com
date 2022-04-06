@@ -813,7 +813,7 @@ const saveReports = asyncHandler(async (req, res) => {
       name: name === "" ? `${firstName} ${lastName}` : name,
       fileName,
     });
-    console.log(saved);
+    // console.log(saved);
     res.json({
       status: "Report saved",
       data: saved,
@@ -831,11 +831,11 @@ const deleteReports = asyncHandler(async (req, res) => {
     let { url } = req.params;
     // let _id;
     const report = await Reports.find({ url: url });
-    console.log(req.body);
+    // console.log(req.body);
     fs.stat(
       `./saved reports/${report[0].fileName}.json`,
       function (err, stats) {
-        console.log(stats); //here we got all information of file in stats variable
+        // console.log(stats); //here we got all information of file in stats variable
 
         if (err) {
           return console.error(err);
@@ -1419,7 +1419,7 @@ const editReports = asyncHandler(async (req, res) => {
       share: share ? share : report[0].share,
     };
 
-    console.log(options);
+    // console.log(options);
 
     const data = await Reports.updateOne({ url: url }, [
       {
@@ -1458,7 +1458,7 @@ const downloadPdf = asyncHandler(async (req, res) => {
 
     // DELETE THE REPORT FIRST(unknown error, not working after sending response)
     const report = await Reports.find({ url: url });
-    console.log(report);
+    // console.log(report);
     fs.stat(
       `./saved reports/${report[0].fileName}.json`,
       function (err, stats) {
@@ -1478,14 +1478,16 @@ const downloadPdf = asyncHandler(async (req, res) => {
     }
 
     // send the pdf
-    let file = await fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
     let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
     res.writeHead(200, {
       "Content-Type": "application/pdf",
       "Content-Disposition": "attachment; filename=sample.pdf",
       "Content-Transfer-Encoding": "Binary",
     });
-    file.pipe(res);
+    fs.createReadStream(`./pdf/${uniquePdf}.pdf`).pipe(res);
+    // file.on("open", () => {
+    //   file.pipe(res);
+    // });
 
     // DELETE THE PDF
     fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {

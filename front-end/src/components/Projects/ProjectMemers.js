@@ -303,7 +303,7 @@ export default function EnhancedTable(props) {
     try {
       const reportOptions = {
         projectIds: [{ _id: currentProject._id }],
-        userIds: currentProject.employees.map((mem) => {
+        userIds: currentProject?.employees?.map((mem) => {
           return { _id: mem._id };
         }),
       };

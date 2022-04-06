@@ -68,7 +68,7 @@ export default function Sidebar() {
     await getClient(dispatchClientDetails);
   }, []);
   let clientsList = [];
-  console.group(clientDetails);
+
   if (clientDetails.loader === false) {
     clientsList = clientDetails?.client?.data;
   }
@@ -110,6 +110,7 @@ export default function Sidebar() {
   // }, [checkclientDetails]);
   // change currentclient on search
   // console.log(currentClient, currentProject);
+  console.log(clientDetails);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");
