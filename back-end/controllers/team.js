@@ -49,7 +49,7 @@ const updateMember = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).updateOwn("team");
   if (permission.granted) {
     try {
-      const { employeeMail, teamId } = req.body;
+      const { employeeId, teamId } = req.body;
       let alreadyMember = false;
 
       const team = await Team.findById(teamId);
@@ -58,13 +58,13 @@ const updateMember = asyncHandler(async (req, res) => {
         throw new Error(`No team found ${teamId}`);
       }
 
-      const newEmployee = await User.findOne({ email: employeeMail });
+      const newEmployee = await User.findById(employeeId);
       if (!newEmployee) {
         res.status(404);
-        throw new Error(`No employee found ${employeeMail}`);
+        throw new Error(`No employee found with Id ${employeeId}`);
       }
 
-      const employeeId = newEmployee._id;
+      // const employeeId = newEmployee._id;
       team.members.forEach((employee) => {
         if (employee.equals(employeeId)) {
           alreadyMember = true;

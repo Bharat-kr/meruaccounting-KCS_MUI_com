@@ -3,7 +3,14 @@ import { useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import SendIcon from "@mui/icons-material/Send";
-import { Box, Paper, TextField, Button, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Paper,
+  TextField,
+  Button,
+  CircularProgress,
+  Autocomplete,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Main from "./Main";
 import { teamContext } from "../../contexts/TeamsContext";
@@ -25,6 +32,8 @@ import { useSnackbar } from "notistack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Confirmation from "../Confirmation";
 import { lowerCase } from "src/_helpers/LowerCase";
+import { getAllEmployeeList } from "src/api/admin api/admin";
+import { CommonContext } from "src/contexts/CommonContext";
 
 // ---------------------------------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +62,7 @@ export default function VerticalTabs() {
     teamCreate,
     updatedMember,
   } = useContext(teamContext);
+  const { allEmployees, dispatchAllEmployees } = useContext(CommonContext);
   const [currMember, setCurrMember] = React.useState(null);
   const [newTeam, setNewTeam] = React.useState("");
   const [currTeam, setCurrTeam] = React.useState(null);
@@ -60,7 +70,7 @@ export default function VerticalTabs() {
   const [loaderAddTeam, setLoaderAddTeam] = React.useState(false);
 
   const [currTeamToUpdate, setCurrTeamToUpdate] = React.useState(null);
-  const [newMemberMail, setNewMemberMail] = React.useState("");
+  const [newMemberId, setNewMemberId] = React.useState("");
 
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
@@ -122,13 +132,17 @@ export default function VerticalTabs() {
       // eslint-disable-next-line prefer-template
       team.members?.map((member) =>
         teamsList.push(
-          capitalize(team.name) +
-            ":" +
-            getFullName(member.firstName, member.lastName)
+          team.name + ":" + getFullName(member.firstName, member.lastName)
         )
       );
     });
   }, [getTeams, teamsList]);
+
+  //Fetching all Employees for autocomplete
+  React.useEffect(() => {
+    getAllEmployeeList(dispatchAllEmployees);
+  }, []);
+  console.log(allEmployees.employees);
 
   teamsDetails = getTeams?.getTeam;
 
@@ -167,7 +181,7 @@ export default function VerticalTabs() {
     setLoaderAddTeam(true);
     try {
       e.preventDefault();
-      await createTeam({ name: newTeam }, dispatchTeam);
+      await createTeam({ name: capitalize(newTeam) }, dispatchTeam);
       await getTeam(dispatchgetTeam);
       setLoaderAddTeam(false);
       newTeamRef.current.value = "";
@@ -198,7 +212,7 @@ export default function VerticalTabs() {
     try {
       e.preventDefault();
       await updateMember(
-        { teamId: currTeamToUpdate._id, employeeMail: newMemberMail },
+        { teamId: currTeamToUpdate._id, employeeId: newMemberId },
         dispatchUpdateMember
       );
       await getTeam(dispatchgetTeam);
@@ -229,7 +243,7 @@ export default function VerticalTabs() {
       const val = differentiateFunction(value);
       if (val !== null) {
         const teams = getTeams.getTeam?.filter((team) =>
-          lowerCase(team.name) === lowerCase(val[0]) ? team : ""
+          team.name === val[0] ? team : ""
         );
         setCurrTeam(teams[0]);
         setExpanded((oldExpanded) => [`${teams[0]._id}`]);
@@ -260,6 +274,11 @@ export default function VerticalTabs() {
   //handle modal close
   const handleClose = () => {
     setConfirmModal(false);
+  };
+
+  //handle employee select close
+  const handleEmplooyeeSelect = (e, value) => {
+    setNewMemberId(value._id);
   };
 
   return (
@@ -373,7 +392,7 @@ export default function VerticalTabs() {
                           fontWeight: "700",
                         }}
                       >
-                        {capitalize(el.name)}
+                        {el.name}
                       </Typography>
                     }
                     key={el._id}
@@ -420,7 +439,7 @@ export default function VerticalTabs() {
               autoComplete="off"
               style={{ width: "100%" }}
             >
-              <TextField
+              {/* <TextField
                 inputRef={addMemberRef}
                 onChange={(e) => setNewMemberMail(e.target.value)}
                 required
@@ -428,6 +447,18 @@ export default function VerticalTabs() {
                 label="Add new Member"
                 // error={newClientError}
                 sx={{}}
+              /> */}
+              <Autocomplete
+                id="combo-box-demo"
+                inputRef={addMemberRef}
+                options={allEmployees.employees}
+                getOptionLabel={(option) =>
+                  getFullName(option.firstName, option.lastName)
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Add Employees" />
+                )}
+                onChange={handleEmplooyeeSelect}
               />
               <LoadingButton
                 fullWidth
@@ -528,6 +559,7 @@ export default function VerticalTabs() {
         open={ConfirmModal}
         handleClose={handleClose}
         onConfirm={handleTeamDelete}
+        detail={{ type: "Team", name: currTeam?.name }}
       />
     </div>
   );

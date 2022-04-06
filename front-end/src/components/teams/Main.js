@@ -582,6 +582,10 @@ export default function Main(props) {
         open={ConfirmModal}
         handleClose={handleClose}
         onConfirm={deleteMember}
+        detail={{
+          type: "Member",
+          name: getFullName(currMember?.firstName, currMember?.lastName),
+        }}
       />
       <ChangeModal
         modal={modal}
