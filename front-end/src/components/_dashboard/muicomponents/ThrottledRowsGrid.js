@@ -14,6 +14,8 @@ import moment from "moment";
 import CircleIcon from "@mui/icons-material/Circle";
 
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
+import { getFullName } from "src/_helpers/getFullName";
+import { capitalize } from "src/_helpers/Capitailze";
 
 // -----------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -167,12 +169,14 @@ export default function ApiRefRowsGrid(props) {
                           fontWeight: "600",
                           textDecoration: "none",
                           color: "black",
+                          mr:1
                         }}
                         to={`/dashboard/employeepage/${member._id}`}
                         variant="h5"
                       >
-                        {member.firstName} {member.lastName}
+                        {getFullName(member.firstName, member.lastName)}
                       </Typography>
+                        <Chip color="primary" label={capitalize(member.role)} />
                     </StyledTableCell>
 
                     <StyledTableCell align="left">
