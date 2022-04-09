@@ -3,6 +3,8 @@ import { Pie } from "@ant-design/plots";
 import { reportsContext } from "../../contexts/ReportsContext";
 import secondsToHms from "../../_helpers/secondsToHms";
 import { Box, Typography } from "@mui/material";
+import { loginContext } from "src/contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 export default function ProjectsCharts() {
   const { reports } = React.useContext(reportsContext);
@@ -10,6 +12,7 @@ export default function ProjectsCharts() {
   const [totalHours, settotalHours] = useState(null);
   const [totalPData, settotalPData] = useState(null);
   const [totalPRate, settotalPRate] = useState(null);
+  const { loginC } = React.useContext(loginContext);
 
   useEffect(() => {
     let arr = reports.reports[0].byProjects.map((project) => {
@@ -70,9 +73,14 @@ export default function ProjectsCharts() {
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
             {Math.trunc(totalPData)}%
           </Typography>
-          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {Math.trunc((totalPRate * totalHours) / 3600)}
-          </Typography>
+          {Role.indexOf(loginC.userData.role) <= 1 ? (
+            <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
+              {Math.trunc((totalPRate * totalHours) / 3600)}{" "}
+              <span>&#8377;</span>
+            </Typography>
+          ) : (
+            ""
+          )}
         </Box>
         <div>
           <Pie style={{ flexGrow: "2" }} {...config} />
