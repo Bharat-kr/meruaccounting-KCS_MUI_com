@@ -103,7 +103,7 @@ const getClient = asyncHandler(async (req, res) => {
             },
           },
         ]);
-        // console.log(clientsList[0].clients);
+        console.log(clientsList);
         client = await Client.find({
           _id: { $in: clientsList[0].clients },
         }).populate([
