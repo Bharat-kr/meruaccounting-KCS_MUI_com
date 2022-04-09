@@ -8,58 +8,8 @@ import DataGrid, { SelectColumn } from "react-data-grid";
 import { Box, Typography, Divider } from "@mui/material";
 import { fontSize } from "@mui/system";
 
-const columns = [
-  {
-    key: "employee",
-    name: "Employee",
-  },
-  {
-    key: "project",
-    name: "Project",
-  },
-  {
-    key: "duration",
-    name: "Duration",
-    groupFormatter({ childRows }) {
-      return (
-        <>
-          {childRows.reduce(
-            (prev, { duration }) => Number((prev + duration).toFixed(2)),
-            0
-          )}
-        </>
-      );
-    },
-  },
-  {
-    key: "activity",
-    name: "Activity",
-    groupFormatter({ childRows }) {
-      return (
-        <>
-          {childRows.reduce(
-            (prev, { activity }) => Number((prev + activity).toFixed(2)),
-            0
-          )}
-        </>
-      );
-    },
-  },
-  {
-    key: "money",
-    name: "Money",
-    groupFormatter({ childRows }) {
-      return (
-        <>
-          {childRows.reduce(
-            (prev, { money }) => Number((prev + money).toFixed(2)),
-            0
-          )}
-        </>
-      );
-    },
-  },
-];
+import { loginContext } from "src/contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 function rowKeyGetter(row) {
   return Math.floor(Math.random() * 1000 * Math.random() * 200);
@@ -76,6 +26,63 @@ export default function ByEp(props) {
   const [expandedGroupIds, setExpandedGroupIds] = useState(
     () => new Set(["Projects"])
   );
+  const { loginC } = React.useContext(loginContext);
+
+  const columns = [
+    {
+      key: "employee",
+      name: "Employee",
+    },
+    {
+      key: "project",
+      name: "Project",
+    },
+    {
+      key: "duration",
+      name: "Duration",
+      groupFormatter({ childRows }) {
+        return (
+          <>
+            {childRows.reduce(
+              (prev, { duration }) => Number((prev + duration).toFixed(2)),
+              0
+            )}
+          </>
+        );
+      },
+    },
+    {
+      key: "activity",
+      name: "Activity",
+      groupFormatter({ childRows }) {
+        return (
+          <>
+            {childRows.reduce(
+              (prev, { activity }) => Number((prev + activity).toFixed(2)),
+              0
+            )}
+          </>
+        );
+      },
+    },
+    Role.indexOf(loginC.userData.role) <= 1
+      ? {
+          key: "money",
+          name: `Money ${(<span>&#8377;</span>)}`,
+          groupFormatter({ childRows }) {
+            return (
+              <>
+                {childRows.reduce(
+                  (prev, { money }) => Number((prev + money).toFixed(2)),
+                  0
+                )}
+              </>
+            );
+          },
+        }
+      : "",
+  ];
+
   React.useEffect(() => {
     let arr = [];
     reports.reports[0]?.byPE?.map((pro) => {
