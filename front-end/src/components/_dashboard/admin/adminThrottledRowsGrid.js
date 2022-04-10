@@ -17,6 +17,8 @@ import timeC from "../../../_helpers/timeConverter";
 import { employeesTimeDetails } from "../../../api/employee api/employee";
 import { teamContext } from "src/contexts/TeamsContext";
 import { getTeam } from "../../../api/teams api/teams";
+import { capitalize } from "src/_helpers/Capitailze";
+import { getFullName } from "src/_helpers/getFullName";
 
 // -----------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -138,12 +140,18 @@ export default function AdminApiRefRowsGrid(props) {
                           fontWeight: "600",
                           textDecoration: "none",
                           color: "black",
+                          mr: 1,
                         }}
                         to={`/dashboard/employeepage/${member._id}`}
                         variant="h5"
                       >
-                        {member.firstName} {member.lastName}
+                        {getFullName(member.firstName, member.lastName)}
                       </Typography>
+                      <Chip
+                        color="primary"
+                        size="small"
+                        label={capitalize(member.role)}
+                      />
                     </StyledTableCell>
 
                     <StyledTableCell align="left">
