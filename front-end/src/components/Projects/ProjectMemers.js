@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Autocomplete } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -34,6 +34,9 @@ import { getReports } from "../../api/reports api/reports";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 import { reportsContext } from "../../contexts/ReportsContext";
+import { getFullName } from "src/_helpers/getFullName";
+import { CommonContext } from "src/contexts/CommonContext";
+import { getAllEmployeeList } from "src/api/admin api/admin";
 //------------------------------------------------------------------------------------------------//
 function createData(name, projectHours, internalHours, totalHours) {
   return {
@@ -267,7 +270,7 @@ export default function EnhancedTable(props) {
   const [orderBy, setOrderBy] = React.useState("projectHours");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [newMember, setNewMember] = useState("");
+  const [newMemberId, setNewMemberId] = useState("");
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
@@ -288,6 +291,7 @@ export default function EnhancedTable(props) {
     useContext(projectContext);
   const { reports, dispatchGetReports, byClientsFunc, byProjectFunc } =
     useContext(reportsContext);
+  const { allEmployees, dispatchAllEmployees } = useContext(CommonContext);
 
   const tableListRef = useRef();
   const employeesList = [];
@@ -299,7 +303,7 @@ export default function EnhancedTable(props) {
     try {
       const reportOptions = {
         projectIds: [{ _id: currentProject._id }],
-        userIds: currentProject.employees.map((mem) => {
+        userIds: currentProject?.employees?.map((mem) => {
           return { _id: mem._id };
         }),
       };
@@ -379,10 +383,11 @@ export default function EnhancedTable(props) {
     e.preventDefault();
     setLoaderAddMember(true);
     try {
-      const data = [currentProject._id, newMember];
+      const data = [currentProject._id, newMemberId];
       await addProjectMember(data, dispatchaddProjectMember);
       await getClient(dispatchClientDetails);
       setLoaderAddMember(false);
+      addMemberRef.current.value = "";
       // setRowsPerPage(rows.length + 1);
       // enqueueSnackbar("Member added", { variant: "success" });
       // console.log(currentProject);
@@ -398,6 +403,10 @@ export default function EnhancedTable(props) {
       }
     );
   };
+  //Fetching all Employees for autocomplete
+  React.useEffect(() => {
+    getAllEmployeeList(dispatchAllEmployees);
+  }, []);
 
   const handleSearch = async (e, value) => {
     e.preventDefault();
@@ -462,6 +471,11 @@ export default function EnhancedTable(props) {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  //handle employee select close
+  const handleEmplooyeeSelect = (e, value) => {
+    setNewMemberId(value._id);
+  };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Paper
@@ -484,13 +498,12 @@ export default function EnhancedTable(props) {
           </Typography>
           <FloatingForm toolTip="Add Member" color="primary" icon={<AddIcon />}>
             <form
-              // onSubmit={handleSubmit}
               onSubmit={handleMemberAdded}
               noValidate
               autoComplete="off"
               style={{ padding: "10px" }}
             >
-              <TextField
+              {/* <TextField
                 inputRef={addMemberRef}
                 onChange={(e) => setNewMember(e.target.value)}
                 required
@@ -499,6 +512,19 @@ export default function EnhancedTable(props) {
                 label="Add member by email"
                 // error={newClientError}
                 sx={{}}
+              /> */}
+              <Autocomplete
+                id="combo-box-demo"
+                inputRef={addMemberRef}
+                options={allEmployees.employees}
+                getOptionLabel={(option) =>
+                  getFullName(option.firstName, option.lastName)
+                }
+                sx={{ width: 250 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Add Employees" />
+                )}
+                onChange={handleEmplooyeeSelect}
               />
               <LoadingButton
                 fullWidth

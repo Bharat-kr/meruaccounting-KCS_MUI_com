@@ -9,6 +9,11 @@ import {
   ADMIN_GETALLPROJECTS_SUCCESS,
   ADMIN_GETALLPROJECTS_FAILED,
 } from "../../constants/adminConstants";
+import {
+  GET_ALLEMPLOYEES_REQUEST,
+  GET_ALLEMPLOYEES_FAILED,
+  GET_ALLEMPLOYEES_SUCCESS,
+} from "../../constants/CommonConstants";
 
 export const getAllEmployee = async (dispatch) => {
   try {
@@ -20,6 +25,23 @@ export const getAllEmployee = async (dispatch) => {
   } catch (err) {
     dispatch({
       type: ADMIN_GETALLEMPLOYEE_FAILED,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+export const getAllEmployeeList = async (dispatch) => {
+  try {
+    const { data } = await axios.post(`/admin/getAllEmployee`);
+    dispatch({
+      type: GET_ALLEMPLOYEES_SUCCESS,
+      payload: data.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: GET_ALLEMPLOYEES_FAILED,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

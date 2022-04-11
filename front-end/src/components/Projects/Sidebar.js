@@ -68,7 +68,7 @@ export default function Sidebar() {
     await getClient(dispatchClientDetails);
   }, []);
   let clientsList = [];
-  console.group(clientDetails);
+
   if (clientDetails.loader === false) {
     clientsList = clientDetails?.client?.data;
   }
@@ -97,7 +97,7 @@ export default function Sidebar() {
     if (clientDetails.loader === false) {
       clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
-          projectList.push(capitalize(client.name) + ":" + capitalize(pro.name));
+          projectList.push(client.name + ":" + pro.name);
         });
       });
     }
@@ -110,6 +110,7 @@ export default function Sidebar() {
   // }, [checkclientDetails]);
   // change currentclient on search
   // console.log(currentClient, currentProject);
+  console.log(clientDetails);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");
@@ -123,11 +124,11 @@ export default function Sidebar() {
       const val = differentiateFunction(value);
       if (val !== null) {
         const client = clientsList?.filter((client) =>
-          lowerCase(client.name) === lowerCase(val[0]) ? client : ""
+          client.name === val[0] ? client : ""
         );
         setExpanded((oldExpanded) => [`${client[0]._id}`]);
         const project = client[0].projects?.filter((pro) =>
-          lowerCase(pro.name) == lowerCase(val[1]) ? pro : ""
+          pro.name == val[1] ? pro : ""
         );
         if (client.length === 0) {
           // eslint-disable-next-line no-useless-return
@@ -148,7 +149,6 @@ export default function Sidebar() {
       client.name === e.target.textContent ? client : ""
     );
     setnewClientValue(client[0]);
-
     changeClient(client[0]);
   };
   const handleProjectClick = (e) => {
@@ -174,7 +174,10 @@ export default function Sidebar() {
         setnewClientError(true);
       }
       if (currentClient !== null) {
-        const data = { name: newProjectValue, clientId: currentClient._id };
+        const data = {
+          name: capitalize(newProjectValue),
+          clientId: currentClient._id,
+        };
         await createProject(data, dispatchCreateProject);
         await getClient(dispatchClientDetails);
       }
@@ -278,7 +281,7 @@ export default function Sidebar() {
                           fontWeight: "700",
                         }}
                       >
-                        {capitalize(client.name)}
+                        {client.name}
                       </Typography>
                     }
                     key={client._id}
@@ -302,7 +305,7 @@ export default function Sidebar() {
                               data-project={project.name}
                               onClick={handleProjectClick}
                             >
-                              {capitalize(project.name)}
+                              {project.name}
                             </Typography>
                           }
                         />

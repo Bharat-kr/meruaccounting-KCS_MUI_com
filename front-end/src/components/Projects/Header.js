@@ -84,24 +84,26 @@ export default function Header(props) {
   const [budgetTime, setbudgetTime] = useState();
   const [consumedTime, setconsumedTime] = useState();
   const outerref = useRef();
-  const proInputRef = useRef("");
+  const proInputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
 
+  let clientIndex;
+  let projectIndex;
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
   const test = useRef(false);
-  const clientIndex = clientsList?.findIndex(
-    (i) => i._id === currentClient?._id
-  );
-  const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
-    (i) => i._id === currentProject?._id
-  )
-    ? clientsList[clientIndex]?.projects?.findIndex(
-        (i) => i._id === currentProject?._id
-      )
-    : 0;
-  console.log(projectIndex + 1, clientIndex);
+  if (clientsList !== []) {
+    clientIndex = clientsList?.findIndex((i) => i._id === currentClient?._id);
+    projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+      (i) => i?._id === currentProject?._id
+    )
+      ? clientsList[clientIndex]?.projects?.findIndex(
+          (i) => i._id === currentProject?._id
+        )
+      : 0;
+  }
+
   useEffect(() => {
     if (clientsList !== null || undefined) {
       changeClient(clientsList[clientIndex]);
@@ -121,8 +123,9 @@ export default function Header(props) {
         : setProjectLeader("No leader");
 
       setbudgetTime(currentProject?.budgetTime);
-      console.log(byProject.totalHours);
-      setconsumedTime((byProject[0].totalHours / 3600).toFixed(2));
+      console.log(byProject?.totalHours);
+      byProject !== [] &&
+        setconsumedTime((byProject[0]?.totalHours / 3600).toFixed(2));
       proInputRef.current.value = "";
     } catch (err) {
       console.log(err);
@@ -518,6 +521,7 @@ export default function Header(props) {
         open={ConfirmModal}
         handleClose={handleClose}
         onConfirm={handleProjectDelete}
+        detail={{ type: "Project", name: currentProject?.name }}
       />
     </>
   );

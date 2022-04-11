@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Column } from "@ant-design/plots";
 import { reportsContext } from "../../contexts/ReportsContext";
 import secondsToHms from "../../_helpers/secondsToHms";
 import { Box, Typography } from "@mui/material";
+import { loginContext } from "src/contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 export default function Bar() {
   const { reports } = React.useContext(reportsContext);
@@ -11,6 +13,8 @@ export default function Bar() {
   const [totalPData, settotalPData] = useState(null);
   const [totalPRate, settotalPRate] = useState(null);
   const [data, setData] = useState([]);
+
+  const { loginC } = useContext(loginContext);
 
   useEffect(() => {
     let t = 0;
@@ -46,7 +50,6 @@ export default function Bar() {
       end: 0.2,
     },
   };
-
   return (
     <Box>
       <Box sx={{}}>
@@ -62,9 +65,15 @@ export default function Bar() {
           <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
             {Math.trunc(totalPData)}%
           </Typography>
-          <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
-            {Math.trunc((totalPRate * totalHours) / 3600)}
-          </Typography>
+
+          {Role.indexOf(loginC.userData.role) <= 1 ? (
+            <Typography variant="h4" sx={{ opacity: 0.6, textAlign: "left" }}>
+              {Math.trunc((totalPRate * totalHours) / 3600)}{" "}
+              <span>&#8377;</span>
+            </Typography>
+          ) : (
+            ""
+          )}
         </Box>
         <div>
           <Column {...config} />

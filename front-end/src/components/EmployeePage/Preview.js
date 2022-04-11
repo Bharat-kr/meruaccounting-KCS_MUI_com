@@ -84,8 +84,8 @@ export default function Preview(props) {
               sx={{ float: "right" }}
               fontSize="small"
               onClick={(e) => {
-                delSs(props.actId, props.ssId);
-                props.setSelectedSs(false, props.actId, props.ssId);
+                delSs(props.act._id, props.ssId);
+                props.setSelectedSs(false, props.act._id, props.ssId);
               }}
             />
           </CardContent>

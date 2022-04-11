@@ -1527,15 +1527,15 @@ const downloadPdf = asyncHandler(async (req, res) => {
     // });
 
     // DELETE THE PDF
-    fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
-      if (err) {
-        return console.error(err);
-      }
-      let filename = `./pdf/${uniquePdf}.pdf`;
-      let tempFile = fs.openSync(filename, "r");
-      fs.closeSync(tempFile);
-      fs.unlinkSync(filename);
-    });
+    // fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
+    //   if (err) {
+    //     return console.error(err);
+    //   }
+    //   let filename = `./pdf/${uniquePdf}.pdf`;
+    //   let tempFile = fs.openSync(filename, "r");
+    //   fs.closeSync(tempFile);
+    //   fs.unlinkSync(filename);
+    // });
   } catch (error) {
     throw new Error(error);
   }

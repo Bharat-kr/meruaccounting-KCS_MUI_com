@@ -8,65 +8,8 @@ import DataGrid, { SelectColumn } from "react-data-grid";
 import { Box, Typography, Divider } from "@mui/material";
 import { fontSize } from "@mui/system";
 import { timeCC } from "../../_helpers/timeConverter";
-
-const columns = [
-  {
-    key: "date",
-    name: "Date",
-  },
-  {
-    key: "employee",
-    name: "Employee",
-    // groupFormatter({ childRows }) {
-    //   return (
-    //     <>{childRows.reduce((prev, { employee }) => prev + employee, 0)}</>
-    //   );
-    // },
-  },
-  {
-    key: "client",
-    name: "Client",
-  },
-  {
-    key: "project",
-    name: "Project",
-  },
-  {
-    key: "from",
-    name: "From",
-  },
-  {
-    key: "to",
-    name: "To",
-  },
-  {
-    key: "activity",
-    name: "Activity",
-    //   groupFormatter({ childRows }) {
-    //     return (
-    //       <>{childRows.reduce((prev, { activity }) => prev + activity, 0)}</>
-    //     );
-    //   },
-  },
-  {
-    key: "duration",
-    name: "Duration",
-  },
-  {
-    key: "money",
-    name: "Money",
-    groupFormatter({ childRows }) {
-      return (
-        <>
-          {childRows.reduce(
-            (prev, { money }) => Number((prev + money).toFixed(2)),
-            0
-          )}
-        </>
-      );
-    },
-  },
-];
+import { loginContext } from "src/contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 function rowKeyGetter(row) {
   return Math.floor(Math.random() * 1000 * Math.random() * 200);
@@ -83,6 +26,68 @@ export default function ByAppsUrl(props) {
   const [expandedGroupIds, setExpandedGroupIds] = useState(
     () => new Set(["Employees"])
   );
+  const { loginC } = React.useContext(loginContext);
+
+  const columns = [
+    {
+      key: "date",
+      name: "Date",
+    },
+    {
+      key: "employee",
+      name: "Employee",
+      // groupFormatter({ childRows }) {
+      //   return (
+      //     <>{childRows.reduce((prev, { employee }) => prev + employee, 0)}</>
+      //   );
+      // },
+    },
+    {
+      key: "client",
+      name: "Client",
+    },
+    {
+      key: "project",
+      name: "Project",
+    },
+    {
+      key: "from",
+      name: "From",
+    },
+    {
+      key: "to",
+      name: "To",
+    },
+    {
+      key: "activity",
+      name: "Activity",
+      //   groupFormatter({ childRows }) {
+      //     return (
+      //       <>{childRows.reduce((prev, { activity }) => prev + activity, 0)}</>
+      //     );
+      //   },
+    },
+    {
+      key: "duration",
+      name: "Duration",
+    },
+    Role.indexOf(loginC.userData.role) <= 1
+      ? {
+          key: "money",
+          name: `Money ${(<span>&#8377;</span>)}`,
+          groupFormatter({ childRows }) {
+            return (
+              <>
+                {childRows.reduce(
+                  (prev, { money }) => Number((prev + money).toFixed(2)),
+                  0
+                )}
+              </>
+            );
+          },
+        }
+      : "",
+  ];
   React.useEffect(() => {
     let arr = [];
     reports.reports[0]?.byD?.map((d) => {

@@ -181,7 +181,7 @@ export default function SaveReport(props) {
           console.log("working?");
           FileSaver.saveAs(
             new Blob([res.data], { type: "application/pdf" }),
-            `sample.pdf`
+            `${name}.pdf`
           );
           // window.open(res.data, "_blank");
         });
