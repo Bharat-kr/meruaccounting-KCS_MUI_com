@@ -129,7 +129,7 @@ export default function Main() {
 
   // reset the getoptions thing when no option is selected
   React.useEffect(() => {
-    if (!employees.length) {
+    if (!employees) {
       axios.post("/report/options").then((res) => {
         const empArr = Array.from(
           res.data.employeesOptions[0].members,
@@ -140,12 +140,12 @@ export default function Main() {
         setemployees(empArr);
       });
     }
-    if (!projects.length) {
+    if (!projects) {
       axios.post("/report/options").then((res) => {
         setprojects(res.data.projectsClientsOptions[0].projects);
       });
     }
-    if (!clients.length) {
+    if (!clients) {
       axios.post("/report/options").then((res) => {
         setclients(res.data.projectsClientsOptions[0].clients);
       });
@@ -268,21 +268,33 @@ export default function Main() {
         <SelectEmployees
           options={employeeOptions}
           setEmployees={(newValue) => {
-            setemployees(newValue);
+            if (!newValue.length) {
+              setemployees(null);
+            } else {
+              setemployees(newValue);
+            }
           }}
         />
         {loginC?.userData?.role !== "employee" ? (
           <SelectClients
             options={clientOptions}
             setClients={(newValue) => {
-              setclients(newValue);
+              if (!newValue.length) {
+                setclients(null);
+              } else {
+                setclients(newValue);
+              }
             }}
           />
         ) : null}
         <SelectProjects
           options={projectOptions}
           setProjects={(newValue) => {
-            setprojects(newValue);
+            if (!newValue.length) {
+              setprojects(null);
+            } else {
+              setprojects(newValue);
+            }
           }}
         />
         <SelectGroup
