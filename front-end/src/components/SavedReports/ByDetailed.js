@@ -37,10 +37,13 @@ import Preview from "../UserPage/Preview";
 import timeC from "src/_helpers/timeConverter";
 import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
+import { loginContext } from "src/contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 function Row(props) {
-  const { row, options } = props;
+  const { row, options, download } = props;
   const [open, setOpen] = React.useState(false);
+  const { loginC } = React.useContext(loginContext);
 
   return (
     <React.Fragment>
@@ -56,16 +59,27 @@ function Row(props) {
             </ImageIcon>
           )}
         </TableCell>
+
+        <TableCell align="left">{row.Date}</TableCell>
+        <TableCell align="left">{row.Client}</TableCell>
+        <TableCell align="left">{row.Project}</TableCell>
         <TableCell component="th" scope="row">
           {row.Employee}
         </TableCell>
-        <TableCell align="left">{row.Project}</TableCell>
         <TableCell align="left">{row.Duration}</TableCell>
-        {options.options.includePR === true && (
-          <TableCell align="left">{row.Money}</TableCell>
-        )}
-        {options.options.includeAL === true && (
+        <TableCell align="left">{row.From}</TableCell>
+        <TableCell align="left">{row.To}</TableCell>
+        <TableCell align="left">{row.To}</TableCell>
+
+        {Role.indexOf(loginC.userData.role) <= 1
+          ? options.options.includePR === true && (
+              <TableCell align="left">{row.Money}</TableCell>
+            )
+          : ""}
+        {options.options.includeAL === true || download ? (
           <TableCell align="left">{row.Activity}</TableCell>
+        ) : (
+          ""
         )}
       </TableRow>
       {options.options.includeSS === true && (
@@ -173,26 +187,32 @@ function Row(props) {
   );
 }
 
-Row.propTypes = {
-  row: PropTypes.shape({
-    Name: PropTypes.string.isRequired,
-    Duration: PropTypes.string.isRequired,
-    Money: PropTypes.number.isRequired,
-    Activity: PropTypes.number.isRequired,
-  }).isRequired,
-};
+// Row.propTypes = {
+//   row: PropTypes.shape({
+//     Name: PropTypes.string.isRequired,
+//     Duration: PropTypes.string.isRequired,
+//     Money: PropTypes.number.isRequired,
+//     Activity: PropTypes.number.isRequired,
+//   }).isRequired,
+// };
 
 export default function ByD(props) {
+  const { options, download } = props;
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
+  const { loginC } = React.useContext(loginContext);
   React.useEffect(() => {
     let arr = [];
+    console.log(savedReports);
     savedReports.reports[0]?.byD?.map((emp) => {
       const act = emp.performanceData;
       arr.push({
+        Date: emp.activityOn,
         Employee: `${emp.employee.firstName} ${emp.employee.lastName}`,
+        Client: `${emp.client?.name ? emp?.client.name : "Deleted client"}`,
         Project: `${emp?.project?.name ? emp.project.name : "Deleted project"}`,
-
+        From: timeCC(emp.startTime),
+        To: timeCC(emp.endtime),
         Duration: `${timeC(emp.startTime)}-${timeC(emp.endTime)}`,
         Activity: (act / 1).toFixed(2),
         Money: (
@@ -215,14 +235,26 @@ export default function ByD(props) {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Name</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell align="left">Client</TableCell>
             <TableCell align="left">Project</TableCell>
+            <TableCell align="left">from</TableCell>
+            <TableCell align="left">to</TableCell>
+            <TableCell align="left">employee</TableCell>
             <TableCell align="left">Duration</TableCell>
-            {props.options.includePR === true && (
-              <TableCell align="left">Money</TableCell>
-            )}
-            {props.options.includeAL === true && (
+            {options.includeAL || download ? (
               <TableCell align="left">Activity</TableCell>
+            ) : (
+              ""
+            )}
+            {Role.indexOf(loginC.userData.role) <= 1 ? (
+              options.includePR || download ? (
+                <TableCell align="left">Money</TableCell>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
             )}
           </TableRow>
         </TableHead>
