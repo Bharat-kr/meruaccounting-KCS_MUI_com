@@ -176,7 +176,7 @@ export default function ApiRefRowsGrid(props) {
                       >
                         {getFullName(member.firstName, member.lastName)}
                       </Typography>
-                        <Chip color="primary" label={capitalize(member.role)} />
+                        <Chip color="primary" size="small" label={capitalize(member.role)} />
                     </StyledTableCell>
 
                     <StyledTableCell align="left">

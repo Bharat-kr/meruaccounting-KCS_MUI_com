@@ -140,7 +140,7 @@ const ChangeModal = ({
               }}
             >
               <Typography variant="h4" color="primary">
-                Assign a new Manager
+                Assign a new Manager to Team
               </Typography>
               <IconButton>
                 <CloseIcon onClick={handleModalClose} />
@@ -356,14 +356,18 @@ const ChangeModal = ({
               </Box>
               <Box
                 sx={{
+                  ml: 2,
+                }}>Select a Project for which you want to make him leader</Box>
+              <Box
+                sx={{
                   display: "flex",
                   alignItems: "center",
                   mt: 1,
                 }}
-              >
+                >
                 <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
                   <InputLabel id="demo-simple-select-filled-label">
-                    Project
+                    Project 
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-filled-label"
