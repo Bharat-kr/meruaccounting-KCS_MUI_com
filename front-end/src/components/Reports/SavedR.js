@@ -49,6 +49,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import { loginContext } from "src/contexts/LoginContext";
+import { Role } from "../../_helpers/role";
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -109,6 +111,7 @@ BootstrapDialogTitle.propTypes = {
 
 function Row(props) {
   const { row, value, reports, setReports } = props;
+
   const { enqueueSnackbar } = useSnackbar();
   const [modal, setModal] = React.useState(false);
   const [name, setName] = React.useState(row.name ? row.name : "");
@@ -122,6 +125,7 @@ function Row(props) {
   const [moneyval, setMoneyval] = React.useState([row.includePR, ""]);
   const [alval, setAlval] = React.useState([row.includeAL, ""]);
   const [appurl, setAppurl] = React.useState([row.includeApps, ""]);
+  const { loginC } = React.useContext(loginContext);
 
   const handleOpen = () => {
     setOpen(true);
@@ -190,10 +194,14 @@ function Row(props) {
         label="Include screenshots"
         control={<Checkbox checked={ssval[0]} onChange={handleChange2} />}
       />
-      <FormControlLabel
-        label="Include money"
-        control={<Checkbox checked={moneyval[0]} onChange={handleChange3} />}
-      />
+      {Role.indexOf(loginC.userData.role) <= 1 ? (
+        <FormControlLabel
+          label="Include money"
+          control={<Checkbox checked={moneyval[0]} onChange={handleChange3} />}
+        />
+      ) : (
+        ""
+      )}
       <FormControlLabel
         label="Include activity level"
         control={<Checkbox checked={alval[0]} onChange={handleChange4} />}
@@ -251,7 +259,15 @@ function Row(props) {
           {
             <Box sx={{ display: "flex" }}>
               {row.includeSS ? <ImageIcon /> : <ImageOutlinedIcon />}
-              {row.includeAL ? <PaidIcon /> : <PaidOutlinedIcon />}
+              {Role.indexOf(loginC.userData.role) <= 1 ? (
+                row.includeAL ? (
+                  <PaidIcon />
+                ) : (
+                  <PaidOutlinedIcon />
+                )
+              ) : (
+                ""
+              )}
               {row.share ? <ShareIcon /> : <ShareOutlinedIcon />}
               {row?.scheduled ? <MailIcon /> : <MailOutlinedIcon />}
             </Box>

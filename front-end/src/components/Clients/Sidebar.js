@@ -109,7 +109,7 @@ export default function Sidebar() {
       // eslint-disable-next-line no-useless-return
     }
     changeClient(client[0]);
-    setSelected((oldSelected) => [`${client[0]._id}`]);
+    setSelected((oldSelected) => [`${client[0]?._id}`]);
 
     // not working
     // sidebarref.current.scrollTop =
