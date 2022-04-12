@@ -27,6 +27,7 @@ import { loginContext } from "../../contexts/LoginContext";
 import FileSaver from "file-saver";
 import { utils, writeFile } from "xlsx";
 import { timeCC } from "../../_helpers/timeConverter";
+import { Role } from "../../_helpers/role";
 
 // context
 import { reportsContext } from "../../contexts/ReportsContext";
@@ -73,7 +74,6 @@ BootstrapDialogTitle.propTypes = {
 export default function SaveReport(props) {
   console.log(props);
   const { reports, savedReports } = React.useContext(reportsContext);
-  const { loginC } = React.useContext(loginContext);
 
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState(`${props.options?.groupBy}`);
@@ -88,6 +88,7 @@ export default function SaveReport(props) {
   const [dayint, setDayint] = React.useState(null);
   const [hourint, setHourint] = React.useState("12:00 am");
   const [monthlyDate, setMonthlyDate] = React.useState([]);
+  const { loginC } = React.useContext(loginContext);
   const [userEmail, setUserEmail] = React.useState(loginC.userData.email);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -164,27 +165,42 @@ export default function SaveReport(props) {
   };
   const handleExportPdf = async () => {
     try {
-      const savedData = await axios.post("/report/save", data);
+      const data2 = {
+        schedule: scheduleChecked[0],
+        scheduleType: [timeint, dayint, hourint],
+        scheduledEmail: loginC?.userData?.email,
+        // scheduledTime: ,
+        share: checked[0],
+        includeSS: ssval[0],
+        includeAL: true,
+        includePR: true,
+        includeApps: true,
+        reports: reports.reports,
+        url,
+        name,
+        options: props.options,
+      };
+      const savedData = await axios.post("/report/save", data2);
       window.open(
         `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
         // `https://monitor-meruaccounting-bf9db.web.app/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
-      axios
-        .get(`/report/download/${savedData.data.data.url}`, {
-          responseType: "arraybuffer",
-          headers: {
-            Accept: "application/pdf",
-          },
-        })
-        .then((res) => {
-          console.log("working?");
-          FileSaver.saveAs(
-            new Blob([res.data], { type: "application/pdf" }),
-            `${name}.pdf`
-          );
-          // window.open(res.data, "_blank");
-        });
+      // axios
+      //   .get(`/report/download/${savedData.data.data.url}`, {
+      //     responseType: "arraybuffer",
+      //     headers: {
+      //       Accept: "application/pdf",
+      //     },
+      //   })
+      //   .then((res) => {
+      //     console.log("working?");
+      //     FileSaver.saveAs(
+      //       new Blob([res.data], { type: "application/pdf" }),
+      //       `${name}.pdf`
+      //     );
+      //     // window.open(res.data, "_blank");
+      //   });
     } catch (err) {
       console.log(err);
       enqueueSnackbar(err.message, { variant: "error" });
@@ -539,10 +555,14 @@ export default function SaveReport(props) {
         label="Include screenshots"
         control={<Checkbox checked={ssval[0]} onChange={handleChange2} />}
       />
-      <FormControlLabel
-        label="Include money"
-        control={<Checkbox checked={moneyval[0]} onChange={handleChange3} />}
-      />
+      {Role.indexOf(loginC.userData.role) <= 1 ? (
+        <FormControlLabel
+          label="Include money"
+          control={<Checkbox checked={moneyval[0]} onChange={handleChange3} />}
+        />
+      ) : (
+        ""
+      )}
       <FormControlLabel
         label="Include activity level"
         control={<Checkbox checked={alval[0]} onChange={handleChange4} />}
