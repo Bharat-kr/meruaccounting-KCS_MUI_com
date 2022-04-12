@@ -30,6 +30,7 @@
 // // a function to combine these all
 
 // cron.schedule(`* * * * *`, async () => {
+//   // looking for reports every minute now, we only need to look once a day to avoid multiple schedules.
 //   // match by schedule true
 //   // match by todays day, date.
 //   const dayName = dayNames[dayjs().day()];
