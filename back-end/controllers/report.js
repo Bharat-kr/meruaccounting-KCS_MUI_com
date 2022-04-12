@@ -22,7 +22,7 @@ const generateReport = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
       req.body;
-
+    console.log(clientIds, projectIds, userIds, dateOne, dateTwo, groupBy);
     if (projectIds) {
       projectIds = projectIds.map((id) => {
         return mongoose.Types.ObjectId(id._id);
@@ -813,7 +813,6 @@ const saveReports = asyncHandler(async (req, res) => {
       name: name === "" ? `${firstName} ${lastName}` : name,
       fileName,
     });
-    // console.log(saved);
     res.json({
       status: "Report saved",
       data: saved,
@@ -831,12 +830,9 @@ const deleteReports = asyncHandler(async (req, res) => {
     let { url } = req.params;
     // let _id;
     const report = await Reports.find({ url: url });
-    // console.log(req.body);
     fs.stat(
       `./saved reports/${report[0].fileName}.json`,
       function (err, stats) {
-        // console.log(stats); //here we got all information of file in stats variable
-
         if (err) {
           return console.error(err);
         }
@@ -1419,8 +1415,6 @@ const editReports = asyncHandler(async (req, res) => {
       share: share ? share : report[0].share,
     };
 
-    // console.log(options);
-
     const data = await Reports.updateOne({ url: url }, [
       {
         $set: options,
@@ -1446,8 +1440,9 @@ const downloadPdf = asyncHandler(async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(`http://localhost:3000/downloadReportPdf/${url}`, {
-      waitUntil: "networkidle2",
+      waitUntil: "networkidle0",
     });
+
     await page.setViewport({ width: 1680, height: 1050 });
     let uniquePdf = uuidv4();
     await page.pdf({
@@ -1458,7 +1453,6 @@ const downloadPdf = asyncHandler(async (req, res) => {
 
     // DELETE THE REPORT FIRST(unknown error, not working after sending response)
     const report = await Reports.find({ url: url });
-    // console.log(report);
     fs.stat(
       `./saved reports/${report[0].fileName}.json`,
       function (err, stats) {
@@ -1477,34 +1471,57 @@ const downloadPdf = asyncHandler(async (req, res) => {
       await Reports.deleteOne({ _id: report[0]._id });
     }
 
-    // send the pdf
-    // let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
-    // res.writeHead(200, {
-    //   "Content-Type": "application/pdf",
-    //   "Content-Disposition": "attachment; filename=sample.pdf",
-    //   "Content-Transfer-Encoding": "Binary",
-    // });
-    // fs.createReadStream(`./pdf/${uniquePdf}.pdf`, {
-    //   highWaterMark: 128 * 1024,
-    // }).pipe(res);
+    // let getBuff = (image) => {
+    //   return new Promise((resolve, reject) => {
+    //     image.getBuffer(Jimp.MIME_PNG, (err, buff) => {
+    //       if (err) reject(err);
 
-    res.download(`./pdf/${uniquePdf}.pdf`, (err) => {
-      if (err) {
-        console.log(err);
-      }
-      // DELETE THE PDF
-      fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
-        if (err) {
-          return console.error(err);
-        }
-        let filename = `./pdf/${uniquePdf}.pdf`;
-        let tempFile = fs.openSync(filename, "r");
-        fs.closeSync(tempFile);
-        fs.unlinkSync(filename);
-      });
+    //       resolve(buff);
+    //     });
+    //   });
+    // };
+
+    // send the pdf
+    // fs.stat(`./pdf/${uniquePdf}.pdf`, (error, stats) => {
+    //   res.writeHead(200, {
+    //     "Content-Length": stats.size,
+    //     "Content-Type": "application/pdf",
+    //     "Content-Disposition": "attachment; filename=sample.pdf",
+    //     "Content-Transfer-Encoding": "Binary",
+    //   });
+    //   let file = fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
+    //   file.on("open", () => file.pipe(res));
+    //   file.on("error", (error) => console.log(error));
+    // });
+
+    let file = fs.createReadStream(`./pdf/${uniquePdf}.pdf`, {
+      highWaterMark: 128 * 1024,
     });
-    // file.on("open", () => {
-    //   file.pipe(res);
+    let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
+    res.writeHead(200, {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=sample.pdf",
+      "Content-Transfer-Encoding": "Binary",
+    });
+    // file.pipe(res);
+    file.on("open", function () {
+      file.pipe(res);
+    });
+
+    // res.download(`./pdf/${uniquePdf}.pdf`, (err) => {
+    //   if (err) {
+    //     console.log(err);
+    //   }
+    //   // DELETE THE PDF
+    //   fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
+    //     if (err) {
+    //       return console.error(err);
+    //     }
+    //     let filename = `./pdf/${uniquePdf}.pdf`;
+    //     let tempFile = fs.openSync(filename, "r");
+    //     fs.closeSync(tempFile);
+    //     fs.unlinkSync(filename);
+    //   });
     // });
 
     // DELETE THE PDF
