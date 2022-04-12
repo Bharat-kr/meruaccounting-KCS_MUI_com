@@ -22,7 +22,7 @@ const generateReport = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
       req.body;
-
+    console.log(clientIds, projectIds, userIds, dateOne, dateTwo, groupBy);
     if (projectIds) {
       projectIds = projectIds.map((id) => {
         return mongoose.Types.ObjectId(id._id);
@@ -1442,16 +1442,14 @@ const downloadPdf = asyncHandler(async (req, res) => {
     await page.goto(`http://localhost:3000/downloadReportPdf/${url}`, {
       waitUntil: "networkidle0",
     });
-    const myTimeout = setTimeout(()=>{
-      await page.setViewport({ width: 1680, height: 1050 });
-      let uniquePdf = uuidv4();
-      await page.pdf({
-        path: `./pdf/${uniquePdf}.pdf`,
-        format: "A4",
-      });
-      await browser.close();
-    }, 5000);
-   
+
+    await page.setViewport({ width: 1680, height: 1050 });
+    let uniquePdf = uuidv4();
+    await page.pdf({
+      path: `./pdf/${uniquePdf}.pdf`,
+      format: "A4",
+    });
+    await browser.close();
 
     // DELETE THE REPORT FIRST(unknown error, not working after sending response)
     const report = await Reports.find({ url: url });
