@@ -20,6 +20,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 import { getCommonData } from "src/api/auth api/commondata";
 import moment from "moment";
+import { capitalize } from "src/_helpers/Capitailze";
+import { getFullName } from "src/_helpers/getFullName";
 
 const icons = CircleIcon;
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -149,12 +151,18 @@ export default function EmployeeApiRefRowsGrid() {
                       fontWeight: "600",
                       textDecoration: "none",
                       color: "black",
+                      mr: 1,
                     }}
                     to={`/dashboard/userpage`}
                     variant="h5"
                   >
-                    {tData.user.firstName} {tData.user.lastName}
+                    {getFullName(tData.user.firstName, tData.user.lastName)}
                   </Typography>
+                  <Chip
+                    color="primary"
+                    size="small"
+                    label={capitalize(tData.user.role)}
+                  />
                 </StyledTableCell>
 
                 <StyledTableCell align="right">
