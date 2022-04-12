@@ -542,7 +542,7 @@ export default function SettingsMain(props) {
   const { loginC } = useContext(loginContext);
   const { dispatchgetTeam, getTeams } = useContext(teamContext);
   const { tab, changeTab } = useContext(UserContext);
-  const [nameList, setNameList] = useState([]);
+  const [namesList, setNamesList] = useState([]);
   const [teamsList, setTeamsList] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -587,13 +587,13 @@ export default function SettingsMain(props) {
 
     console.log(teamsList);
   }, [getTeams]);
-  let namelist = [];
   useEffect(() => {
+    let namelist = [];
     if (teamsList !== []) {
       teamsList.map((member) => {
-        nameList.push(`${member.name}`);
+        namelist.push(`${member.name}`);
       });
-      setNameList(nameList);
+      setNamesList(namelist);
     }
   }, [teamsList]);
   const userChange = async (user, settings, keyName, e) => {
@@ -638,11 +638,10 @@ export default function SettingsMain(props) {
         // eslint-disable-next-line no-useless-return
         return;
       }
-      window.scroll({
-        behavior: "smooth",
-      });
-      tableRef.current.scrollTop =
-        54 + tableRef.current.scrollHeight * teamsList.indexOf(member[0]);
+      window.scrollTo(
+        0,
+        tableRef.current.scrollHeight * teamsList.indexOf(member[0])
+      );
     } catch (err) {
       console.log(err);
     }
@@ -678,7 +677,7 @@ export default function SettingsMain(props) {
                 disablePortal
                 id="combo-box-demo"
                 onChange={handleSearch}
-                options={nameList}
+                options={namesList}
                 sx={{ width: 300, mt: 4 }}
                 renderInput={(params) => <TextField {...params} label="User" />}
               />

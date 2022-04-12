@@ -13,6 +13,8 @@ import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import CircleIcon from "@mui/icons-material/Circle";
 import { CurrentUserContext } from "../../../contexts/CurrentUserContext";
+import { getFullName } from "src/_helpers/getFullName";
+import { capitalize } from "src/_helpers/Capitailze";
 // -----------------------------------------------------------------------------------------------
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -168,12 +170,18 @@ export default function PlApiRefRowsGrid(props) {
                           fontWeight: "600",
                           textDecoration: "none",
                           color: "black",
+                          mr: 1,
                         }}
                         to={`/dashboard/employeepage/${member._id}`}
                         variant="h5"
                       >
-                        {member.firstName} {member.lastName}
+                        {getFullName(member.firstName, member.lastName)}
                       </Typography>
+                      <Chip
+                        color="primary"
+                        size="small"
+                        label={capitalize(member.role)}
+                      />
                     </StyledTableCell>
 
                     <StyledTableCell align="left">
@@ -248,7 +256,8 @@ export default function PlApiRefRowsGrid(props) {
                               2
                             )
                           : "",
-                        member , "yesterday"
+                        member,
+                        "yesterday"
                       )}
                     </StyledTableCell>
                     <StyledTableCell align="left">
