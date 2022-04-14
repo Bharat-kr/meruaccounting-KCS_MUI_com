@@ -22,7 +22,7 @@ const generateReport = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo, groupBy } =
       req.body;
-    console.log(clientIds, projectIds, userIds, dateOne, dateTwo, groupBy);
+
     if (projectIds) {
       projectIds = projectIds.map((id) => {
         return mongoose.Types.ObjectId(id._id);
@@ -762,7 +762,6 @@ const saveReports = asyncHandler(async (req, res) => {
       includeApps,
       options,
     } = req.body;
-
     // very inefficient coz not proper default values in frontend
     if (!scheduleType[1]) {
       if (scheduleType[0] === "Weekly") {
