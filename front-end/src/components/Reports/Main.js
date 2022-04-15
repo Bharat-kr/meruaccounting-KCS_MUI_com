@@ -73,84 +73,39 @@ export default function Main() {
   //
   const { clientDetails } = React.useContext(ClientsContext);
   //
-  const { reports, dispatchGetReports } = React.useContext(reportsContext);
+  const {
+    reports,
+    dispatchGetReports,
+    date,
+    dateFunc,
+    allOptions,
+    allOptionsFunc,
+    employeeOptions,
+    employeesOptionsFunc,
+    projectOptions,
+    projectsOptionsFunc,
+    clientOptions,
+    clientsOptionsFunc,
+    employees,
+    employeesFunc,
+    projects,
+    projectsFunc,
+    clients,
+    clientsFunc,
+    group,
+    groupFunc,
+    disableState,
+    disableStateFunc,
+    saveReportsOptions,
+    saveReportOptionsFunc,
+  } = React.useContext(reportsContext);
   //
   const { loginC } = React.useContext(loginContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState([null, null]);
-  const [allOptions, setAllOptions] = React.useState([]);
-  const [employeeOptions, setemployeeOptions] = React.useState([]);
-  const [projectOptions, setprojectOptions] = React.useState([]);
-  const [clientOptions, setclientOptions] = React.useState([]);
-  const [employees, setemployees] = React.useState([]);
-  const [projects, setprojects] = React.useState([]);
-  const [clients, setclients] = React.useState([]);
-  const [group, setgroup] = React.useState([
-    { label: "Group by employee", value: "E" },
-    // { label: "Group by project", value: "P" },
-  ]);
-  const [disableState, setDisableState] = React.useState(true);
-  const [saveReportsOptions, setSaveReportOptions] = React.useState();
 
   // get report options
-  const getOptions = async () => {
-    axios.post("/report/options").then((res) => {
-      setAllOptions(res.data);
-      setprojectOptions(res.data.projectsClientsOptions[0].projects);
-      setprojects(res.data.projectsClientsOptions[0].projects);
-      setclientOptions(res.data.projectsClientsOptions[0].clients);
-      setclients(res.data.projectsClientsOptions[0].clients);
-      const empArr = Array.from(
-        res.data.employeesOptions[0].members,
-        function mapFn(mem, index) {
-          return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
-        }
-      );
-      setemployeeOptions(empArr);
-      setemployees(empArr);
-    });
-  };
-  React.useEffect(() => {
-    getOptions();
-  }, []);
-  React.useEffect(() => {
-    setDisableState(false);
-  }, [
-    employeeOptions,
-    projectOptions,
-    projects,
-    clientOptions,
-    clients,
-    employees,
-    date,
-    group,
-  ]);
 
-  // reset the getoptions thing when no option is selected
-  React.useEffect(() => {
-    if (!employees) {
-      axios.post("/report/options").then((res) => {
-        const empArr = Array.from(
-          res.data.employeesOptions[0].members,
-          function mapFn(mem, index) {
-            return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
-          }
-        );
-        setemployees(empArr);
-      });
-    }
-    if (!projects) {
-      axios.post("/report/options").then((res) => {
-        setprojects(res.data.projectsClientsOptions[0].projects);
-      });
-    }
-    if (!clients) {
-      axios.post("/report/options").then((res) => {
-        setclients(res.data.projectsClientsOptions[0].clients);
-      });
-    }
-  }, [employees, projects, clients]);
   // tabs and tab panels
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -175,9 +130,9 @@ export default function Main() {
         dateTwo,
         groupBy,
       };
-      setSaveReportOptions(options);
+      saveReportOptionsFunc(options);
       getReports(dispatchGetReports, options);
-      setDisableState(true);
+      disableStateFunc(true);
     } catch (err) {
       enqueueSnackbar(err.message, { variant: "error" });
     }
@@ -262,16 +217,16 @@ export default function Main() {
       <TabPanel value={value} index={0}>
         <DatePicker
           setDate={(newValue) => {
-            setdate(newValue);
+            dateFunc(newValue);
           }}
         />
         <SelectEmployees
           options={employeeOptions}
           setEmployees={(newValue) => {
             if (!newValue.length) {
-              setemployees(null);
+              employeesFunc(null);
             } else {
-              setemployees(newValue);
+              employeesFunc(newValue);
             }
           }}
         />
@@ -280,9 +235,9 @@ export default function Main() {
             options={clientOptions}
             setClients={(newValue) => {
               if (!newValue.length) {
-                setclients(null);
+                clientsFunc(null);
               } else {
-                setclients(newValue);
+                clientsFunc(newValue);
               }
             }}
           />
@@ -291,15 +246,15 @@ export default function Main() {
           options={projectOptions}
           setProjects={(newValue) => {
             if (!newValue.length) {
-              setprojects(null);
+              projectsFunc(null);
             } else {
-              setprojects(newValue);
+              projectsFunc(newValue);
             }
           }}
         />
         <SelectGroup
           setGroup={(newValue) => {
-            setgroup(newValue);
+            groupFunc(newValue);
           }}
         />
         <Box

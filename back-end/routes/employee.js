@@ -13,16 +13,15 @@ const router = express.Router();
 
 router.route("/:id").get(getEmployeeById).delete(managerPass, deleteEmployee);
 
-router.route("/edit/:id").patch(authPass, editEmployee);
 // router.route("/allEmployees").post(authPass, getAllEmployee);
 
 router.route("/employeeList").get(authPass, getEmployeeList);
-
-router.route("/employeeInfo/:id").post(getEmployeeDetails);
 
 router
   .route("/:id")
   .get(authPass, getEmployeeById)
   .delete(authPass, deleteEmployee);
+router.route("/employeeInfo/:id").post(getEmployeeDetails);
+router.route("/edit/:id").patch(authPass, editEmployee);
 
 export default router;

@@ -24,7 +24,7 @@ router
   .post(authPass, createScreenShot)
   .delete(authPass, deleteScreenshot);
 
-router.route("/:id").patch(authPass, updateActivity);
 router.route("/lastActive").post(authPass, updateLastActive);
+router.route("/:id").patch(authPass, updateActivity);
 
 export default router;
