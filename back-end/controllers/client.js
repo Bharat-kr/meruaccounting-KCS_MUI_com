@@ -104,8 +104,9 @@ const getClient = asyncHandler(async (req, res) => {
           },
         ]);
         console.log(clientsList);
+        let clientsArr = clientsList[0] ? clientsList[0].clients : [];
         client = await Client.find({
-          _id: { $in: clientsList[0].clients },
+          _id: { $in: clientsArr },
         }).populate([
           {
             path: "projects",

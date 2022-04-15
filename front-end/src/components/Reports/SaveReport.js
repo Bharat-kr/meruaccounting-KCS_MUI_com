@@ -166,7 +166,7 @@ export default function SaveReport(props) {
   const handleExportPdf = async () => {
     try {
       const data2 = {
-        schedule: scheduleChecked[0],
+        schedule: false,
         scheduleType: [timeint, dayint, hourint],
         scheduledEmail: loginC?.userData?.email,
         // scheduledTime: ,
@@ -400,6 +400,10 @@ export default function SaveReport(props) {
     setOpen(true);
     setChecked([true, ""]);
   };
+  const handleClickOpenSave = () => {
+    setOpen(true);
+    setChecked([false, ""]);
+  };
   const handleClickSave = async () => {
     setOpen(true);
     setChecked([false, ""]);
@@ -452,32 +456,7 @@ export default function SaveReport(props) {
   const handleScheduleChange = (e) => {
     setScheduleChecked([!scheduleChecked[0], ""]);
   };
-  const timelog = [
-    "00:00",
-    "01:00",
-    "02:00",
-    "03:00",
-    "04:00",
-    "05:00",
-    "06:00",
-    "07:00",
-    "08:00",
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-    "21:00",
-    "22:00",
-    "23:00",
-  ];
+  const timelog = ["23:44"];
 
   const children2 = (
     <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
@@ -588,7 +567,7 @@ export default function SaveReport(props) {
         <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
           Share Report
         </Button>
-        <Button variant="outlined" onClick={handleClickSave} sx={{ ml: 1 }}>
+        <Button variant="outlined" onClick={handleClickOpenSave} sx={{ ml: 1 }}>
           Save Report
         </Button>
         <BootstrapDialog
