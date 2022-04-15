@@ -76,7 +76,7 @@ export default function RegisterForm() {
         url: `${axios.defaults.baseURL}register`,
 
         data: {
-          role: "admin",
+          role: "employee",
           firstName: { ...getFieldProps("firstName") }.value,
           lastName: { ...getFieldProps("lastName") }.value,
           email: { ...getFieldProps("email") }.value,
