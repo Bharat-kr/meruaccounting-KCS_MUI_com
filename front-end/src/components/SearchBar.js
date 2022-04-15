@@ -17,15 +17,24 @@ export default function SearchBar(props) {
     >
       <div>
         <Autocomplete
-          onClose={() => (inputref.current.value = "")}
+          value={value}
+          // onClose={() => (inputref.current.value = "")}
           onChange={props.handleSearch}
           disablePortal
           id="combo-box-demo"
           options={props.options}
+          onInputChange={(event, newInputValue, reason) => {
+            if (reason === "reset") {
+              setValue("");
+              return;
+            } else {
+              setValue(newInputValue);
+            }
+          }}
           renderInput={(params) => (
             <TextField
-              ref={inputref}
-              inputRef={props.inputRef}
+              // ref={inputref}
+              // inputRef={props.inputRef}
               {...params}
               fullWidth
               label={props.label}

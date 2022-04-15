@@ -25,6 +25,8 @@ import { teamContext } from "./contexts/TeamsContext";
 import { loginContext } from "./contexts/LoginContext";
 import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 import { ClientsContext } from "src/contexts/ClientsContext";
+import { reportsContext } from "./contexts/ReportsContext";
+import axios from "axios";
 
 import {
   getCommonData,
@@ -35,18 +37,40 @@ import { getClient } from "./api/clients api/clients";
 
 import SavedReports from "./pages/SavedReports";
 import DownloadReport from "./pages/DownloadReport";
+import { getTeam } from "./api/teams api/teams";
+import { Role } from "./_helpers/role";
+import { getReports } from "./api/reports api/reports";
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   const token = localStorage["Bearer Token"];
-  const { commonData } = useContext(teamContext);
+  const { dispatchgetTeam, commonData } = useContext(teamContext);
   const {
     dispatchTeamCommonData,
     projectMemberData,
     dispatchProjectMemberData,
     dispatchCommonData,
   } = useContext(CurrentUserContext);
+  const {
+    date,
+
+    allOptionsFunc,
+    employeeOptions,
+    employeesOptionsFunc,
+    projectOptions,
+    projectsOptionsFunc,
+    clientOptions,
+    clientsOptionsFunc,
+    employees,
+    employeesFunc,
+    projects,
+    projectsFunc,
+    clients,
+    clientsFunc,
+    group,
+    disableStateFunc,
+  } = React.useContext(reportsContext);
 
   const { dispatchClientDetails } = useContext(ClientsContext);
   const { loginC } = useContext(loginContext);
@@ -54,6 +78,7 @@ export default function Router() {
 
   React.useLayoutEffect(() => {
     getClient(dispatchClientDetails);
+    if (Role.indexOf(loginC.userData.role <= 2)) getTeam(dispatchgetTeam);
     if (loginC?.userData?.role === "admin")
       getAllEmployee(dispatchAdminAllEmployee);
     else if (loginC?.userData?.role === "manager")
@@ -62,6 +87,64 @@ export default function Router() {
       projectMemberCommonData(dispatchProjectMemberData);
     getCommonData(dispatchCommonData);
   }, [commonData]);
+  const getOptions = async () => {
+    axios.post("/report/options").then((res) => {
+      allOptionsFunc(res.data);
+      projectsOptionsFunc(res.data.projectsClientsOptions[0].projects);
+      projectsFunc(res.data.projectsClientsOptions[0].projects);
+      clientsOptionsFunc(res.data.projectsClientsOptions[0].clients);
+      clientsFunc(res.data.projectsClientsOptions[0].clients);
+      const empArr = Array.from(
+        res.data.employeesOptions[0].members,
+        function mapFn(mem, index) {
+          return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
+        }
+      );
+      employeesOptionsFunc(empArr);
+      employeesFunc(empArr);
+    });
+  };
+  React.useEffect(() => {
+    getOptions();
+  }, []);
+  React.useEffect(() => {
+    disableStateFunc(false);
+  }, [
+    employeeOptions,
+    projectOptions,
+    projects,
+    clientOptions,
+    clients,
+    employees,
+    date,
+    group,
+  ]);
+
+  // reset the getoptions thing when no option is selected
+  React.useEffect(() => {
+    if (!employees) {
+      axios.post("/report/options").then((res) => {
+        const empArr = Array.from(
+          res.data.employeesOptions[0].members,
+          function mapFn(mem, index) {
+            return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
+          }
+        );
+        employeesFunc(empArr);
+      });
+    }
+    if (!projects) {
+      axios.post("/report/options").then((res) => {
+        projectsFunc(res.data.projectsClientsOptions[0].projects);
+      });
+    }
+    if (!clients) {
+      axios.post("/report/options").then((res) => {
+        clientsFunc(res.data.projectsClientsOptions[0].clients);
+      });
+    }
+  }, [employees, projects, clients]);
+
   return useRoutes([
     {
       path: "/dashboard",

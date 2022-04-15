@@ -15,13 +15,13 @@ export default function SimpleContainer() {
   const { clientDetails, dispatchClientDetails } =
     React.useContext(ClientsContext);
 
-  React.useEffect(() => {
-    getTeam(dispatchgetTeam);
-  }, []);
+  // React.useEffect(() => {
+  //   getTeam(dispatchgetTeam);
+  // }, []);
 
-  React.useEffect(() => {
-    getClient(dispatchClientDetails);
-  }, []);
+  // React.useEffect(() => {
+  //   getClient(dispatchClientDetails);
+  // }, []);
   return (
     <>
       <CssBaseline />
