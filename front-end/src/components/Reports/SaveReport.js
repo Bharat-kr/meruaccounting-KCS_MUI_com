@@ -166,7 +166,7 @@ export default function SaveReport(props) {
   const handleExportPdf = async () => {
     try {
       const data2 = {
-        schedule: scheduleChecked[0],
+        schedule: false,
         scheduleType: [timeint, dayint, hourint],
         scheduledEmail: loginC?.userData?.email,
         // scheduledTime: ,
@@ -457,8 +457,6 @@ export default function SaveReport(props) {
     setScheduleChecked([!scheduleChecked[0], ""]);
   };
   const timelog = [
-    "23:28",
-
     "00:00",
     "01:00",
     "02:00",
@@ -482,17 +480,7 @@ export default function SaveReport(props) {
     "20:00",
     "21:00",
     "22:00",
-    "22:52",
-    "22:53",
-    "22:54",
-    "22:55",
-    "22:56",
-    "22:57",
-    "22:58",
-    "22:59",
     "23:00",
-    "23:01",
-    "23:02",
   ];
 
   const children2 = (

@@ -1,4 +1,5 @@
 import cron from "node-cron";
+import schedule from "node-schedule";
 import Activity from "../models/activity.js";
 import Reports from "../models/reports.js";
 import asyncHandler from "express-async-handler";
@@ -29,7 +30,9 @@ const dayNames = [
 // delete report function
 // a function to combine these all
 
-cron.schedule(`* * * * *`, async () => {
+schedule.scheduleJob(`50 43 23 * * *`, async () => {
+  console.log("scheduling");
+  // looking for reports every minute now, we only need to look once a day to avoid multiple schedules.
   // match by schedule true
   // match by todays day, date.
   const dayName = dayNames[dayjs().day()];
@@ -48,31 +51,31 @@ cron.schedule(`* * * * *`, async () => {
                 mongoose.Types.ObjectId("62431c112ef0d76927367c0c"),
               ],
             },
-            {
-              $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Daily"],
-            },
-            {
-              $switch: {
-                branches: [
-                  {
-                    case: {
-                      $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Weekly"],
-                    },
-                    then: {
-                      $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayName],
-                    },
-                  },
-                  {
-                    case: {
-                      $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Monthly"],
-                    },
-                    then: {
-                      $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayNo],
-                    },
-                  },
-                ],
-              },
-            },
+            // {
+            //   $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Daily"],
+            // },
+            // {
+            //   $switch: {
+            //     branches: [
+            //       {
+            //         case: {
+            //           $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Weekly"],
+            //         },
+            //         then: {
+            //           $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayName],
+            //         },
+            //       },
+            //       {
+            //         case: {
+            //           $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Monthly"],
+            //         },
+            //         then: {
+            //           $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayNo],
+            //         },
+            //       },
+            //     ],
+            //   },
+            // },
           ],
         },
       },
@@ -94,18 +97,22 @@ cron.schedule(`* * * * *`, async () => {
     },
   ]);
   // cron single time each schedule(report)
-  schedules.map(async (schedule) => {
-    const time = Number(schedule.scheduleType[2].split(":")[0]);
-    schedule.scheduleJob(`0 0 ${time} * * *`, async function () {
+  schedules.map(async (sched) => {
+    // making a new date for cron to run only once.
+    const time1 = Number(sched.scheduleType[2].split(":")[0]);
+    const time2 = Number(sched.scheduleType[2].split(":")[1]);
+    const date = new Date(2022, 3, 14, time1, time2, 0);
+    // console.log(time1, time2);
+    schedule.scheduleJob(date, async function () {
       try {
-        //   generate report from the scheduled report to save the json file
+        // generate report from the scheduled report to save the json file
         let reports = await generateReport({
-          body: { dateRange: schedule.scheduleType[0], ...schedule.options },
+          body: { dateRange: sched.scheduleType[0], ...sched.options },
         });
-
-        //   save the report with appropriate url
+        console.log("generated");
+        // save the report with appropriate url
         let saved = await saveReports({
-          body: { ...schedule, reports, userId: schedule.user },
+          body: { ...sched, reports, userId: sched.user._id },
         });
         console.log(saved.url);
 
@@ -126,8 +133,8 @@ cron.schedule(`* * * * *`, async () => {
         });
 
         // mail the pdf
-        browser.close().then(mail(uniquePdf, schedule.scheduledEmail));
-
+        browser.close().then(mail(uniquePdf, sched.scheduledEmail));
+        // console.log("sent");
         // delete the saved report and pdf
         deleteReports(saved.url);
         deletePdf(uniquePdf);
@@ -897,7 +904,8 @@ const saveReports = asyncHandler(async (req, res) => {
 
     // make a new document for reports schema
     const saved = await Reports.create({
-      share,
+      schedule: false,
+      share: true,
       options,
       user: userId,
       url,
@@ -966,7 +974,7 @@ const mail = (uniquePdf, email) => {
   let attachment = fs.readFileSync(pathToAttachment).toString("base64");
 
   const msg = {
-    to: email,
+    to: "it.meru02@gmail.com",
     from: "it.meru02@gmail.com",
     subject: "Sending with SendGrid is Fun",
     text: "and easy to do anywhere, even with Node.js",
