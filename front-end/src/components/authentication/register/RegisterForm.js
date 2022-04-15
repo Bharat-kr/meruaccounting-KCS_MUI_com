@@ -73,7 +73,7 @@ export default function RegisterForm() {
       const res = await axios({
         method: "post",
 
-        url: `${axios.defaults.baseURL}/register`,
+        url: `${axios.defaults.baseURL}register`,
 
         data: {
           role: "admin",
