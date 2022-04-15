@@ -51,6 +51,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { loginContext } from "src/contexts/LoginContext";
 import { Role } from "../../_helpers/role";
+import { Delete } from "@material-ui/icons";
 
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -274,6 +275,9 @@ function Row(props) {
           }
         </TableCell>
         <TableCell>
+          <DeleteIcon onClick={handleDelete}></DeleteIcon>
+        </TableCell>
+        <TableCell>
           <Link onClick={handleOpen}>
             <Typography>Edit report </Typography>
           </Link>
@@ -334,9 +338,6 @@ function Row(props) {
               </div>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleDelete} sx={{ mr: 1 }}>
-                Delete report
-              </Button>
               <Button autoFocus onClick={handleClickSave}>
                 Save & Copy
               </Button>

@@ -206,7 +206,6 @@ export default function SaveReport(props) {
       enqueueSnackbar(err.message, { variant: "error" });
     }
   };
-  console.log(reports);
   const handleExportExcel = async () => {
     try {
       let arr = [];
@@ -400,6 +399,10 @@ export default function SaveReport(props) {
     setOpen(true);
     setChecked([true, ""]);
   };
+  const handleClickOpenSave = () => {
+    setOpen(true);
+    setChecked([false, ""]);
+  };
   const handleClickSave = async () => {
     setOpen(true);
     setChecked([false, ""]);
@@ -427,6 +430,7 @@ export default function SaveReport(props) {
       );
       enqueueSnackbar("link copied", { variant: "success" });
     }
+    handleClose();
   };
   const handleClose = () => {
     setOpen(false);
@@ -453,6 +457,8 @@ export default function SaveReport(props) {
     setScheduleChecked([!scheduleChecked[0], ""]);
   };
   const timelog = [
+    "23:28",
+
     "00:00",
     "01:00",
     "02:00",
@@ -598,7 +604,7 @@ export default function SaveReport(props) {
         <Button variant="outlined" onClick={handleClickOpen} sx={{ ml: 1 }}>
           Share Report
         </Button>
-        <Button variant="outlined" onClick={handleClickSave} sx={{ ml: 1 }}>
+        <Button variant="outlined" onClick={handleClickOpenSave} sx={{ ml: 1 }}>
           Save Report
         </Button>
         <BootstrapDialog

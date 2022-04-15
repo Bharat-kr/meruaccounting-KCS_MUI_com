@@ -64,9 +64,6 @@ export default function Sidebar() {
     setSelected(nodeIds);
   };
 
-  useEffect(async () => {
-    await getClient(dispatchClientDetails);
-  }, []);
   let clientsList = [];
 
   if (clientDetails.loader === false) {
