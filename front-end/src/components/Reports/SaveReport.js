@@ -86,7 +86,7 @@ export default function SaveReport(props) {
   const [expdf, setExPdf] = React.useState(false);
   const [timeint, setTimeint] = React.useState("Daily");
   const [dayint, setDayint] = React.useState(null);
-  const [hourint, setHourint] = React.useState("12:00 am");
+  const [hourint, setHourint] = React.useState("12:00");
   const [monthlyDate, setMonthlyDate] = React.useState([]);
   const { loginC } = React.useContext(loginContext);
   const [userEmail, setUserEmail] = React.useState(loginC.userData.email);
