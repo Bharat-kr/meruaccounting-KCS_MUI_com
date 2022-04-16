@@ -216,6 +216,11 @@ const changeCurrency = asyncHandler(async (req, res) => {
   // console.log(req.user);
   const permission = ac.can(req.user.role).readOwn("members");
   const newValue = req.body.currency;
+  if (!newValue) {
+    res.status(406).json({
+      messsage: "Enter a valid Value",
+    });
+  }
   if (permission.granted) {
     try {
       const users = await User.find();
@@ -226,7 +231,7 @@ const changeCurrency = asyncHandler(async (req, res) => {
         user.settings.CurrencySymbol.individualValue = newValue;
         await user.save();
       }
-      
+
       res.status(200).json({
         messsage: "Success",
       });

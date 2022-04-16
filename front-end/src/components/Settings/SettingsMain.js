@@ -627,6 +627,29 @@ export default function SettingsMain(props) {
     // console.log(data);
   };
 
+  //currency symbol change for all
+  const changeCurrency = async (e) => {
+    const data = {
+      currency: e.target.value,
+    };
+    console.log(data);
+    await axios
+      .post(`/admin/currency`, data)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          getTeam(dispatchgetTeam);
+          if (data !== null)
+            enqueueSnackbar("Currency updated", { variant: "success" });
+          else enqueueSnackbar("Error Ocurred", { variant: "info" });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar(err.message, { variant: "info" });
+      });
+  };
+
   const handleSearch = (e, value) => {
     try {
       console.log(tableRef, value);
@@ -671,10 +694,12 @@ export default function SettingsMain(props) {
               type="text"
               onKeyPress={(e) => {
                 if (e.charCode === 13) {
-                  // changeCurrencySymbol(e);
+                  changeCurrency(e);
                 }
               }}
-              defaultValue={teamsList[0]?.settings.CurrencySymbol.individualValue}
+              defaultValue={
+                teamsList[0]?.settings.CurrencySymbol.individualValue
+              }
               InputLabelProps={{
                 shrink: true,
               }}
