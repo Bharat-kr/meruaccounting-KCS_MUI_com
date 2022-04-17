@@ -23,6 +23,8 @@ import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import Confirmation from "../Confirmation";
+import Autocomplete from "@mui/material/Autocomplete";
+import Searchbar from "src/layouts/dashboard/Searchbar";
 
 //---------------------------------------------------------------
 
@@ -146,6 +148,7 @@ export default function Header(props) {
         memberList.push(`${emp.firstName} ${emp.lastName}`);
       })
     : memberList.push("");
+  const [inputValue, setInputValue] = useState(memberList[0]);
   const handleSearch = async (e, value) => {
     try {
       e.preventDefault();
@@ -399,12 +402,14 @@ export default function Header(props) {
 
               {loginC && Role.indexOf(loginC.userData.role) <= 2 && (
                 <SearchBar
-                  inputRef={proInputRef}
+                  // inputRef={proInputRef}
+                  value={inputValue}
                   label="Assign Project Leader"
                   handleSearch={handleSearch}
                   id="combo-box-demo"
                   options={memberList}
                   sx={{ width: 100 }}
+                  // onInputChange="clear"
                 />
               )}
             </div>
