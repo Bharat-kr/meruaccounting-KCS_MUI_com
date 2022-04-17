@@ -1,39 +1,32 @@
-var SibApiV3Sdk = require("sib-api-v3-sdk");
-SibApiV3Sdk.ApiClient.instance.authentications["api-key"].apiKey =
-  "YOUR_API_KEY";
+import sgMail from "@sendgrid/mail";
+import asyncHandler from "express-async-handler";
+import User from "../models/user.js";
 
-export const sendMail = async (person) => {
-  await new SibApiV3Sdk.TransactionalEmailsApi()
-    .sendTransacEmail({
-      sender: { email: "meruaccounting@gmail.com", name: "Meru Accounting" },
-      subject: "This is my default subject line",
-      htmlContent:
-        "<!DOCTYPE html><html><body><h1>My First Heading</h1><p>My first paragraph.</p></body></html>",
-      params: {
-        greeting: "This is the default greeting",
-        headline: "This is the default headline",
-      },
-      messageVersions: [
-        //Definition for Message Version 1
-        {
-          to: [
-            {
-              email: person.email,
-              name: person.firstName + " " + person.lastName,
-            },
-          ],
-          htmlContent:
-            "<!DOCTYPE html><html><body><h1>Modified header!</h1><p>This is still a paragraph</p></body></html>",
-          subject: "We are happy to be working with you",
-        },
-      ],
-    })
-    .then(
-      function (data) {
-        console.log(data);
-      },
-      function (error) {
-        console.error(error);
-      }
-    );
-};
+// @desc    Send Forgot Email
+// @route   Post /Forgot
+// @access  Public
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  try {
+    const email = await req.body.email;
+    const user = await User.find({ email: email });
+
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+    const msg = {
+      to: email,
+      from: "it.meru02@gmail.com",
+      subject: "Forgot Password",
+      text: "Hey , visit this link to create a new Password",
+    };
+    if (typeof(user[0]) !== "undefined" && user[0] !== null) {
+      sgMail.send(msg).catch((err) => {
+        console.log(err);
+      });
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { forgotPassword };
