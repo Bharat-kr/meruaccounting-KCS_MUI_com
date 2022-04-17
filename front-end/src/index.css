@@ -25,3 +25,6 @@
   background: #454F5B;
   border-radius: 10px;
 }
+html{
+  scroll-behavior: smooth;
+}

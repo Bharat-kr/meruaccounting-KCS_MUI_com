@@ -70,7 +70,7 @@ export default function Activity({
   };
 
   return (
-    <>
+    <section id={act._id}>
       <Box
         component="div"
         sx={{
@@ -201,6 +201,6 @@ export default function Activity({
         endTime={endTime}
         project={project}
       />
-    </>
+    </section>
   );
 }

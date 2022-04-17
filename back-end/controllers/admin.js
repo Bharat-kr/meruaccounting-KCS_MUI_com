@@ -208,4 +208,40 @@ const adminCommondata = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAllEmployee, getAllTeams, adminCommondata };
+// @desc    Update Currency settings
+// @route   GET /admin/currency
+// @access  Private
+
+const changeCurrency = asyncHandler(async (req, res) => {
+  // console.log(req.user);
+  const permission = ac.can(req.user.role).readOwn("members");
+  const newValue = req.body.currency;
+  if (!newValue) {
+    res.status(406).json({
+      messsage: "Enter a valid Value",
+    });
+  }
+  if (permission.granted) {
+    try {
+      const users = await User.find();
+      console.log(users);
+
+      for (let index = 0; index < users.length; index++) {
+        const user = users[index];
+        user.settings.CurrencySymbol.individualValue = newValue;
+        await user.save();
+      }
+
+      res.status(200).json({
+        messsage: "Success",
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    // resource is forbidden for this user/role
+    res.status(403).end("UnAuthorized");
+  }
+});
+
+export { getAllEmployee, getAllTeams, adminCommondata, changeCurrency };

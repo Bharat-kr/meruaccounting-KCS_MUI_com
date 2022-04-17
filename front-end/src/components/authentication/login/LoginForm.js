@@ -27,6 +27,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { LoadingButton } from "@mui/lab";
 import { loginApi } from "../../../api/auth api/login";
 import { loginContext } from "../../../contexts/LoginContext";
+import axios from "axios";
+import { useSnackbar } from "notistack";
 // ----------------------------------------------------------------------
 
 const style = {
@@ -51,6 +53,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("date");
   const [resstatus, setRestatus] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
       .email("Email must be a valid email address")
@@ -170,8 +173,25 @@ export default function LoginForm() {
   };
 
   //Forgot Password Call
-  const forgot = () => {
+  const forgot = async () => {
     console.log({ ...getFieldProps("email") }.value);
+    await axios
+      .post("/forgot", {
+        email: { ...getFieldProps("email") }.value,
+      })
+      .then((res) => {
+        console.log(res);
+        enqueueSnackbar("Password reset Link has been sent to Your Mail", {
+          variant: "success",
+        });
+        handleClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar("Email not found", {
+          variant: "info",
+        });
+      });
   };
 
   // console.log(loginC);
