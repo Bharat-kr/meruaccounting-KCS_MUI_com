@@ -6,9 +6,9 @@ import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { Box, Typography } from "@mui/material";
 
-export default function BasicDateRangePicker({ setDate }) {
+export default function BasicDateRangePicker({ setDate, setTimeRange }) {
   const [value, setValue] = useState([null, null]);
-  const [timeRange, setTimeRange] = useState("Custom");
+  const [range, setRange] = useState("Custom");
   const typoStyle = {
     m: 1,
     opacity: 0.6,
@@ -33,6 +33,7 @@ export default function BasicDateRangePicker({ setDate }) {
           }}
           onClick={() => {
             setValue([dayjs(), dayjs()]);
+            setRange("Today");
             setTimeRange("Today");
           }}
         >
@@ -44,6 +45,7 @@ export default function BasicDateRangePicker({ setDate }) {
           }}
           onClick={() => {
             setValue([dayjs().startOf("week"), dayjs()]);
+            setRange("This week");
             setTimeRange("This week");
           }}
         >
@@ -55,6 +57,7 @@ export default function BasicDateRangePicker({ setDate }) {
           }}
           onClick={() => {
             setValue([dayjs().startOf("month"), dayjs()]);
+            setRange("This month");
             setTimeRange("This month");
           }}
         >
@@ -67,6 +70,7 @@ export default function BasicDateRangePicker({ setDate }) {
           }}
           onClick={() => {
             setValue([dayjs().startOf("year"), dayjs()]);
+            setRange("This year");
             setTimeRange("This year");
           }}
         >
@@ -81,6 +85,7 @@ export default function BasicDateRangePicker({ setDate }) {
           onClick={() => {
             console.log(dayjs().add(-1, "day"));
             setValue([dayjs().add(-1, "day"), dayjs().add(-1, "day")]);
+            setRange("Yesterday");
             setTimeRange("Yesterday");
           }}
         >
@@ -96,6 +101,7 @@ export default function BasicDateRangePicker({ setDate }) {
               dayjs().startOf("week").subtract(1, "week"),
               dayjs().endOf("week").subtract(1, "week"),
             ]);
+            setRange("Last week");
             setTimeRange("Last week");
           }}
         >
@@ -111,6 +117,7 @@ export default function BasicDateRangePicker({ setDate }) {
               dayjs().startOf("month").subtract(1, "month"),
               dayjs().endOf("month").subtract(1, "month"),
             ]);
+            setRange("Last month");
             setTimeRange("Last month");
           }}
         >
@@ -127,6 +134,7 @@ export default function BasicDateRangePicker({ setDate }) {
               dayjs().startOf("year").subtract(1, "year"),
               dayjs().endOf("year").subtract(1, "year"),
             ]);
+            setRange("Last year");
             setTimeRange("Last year");
           }}
         >
@@ -140,6 +148,7 @@ export default function BasicDateRangePicker({ setDate }) {
         value={value}
         onChange={(newValue) => {
           setValue(newValue);
+          setRange("Custom");
           setTimeRange("Custom");
         }}
         renderInput={(startProps, endProps) => (
@@ -151,7 +160,7 @@ export default function BasicDateRangePicker({ setDate }) {
         )}
       />
       <Typography sx={{ ml: 0.5, mb: 3, mt: 0.5 }} variant="subtitle2">
-        ({timeRange})
+        ({range})
       </Typography>
     </LocalizationProvider>
   );

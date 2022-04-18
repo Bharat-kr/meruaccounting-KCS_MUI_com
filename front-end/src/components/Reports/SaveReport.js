@@ -186,21 +186,21 @@ export default function SaveReport(props) {
         // `https://monitor-meruaccounting-bf9db.web.app/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
-      // axios
-      //   .get(`/report/download/${savedData.data.data.url}`, {
-      //     responseType: "arraybuffer",
-      //     headers: {
-      //       Accept: "application/pdf",
-      //     },
-      //   })
-      //   .then((res) => {
-      //     console.log("working?");
-      //     FileSaver.saveAs(
-      //       new Blob([res.data], { type: "application/pdf" }),
-      //       `${name}.pdf`
-      //     );
-      //     // window.open(res.data, "_blank");
-      //   });
+      axios
+        .get(`/report/download/${savedData.data.data.url}`, {
+          responseType: "arraybuffer",
+          headers: {
+            Accept: "application/pdf",
+          },
+        })
+        .then((res) => {
+          console.log("working?");
+          FileSaver.saveAs(
+            new Blob([res.data], { type: "application/pdf" }),
+            `${name}.pdf`
+          );
+          // window.open(res.data, "_blank");
+        });
     } catch (err) {
       console.log(err);
       enqueueSnackbar(err.message, { variant: "error" });

@@ -39,7 +39,7 @@ function a11yProps(index) {
   };
 }
 
-export default function Graphs() {
+export default function Graphs({ timeRange }) {
   const [value, setValue] = React.useState(0);
 
   const { reports } = React.useContext(reportsContext);
@@ -65,7 +65,7 @@ export default function Graphs() {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <Bars></Bars>
+          <Bars timeRange={timeRange}></Bars>
         </TabPanel>
         <TabPanel value={value} index={1}>
           <EmployeesCharts></EmployeesCharts>
