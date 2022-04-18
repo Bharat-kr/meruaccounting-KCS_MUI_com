@@ -30,7 +30,7 @@ const dayNames = [
 // delete report function
 // a function to combine these all
 
-schedule.scheduleJob(`50 43 23 * * *`, async () => {
+schedule.scheduleJob(`20 31 14 * * *`, async () => {
   console.log("scheduling");
   // looking for reports every minute now, we only need to look once a day to avoid multiple schedules.
   // match by schedule true
@@ -51,31 +51,45 @@ schedule.scheduleJob(`50 43 23 * * *`, async () => {
                 mongoose.Types.ObjectId("62431c112ef0d76927367c0c"),
               ],
             },
-            // {
-            //   $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Daily"],
-            // },
-            // {
-            //   $switch: {
-            //     branches: [
-            //       {
-            //         case: {
-            //           $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Weekly"],
-            //         },
-            //         then: {
-            //           $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayName],
-            //         },
-            //       },
-            //       {
-            //         case: {
-            //           $eq: [{ $arrayElemAt: ["$schduleType", 0] }, "Monthly"],
-            //         },
-            //         then: {
-            //           $eq: [{ $arrayElemAt: ["$schduleType", 1] }, dayNo],
-            //         },
-            //       },
-            //     ],
-            //   },
-            // },
+
+            {
+              $or: [
+                {
+                  $eq: [{ $arrayElemAt: ["$scheduleType", 0] }, "Daily"],
+                },
+                {
+                  $switch: {
+                    branches: [
+                      {
+                        case: {
+                          $eq: [
+                            { $arrayElemAt: ["$scheduleType", 0] },
+                            "Weekly",
+                          ],
+                        },
+                        then: {
+                          $eq: [
+                            { $arrayElemAt: ["$scheduleType", 1] },
+                            dayName,
+                          ],
+                        },
+                      },
+                      {
+                        case: {
+                          $eq: [
+                            { $arrayElemAt: ["$scheduleType", 0] },
+                            "Monthly",
+                          ],
+                        },
+                        then: {
+                          $eq: [{ $arrayElemAt: ["$scheduleType", 1] }, dayNo],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
           ],
         },
       },
@@ -97,12 +111,14 @@ schedule.scheduleJob(`50 43 23 * * *`, async () => {
     },
   ]);
   // cron single time each schedule(report)
+  console.log(schedules.length);
   schedules.map(async (sched) => {
     // making a new date for cron to run only once.
     const time1 = Number(sched.scheduleType[2].split(":")[0]);
     const time2 = Number(sched.scheduleType[2].split(":")[1]);
-    const date = new Date(2022, 3, 14, time1, time2, 0);
-    // console.log(time1, time2);
+    const date = new Date(2022, 3, 15, time1, time2, 0);
+    console.log(time1, time2);
+    console.log(date);
     schedule.scheduleJob(date, async function () {
       try {
         // generate report from the scheduled report to save the json file

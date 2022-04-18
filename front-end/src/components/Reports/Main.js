@@ -69,6 +69,8 @@ export default function Main() {
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = React.useState(0);
   //
+  const [timeRange, setTimeRange] = React.useState("Custom");
+  //
   const { getTeams } = React.useContext(teamContext);
   //
   const { clientDetails } = React.useContext(ClientsContext);
@@ -219,6 +221,9 @@ export default function Main() {
           setDate={(newValue) => {
             dateFunc(newValue);
           }}
+          setTimeRange={(value) => {
+            setTimeRange(value);
+          }}
         />
         <SelectEmployees
           options={employeeOptions}
@@ -276,7 +281,7 @@ export default function Main() {
 
         {!reports.loader ? (
           <>
-            <Graphs style={{ margin: 10 }}></Graphs>
+            <Graphs style={{ margin: 10 }} timeRange={timeRange}></Graphs>
             <Divider />
 
             {group.filter((grp) => grp.value === "E").length !== 0 ? (
