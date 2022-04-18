@@ -248,8 +248,8 @@ function Row(props) {
             sx={{ fontSize: "medium" }}
             onClick={() => {
               navigator.clipboard.writeText(
-                // `http://localhost:3000/reports/sharedReports/${row.url}`
-                `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`
+                `http://localhost:3000/reports/sharedReports/${row.url}`
+                // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`
               );
               enqueueSnackbar("Link copied", { variant: "success" });
             }}
