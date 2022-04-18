@@ -93,7 +93,8 @@ export default function Overview({ date, dateObj, days, activities }) {
           justifyContent: "space-evenly",
         }}
       >
-        <AppItemOrders Total={
+        <AppItemOrders
+          Total={
             commonData?.commonData?.dailyHours &&
             commonData?.commonData?.dailyHours.length > 0
               ? (
@@ -101,7 +102,8 @@ export default function Overview({ date, dateObj, days, activities }) {
                   (60 * 60)
                 ).toFixed(2)
               : 0
-          } />
+          }
+        />
         <Weeklyhours
           Total={
             commonData?.commonData?.weeklyTime &&
@@ -180,14 +182,16 @@ export default function Overview({ date, dateObj, days, activities }) {
                     activities.map((activity) => {
                       return (
                         <>
-                          <Box
-                            key={activity._id}
-                            sx={{
+                          <a
+                            style={{
                               display: "flex",
                               flexDirection: "row",
                               justifyContent: "space-between",
                               px: 1,
+                              textDecoration: "none",
+                              color: "black",
                             }}
+                            href={`#${activity._id}`}
                           >
                             <Typography
                               sx={{ mb: 1.5 }}
@@ -203,7 +207,7 @@ export default function Overview({ date, dateObj, days, activities }) {
                             <Typography variant="h4" component="div">
                               {timeDiff(activity.startTime, activity.endTime)}
                             </Typography>
-                          </Box>
+                          </a>
                           <Divider sx={{ backgroundColor: "primary.dark" }} />
                         </>
                       );

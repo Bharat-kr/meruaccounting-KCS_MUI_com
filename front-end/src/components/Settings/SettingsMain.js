@@ -627,6 +627,29 @@ export default function SettingsMain(props) {
     // console.log(data);
   };
 
+  //currency symbol change for all
+  const changeCurrency = async (e) => {
+    const data = {
+      currency: e.target.value,
+    };
+    console.log(data);
+    await axios
+      .post(`/admin/currency`, data)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          getTeam(dispatchgetTeam);
+          if (data !== null)
+            enqueueSnackbar("Currency updated", { variant: "success" });
+          else enqueueSnackbar("Error Ocurred", { variant: "info" });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        enqueueSnackbar(err.message, { variant: "info" });
+      });
+  };
+
   const handleSearch = (e, value) => {
     try {
       console.log(tableRef, value);
@@ -646,7 +669,7 @@ export default function SettingsMain(props) {
       console.log(err);
     }
   };
-
+  // console.log(teamsList[0]?.settings.CurrencySymbol.individualValue);
   return (
     <>
       {tab === index && (
@@ -664,74 +687,103 @@ export default function SettingsMain(props) {
           <Box sx={{ height: "auto", width: "100%", bgcolor: "#C8DCFD", p: 1 }}>
             {subheading}
           </Box>
+          {index === 7 && (
+            <TextField
+              sx={{ m: 1.5 }}
+              label="Currency"
+              type="text"
+              onKeyPress={(e) => {
+                if (e.charCode === 13) {
+                  changeCurrency(e);
+                }
+              }}
+              defaultValue={
+                teamsList[0]?.settings.CurrencySymbol.individualValue
+              }
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          )}
           <Box sx={{ mt: 3 }}>
             <Typography varinat="h3" sx={{ fontWeight: "bold" }}>
               Individual Settings
             </Typography>
-            <Typography>
-              If enabled, individual settings will be used instead of the team
-              Settings
-            </Typography>
-            <Box>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                onChange={handleSearch}
-                options={namesList}
-                sx={{ width: 300, mt: 4 }}
-                renderInput={(params) => <TextField {...params} label="User" />}
-              />
-              {getTeams.loader && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexGrow: "1",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CircularProgress />
-                </Box>
-              )}
-              {teamsList.map((user) => (
-                <TableRow ref={tableRef}>
-                  <FormGroup row sx={{ pt: 2 }}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          defaultChecked={
-                            !user.settings[heading]?.isTeamSetting
-                          }
-                          onChange={(e) => {
-                            userChange(user, user.settings, heading, e);
-                          }}
-                        />
-                      }
-                      label={user.name}
-                    />
-                    {/* {userChange()} */}
-                    {!user.settings[heading]?.isTeamSetting && (
-                      <FormControl component="fieldset">
-                        <RadioGroup
-                          row
-                          aria-label="option"
-                          name="row-radio-buttons-group"
-                        >
-                          {checkheading(
-                            enqueueSnackbar,
-                            index,
-                            user.settings,
-                            user.id,
-                            "individualValue",
-                            dispatchgetTeam
-                          )}
-                        </RadioGroup>
-                      </FormControl>
-                    )}
-                  </FormGroup>
-                </TableRow>
-              ))}
-            </Box>
+            {index !== 7 && (
+              <Typography>
+                If enabled, individual settings will be used instead of the team
+                Settings
+              </Typography>
+            )}
+            {index === 7 && (
+              <Typography>
+                There can be only one setting for all users in your company
+              </Typography>
+            )}
+            {index !== 7 && (
+              <Box>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  onChange={handleSearch}
+                  options={namesList}
+                  sx={{ width: 300, mt: 4 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="User" />
+                  )}
+                />
+                {getTeams.loader && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexGrow: "1",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                )}
+                {teamsList.map((user) => (
+                  <TableRow ref={tableRef}>
+                    <FormGroup row sx={{ pt: 2 }}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            defaultChecked={
+                              !user.settings[heading]?.isTeamSetting
+                            }
+                            onChange={(e) => {
+                              userChange(user, user.settings, heading, e);
+                            }}
+                          />
+                        }
+                        label={user.name}
+                      />
+                      {/* {userChange()} */}
+                      {!user.settings[heading]?.isTeamSetting && (
+                        <FormControl component="fieldset">
+                          <RadioGroup
+                            row
+                            aria-label="option"
+                            name="row-radio-buttons-group"
+                          >
+                            {checkheading(
+                              enqueueSnackbar,
+                              index,
+                              user.settings,
+                              user.id,
+                              "individualValue",
+                              dispatchgetTeam
+                            )}
+                          </RadioGroup>
+                        </FormControl>
+                      )}
+                    </FormGroup>
+                  </TableRow>
+                ))}
+              </Box>
+            )}
           </Box>
         </Box>
       )}
