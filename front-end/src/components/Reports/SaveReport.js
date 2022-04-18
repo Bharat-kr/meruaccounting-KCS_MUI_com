@@ -86,7 +86,7 @@ export default function SaveReport(props) {
   const [expdf, setExPdf] = React.useState(false);
   const [timeint, setTimeint] = React.useState("Daily");
   const [dayint, setDayint] = React.useState(null);
-  const [hourint, setHourint] = React.useState("12:00 am");
+  const [hourint, setHourint] = React.useState("12:00");
   const [monthlyDate, setMonthlyDate] = React.useState([]);
   const { loginC } = React.useContext(loginContext);
   const [userEmail, setUserEmail] = React.useState(loginC.userData.email);
@@ -186,21 +186,21 @@ export default function SaveReport(props) {
         // `https://monitor-meruaccounting-bf9db.web.app/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
-      // axios
-      //   .get(`/report/download/${savedData.data.data.url}`, {
-      //     responseType: "arraybuffer",
-      //     headers: {
-      //       Accept: "application/pdf",
-      //     },
-      //   })
-      //   .then((res) => {
-      //     console.log("working?");
-      //     FileSaver.saveAs(
-      //       new Blob([res.data], { type: "application/pdf" }),
-      //       `${name}.pdf`
-      //     );
-      //     // window.open(res.data, "_blank");
-      //   });
+      axios
+        .get(`/report/download/${savedData.data.data.url}`, {
+          responseType: "arraybuffer",
+          headers: {
+            Accept: "application/pdf",
+          },
+        })
+        .then((res) => {
+          console.log("working?");
+          FileSaver.saveAs(
+            new Blob([res.data], { type: "application/pdf" }),
+            `${name}.pdf`
+          );
+          // window.open(res.data, "_blank");
+        });
     } catch (err) {
       console.log(err);
       enqueueSnackbar(err.message, { variant: "error" });

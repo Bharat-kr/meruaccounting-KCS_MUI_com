@@ -1441,98 +1441,49 @@ const downloadPdf = asyncHandler(async (req, res) => {
     await page.goto(`http://localhost:3000/downloadReportPdf/${url}`, {
       waitUntil: "networkidle0",
     });
+    setTimeout(async () => {
+      await page.setViewport({ width: 1680, height: 1050 });
+      let uniquePdf = uuidv4();
+      await page.pdf({
+        path: `./pdf/${uniquePdf}.pdf`,
+        format: "A4",
+      });
+      await browser.close();
 
-    await page.setViewport({ width: 1680, height: 1050 });
-    let uniquePdf = uuidv4();
-    await page.pdf({
-      path: `./pdf/${uniquePdf}.pdf`,
-      format: "A4",
-    });
-    await browser.close();
+      // DELETE THE REPORT FIRST(unknown error, not working after sending response)
+      const report = await Reports.find({ url: url });
+      fs.stat(
+        `./saved reports/${report[0].fileName}.json`,
+        function (err, stats) {
+          if (err) {
+            return console.error(err);
+          }
 
-    // DELETE THE REPORT FIRST(unknown error, not working after sending response)
-    const report = await Reports.find({ url: url });
-    fs.stat(
-      `./saved reports/${report[0].fileName}.json`,
-      function (err, stats) {
-        if (err) {
-          return console.error(err);
+          // Delete a file
+          let filename = `./saved reports/${report[0].fileName}.json`;
+          let tempFile = fs.openSync(filename, "r");
+          fs.closeSync(tempFile);
+          fs.unlinkSync(filename);
         }
-
-        // Delete a file
-        let filename = `./saved reports/${report[0].fileName}.json`;
-        let tempFile = fs.openSync(filename, "r");
-        fs.closeSync(tempFile);
-        fs.unlinkSync(filename);
+      );
+      if (report) {
+        await Reports.deleteOne({ _id: report[0]._id });
       }
-    );
-    if (report) {
-      await Reports.deleteOne({ _id: report[0]._id });
-    }
 
-    // let getBuff = (image) => {
-    //   return new Promise((resolve, reject) => {
-    //     image.getBuffer(Jimp.MIME_PNG, (err, buff) => {
-    //       if (err) reject(err);
-
-    //       resolve(buff);
-    //     });
-    //   });
-    // };
-
-    // send the pdf
-    // fs.stat(`./pdf/${uniquePdf}.pdf`, (error, stats) => {
-    //   res.writeHead(200, {
-    //     "Content-Length": stats.size,
-    //     "Content-Type": "application/pdf",
-    //     "Content-Disposition": "attachment; filename=sample.pdf",
-    //     "Content-Transfer-Encoding": "Binary",
-    //   });
-    //   let file = fs.createReadStream(`./pdf/${uniquePdf}.pdf`);
-    //   file.on("open", () => file.pipe(res));
-    //   file.on("error", (error) => console.log(error));
-    // });
-
-    let file = fs.createReadStream(`./pdf/${uniquePdf}.pdf`, {
-      highWaterMark: 128 * 1024,
-    });
-    let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
-    res.writeHead(200, {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=sample.pdf",
-      "Content-Transfer-Encoding": "Binary",
-    });
-    // file.pipe(res);
-    file.on("open", function () {
-      file.pipe(res);
-    });
-
-    // res.download(`./pdf/${uniquePdf}.pdf`, (err) => {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    //   // DELETE THE PDF
-    //   fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
-    //     if (err) {
-    //       return console.error(err);
-    //     }
-    //     let filename = `./pdf/${uniquePdf}.pdf`;
-    //     let tempFile = fs.openSync(filename, "r");
-    //     fs.closeSync(tempFile);
-    //     fs.unlinkSync(filename);
-    //   });
-    // });
-
-    // DELETE THE PDF
-    // fs.stat(`./pdf/${uniquePdf}.pdf`, function (err, stats) {
-    //   if (err) {
-    //     return console.error(err);
-    //   }
-    //   let filename = `./pdf/${uniquePdf}.pdf`;
-    //   let tempFile = fs.openSync(filename, "r");
-    //   fs.closeSync(tempFile);
-    //   fs.unlinkSync(filename);
-    // });
+      let file = fs.createReadStream(`./pdf/${uniquePdf}.pdf`, {
+        highWaterMark: 128 * 1024,
+      });
+      let stat = fs.statSync(`./pdf/${uniquePdf}.pdf`);
+      res.writeHead(200, {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=sample.pdf",
+        "Content-Transfer-Encoding": "Binary",
+      });
+      // file.pipe(res);
+      file.on("open", function () {
+        file.pipe(res);
+      });
+    }, 5000);
   } catch (error) {
     throw new Error(error);
   }

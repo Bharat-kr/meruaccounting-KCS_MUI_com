@@ -6,7 +6,7 @@ import { Box, Typography } from "@mui/material";
 import { loginContext } from "src/contexts/LoginContext";
 import { Role } from "../../_helpers/role";
 
-export default function Bar() {
+export default function Bar({ timeRange }) {
   const { reports } = React.useContext(reportsContext);
   const [totalHours, settotalHours] = useState(null);
   const [totalActCount, settotalCount] = useState(null);
@@ -29,6 +29,7 @@ export default function Bar() {
       };
       return o;
     });
+    console.log(timeRange);
     setData(reports.reports[0]?.byDates);
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
@@ -40,16 +41,44 @@ export default function Bar() {
     data,
     xField: "_id",
     yField: "totalHours",
+    label: {
+      position: "middle",
+      style: {
+        fill: "#FFFFFF",
+        opacity: 0.6,
+      },
+    },
     xAxis: {
       label: {
+        autoHide: true,
         autoRotate: false,
       },
     },
-    slider: {
-      start: 0.1,
-      end: 0.2,
-    },
+    // meta: {
+    //   type: {
+    //     alias: "类别",
+    //   },
+    //   sales: {
+    //     alias: "销售额",
+    //   },
+    // },
   };
+
+  // const configCustom = {
+  //   data,
+  //   xField: "_id",
+  //   yField: "totalHours",
+  //   xAxis: {
+  //     label: {
+  //       autoRotate: false,
+  //     },
+  //   },
+  //   slider: {
+  //     start: 0.1,
+  //     end: 0.2,
+  //   },
+  // };
+
   return (
     <Box>
       <Box sx={{}}>
