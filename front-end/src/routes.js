@@ -40,6 +40,7 @@ import DownloadReport from "./pages/DownloadReport";
 import { getTeam } from "./api/teams api/teams";
 import { Role } from "./_helpers/role";
 import { getReports } from "./api/reports api/reports";
+import Reset from "./pages/Reset";
 
 // ----------------------------------------------------------------------
 
@@ -226,6 +227,7 @@ export default function Router() {
         { path: "*", element: <Navigate to="/404" /> },
         { path: "/reports/sharedReports/:id", element: <SavedReports /> },
         { path: "/downloadReportPdf/:id", element: <DownloadReport /> },
+        { path: "/passwordReset/:id", element: <Reset /> },
       ],
     },
     // { path: '#', element: <Navigate to="/UserDetails" /> },
