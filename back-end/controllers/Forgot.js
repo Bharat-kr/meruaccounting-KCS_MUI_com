@@ -32,4 +32,21 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 });
 
-export { forgotPassword };
+// @desc    Reset Password
+// @route   Post /Reset
+// @access  Public
+
+const ResetPassword = asyncHandler(async (req, res) => {
+  try {
+    const user = req.user;
+    user.password = req.body.newPassword;
+    await user.save();
+    res.status(200).json({
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export { forgotPassword, ResetPassword };
