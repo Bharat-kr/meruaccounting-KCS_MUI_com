@@ -7,18 +7,23 @@ import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router-dom";
 import eyeFill from "@iconify/icons-eva/eye-fill";
 import eyeOffFill from "@iconify/icons-eva/eye-off-fill";
+import axios from "axios";
+import { useSnackbar } from "notistack";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { id } = useParams();
-  const token = id.split("-")[1];
-  const value = JSON.parse(atob(token.split(".")[1]));
+  const { token } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const LoginSchema = Yup.object().shape({
+  //Reset Form schema
+  const ResetSchema = Yup.object().shape({
     newPassword: Yup.string()
       .required("Password is required")
-      .matches(/^(?=.{6})/, "Must Contain 6 Characters"),
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
     confirmPassword: Yup.string()
       .required("Password is required")
       .oneOf([Yup.ref("newPassword")], "Passwords does not match"),
@@ -29,30 +34,67 @@ const ChangePassword = () => {
       newPassword: "",
       confirmPassword: "",
     },
-    validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate("/dashboard", { replace: true });
-    },
+    validationSchema: ResetSchema,
   });
-  
 
   const {
     errors,
     dirty,
     isValid,
     touched,
-    values,
     setErrors,
+    setSubmitting,
     isSubmitting,
-    handleSubmit,
     getFieldProps,
   } = formik;
 
+  //switch password visibility
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
 
-  const handleSubmitAxios = () => {};
+  //New password form submit handler
+  const handleSubmitAxios = async (e) => {
+    e.preventDefault();
+    console.log({ ...getFieldProps("newPassword") }.value, token);
+    if (token) {
+      setSubmitting(true);
+      //request body
+      const data = {
+        newPassword: { ...getFieldProps("newPassword") }.value,
+      };
+
+      //request config
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+      if (
+        { ...getFieldProps("newPassword") }.value ===
+        { ...getFieldProps("confirmPassword") }.value
+      ) {
+        //reset call
+        await axios
+          .post("/forgot/reset", data, config)
+          .then((response) => {
+            console.log(response);
+            setSubmitting(false);
+            enqueueSnackbar("Password has been Reset", {
+              variant: "success",
+            });
+            navigate("/login", { replace: true });
+          })
+          .catch((err) => {
+            setErrors({
+              ...errors,
+              newPassword: err.message,
+            });
+            enqueueSnackbar(err.message, {
+              variant: "error",
+            });
+          });
+      }
+    }
+  };
   return (
     <Box>
       <FormikProvider value={formik}>

@@ -20,7 +20,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
       subject: "Forgot Password",
       text: `Hey , visit this link to create a new Password  http://localhost:3000/passwordReset/${
         user[0]._id
-      }-${generateToken(user[0]._id)}`,
+      }/${generateToken(user[0]._id)}`,
     };
     if (typeof user[0] !== "undefined" && user[0] !== null) {
       sgMail.send(msg).catch((err) => {

@@ -227,7 +227,7 @@ export default function Router() {
         { path: "*", element: <Navigate to="/404" /> },
         { path: "/reports/sharedReports/:id", element: <SavedReports /> },
         { path: "/downloadReportPdf/:id", element: <DownloadReport /> },
-        { path: "/passwordReset/:id", element: <Reset /> },
+        { path: "/passwordReset/:id/:token", element: <Reset /> },
       ],
     },
     // { path: '#', element: <Navigate to="/UserDetails" /> },
