@@ -23,9 +23,19 @@ const forgotPassword = asyncHandler(async (req, res) => {
       }/${generateToken(user[0]._id)}`,
     };
     if (typeof user[0] !== "undefined" && user[0] !== null) {
-      sgMail.send(msg).catch((err) => {
-        console.log(err);
-      });
+      var statusCode;
+      await sgMail
+        .send(msg)
+        .then((response) => {
+          console.log(response[0].statusCode);
+          statusCode = response[0].statusCode;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+        res.status(statusCode).json({
+          message:"Sent Successfully"
+        })
     }
   } catch (error) {
     throw new Error(error);

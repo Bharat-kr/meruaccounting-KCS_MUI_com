@@ -181,14 +181,14 @@ export default function LoginForm() {
       })
       .then((res) => {
         console.log(res);
-        enqueueSnackbar("Password reset Link has been sent to Your Mail", {
+        enqueueSnackbar(res.data.message, {
           variant: "success",
         });
         handleClose();
       })
       .catch((err) => {
         console.log(err);
-        enqueueSnackbar("Email not found", {
+        enqueueSnackbar(err.message, {
           variant: "info",
         });
       });
