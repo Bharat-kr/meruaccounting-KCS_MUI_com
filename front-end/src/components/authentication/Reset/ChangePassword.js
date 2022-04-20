@@ -84,6 +84,7 @@ const ChangePassword = () => {
             navigate("/login", { replace: true });
           })
           .catch((err) => {
+            setSubmitting(false);
             setErrors({
               ...errors,
               newPassword: err.message,

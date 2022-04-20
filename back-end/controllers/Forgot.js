@@ -33,9 +33,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
         .catch((err) => {
           console.log(err);
         });
-        res.status(statusCode).json({
-          message:"Sent Successfully"
-        })
+      res.status(statusCode).json({
+        message: "Email Sent Successfully",
+      });
     }
   } catch (error) {
     throw new Error(error);
