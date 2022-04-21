@@ -31,6 +31,7 @@ export default function ScreenShots({ activities, date }) {
           // dont render if there are not screenshots
           return (
             <Activity
+              key={act}
               date={date}
               project={act.project}
               act={act}

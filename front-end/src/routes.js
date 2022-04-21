@@ -79,7 +79,7 @@ export default function Router() {
 
   React.useLayoutEffect(() => {
     getClient(dispatchClientDetails);
-    if (Role.indexOf(loginC.userData.role <= 2)) getTeam(dispatchgetTeam);
+    if (Role.indexOf(loginC.userData?.role <= 2)) getTeam(dispatchgetTeam);
     if (loginC?.userData?.role === "admin")
       getAllEmployee(dispatchAdminAllEmployee);
     else if (loginC?.userData?.role === "manager")

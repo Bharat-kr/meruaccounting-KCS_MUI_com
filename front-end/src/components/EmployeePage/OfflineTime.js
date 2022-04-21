@@ -229,7 +229,10 @@ const OfflineTime = ({ date }) => {
             >
               {projects.map((project) => {
                 return (
-                  <MenuItem value={project._id + "-" + project?.client?._id}>
+                  <MenuItem
+                    key={project._id + "-" + project?.client?._id}
+                    value={project._id + "-" + project?.client?._id}
+                  >
                     {project.name}-{project?.client?.name}
                   </MenuItem>
                 );
