@@ -9,12 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { Stack, TextField, IconButton, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -56,12 +58,14 @@ export default function RegisterForm() {
     isValid,
     setErrors,
     handleSubmit,
+    setSubmitting,
     isSubmitting,
     getFieldProps,
   } = formik;
   // let res;
   const handleSubmitAxios = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
     try {
       console.log(
@@ -84,9 +88,17 @@ export default function RegisterForm() {
         },
       });
       console.log(res);
+      setSubmitting(false);
+      enqueueSnackbar(res.data.message, {
+        variant: "success",
+      });
     } catch (error) {
       console.log(error.response.data.message);
+      setSubmitting(false);
       if (error.response) {
+        enqueueSnackbar(error.response.data.message, {
+          variant: "error",
+        });
         setErrors({
           ...errors,
           email: error.response.data.message,
