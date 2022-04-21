@@ -12,8 +12,8 @@ import axios from "axios";
 
 // ----------------------------------------------------------------------
 // axios.defaults.baseURL = "https://monitoring-meru.herokuapp.com/";
-// axios.defaults.baseURL = "http://localhost:8000/";
-axios.defaults.baseURL = "http://monitor.meruaccounting.com:8000/";
+axios.defaults.baseURL = "http://localhost:8000/";
+// axios.defaults.baseURL = "http://monitor.meruaccounting.com:8000/";
 axios.defaults.headers.common[
   "Authorization"
 ] = `Bearer ${localStorage["Bearer Token"]}`;
