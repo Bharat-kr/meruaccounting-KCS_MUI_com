@@ -542,11 +542,9 @@ export default function SettingsMain(props) {
   const { loginC } = useContext(loginContext);
   const { dispatchgetTeam, getTeams } = useContext(teamContext);
   const { tab, changeTab } = useContext(UserContext);
-  const [namesList, setNamesList] = useState([]);
   const [teamsList, setTeamsList] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
-  const tableRef = useRef();
 
   useEffect(() => {
     getTeam(dispatchgetTeam);
@@ -587,15 +585,7 @@ export default function SettingsMain(props) {
 
     console.log(teamsList);
   }, [getTeams]);
-  useEffect(() => {
-    let namelist = [];
-    if (teamsList !== []) {
-      teamsList.map((member) => {
-        namelist.push(`${member.name}`);
-      });
-      setNamesList(namelist);
-    }
-  }, [teamsList]);
+
   const userChange = async (user, settings, keyName, e) => {
     const data = {
       settings: {
@@ -652,7 +642,6 @@ export default function SettingsMain(props) {
 
   const handleSearch = (e, value) => {
     try {
-      console.log(tableRef, value);
       const member = teamsList?.filter((emp) =>
         emp.name === value ? emp : ""
       );
@@ -661,15 +650,12 @@ export default function SettingsMain(props) {
         // eslint-disable-next-line no-useless-return
         return;
       }
-      window.scrollTo(
-        0,
-        tableRef.current.scrollHeight * teamsList.indexOf(member[0])
-      );
+      window.location.href =
+        window.location.href.split("#")[0] + "#" + member[0].id;
     } catch (err) {
       console.log(err);
     }
   };
-  // console.log(teamsList[0]?.settings.CurrencySymbol.individualValue);
   return (
     <>
       {tab === index && (
@@ -744,7 +730,9 @@ export default function SettingsMain(props) {
                   disablePortal
                   id="combo-box-demo"
                   onChange={handleSearch}
-                  options={namesList}
+                  options={teamsList.map((element) => {
+                    return element.name;
+                  })}
                   sx={{ width: 300, mt: 4 }}
                   renderInput={(params) => (
                     <TextField {...params} label="User" />
@@ -763,41 +751,42 @@ export default function SettingsMain(props) {
                   </Box>
                 )}
                 {teamsList.map((user) => (
-                  <TableRow ref={tableRef}>
-                    <FormGroup row sx={{ pt: 2 }}>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            defaultChecked={
-                              !user.settings[heading]?.isTeamSetting
-                            }
-                            onChange={(e) => {
-                              userChange(user, user.settings, heading, e);
-                            }}
-                          />
-                        }
-                        label={user.name}
-                      />
-                      {/* {userChange()} */}
-                      {!user.settings[heading]?.isTeamSetting && (
-                        <FormControl component="fieldset">
-                          <RadioGroup
-                            row
-                            aria-label="option"
-                            name="row-radio-buttons-group"
-                          >
-                            {checkheading(
-                              enqueueSnackbar,
-                              index,
-                              user.settings,
-                              user.id,
-                              "individualValue",
-                              dispatchgetTeam
-                            )}
-                          </RadioGroup>
-                        </FormControl>
-                      )}
-                    </FormGroup>
+                  <TableRow>
+                    <section id={user.id}>
+                      <FormGroup row sx={{ pt: 2 }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              defaultChecked={
+                                !user.settings[heading]?.isTeamSetting
+                              }
+                              onChange={(e) => {
+                                userChange(user, user.settings, heading, e);
+                              }}
+                            />
+                          }
+                          label={user.name}
+                        />
+                        {!user.settings[heading]?.isTeamSetting && (
+                          <FormControl component="fieldset">
+                            <RadioGroup
+                              row
+                              aria-label="option"
+                              name="row-radio-buttons-group"
+                            >
+                              {checkheading(
+                                enqueueSnackbar,
+                                index,
+                                user.settings,
+                                user.id,
+                                "individualValue",
+                                dispatchgetTeam
+                              )}
+                            </RadioGroup>
+                          </FormControl>
+                        )}
+                      </FormGroup>
+                    </section>
                   </TableRow>
                 ))}
               </Box>

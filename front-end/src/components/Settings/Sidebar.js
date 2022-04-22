@@ -44,7 +44,6 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "750px",
     width: "100%",
     margin: "auto",
     display: "grid",
