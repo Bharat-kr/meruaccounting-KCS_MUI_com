@@ -23,6 +23,7 @@ import adminRoutes from "./routes/admin.js";
 import projectLeaderRoutes from "./routes/projectLeader.js";
 import forgotRoutes from "./routes/forgot.js";
 import "./maintenance/emailCron.js";
+import "./maintenance/delSsCron.js";
 
 const __dirname = path.resolve();
 
