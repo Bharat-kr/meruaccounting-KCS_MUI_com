@@ -84,7 +84,7 @@ export default function Header(props) {
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
   const [budgetTime, setbudgetTime] = useState();
-  const [consumedTime, setconsumedTime] = useState();
+  const [consumedTime, setconsumedTime] = useState(0);
   const outerref = useRef();
   const proInputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
@@ -128,6 +128,7 @@ export default function Header(props) {
       console.log(byProject?.totalHours);
       byProject !== [] &&
         setconsumedTime((byProject[0]?.totalHours / 3600).toFixed(2));
+      console.log(byProject);
       proInputRef.current.value = "";
     } catch (err) {
       console.log(err);
@@ -430,7 +431,7 @@ export default function Header(props) {
                     Total Project Hours :
                   </Typography>
                   <Typography sx={{ ml: 1 }}>
-                    {loginC && Role.indexOf(loginC.userData.role) <= 2 ? (
+                    {Role.indexOf(loginC.userData.role) <= 2 ? (
                       <Typography sx={{ pr: 8 }}>{consumedTime} hr</Typography>
                     ) : (
                       ""

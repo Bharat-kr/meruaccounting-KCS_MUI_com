@@ -54,6 +54,7 @@ export default function Sidebar() {
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [loaderAddProject, setLoaderAddProject] = React.useState(false);
+  const [projectList, setProjectList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const searchRef = useRef("");
   const handleToggle = (event, nodeIds) => {
@@ -69,33 +70,35 @@ export default function Sidebar() {
   if (clientDetails.loader === false) {
     clientsList = clientDetails?.client?.data;
   }
-  // useEffect(() => {
-  //   try {
-  //     if (clientDetails !== null) {
-  //       changeClient(clientDetails?.client?.data[0]);
-  //       changeProject(clientDetails?.client?.data[0].projects[0]);
-  //     }
-  //     changeClient(
-  //       clientDetails?.client?.data[
-  //         clientDetails.client.data.indexOf(currentClient)
-  //       ]
-  //     );
-  //     changeProject(
-  //       clientDetails?.client?.data[
-  //         clientDetails.client.data.indexOf(currentClient)
-  //       ].projects[currentClient.projects.indexOf(currentProject)]
-  //     );
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // }, [clientDetails]);
-  const projectList = [];
+
   useEffect(() => {
+    try {
+      // if (clientDetails !== null) {
+      //   changeClient(clientDetails?.client?.data[0]);
+      //   changeProject(clientDetails?.client?.data[0].projects[0]);
+      // }
+      // changeClient(
+      //   clientDetails?.client?.data[
+      //     clientDetails.client.data.indexOf(currentClient)
+      //   ]
+      // );
+      // changeProject(
+      //   clientDetails?.client?.data[
+      //     clientDetails.client.data.indexOf(currentClient)
+      //   ].projects[currentClient.projects.indexOf(currentProject)]
+      // );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [clientDetails]);
+  useEffect(() => {
+    let prolist = [];
     if (clientDetails.loader === false) {
       clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
-          projectList.push(client.name + ":" + pro.name);
+          prolist.push(client.name + ":" + pro.name);
         });
+        setProjectList(prolist);
       });
     }
   }, [clientDetails, currentClient, currentProject]);
