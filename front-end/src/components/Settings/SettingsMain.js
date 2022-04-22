@@ -705,22 +705,40 @@ export default function SettingsMain(props) {
               }}
             />
           )}
+          {index === 8 && (
+            <TextField
+              sx={{ m: 1.5 }}
+              label="Delete Time"
+              type="text"
+              onKeyPress={(e) => {
+                if (e.charCode === 13) {
+                  // changeCurrency(e);
+                }
+              }}
+              // defaultValue={
+              //   teamsList[0]?.settings.CurrencySymbol.individualValue
+              // }
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          )}
           <Box sx={{ mt: 3 }}>
             <Typography varinat="h3" sx={{ fontWeight: "bold" }}>
               Individual Settings
             </Typography>
-            {index !== 7 && (
+            {index < 7 && (
               <Typography>
                 If enabled, individual settings will be used instead of the team
                 Settings
               </Typography>
             )}
-            {index === 7 && (
+            {(index === 7 || index === 8) && (
               <Typography>
-                There can be only one setting for all users in your company
+                There can be only one setting for all users in your company.
               </Typography>
             )}
-            {index !== 7 && (
+            {index < 7 && (
               <Box>
                 <Autocomplete
                   disablePortal
