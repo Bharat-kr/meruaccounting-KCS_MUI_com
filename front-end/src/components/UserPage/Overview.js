@@ -194,6 +194,7 @@ export default function Overview({ date, dateObj, days, activities }) {
                               textDecoration: "none",
                               color: "black",
                             }}
+                            key={activity._id}
                             href={`#${activity._id}`}
                           >
                             <Typography
