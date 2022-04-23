@@ -74,11 +74,9 @@ function checkheading(
 
   //Common update setting for all functions
   const UpdateSettings = async (data, desc) => {
-    // console.log(settings);
     await axios
       .patch(`/employee/edit/${id}`, data)
       .then((res) => {
-        console.log(res);
         getTeam(dispatchgetTeam);
         if (data !== 0 || null)
           enqueueSnackbar("Settings updated", { variant: "success" });
@@ -101,7 +99,6 @@ function checkheading(
   const changeScreenShotPerHour = async (e) => {
     e.preventDefault();
     const value = document.querySelector(`#screenShotPerHour${id}`).value;
-    console.log(value);
     const data = {
       settings: {
         ...settings,
@@ -154,7 +151,6 @@ function checkheading(
   const changeWeeklyTimeLimit = async (e) => {
     e.preventDefault();
     const value = document.querySelector(`#weekLimit${id}`).value;
-    console.log(value);
     const data = {
       settings: {
         ...settings,
@@ -180,7 +176,6 @@ function checkheading(
   const changeAutoPause = async (e) => {
     e.preventDefault();
     const value = document.querySelector(`#autoPause${id}`).value;
-    console.log(value);
     const data = {
       settings: {
         ...settings,
@@ -266,7 +261,6 @@ function checkheading(
   const changeCurrencySymbol = async (e) => {
     e.preventDefault();
     const value = document.querySelector(`#currencySymbol${id}`).value;
-    console.log(value);
     const data = {
       settings: {
         ...settings,
@@ -553,7 +547,6 @@ export default function SettingsMain(props) {
     axios
       .post("/commondata")
       .then((res) => {
-        // console.log(res);
         setSettings(res.data.user.settings);
       })
       .catch((err) => {
@@ -584,8 +577,6 @@ export default function SettingsMain(props) {
       });
     });
     setTeamsList(data);
-
-    console.log(teamsList);
   }, [getTeams]);
   useEffect(() => {
     let namelist = [];
@@ -607,7 +598,6 @@ export default function SettingsMain(props) {
         },
       },
     };
-    console.log(data);
     await axios
       .patch(`/employee/edit/${user.id}`, data)
       .then((res) => {
@@ -623,8 +613,6 @@ export default function SettingsMain(props) {
         console.log(err);
         enqueueSnackbar(err.message, { variant: "info" });
       });
-
-    // console.log(data);
   };
 
   //currency symbol change for all
@@ -632,7 +620,6 @@ export default function SettingsMain(props) {
     const data = {
       currency: e.target.value,
     };
-    console.log(data);
     await axios
       .post(`/admin/currency`, data)
       .then((res) => {
@@ -652,11 +639,9 @@ export default function SettingsMain(props) {
 
   const handleSearch = (e, value) => {
     try {
-      console.log(tableRef, value);
       const member = teamsList?.filter((emp) =>
         emp.name === value ? emp : ""
       );
-      console.log(member, teamsList.indexOf(member[0]));
       if (member.length === 0) {
         // eslint-disable-next-line no-useless-return
         return;
@@ -669,7 +654,6 @@ export default function SettingsMain(props) {
       console.log(err);
     }
   };
-  // console.log(teamsList[0]?.settings.CurrencySymbol.individualValue);
   return (
     <>
       {tab === index && (

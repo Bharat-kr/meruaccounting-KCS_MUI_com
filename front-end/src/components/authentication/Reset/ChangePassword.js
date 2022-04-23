@@ -56,7 +56,6 @@ const ChangePassword = () => {
   //New password form submit handler
   const handleSubmitAxios = async (e) => {
     e.preventDefault();
-    console.log({ ...getFieldProps("newPassword") }.value, token);
     if (token) {
       setSubmitting(true);
       //request body
@@ -76,7 +75,6 @@ const ChangePassword = () => {
         await axios
           .post("/forgot/reset", data, config)
           .then((response) => {
-            console.log(response);
             setSubmitting(false);
             enqueueSnackbar("Password has been Reset", {
               variant: "success",

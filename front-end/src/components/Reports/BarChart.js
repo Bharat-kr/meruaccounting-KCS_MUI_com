@@ -21,7 +21,6 @@ export default function Bar({ timeRange }) {
     reports?.reports[0]?.byScreenshots?.forEach((ss) => {
       t = t + ss.actCount;
     });
-    console.log(t);
     let arr = reports?.reports[0]?.byScreenshots?.map((ss) => {
       let o = {
         type: `${ss._id}`,
@@ -29,7 +28,6 @@ export default function Bar({ timeRange }) {
       };
       return o;
     });
-    console.log(timeRange);
     setData(reports.reports[0]?.byDates);
     settotalHours(reports?.reports[0]?.total[0]?.totalHours);
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);

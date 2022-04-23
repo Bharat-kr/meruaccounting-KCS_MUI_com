@@ -71,26 +71,26 @@ export default function Sidebar() {
     clientsList = clientDetails?.client?.data;
   }
 
-  useEffect(() => {
-    try {
-      // if (clientDetails !== null) {
-      //   changeClient(clientDetails?.client?.data[0]);
-      //   changeProject(clientDetails?.client?.data[0].projects[0]);
-      // }
-      // changeClient(
-      //   clientDetails?.client?.data[
-      //     clientDetails.client.data.indexOf(currentClient)
-      //   ]
-      // );
-      // changeProject(
-      //   clientDetails?.client?.data[
-      //     clientDetails.client.data.indexOf(currentClient)
-      //   ].projects[currentClient.projects.indexOf(currentProject)]
-      // );
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, [clientDetails]);
+  // useEffect(() => {
+  // try {
+  // if (clientDetails !== null) {
+  //   changeClient(clientDetails?.client?.data[0]);
+  //   changeProject(clientDetails?.client?.data[0].projects[0]);
+  // }
+  // changeClient(
+  //   clientDetails?.client?.data[
+  //     clientDetails.client.data.indexOf(currentClient)
+  //   ]
+  // );
+  // changeProject(
+  //   clientDetails?.client?.data[
+  //     clientDetails.client.data.indexOf(currentClient)
+  //   ].projects[currentClient.projects.indexOf(currentProject)]
+  // );
+  // } catch (error) {
+  // console.log(error.message);
+  // }
+  // }, [clientDetails]);
   useEffect(() => {
     let prolist = [];
     if (clientDetails.loader === false) {
@@ -109,8 +109,6 @@ export default function Sidebar() {
   //   );
   // }, [checkclientDetails]);
   // change currentclient on search
-  // console.log(currentClient, currentProject);
-  console.log(clientDetails);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");

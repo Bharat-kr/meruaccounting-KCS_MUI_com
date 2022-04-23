@@ -66,7 +66,6 @@ const SplitActivity = ({
       .get("/project", { employeeId: commonData.commonData.user._id })
       .then((res) => {
         setProjects(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
     setNewStartTime(startTime);
@@ -181,7 +180,6 @@ const SplitActivity = ({
       consumeTime: consumeTime(startValue, endValue, startTime, endTime) / 1000,
       isInternal: act.isInternal,
     };
-    console.log(data);
 
     if (deleteActivity) {
       await deleteAct(act._id, date, dispatchCommonData);
@@ -193,7 +191,6 @@ const SplitActivity = ({
       await axios
         .patch(`/activity/${act._id}`, data)
         .then((res) => {
-          console.log(res);
           enqueueSnackbar("Time Edited", {
             variant: "success",
           });

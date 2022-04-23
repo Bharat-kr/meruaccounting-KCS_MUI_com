@@ -81,7 +81,6 @@ export default function Header(props) {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(currentClient);
       if (clientName !== "") {
         const data = [currentClient._id, { name: clientName }];
         await editClient(data, dispatchEditClient);
@@ -232,7 +231,6 @@ export default function Header(props) {
                 }}
                 onClick={() => {
                   {
-                    console.log(currentClient);
                   }
                   changeClient(clientsList[clientIndex]);
                 }}
@@ -312,7 +310,6 @@ export default function Header(props) {
                     }}
                     onClick={() => {
                       {
-                        console.log(currentClient);
                       }
                       changeClient(clientsList[clientIndex]);
                     }}

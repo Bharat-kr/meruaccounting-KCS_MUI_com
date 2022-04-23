@@ -91,7 +91,6 @@ export default function ByEp(props) {
       });
     });
     setRows(arr);
-    console.log(reports);
   }, [reports]);
 
   function toggleOption(option, enabled) {

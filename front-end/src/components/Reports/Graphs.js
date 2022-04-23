@@ -43,7 +43,6 @@ export default function Graphs({ timeRange }) {
   const [value, setValue] = React.useState(0);
 
   const { reports } = React.useContext(reportsContext);
-  console.log(reports);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

@@ -125,11 +125,10 @@ export default function Header(props) {
         : setProjectLeader("No leader");
 
       setbudgetTime(currentProject?.budgetTime);
-      console.log(byProject?.totalHours);
-      byProject !== [] &&
-        setconsumedTime((byProject[0]?.totalHours / 3600).toFixed(2));
-      console.log(byProject);
-      proInputRef.current.value = "";
+
+      byProject?.length !== 0
+        ? setconsumedTime((byProject[0]?.totalHours / 3600).toFixed(2))
+        : setconsumedTime(0);
     } catch (err) {
       console.log(err);
     }
@@ -246,7 +245,6 @@ export default function Header(props) {
     );
   };
   const handleSave = async (v) => {
-    console.log(v);
     try {
       await editProject(
         currentProject._id,
@@ -254,12 +252,9 @@ export default function Header(props) {
         dispatchEditProject
       );
       setbudgetTime(v);
-      // await getClient(dispatchClientDetails);
       changeProject(currentProject);
-      // enqueueSnackbar("Budget time changed", { variant: "success" });
     } catch (error) {
       console.log(error);
-      // enqueueSnackbar(error.message, { variant: "warning" });
     }
     enqueueSnackbar(
       editedProject.error ? editedProject.error : "Project name changed",
@@ -268,7 +263,6 @@ export default function Header(props) {
       }
     );
   };
-  console.log(currentProject);
 
   //confirmation modal
   const [ConfirmModal, setConfirmModal] = React.useState(false);
@@ -450,7 +444,9 @@ export default function Header(props) {
                   <Typography
                     sx={{ display: "flex", alignItems: "center", mr: 6, pt: 1 }}
                   >
-                    {byProject ? (byProject[0]?.internal / 3600).toFixed(2) : 0}{" "}
+                    {byProject?.length !== 0
+                      ? (byProject[0]?.internal / 3600).toFixed(2)
+                      : 0}{" "}
                     hr
                   </Typography>
                 </Box>

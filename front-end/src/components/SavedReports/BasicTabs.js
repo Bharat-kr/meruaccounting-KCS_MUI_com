@@ -48,7 +48,6 @@ function a11yProps(index) {
 //////////////////////////panelllllll
 export default function BasicTabs() {
   const { getTeams } = React.useContext(teamContext);
-  console.log(getTeams);
   // variable for date
   const [date, setdate] = React.useState([]);
   const [value, setValue] = React.useState(0);

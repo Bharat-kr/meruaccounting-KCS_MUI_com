@@ -91,10 +91,7 @@ export default function Sidebar() {
   if (clientDetails?.loader === false) {
     clientsList = clientDetails?.client?.data;
     clientDetails?.client?.data?.map((cli) => {
-      <>
-        {console.log(cli.name)}
-        {clientNameList.push(cli.name)}
-      </>;
+      <>{clientNameList.push(cli.name)}</>;
     });
   }
   // labels for search box(autocomplete)
@@ -122,7 +119,6 @@ export default function Sidebar() {
     );
     changeClient(client[0]);
   };
-  console.log(clientDetails);
 
   // add client in submit
   // not working properly , add proper validation Dr. Kamal Singh

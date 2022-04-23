@@ -56,12 +56,10 @@ export default function ByAppsUrl(props) {
         exp.push([`${emp._id.firstName} ${emp._id.lastName}`, ss[0], act]);
         actiSum += act;
       });
-      console.log(exp);
     });
 
     setRows(arr);
   }, [reports]);
-  console.log(rows);
   const gridElement = (
     <DataGrid
       columns={columns}

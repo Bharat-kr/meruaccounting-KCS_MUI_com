@@ -45,7 +45,6 @@ export default function UserPage() {
 
   // filter out activities
   useEffect(() => {
-    console.log(commonData);
     if (commonData.loader === false) {
       setactivities(
         commonData.commonData.user?.days
@@ -76,7 +75,6 @@ export default function UserPage() {
           date={dateObj.format("D")}
           setDate={(date) =>
             setdate((prev) => {
-              console.log(date);
               return date;
             })
           }
