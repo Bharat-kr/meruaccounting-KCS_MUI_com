@@ -117,7 +117,7 @@ const OfflineTime = ({ date }) => {
       isInternal: internal,
       activityOn: date.format("DD/MM/YYYY"),
     };
-    console.log(data)
+    console.log(data);
     await axios
       .post("/activity", data)
       .then((res) => {
@@ -228,7 +228,10 @@ const OfflineTime = ({ date }) => {
             >
               {projects.map((project) => {
                 return (
-                  <MenuItem value={project._id + "-" + project?.client?._id}>
+                  <MenuItem
+                    key={project._id + "-" + project?.client?._id}
+                    value={project._id + "-" + project?.client?._id}
+                  >
                     {project.name}-{project?.client?.name}
                   </MenuItem>
                 );

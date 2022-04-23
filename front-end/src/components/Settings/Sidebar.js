@@ -44,7 +44,6 @@ function a11yProps(index) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "750px",
     width: "100%",
     margin: "auto",
     display: "grid",
@@ -56,13 +55,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Sidebar() {
   const classes = useStyles();
   const { tab, changeTab } = useContext(UserContext);
-  // const [value, setValue] = React.useState(0);
-
-  // const handleChange = (event, newValue) => {
-  // changeTab(newValue);
-  // };
-  // let i = -1;
-  // let j = -1;
 
   const effectiveArr = {
     ScreenShotPerHour:
@@ -83,6 +75,8 @@ export default function Sidebar() {
       "When does your week start? This will be used when showing totals for a week or setting weekly time limits.",
     CurrencySymbol:
       "The symbol (e.g. $, €, £) will be shown when you set hourly pay rates for your employees and everywhere where money is shown (like total amount spent today or on a specific project).",
+    ScreenshotDelete:
+      "The Screenshots of all users will be deleted after the given time automatically.",
   };
 
   return (
