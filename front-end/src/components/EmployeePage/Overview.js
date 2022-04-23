@@ -59,7 +59,6 @@ export default function Overview({ date, dateObj, days, activities }) {
       });
       setApps(arr);
       setAppsMap(finalArray);
-      console.log(map);
     }
   }, [activities]);
 

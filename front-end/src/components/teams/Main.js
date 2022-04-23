@@ -174,7 +174,6 @@ export default function Main(props) {
   };
 
   const handleRoleChange = async (e, value) => {
-    console.log(e.target.value, value, prevRole);
     setNewRole(value);
     if (prevRole === "manager" || newRole === "projectLeader") {
       handleModalOpen();
@@ -197,7 +196,6 @@ export default function Main(props) {
       const data = {
         status: value,
       };
-      console.log(data);
       await employeeUpdate(currMember?._id, data, dispatchEmployeeUpdate);
       await getTeam(dispatchgetTeam);
       // enqueueSnackbar("Employee updated", { variant: "success" });
@@ -220,7 +218,6 @@ export default function Main(props) {
         employeeId: currMember._id,
         teamId: currTeam._id,
       };
-      console.log(data);
       await removeTeamMember(data, dispatchRemoveMember);
       await getTeam(dispatchgetTeam);
       // enqueueSnackbar("Member removed", { variant: "success" });
@@ -243,7 +240,6 @@ export default function Main(props) {
         id: currMember._id,
         projectId: value,
       };
-      console.log(data);
       await removeProjectMember(data, dispatchremoveProjectMember);
       await getTeam(dispatchgetTeam);
       // enqueueSnackbar("Project removed", { variant: "success" });
@@ -275,7 +271,6 @@ export default function Main(props) {
           id: currMember._id,
           projectId: currMember.projects[i]._id,
         };
-        console.log(data);
         await removeProjectMember(data, dispatchremoveProjectMember);
       }
       await getTeam(dispatchgetTeam);
@@ -288,7 +283,6 @@ export default function Main(props) {
   };
 
   const Labelconfig = function () {
-    console.log(currMember.settings);
     return (
       <>
         {currMember.projects.map((pro) => (
@@ -554,7 +548,6 @@ export default function Main(props) {
                             </Typography>
                             <RouterLink
                               onClick={() => {
-                                console.log(keyIndex);
                                 changeTab(keyIndex - 1);
                               }}
                               to="/dashboard/settings"

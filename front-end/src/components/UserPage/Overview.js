@@ -38,8 +38,6 @@ export default function Overview({ date, dateObj, days, activities }) {
     }
   }, [date]);
 
-  console.log("activities", activities);
-
   //Getting apps and URL's
   useEffect(() => {
     if (activities !== undefined && activities.length > 0) {
@@ -65,7 +63,6 @@ export default function Overview({ date, dateObj, days, activities }) {
       });
       setApps(arr);
       setAppsMap(finalArray);
-      console.log(map);
     }
   }, [activities]);
 
@@ -186,7 +183,6 @@ export default function Overview({ date, dateObj, days, activities }) {
                 <Box overflow={"auto"} sx={{ height: 145 }}>
                   {activities &&
                     activities.map((activity) => {
-                      console.log(activity);
                       return (
                         <>
                           <a
@@ -195,8 +191,8 @@ export default function Overview({ date, dateObj, days, activities }) {
                               flexDirection: "row",
                               justifyContent: "space-between",
                               px: 1,
-                              textDecoration:"none",
-                              color:"black"
+                              textDecoration: "none",
+                              color: "black",
                             }}
                             key={activity._id}
                             href={`#${activity._id}`}

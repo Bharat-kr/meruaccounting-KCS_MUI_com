@@ -347,11 +347,8 @@ export default function EnhancedTable(props) {
     }
   }, [currentClient]);
 
-  console.log(currentClient);
-
   useEffect(() => {
     setProList(reports?.reports);
-    console.log(reports.reports);
   }, [reports]);
 
   React.useEffect(async () => {

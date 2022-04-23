@@ -186,7 +186,6 @@ export default class Calendar extends React.Component {
       selectedDay: d,
       dateObject: dateObject,
     });
-    console.log("SELECTED DATE: ", dateObject.format("DD/MM/YYYY"));
     this.props.setDate(dateObject.format("DD/MM/YYYY"));
     this.props.setDateObj(dateObject);
   };
@@ -213,7 +212,6 @@ export default class Calendar extends React.Component {
     let trackingData = [];
     for (let d = 1; d <= this.daysInMonth(); d++) {
       let currentDay = d == this.currentDay() ? "today" : "";
-      console.log(currentDay);
       daysInMonth.push(
         <Tooltip
           title={`${
@@ -253,7 +251,9 @@ export default class Calendar extends React.Component {
             <div
               style={{
                 height: "100%",
-                width: `${(this.getHours(d).dailyHours / (60 * 60 * 5)*100)}%`,
+                width: `${
+                  (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100
+                }%`,
                 backgroundColor: "#007B55",
               }}
             ></div>

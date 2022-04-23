@@ -71,7 +71,6 @@ export default function SimpleContainer(props) {
     }
     return setSearchedMember(teamsList.indexOf(member[0]));
   };
-  console.log(teamsList.map((element) => element.Employee));
   return (
     <>
       <CssBaseline />

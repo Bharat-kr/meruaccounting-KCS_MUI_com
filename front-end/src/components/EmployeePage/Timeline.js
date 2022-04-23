@@ -74,13 +74,14 @@ const Timeline = ({ activities }) => {
     });
     setWorkTimes(arr);
   }, [activities]);
-  console.log(workTimes);
 
   const row = [];
   for (let i = 0; i < 24; i++) {
     row.push(
       <TableCell className={classes.cell} key={i}>
-        {i !== 0 ? `${i < 12 ? `${i} AM` : `${i=== 12 ? 12 : i - 12} PM`}` : `${i + 12} AM`}
+        {i !== 0
+          ? `${i < 12 ? `${i} AM` : `${i === 12 ? 12 : i - 12} PM`}`
+          : `${i + 12} AM`}
         {workTimes &&
           workTimes
             .filter((el) => el.hr === i)

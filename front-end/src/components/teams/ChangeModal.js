@@ -61,15 +61,12 @@ const ChangeModal = ({
   const handleProjectChange = (event) => {
     setNewProject(event.target.value);
   };
-  console.log(currTeam);
-  console.log(currMember);
 
   const changeManager = async () => {
     try {
       const data = {
         role: "manager",
       };
-      console.log(data, newManager);
       //new manager
       await employeeUpdate(newManager, data, dispatchEmployeeUpdate);
       //changing role of the curr person
@@ -357,17 +354,20 @@ const ChangeModal = ({
               <Box
                 sx={{
                   ml: 2,
-                }}>Select a Project for which you want to make him leader</Box>
+                }}
+              >
+                Select a Project for which you want to make him leader
+              </Box>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   mt: 1,
                 }}
-                >
+              >
                 <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
                   <InputLabel id="demo-simple-select-filled-label">
-                    Project 
+                    Project
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-filled-label"

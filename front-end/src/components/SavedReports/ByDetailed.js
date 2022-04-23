@@ -203,7 +203,6 @@ export default function ByD(props) {
   const { loginC } = React.useContext(loginContext);
   React.useEffect(() => {
     let arr = [];
-    console.log(savedReports);
     savedReports.reports[0]?.byD?.map((emp) => {
       const act = emp.performanceData;
       arr.push({

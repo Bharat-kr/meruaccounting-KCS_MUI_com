@@ -53,7 +53,6 @@ const OfflineTime = ({ date }) => {
       .get("/project", { employeeId: commonData.commonData.user._id })
       .then((res) => {
         setProjects(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -82,7 +81,6 @@ const OfflineTime = ({ date }) => {
   const handleEndChange = (e) => {
     setEndTime(e.target.value);
   };
-  console.log(date.format("DD/MM/YYYY"));
   //caling api
   const addTime = async (e) => {
     e.preventDefault();
@@ -117,7 +115,6 @@ const OfflineTime = ({ date }) => {
       isInternal: internal,
       activityOn: date.format("DD/MM/YYYY"),
     };
-    console.log(data);
     await axios
       .post("/activity", data)
       .then((res) => {

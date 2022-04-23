@@ -248,8 +248,8 @@ function Row(props) {
             sx={{ fontSize: "medium" }}
             onClick={() => {
               navigator.clipboard.writeText(
-                // `http://localhost:3000/reports/sharedReports/${row.url}`
-                `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`
+                `http://localhost:3000/reports/sharedReports/${row.url}`
+                // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`
               );
               enqueueSnackbar("Link copied", { variant: "success" });
             }}
@@ -361,7 +361,7 @@ export default function SavedR() {
     // savedReports();
     try {
       const { data } = await axios
-        .get(`http://localhost:8000/report/saved`)
+        .get(`report/saved`)
         // .get(`https://monitor-meruaccounting-bf9db.web.app/report/saved`)
         .then((response) => response.data);
       // console.log(data);

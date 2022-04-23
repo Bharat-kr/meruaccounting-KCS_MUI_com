@@ -21,7 +21,6 @@ export default function AppsCharts() {
     reports.reports[0].byScreenshots.forEach((ss) => {
       t = t + ss.actCount;
     });
-    console.log(t);
     let arr = reports.reports[0].byScreenshots.map((ss) => {
       let o = {
         type: `${ss._id}`,

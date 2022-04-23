@@ -142,7 +142,6 @@ export default function VerticalTabs() {
   React.useEffect(() => {
     getAllEmployeeList(dispatchAllEmployees);
   }, []);
-  console.log(allEmployees.employees);
 
   teamsDetails = getTeams?.getTeam;
 
@@ -166,7 +165,6 @@ export default function VerticalTabs() {
     try {
       deleteTeam(currTeam._id, dispatchDeleteTeam);
       // if(deletedTeam.data.){}
-      console.log(deletedTeam);
       getTeam(dispatchgetTeam);
     } catch (err) {
       console.log(err);
@@ -195,7 +193,6 @@ export default function VerticalTabs() {
       variant: teamCreate.error ? "error" : "success",
     });
   };
-  console.log(currTeam, currMember);
   //Changing Curr Team
   const changeCurrTeam = async (e) => {
     const team = await getTeams.getTeam.filter((team) =>

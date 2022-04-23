@@ -24,8 +24,6 @@ export const createTeam = async (name, dispatch) => {
     const { data } = await axios.post("/team/create", name);
 
     dispatch({ type: TEAM_CREATE_SUCCESS, payload: data.data });
-    console.log("team create");
-    console.log(data.data);
   } catch (error) {
     dispatch({
       type: TEAM_CREATE_FAILED,
@@ -40,7 +38,6 @@ export const createTeam = async (name, dispatch) => {
 export const getTeam = async (dispatch, id) => {
   try {
     const res = await axios.get(`team/getTeam`);
-    console.log(res.data.data);
     dispatch({ type: GET_TEAM_SUCCESS, payload: res.data.data });
   } catch (error) {
     console.log(error);
@@ -59,9 +56,6 @@ export const updateMember = async (incomingData, dispatch) => {
     const { data } = await axios.patch("/team/updateMember", incomingData);
 
     dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
-
-    console.log("Updated Member");
-    console.log(data);
   } catch (error) {
     console.log(error);
     dispatch({
@@ -79,9 +73,6 @@ export const updateTeam = async (incomingData) => {
     const { data } = await axios.patch("/team/updateTeam", incomingData);
 
     // dispatch({ type: UPDATE_MEMBER_SUCCESS, payload: data });
-
-    console.log("Updated Member");
-    console.log(data);
   } catch (error) {
     console.log(error);
     // dispatch({
@@ -101,8 +92,6 @@ export const removeTeamMember = async (incomingData, dispatch) => {
     });
 
     dispatch({ type: REMOVE_MEMBER_SUCCESS, payload: data });
-    console.log("removed Member");
-    console.log(data);
   } catch (error) {
     console.log(error);
     dispatch({
@@ -117,7 +106,6 @@ export const removeTeamMember = async (incomingData, dispatch) => {
 
 export const deleteTeam = async (incomingData, dispatch) => {
   try {
-    console.log(incomingData);
     const { data } = await axios.delete(`/team/${incomingData}`, {
       teamId: incomingData,
     });

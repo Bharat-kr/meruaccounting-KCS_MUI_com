@@ -68,12 +68,6 @@ export default function RegisterForm() {
     setSubmitting(true);
     /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
     try {
-      console.log(
-        { ...getFieldProps("firstName") }.value,
-        { ...getFieldProps("lastName") }.value,
-        { ...getFieldProps("email") }.value,
-        { ...getFieldProps("password") }.value
-      );
       const res = await axios({
         method: "post",
 
@@ -87,7 +81,6 @@ export default function RegisterForm() {
           password: { ...getFieldProps("password") }.value,
         },
       });
-      console.log(res);
       setSubmitting(false);
       enqueueSnackbar(res.data.message, {
         variant: "success",

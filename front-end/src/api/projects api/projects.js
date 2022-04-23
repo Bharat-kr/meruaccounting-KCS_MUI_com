@@ -46,8 +46,6 @@ export const createProject = async (incomingData, dispatch) => {
       type: CREATE_PROJECTS_SUCCESS,
       payload: data,
     });
-    console.log(`Create project success`);
-    console.log(data);
   } catch (error) {
     dispatch({
       type: CREATE_PROJECTS_FAILED,
@@ -64,8 +62,6 @@ export const addTeamToProject = async (incomingData, dispatch) => {
     const { data } = await axios.patch(`/project`, incomingData, config);
 
     dispatch({ type: ADD_TEAM_PROJECTS_SUCCESS, payload: data });
-    console.log("Add team to project");
-    console.log(data);
   } catch (error) {
     dispatch({
       type: ADD_TEAM_PROJECTS_FAILED,
@@ -82,8 +78,6 @@ export const editProject = async (_id, incomingData, dispatch) => {
     const { data } = await axios.patch(`/project/${_id}`, incomingData, config);
 
     dispatch({ type: EDIT_PROJECTS_SUCCESS, payload: data });
-    console.log("Edit existing project");
-    console.log(data);
   } catch (error) {
     dispatch({
       type: EDIT_PROJECTS_FAILED,
@@ -103,9 +97,6 @@ export const deleteProject = async (incomingData, dispatch) => {
     });
 
     dispatch({ type: DELETE_PROJECTS_SUCCESS, payload: data });
-
-    console.log("DELETE existing project");
-    console.log(data);
   } catch (error) {
     dispatch({
       type: DELETE_PROJECTS_FAILED,
@@ -121,7 +112,6 @@ export const getProjectById = async (incomingData, dispatch) => {
   try {
     const { data } = await axios.get(`/project/${incomingData}`, config);
     dispatch({ type: GET_PROJECT_BYID_SUCCESS, payload: data });
-    console.log("Get project by id success");
   } catch (error) {
     dispatch({
       type: GET_PROJECT_BYID_FAILED,
@@ -140,7 +130,6 @@ export const addProjectMember = async (incomingData, dispatch) => {
     });
 
     dispatch({ type: ADD_MEMBER_TOPROJECT_SUCCESS, payload: data });
-    console.log("member added");
   } catch (error) {
     dispatch({
       type: ADD_MEMBER_TOPROJECT_FAILED,
@@ -154,13 +143,11 @@ export const addProjectMember = async (incomingData, dispatch) => {
 
 export const addProjectLeader = async (incomingData, dispatch) => {
   try {
-    console.log(incomingData[0], incomingData[1]);
     const { data } = await axios.post(
       `/project/projectLeader/${incomingData[0]}`,
       { employeeMail: `${incomingData[1]}` }
     );
     dispatch({ type: ADD_PROJECTLEADER_SUCCESS, payload: data });
-    console.log("project leader added");
   } catch (error) {
     dispatch({
       type: ADD_PROJECTLEADER_FAILED,
@@ -173,12 +160,8 @@ export const addProjectLeader = async (incomingData, dispatch) => {
 };
 export const removeProjectLeader = async (id, dispatch) => {
   try {
-    // console.log(incomingData[0], incomingData[1]);
-    const { data } = await axios.patch(
-      `/project/projectLeader/${id}`,
-    );
+    const { data } = await axios.patch(`/project/projectLeader/${id}`);
     // dispatch({ type: ADD_PROJECTLEADER_SUCCESS, payload: data });
-    console.log("project leader added");
   } catch (error) {
     // dispatch({
     //   type: ADD_PROJECTLEADER_FAILED,
@@ -199,7 +182,6 @@ export const removeProjectMem = async (incomingData, dispatch) => {
       }
     );
     dispatch({ type: REMOVE_MEMBER_FROMRPOJECT_SUCCESS, payload: data });
-    console.log("member removed");
   } catch (error) {
     dispatch({
       type: REMOVE_MEMBER_FROMRPOJECT_FAILED,

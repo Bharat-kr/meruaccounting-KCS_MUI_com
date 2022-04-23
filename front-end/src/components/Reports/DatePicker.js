@@ -17,7 +17,6 @@ export default function BasicDateRangePicker({ setDate, setTimeRange }) {
     textDecoration: "underline",
   };
   React.useEffect(() => {
-    console.log(value);
     setDate(value);
   }, [value]);
 
@@ -83,7 +82,6 @@ export default function BasicDateRangePicker({ setDate, setTimeRange }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log(dayjs().add(-1, "day"));
             setValue([dayjs().add(-1, "day"), dayjs().add(-1, "day")]);
             setRange("Yesterday");
             setTimeRange("Yesterday");
@@ -96,7 +94,6 @@ export default function BasicDateRangePicker({ setDate, setTimeRange }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log(dayjs().add(-1, "day"));
             setValue([
               dayjs().startOf("week").subtract(1, "week"),
               dayjs().endOf("week").subtract(1, "week"),
@@ -112,7 +109,6 @@ export default function BasicDateRangePicker({ setDate, setTimeRange }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log(dayjs().add(-1, "day"));
             setValue([
               dayjs().startOf("month").subtract(1, "month"),
               dayjs().endOf("month").subtract(1, "month"),
@@ -129,7 +125,6 @@ export default function BasicDateRangePicker({ setDate, setTimeRange }) {
             ...typoStyle,
           }}
           onClick={() => {
-            console.log(dayjs().add(-1, "day"));
             setValue([
               dayjs().startOf("year").subtract(1, "year"),
               dayjs().endOf("year").subtract(1, "year"),

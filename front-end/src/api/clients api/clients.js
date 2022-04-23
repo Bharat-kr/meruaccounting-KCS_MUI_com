@@ -78,7 +78,7 @@ export const addClient = async (incomingData, dispatch) => {
 
 export const deleteClient = async (incomingData, dispatch) => {
   try {
-    console.log(incomingData);
+    // console.log(incomingData);
     const { data } = await axios.delete(`/client/${incomingData}`, config);
 
     dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });

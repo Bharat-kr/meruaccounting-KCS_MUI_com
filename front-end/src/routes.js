@@ -78,15 +78,17 @@ export default function Router() {
   const { dispatchAdminAllEmployee } = useContext(employeeContext);
 
   React.useLayoutEffect(() => {
-    getClient(dispatchClientDetails);
-    if (Role.indexOf(loginC.userData?.role <= 2)) getTeam(dispatchgetTeam);
-    if (loginC?.userData?.role === "admin")
-      getAllEmployee(dispatchAdminAllEmployee);
-    else if (loginC?.userData?.role === "manager")
-      getTeamCommonData(dispatchTeamCommonData);
-    else if (loginC?.userData?.role === "projectLeader")
-      projectMemberCommonData(dispatchProjectMemberData);
-    getCommonData(dispatchCommonData);
+    if (loginC) {
+      getClient(dispatchClientDetails);
+      if (Role.indexOf(loginC.userData.role <= 2)) getTeam(dispatchgetTeam);
+      if (loginC?.userData?.role === "admin")
+        getAllEmployee(dispatchAdminAllEmployee);
+      else if (loginC?.userData?.role === "manager")
+        getTeamCommonData(dispatchTeamCommonData);
+      else if (loginC?.userData?.role === "projectLeader")
+        projectMemberCommonData(dispatchProjectMemberData);
+      getCommonData(dispatchCommonData);
+    }
   }, [commonData]);
   const getOptions = async () => {
     axios.post("/report/options").then((res) => {
@@ -106,7 +108,9 @@ export default function Router() {
     });
   };
   React.useEffect(() => {
-    getOptions();
+    if (loginC) {
+      getOptions();
+    }
   }, []);
   React.useEffect(() => {
     disableStateFunc(false);
