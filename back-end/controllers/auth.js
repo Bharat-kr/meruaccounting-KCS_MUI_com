@@ -85,6 +85,31 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Get logData to check role change
+// @route   GET /roleCheck
+// @access  Private
+
+const roleCheck = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("members");
+
+  if (permission.granted) {
+    try {
+      res.status(200).json({
+        _id: req.user._id,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        email: req.user.email,
+        role: req.user.role,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    // resource is forbidden for this user/role
+    res.status(403).end("UnAuthorized");
+  }
+});
+
 // @desc    Get common data
 // @route   GET /commondata
 // @access  Private
@@ -961,4 +986,5 @@ export {
   dateHours,
   teamCommondata,
   generateReportByIds,
+  roleCheck
 };
