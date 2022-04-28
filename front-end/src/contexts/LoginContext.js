@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect } from "react";
+import { roleCheckApi } from "src/api/auth api/roleCheck";
 // import { setLocalStorage } from "../helper/localStorage";
 
 export const loginContext = React.createContext();
@@ -46,6 +47,7 @@ export function LoginProvider(props) {
     const localData = localStorage.getItem("loginC");
     return localData ? JSON.parse(localData) : initialValue;
   });
+  window.onload = roleCheckApi(dispatchLogin);
 
   useEffect(() => {
     if (!loginC.error) {

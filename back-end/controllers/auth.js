@@ -90,23 +90,16 @@ const login = asyncHandler(async (req, res) => {
 // @access  Private
 
 const roleCheck = asyncHandler(async (req, res) => {
-  const permission = ac.can(req.user.role).readOwn("members");
-
-  if (permission.granted) {
-    try {
-      res.status(200).json({
-        _id: req.user._id,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        email: req.user.email,
-        role: req.user.role,
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
-  } else {
-    // resource is forbidden for this user/role
-    res.status(403).end("UnAuthorized");
+  try {
+    res.status(200).json({
+      _id: req.user._id,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      email: req.user.email,
+      role: req.user.role,
+    });
+  } catch (error) {
+    throw new Error(error);
   }
 });
 
@@ -986,5 +979,5 @@ export {
   dateHours,
   teamCommondata,
   generateReportByIds,
-  roleCheck
+  roleCheck,
 };
