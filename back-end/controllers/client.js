@@ -69,7 +69,14 @@ const getClient = asyncHandler(async (req, res) => {
             populate: [
               {
                 path: "employees",
-                select: ["firstName", "lastName", "days", "email", "projects"],
+                select: [
+                  "firstName",
+                  "lastName",
+                  "days",
+                  "email",
+                  "projects",
+                  "role",
+                ],
                 populate: {
                   path: "projects",
                   model: "Project",
@@ -114,7 +121,7 @@ const getClient = asyncHandler(async (req, res) => {
             populate: [
               {
                 path: "employees",
-                select: ["firstName", "lastName", "email", "projects"],
+                select: ["firstName", "lastName", "email", "projects", "role"],
                 populate: {
                   path: "projects",
                   model: "Project",
@@ -137,7 +144,14 @@ const getClient = asyncHandler(async (req, res) => {
             populate: [
               {
                 path: "employees",
-                select: ["firstName", "lastName", "days", "email", "projects"],
+                select: [
+                  "firstName",
+                  "lastName",
+                  "days",
+                  "email",
+                  "projects",
+                  "role",
+                ],
                 populate: {
                   path: "projects",
                   model: "Project",

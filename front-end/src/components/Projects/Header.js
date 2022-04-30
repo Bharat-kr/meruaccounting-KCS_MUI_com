@@ -1,8 +1,21 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Paper, Typography, TextField, Link, IconButton } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  TextField,
+  Link,
+  IconButton,
+  Modal,
+  FormControl,
+  InputLabel,
+  Divider,
+  Button,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import EdiText from "react-editext";
-import SearchBar from "../SearchBar";
 import { makeStyles } from "@mui/styles";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
@@ -25,6 +38,7 @@ import { reportsContext } from "../../contexts/ReportsContext";
 import Confirmation from "../Confirmation";
 import Autocomplete from "@mui/material/Autocomplete";
 import Searchbar from "src/layouts/dashboard/Searchbar";
+import { getFullName } from "src/_helpers/getFullName";
 
 //---------------------------------------------------------------
 
@@ -43,6 +57,24 @@ const useStyles = makeStyles((theme) => ({
     "& :focus": { width: "100%" },
   },
 }));
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  minWidth: 600,
+  bgcolor: "#fff",
+  borderRadius: 2,
+  border: "none",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
+  "@media (max-width: 600px)": {
+    maxWidth: "80%",
+  },
+};
+
 export default function Header(props) {
   const {
     // currentClient,
@@ -85,9 +117,22 @@ export default function Header(props) {
   const [projectName, setprojectName] = useState("");
   const [budgetTime, setbudgetTime] = useState();
   const [consumedTime, setconsumedTime] = useState(0);
+  const [internalHours, setInternalHours] = useState(0);
+  const [memberList, setMemberList] = useState([]);
+  const [membersData, setMembersData] = useState([]);
+
   const outerref = useRef();
   const proInputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
+
+  // modal values
+  const [modal, setModal] = useState(false);
+  const handleModalOpen = () => {
+    setModal(true);
+  };
+  const handleModalClose = () => {
+    setModal(false);
+  };
 
   let clientIndex;
   let projectIndex;
@@ -126,28 +171,37 @@ export default function Header(props) {
 
       setbudgetTime(currentProject?.budgetTime);
 
-      byProject?.length !== 0
+      byProject[0]
         ? setconsumedTime((byProject[0]?.totalHours / 3600).toFixed(2))
         : setconsumedTime(0);
+      byProject[0]
+        ? setInternalHours((byProject[0]?.internal / 3600).toFixed(2))
+        : setInternalHours(0);
+      let memberL = [];
+      let memberD = [];
+      currentProject
+        ? currentProject.employees.map((emp) => {
+            memberD.push({
+              dayArray: emp.days,
+              id: emp._id,
+              name: `${emp.firstName} ${emp.lastName}`,
+              email: emp.email,
+              payRate: emp.payRate,
+            });
+            console.log(emp);
+            if (emp.role === "employee") {
+              memberL.push(`${emp.firstName} ${emp.lastName}`);
+            }
+          })
+        : memberL.push("");
+      setMemberList(memberL);
+      setMembersData(memberD);
+      console.log(clientDetails);
     } catch (err) {
       console.log(err);
     }
   }, [clientDetails, currentClient, currentProject, byProject, byClients]);
 
-  let memberList = [];
-  let membersData = [];
-  currentProject
-    ? currentProject.employees.map((emp) => {
-        membersData.push({
-          dayArray: emp.days,
-          id: emp._id,
-          name: `${emp.firstName} ${emp.lastName}`,
-          email: emp.email,
-          payRate: emp.payRate,
-        });
-        memberList.push(`${emp.firstName} ${emp.lastName}`);
-      })
-    : memberList.push("");
   const [inputValue, setInputValue] = useState(memberList[0]);
   const handleSearch = async (e, value) => {
     try {
@@ -159,11 +213,10 @@ export default function Header(props) {
       await addProjectLeader(data, dispatchaddProjectLeader);
       const employee = memberList.filter((emp) => (emp === value ? emp : ""));
       setProjectLeader(employee);
-      proInputRef.current.value = "";
 
       // enqueueSnackbar("Project Leader changed", { variant: "success" });
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
       // enqueueSnackbar(error.message, { variant: "warning" });
     }
     enqueueSnackbar(
@@ -360,55 +413,151 @@ export default function Header(props) {
               </div>
             </div>
             <hr></hr>
-            <Typography
-              variant="h6"
-              sx={{
-                mt: 3,
-                ml: 1,
-                display: "block",
-                width: "100%",
-              }}
-            >
-              Project Leader
-            </Typography>
             <div
               style={{
-                width: "100%",
-                float: "left",
+                // width: "100%",
+                // height: "4rem",
+                // float: "left",
                 // paddingTop: "20px",
-                display: "flex",
+                display: "gird",
+                // flexDirection: "column",
+                gridTemplateColumns: "60% 40%",
+
                 // justifyContent: "left",
                 // marginLeft: "2px",
               }}
             >
-              <Paper
+              <Typography
+                variant="h6"
+                sx={{
+                  mt: 3,
+                  ml: 1,
+                  display: "block",
+                  // width: "100%",
+                }}
+              >
+                Project Leader
+              </Typography>
+              <Typography
                 // variant="h4"
                 sx={{
-                  textAlign: "center",
+                  display: "flex",
+                  // justifyContent: "center",
+                  // alignContext: "center",
+                  // alignItem: "center",
+                  // textAlign: "center",
+
                   color: "primary.darker",
-                  fontSize: "20px",
-                  width: 150,
-                  mt: 1,
-                  mr: 1,
+                  fontSize: "1.3rem",
+                  // width: 150,
+                  mt: 2.7,
+                  ml: 1,
                 }}
               >
                 {ProjectLeader}
-              </Paper>
+              </Typography>
 
               {loginC && Role.indexOf(loginC.userData.role) <= 2 && (
-                <SearchBar
-                  // inputRef={proInputRef}
-                  value={inputValue}
-                  label="Assign Project Leader"
-                  handleSearch={handleSearch}
-                  id="combo-box-demo"
-                  options={memberList}
-                  sx={{ width: 100 }}
-                  // onInputChange="clear"
-                />
+                <Link onClick={handleModalOpen}>Assign Project leader</Link>
               )}
+              <Modal
+                open={modal}
+                onClose={handleModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+                sx={{
+                  border: "none",
+                }}
+              >
+                <Box sx={style}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      bgcolor: "primary.lighter",
+                      p: 2,
+                    }}
+                  >
+                    <Typography variant="h4" color="primary">
+                      Assign Project Leader
+                    </Typography>
+                    <IconButton>
+                      <CloseIcon onClick={handleModalClose} />
+                    </IconButton>
+                  </Box>
+                  <Divider />
+                  <Box
+                    sx={{
+                      px: 2,
+                      py: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        mt: 1,
+                      }}
+                    >
+                      <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
+                        <InputLabel id="demo-simple-select-filled-label">
+                          Select employee
+                        </InputLabel>
+                       {memberList !== []  ? <Select
+                          labelId="demo-simple-select-filled-label"
+                          id="demo-simple-select-filled"
+                          value={ProjectLeader}
+                          onChange={handleSearch}
+                        >
+                          {memberList.map((member) => {
+                            return (
+                              <MenuItem value={member._id}>{member}</MenuItem>
+                            );
+                          })}
+                        </Select>: <Box>
+                          
+                          <Typography>
+                          No employees in this project 
+                          </Typography>
+                          <Typography>
+                            Project leader role can only be assigned to employees. 
+                          </Typography>
+                          </Box>
+                          }
+                      </FormControl>
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "end",
+                      bgcolor: "grey.200",
+                      p: 2,
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="success"
+                      sx={{
+                        mr: 2,
+                      }}
+                      onClick={handleModalClose}
+                    >
+                      Done
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={handleModalClose}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                </Box>
+              </Modal>
             </div>
-            <hr />
             <div
               style={{
                 display: "flex",
@@ -444,10 +593,7 @@ export default function Header(props) {
                   <Typography
                     sx={{ display: "flex", alignItems: "center", mr: 6, pt: 1 }}
                   >
-                    {byProject?.length !== 0
-                      ? (byProject[0]?.internal / 3600).toFixed(2)
-                      : 0}{" "}
-                    hr
+                    {internalHours} hr
                   </Typography>
                 </Box>
               </Paper>

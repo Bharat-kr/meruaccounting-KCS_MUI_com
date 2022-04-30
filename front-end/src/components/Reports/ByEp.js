@@ -108,7 +108,7 @@ export default function ByEp(props) {
     }
     setExpandedGroupIds(new Set());
   }
-
+  console.log(reports);
   return reports.reports[0].byEP.length !== 0 ? (
     <Box sx={{ mt: 3 }}>
       <Typography varinat="h3" sx={{ fontWeight: "700", fontSize: "1.5rem" }}>

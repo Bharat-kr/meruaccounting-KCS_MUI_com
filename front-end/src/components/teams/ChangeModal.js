@@ -85,7 +85,7 @@ const ChangeModal = ({
     enqueueSnackbar(
       updatedMember.error ? updatedMember.error : "Updated Role",
       {
-        variant: updatedMember.error ? "info" : "success",
+        variant: updatedMember.error ? "info" : "primary",
       }
     );
     handleModalClose();
@@ -105,7 +105,7 @@ const ChangeModal = ({
     enqueueSnackbar(
       updatedMember.error ? updatedMember.error : "Updated Role",
       {
-        variant: updatedMember.error ? "info" : "success",
+        variant: updatedMember.error ? "info" : "primary",
       }
     );
     handleModalClose();
@@ -132,7 +132,7 @@ const ChangeModal = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                bgcolor: "primary.lighter",
+                bgcolor: "primary",
                 p: 2,
               }}
             >
@@ -189,7 +189,7 @@ const ChangeModal = ({
             >
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 sx={{
                   mr: 2,
                 }}
@@ -278,7 +278,7 @@ const ChangeModal = ({
             >
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 sx={{
                   mr: 2,
                 }}
@@ -402,7 +402,7 @@ const ChangeModal = ({
             >
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 sx={{
                   mr: 2,
                 }}
