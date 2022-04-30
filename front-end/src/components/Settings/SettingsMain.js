@@ -93,6 +93,7 @@ function checkheading(
       type: "settings",
     };
     await axios.post(`/notify/${id}`, notification);
+  
   };
 
   //Screenshot per hour update function

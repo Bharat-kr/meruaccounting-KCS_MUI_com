@@ -330,9 +330,20 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
         throw new Error(`Not found project ${projectId}`);
       }
       const newEmployee = await User.findOne({ email: employeeMail });
+      console.log(newEmployee);
       if (!newEmployee) {
         res.status(404);
         throw new Error(`Not found employee ${employeeMail}`);
+      }
+      if (newEmployee.role !== "employee") {
+        throw new Error(
+          `${newEmployee.firstName} ${newEmployee.lastName} should be an employee`
+        );
+      }
+      if (newEmployee.role === "projectLeader") {
+        throw new Error(
+          `${newEmployee.firstName} ${newEmployee.lastName} is already a project leader `
+        );
       }
 
       const employeeId = newEmployee._id;
@@ -351,10 +362,10 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
         }
       });
       if (!alreadyProjectAdded) {
-        newEmployee.projects.push(projectId);
         if (newEmployee.role === "employee") {
           newEmployee.role = "projectLeader";
         }
+        newEmployee.projects.push(projectId);
         await newEmployee.save();
       }
 
@@ -367,6 +378,7 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
         data: project,
       });
     } catch (error) {
+      console.log(error);
       throw new Error(error);
     }
   } else {

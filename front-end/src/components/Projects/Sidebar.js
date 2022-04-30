@@ -136,6 +136,11 @@ export default function Sidebar() {
 
         changeProject(project[0]);
         setSelected((oldSelected) => [`${project[0]._id + client[0]._id}`]);
+        if (client[0] !== undefined) {
+          document
+            .getElementById(client[0]._id + project[0]._id)
+            .scrollIntoView();
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -289,8 +294,8 @@ export default function Sidebar() {
                     {client.projects.map((project) => {
                       return (
                         <TreeItem
+                          id={client._id + project._id}
                           nodeId={(project._id + client._id).toString()}
-                          id={project._id}
                           key={project._id}
                           label={
                             <Typography

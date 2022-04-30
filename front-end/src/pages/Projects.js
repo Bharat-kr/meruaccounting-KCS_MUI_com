@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CssBaseline, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 // components
 import Sidebar from "../components/Projects/Sidebar";
 import PageHeader from "../components/PageHeader";
+import { reportsContext } from "src/contexts/ReportsContext";
+import { projectContext } from "src/contexts/ProjectsContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,6 +23,17 @@ const useStyles = makeStyles((theme) => ({
 // lg: '70%', md: '90%'
 
 export default function Projects() {
+  const { byProjectFunc, byClientsFunc, reports } =
+    React.useContext(reportsContext);
+
+  const { projectMembersFunc } = useContext(projectContext);
+
+  React.useEffect(() => {
+    byClientsFunc(reports?.reports[0]?.byClients);
+    byProjectFunc(reports?.reports[0]?.byProjects);
+    projectMembersFunc(reports?.reports);
+  }, [reports]);
+
   const classes = useStyles();
   return (
     <Box
