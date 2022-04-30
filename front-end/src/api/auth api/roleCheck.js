@@ -1,7 +1,7 @@
 //this api will be called on every window load to check if the role is changed
 import axios from "axios";
 
-export const roleCheckApi = async (dispatch) => {
+export const roleCheckApi = async () => {
   await axios
     .post("/roleCheck")
     .then((res) => {
@@ -16,7 +16,6 @@ export const roleCheckApi = async (dispatch) => {
             userData: res.data,
           })
         );
-        // localStorage.setItem("ud", JSON.stringify(res.data));
       }
     })
     .catch((err) => {

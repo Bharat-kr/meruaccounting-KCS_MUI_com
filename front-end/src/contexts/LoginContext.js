@@ -47,7 +47,7 @@ export function LoginProvider(props) {
     const localData = localStorage.getItem("loginC");
     return localData ? JSON.parse(localData) : initialValue;
   });
-  window.onload = roleCheckApi(dispatchLogin);
+  window.onload = roleCheckApi();
 
   useEffect(() => {
     if (!loginC.error) {
