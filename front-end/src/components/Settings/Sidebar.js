@@ -76,7 +76,7 @@ export default function Sidebar() {
     CurrencySymbol:
       "The symbol (e.g. $, €, £) will be shown when you set hourly pay rates for your employees and everywhere where money is shown (like total amount spent today or on a specific project).",
     ScreenshotDelete:
-      "The Screenshots of all users will be deleted after the given time automatically.",
+      "The Screenshots of all users will be deleted after the given duration automatically.",
   };
 
   return (
