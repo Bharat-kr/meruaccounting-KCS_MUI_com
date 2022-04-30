@@ -7,6 +7,7 @@ import {
   commondata,
   teamCommondata,
   generateReportByIds,
+  roleCheck,
 } from "../controllers/auth.js";
 import { body } from "express-validator";
 import { generateReport } from "../controllers/report.js";
@@ -29,5 +30,6 @@ router.route("/commondata").post(authPass, commondata);
 router.route("/dateHours").post(authPass, dateHours);
 router.route("/teamCommondata").post(authPass, teamCommondata);
 router.route("/generateReport").post(generateReportByIds);
+router.route("/roleCheck").post(authPass, roleCheck);
 
 export default router;

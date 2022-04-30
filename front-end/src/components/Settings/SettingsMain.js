@@ -540,7 +540,6 @@ export default function SettingsMain(props) {
   const [teamsList, setTeamsList] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
-
   useEffect(() => {
     getTeam(dispatchgetTeam);
     axios
@@ -661,40 +660,60 @@ export default function SettingsMain(props) {
             {subheading}
           </Box>
           {index === 7 && (
-            <TextField
-              sx={{ m: 1.5 }}
-              label="Currency"
-              type="text"
-              onKeyPress={(e) => {
-                if (e.charCode === 13) {
-                  changeCurrency(e);
+            <>
+              <TextField
+                sx={{ m: 1.5 }}
+                disabled={loginC.userData?.role !== "admin"}
+                label="Currency"
+                type="text"
+                onKeyPress={(e) => {
+                  if (e.charCode === 13) {
+                    changeCurrency(e);
+                  }
+                }}
+                defaultValue={
+                  teamsList[0]?.settings.CurrencySymbol.individualValue
                 }
-              }}
-              defaultValue={
-                teamsList[0]?.settings.CurrencySymbol.individualValue
-              }
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              {loginC.userData?.role !== "admin" && (
+                <h5 style={{ color: "red", marginLeft: "5px" }}>
+                  *This settings Can only be changed By Admin.
+                </h5>
+              )}
+            </>
           )}
           {index === 8 && (
-            <TextField
-              sx={{ m: 1.5 }}
-              label="Delete Time"
-              type="text"
-              onKeyPress={(e) => {
-                if (e.charCode === 13) {
-                  // changeCurrency(e);
-                }
-              }}
-              // defaultValue={
-              //   teamsList[0]?.settings.CurrencySymbol.individualValue
-              // }
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+            <>
+              <Box sx={{ width: "50%", mt: 2 }}>
+                <FormControl
+                  fullWidth
+                  disabled={loginC.userData?.role !== "admin"}
+                >
+                  <InputLabel id="demo-simple-select-label">
+                    Duration
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    // value={days.indexOf(settings.WeekStart[isTeam])}
+                    label="Day"
+                    // onChange={changeWeekStart}
+                  >
+                    {["1 Month", "3 Month", "6 Month"].map((el, index) => {
+                      return <MenuItem value={index}>{el}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
+              </Box>
+              {loginC.userData?.role !== "admin" && (
+                <h5 style={{ color: "red", marginLeft: "5px" }}>
+                  *This settings Can only be changed By Admin.
+                </h5>
+              )}
+            </>
           )}
           <Box sx={{ mt: 3 }}>
             <Typography varinat="h3" sx={{ fontWeight: "bold" }}>
