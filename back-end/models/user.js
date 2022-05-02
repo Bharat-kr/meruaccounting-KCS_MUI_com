@@ -104,6 +104,10 @@ const userSchema = new mongoose.Schema(
         individualValue: { type: String, default: "$" },
       },
     },
+    screenshotDeleteTime: {
+      type: Number,
+      default: 7776000,
+    },
     days: [
       {
         date: { type: String, default: "0" },
