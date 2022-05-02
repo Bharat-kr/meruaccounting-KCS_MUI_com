@@ -1,18 +1,18 @@
 // API for changing and getting screenshot deleteTime
 import axios from "axios";
 
-export const getDeleteTime = () => {
+export const getDeleteTime = async () => {
   try {
-    const res = axios.get("/screenshotDeleteTime");
+    const res = await axios.get("/screenshotDeleteTime");
     return res;
   } catch (error) {
     return error;
   }
 };
 
-export const updateDeleteTime = (body) => {
+export const updateDeleteTime = async (body) => {
   try {
-    const res = axios.patch("/screenshotDeleteTime", body);
+    const res = await axios.patch("/screenshotDeleteTime", body);
     return res;
   } catch (error) {
     return error;
