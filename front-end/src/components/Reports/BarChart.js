@@ -33,6 +33,7 @@ export default function Bar({ timeRange }) {
     settotalPData(reports?.reports[0]?.total[0]?.avgPerformanceData);
     settotalCount(reports?.reports[0]?.total[0]?.actCount);
     settotalPRate(reports?.reports[0]?.total[0]?.avgPayRate);
+    console.log(reports);
   }, [reports]);
 
   const config = {

@@ -22,8 +22,10 @@ import avatarRoutes from "./routes/avatar.js";
 import adminRoutes from "./routes/admin.js";
 import projectLeaderRoutes from "./routes/projectLeader.js";
 import forgotRoutes from "./routes/forgot.js";
+import screenshotDeleteRoutes from "./routes/screenshotDeleteTime.js";
 import "./maintenance/emailCron.js";
 import "./maintenance/delSsCron.js";
+import "./maintenance/budgetNotiCron.js";
 
 const __dirname = path.resolve();
 
@@ -61,6 +63,7 @@ app.use("/notify", notificationRoutes);
 app.use("/admin", adminRoutes);
 app.use("/projectLeader", projectLeaderRoutes);
 app.use("/forgot", forgotRoutes);
+app.use("/screenshotDeleteTime", screenshotDeleteRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 app.use("/avatar", express.static(path.join(__dirname, "/avatar")));

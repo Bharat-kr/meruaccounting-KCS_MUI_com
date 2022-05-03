@@ -27,6 +27,10 @@ import axios from "axios";
 import { convertString } from "../../contexts/UserContext";
 import { useSnackbar } from "notistack";
 import { UserContext } from "../../contexts/UserContext";
+import {
+  getDeleteTime,
+  updateDeleteTime,
+} from "src/api/screenshot api/screenshotDeleteTime";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -93,7 +97,6 @@ function checkheading(
       type: "settings",
     };
     await axios.post(`/notify/${id}`, notification);
-  
   };
 
   //Screenshot per hour update function
@@ -538,6 +541,7 @@ export default function SettingsMain(props) {
   const { dispatchgetTeam, getTeams } = useContext(teamContext);
   const { tab, changeTab } = useContext(UserContext);
   const [teamsList, setTeamsList] = useState([]);
+  const [screenshotDeleteTime, setScreenshotDeleteTime] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -576,6 +580,28 @@ export default function SettingsMain(props) {
     });
     setTeamsList(data);
   }, [getTeams]);
+
+  //useeffect to fetch the screenshot delete time
+  useEffect(() => {
+    const init = async () => {
+      const res = await getDeleteTime();
+      setScreenshotDeleteTime(res.data.value);
+      console.log(res);
+    };
+    init();
+  }, []);
+
+  //function to change the screenshot delete time
+  const changeScreenshotDeleteTime = async (e) => {
+    const res = await updateDeleteTime({
+      screenshotDeleteTime: e.target.value,
+    });
+    console.log(res);
+    if (res.status === 200) {
+      setScreenshotDeleteTime(e.target.value);
+      enqueueSnackbar("Screenshot Delete Time Updated", { variant: "success" });
+    }
+  };
 
   const userChange = async (user, settings, keyName, e) => {
     const data = {
@@ -627,6 +653,7 @@ export default function SettingsMain(props) {
       });
   };
 
+  //Searching a member in Autosearch
   const handleSearch = (e, value) => {
     try {
       const member = teamsList?.filter((emp) =>
@@ -698,12 +725,16 @@ export default function SettingsMain(props) {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    // value={days.indexOf(settings.WeekStart[isTeam])}
+                    value={screenshotDeleteTime}
                     label="Day"
-                    // onChange={changeWeekStart}
+                    onChange={changeScreenshotDeleteTime}
                   >
-                    {["1 Month", "3 Month", "6 Month"].map((el, index) => {
-                      return <MenuItem value={index}>{el}</MenuItem>;
+                    {[
+                      { key: "1 Month", value: 2592000 },
+                      { key: "3 Month", value: 7776000 },
+                      { key: "6 Month", value: 15552000 },
+                    ].map((el, index) => {
+                      return <MenuItem value={el.value}>{el.key}</MenuItem>;
                     })}
                   </Select>
                 </FormControl>
