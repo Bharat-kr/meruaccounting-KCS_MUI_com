@@ -21,9 +21,9 @@ import findRemoveSync from "find-remove";
 
 schedule.scheduleJob(`0 0 * * *`, async () => {
   console.log("deleting ss");
-  const admin = await User.findOne({ _id: "62029f0e95b7843f88ab3183" });
+  const admin = await User.find({ role: "admin" });
   // get time from admin.
   // temp time here (90 days)
-  const time = 7358000;
+  const time = admin[0].screenshotDeleteTime;
   findRemoveSync(__dirname + "/uploads", { age: { seconds: time } });
 });
