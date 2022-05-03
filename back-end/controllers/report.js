@@ -477,6 +477,34 @@ const generateReport = asyncHandler(async (req, res) => {
                 avgPerformanceData: { $avg: "$performanceData" },
               },
             },
+            {
+              $project: {
+                _id: {
+                  $dateFromString: {
+                    dateString: "$_id",
+                    format: "%d/%m/%Y",
+                    onNull: new Date(0),
+                  },
+                  w,
+                },
+                actCount: 1,
+                internal: 1,
+                external: 1,
+                totalHours: 1,
+                avgPerformanceData: 1,
+              },
+            },
+            { $sort: { _id: 1 } },
+            {
+              $project: {
+                _id: { $dateToString: { format: "%d/%m/%Y", date: "$_id" } },
+                actCount: 1,
+                internal: 1,
+                external: 1,
+                totalHours: 1,
+                avgPerformanceData: 1,
+              },
+            },
           ],
           byD: [
             {
