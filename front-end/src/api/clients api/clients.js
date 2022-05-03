@@ -20,11 +20,12 @@ const config = {
 };
 export const getClientProjects = async (id, dispatch) => {
   try {
-    const { data } = await axios.post(`/client/getClientProjects`, id, config);
+    const res = await axios.post(`/client/getClientProjects`, id, config);
     dispatch({
       type: GET_CLIENTPRO_SUCCESS,
-      payload: data.data,
+      payload: res.data.data,
     });
+    return res;
   } catch (error) {
     dispatch({
       type: GET_CLIENTPRO_FAILED,
@@ -33,16 +34,20 @@ export const getClientProjects = async (id, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 export const getClient = async (dispatch) => {
   try {
-    const { data } = await axios.get(`/client/getClient`, config);
+    const res = await axios.get(`/client/getClient`, config);
 
     dispatch({
       type: GET_CLIENT_SUCCESS,
-      payload: data,
+      payload: res.data,
     });
+    return res;
   } catch (error) {
     dispatch({
       type: GET_CLIENT_FAILED,
@@ -51,20 +56,21 @@ export const getClient = async (dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 
 export const addClient = async (incomingData, dispatch) => {
   try {
+    let res;
     if (incomingData.name !== "") {
-      const { data } = await axios.post(
-        `/client`,
-        { name: `${incomingData}` },
-        config
-      );
+      res = await axios.post(`/client`, { name: `${incomingData}` }, config);
 
-      dispatch({ type: ADD_CLIENT_SUCCESS, payload: data });
+      dispatch({ type: ADD_CLIENT_SUCCESS, payload: res.data });
     }
+    return res;
   } catch (error) {
     dispatch({
       type: ADD_CLIENT_FAILED,
@@ -73,15 +79,19 @@ export const addClient = async (incomingData, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 
 export const deleteClient = async (incomingData, dispatch) => {
   try {
     // console.log(incomingData);
-    const { data } = await axios.delete(`/client/${incomingData}`, config);
+    const res = await axios.delete(`/client/${incomingData}`, config);
 
-    dispatch({ type: DELETE_CLIENT_SUCCESS, payload: data });
+    dispatch({ type: DELETE_CLIENT_SUCCESS, payload: res.data });
+    return res;
   } catch (error) {
     dispatch({
       type: DELETE_CLIENT_FAILED,
@@ -90,14 +100,18 @@ export const deleteClient = async (incomingData, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 
 export const editClient = async (incomingData, dispatch) => {
   try {
     const [id, editData] = incomingData;
-    const { data } = await axios.patch(`/client/${id}`, editData);
-    dispatch({ type: EDIT_CLIENT_SUCCESS, payload: data });
+    const res = await axios.patch(`/client/${id}`, editData);
+    dispatch({ type: EDIT_CLIENT_SUCCESS, payload: res.data });
+    return res;
   } catch (error) {
     dispatch({
       type: EDIT_CLIENT_FAILED,
@@ -106,5 +120,8 @@ export const editClient = async (incomingData, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };

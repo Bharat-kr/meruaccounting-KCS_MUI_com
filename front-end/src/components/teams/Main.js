@@ -29,7 +29,11 @@ import EdiText from "react-editext";
 import { convertString } from "../../contexts/UserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
-import { getTeam, removeTeamMember } from "src/api/teams api/teams";
+import {
+  getTeam,
+  removeTeamMember,
+  updateMember,
+} from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
@@ -218,19 +222,19 @@ export default function Main(props) {
         employeeId: currMember._id,
         teamId: currTeam._id,
       };
-      await removeTeamMember(data, dispatchRemoveMember);
+      const res = await removeTeamMember(data, dispatchRemoveMember);
       await getTeam(dispatchgetTeam);
+      if (!res.data) {
+        throw new Error(res);
+      }
+      if (res.status !== 500) {
+        enqueueSnackbar("Member removed", { variant: "success" });
+      }
       // enqueueSnackbar("Member removed", { variant: "success" });
     } catch (err) {
       console.log(err);
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(
-      removeMember.error ? removeMember.error : "Deleted Member",
-      {
-        variant: removeMember.error ? "info" : "success",
-      }
-    );
   };
 
   //Removing employee from a project
@@ -240,19 +244,18 @@ export default function Main(props) {
         id: currMember._id,
         projectId: value,
       };
-      await removeProjectMember(data, dispatchremoveProjectMember);
+      const res = await removeProjectMember(data, dispatchremoveProjectMember);
       await getTeam(dispatchgetTeam);
-      // enqueueSnackbar("Project removed", { variant: "success" });
+      if (!res.data) {
+        throw new Error(res);
+      }
+      if (res.status !== 500) {
+        enqueueSnackbar("", { variant: "success" });
+      }
     } catch (err) {
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
       console.log(err);
     }
-    enqueueSnackbar(
-      removeProjectMember.error ? removeProjectMember.error : "Project removed",
-      {
-        variant: removeProjectMember.error ? "info" : "success",
-      }
-    );
   };
 
   //Searching a project

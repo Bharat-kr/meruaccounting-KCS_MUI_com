@@ -17,6 +17,11 @@ const createTeam = asyncHandler(async (req, res) => {
     try {
       const manager = req.user;
       const teamName = req.body.name;
+      const uniqueTeam = await Team.findOne({ name: teamName });
+      if (uniqueTeam) {
+        throw new Error("Team already exists.");
+      }
+
       const team = await Team.create({ name: teamName });
       if (!team) throw new Error("Error creating new team");
 
@@ -71,10 +76,8 @@ const updateMember = asyncHandler(async (req, res) => {
         }
       });
       if (alreadyMember) {
-        return res.status(200).json({
-          status: "Already A Member",
-          data: team,
-        });
+        res.status(200);
+        throw new Error(`Already a member`);
       }
 
       team.members.push(employeeId);
@@ -96,7 +99,9 @@ const updateMember = asyncHandler(async (req, res) => {
         data: team,
       });
     } catch (error) {
-      res.status(500);
+      if (!res.status) {
+        res.status(500);
+      }
       throw new Error(error);
     }
   } else {
@@ -261,7 +266,7 @@ const getTeam = asyncHandler(async (req, res) => {
             populate: {
               path: "projects",
               model: "Project",
-              select: ["name","projectLeader"],
+              select: ["name", "projectLeader"],
             },
           })
           .populate({
