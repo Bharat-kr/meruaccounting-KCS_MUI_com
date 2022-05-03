@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 // layouts
@@ -55,7 +55,7 @@ export default function Router() {
   } = useContext(CurrentUserContext);
   const {
     date,
-
+    reports,
     allOptionsFunc,
     employeeOptions,
     employeesOptionsFunc,
@@ -71,22 +71,27 @@ export default function Router() {
     clientsFunc,
     group,
     disableStateFunc,
+    byProjectFunc,
+    byClientsFunc,
   } = React.useContext(reportsContext);
 
-  const { dispatchClientDetails } = useContext(ClientsContext);
+  const { clientDetails, dispatchClientDetails } = useContext(ClientsContext);
   const { loginC } = useContext(loginContext);
   const { dispatchAdminAllEmployee } = useContext(employeeContext);
 
   React.useLayoutEffect(() => {
-    getClient(dispatchClientDetails);
-    if (Role.indexOf(loginC.userData.role <= 2)) getTeam(dispatchgetTeam);
-    if (loginC?.userData?.role === "admin")
-      getAllEmployee(dispatchAdminAllEmployee);
-    else if (loginC?.userData?.role === "manager")
-      getTeamCommonData(dispatchTeamCommonData);
-    else if (loginC?.userData?.role === "projectLeader")
-      projectMemberCommonData(dispatchProjectMemberData);
-    getCommonData(dispatchCommonData);
+    if (loginC) {
+      getClient(dispatchClientDetails);
+
+      if (Role.indexOf(loginC.userData.role <= 2)) getTeam(dispatchgetTeam);
+      if (loginC?.userData?.role === "admin")
+        getAllEmployee(dispatchAdminAllEmployee);
+      else if (loginC?.userData?.role === "manager")
+        getTeamCommonData(dispatchTeamCommonData);
+      else if (loginC?.userData?.role === "projectLeader")
+        projectMemberCommonData(dispatchProjectMemberData);
+      getCommonData(dispatchCommonData);
+    }
   }, [commonData]);
   const getOptions = async () => {
     axios.post("/report/options").then((res) => {
@@ -106,7 +111,9 @@ export default function Router() {
     });
   };
   React.useEffect(() => {
-    getOptions();
+    if (loginC) {
+      getOptions();
+    }
   }, []);
   React.useEffect(() => {
     disableStateFunc(false);

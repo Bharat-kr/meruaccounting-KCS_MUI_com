@@ -101,7 +101,6 @@ export default function LoginForm() {
   };
   // const handleSubmitAxios = async (e) => {
   //   e.preventDefault();
-  //   /* {console.log({ ...getFieldProps('firstName') }, { ...getFieldProps('lastName') })}; */
   //   try {
   //     const res = await axios({
   //       method: 'post',
@@ -122,8 +121,6 @@ export default function LoginForm() {
   //       navigate('/dashboard', { replace: true });
   //     }
   //     setMessage('');
-  //     console.log(res.status);
-  //     console.log(res);
   //   } catch (error) {
   //     if (error.response) {
   //       setMessage(error.response.data.message);
@@ -134,8 +131,6 @@ export default function LoginForm() {
   //     // console.log(error.response);
   //   }
   // };
-
-  console.log(formik);
 
   useEffect(() => {
     if (loginC.error) {
@@ -165,7 +160,6 @@ export default function LoginForm() {
     // console.log(typeof dataS);
 
     loginApi(data, dispatchLogin);
-    console.log(loginC);
     if (localStorage["Bearer Token"]) {
       navigate("/dashboard/app", { replace: true });
       // setMessage('');
@@ -174,13 +168,11 @@ export default function LoginForm() {
 
   //Forgot Password Call
   const forgot = async () => {
-    console.log({ ...getFieldProps("email") }.value);
     await axios
       .post("/forgot", {
         email: { ...getFieldProps("email") }.value,
       })
       .then((res) => {
-        console.log(res);
         enqueueSnackbar(res.data.message, {
           variant: "success",
         });

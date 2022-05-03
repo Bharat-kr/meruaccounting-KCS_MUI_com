@@ -91,10 +91,7 @@ export default function Sidebar() {
   if (clientDetails?.loader === false) {
     clientsList = clientDetails?.client?.data;
     clientDetails?.client?.data?.map((cli) => {
-      <>
-        {console.log(cli.name)}
-        {clientNameList.push(cli.name)}
-      </>;
+      <>{clientNameList.push(cli.name)}</>;
     });
   }
   // labels for search box(autocomplete)
@@ -110,10 +107,10 @@ export default function Sidebar() {
     }
     changeClient(client[0]);
     setSelected((oldSelected) => [`${client[0]?._id}`]);
-
-    // not working
-    // sidebarref.current.scrollTop =
-    //   500 + clientref.current.scrollHeight * clientsList.indexOf(client[0]);
+    console.log(client[0]);
+    if (client[0] !== undefined) {
+      document.getElementById(client[0]?._id).scrollIntoView();
+    }
   };
 
   const handleClick = (e) => {
@@ -122,7 +119,6 @@ export default function Sidebar() {
     );
     changeClient(client[0]);
   };
-  console.log(clientDetails);
 
   // add client in submit
   // not working properly , add proper validation Dr. Kamal Singh
@@ -253,6 +249,7 @@ export default function Sidebar() {
             >
               {clientsList?.map((client) => (
                 <TreeItem
+                  id={client._id}
                   ref={clientref}
                   onClick={handleClick}
                   nodeId={client._id}

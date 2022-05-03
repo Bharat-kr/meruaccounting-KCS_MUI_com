@@ -54,6 +54,7 @@ export default function Sidebar() {
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [loaderAddProject, setLoaderAddProject] = React.useState(false);
+  const [projectList, setProjectList] = React.useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const searchRef = useRef("");
   const handleToggle = (event, nodeIds) => {
@@ -69,33 +70,35 @@ export default function Sidebar() {
   if (clientDetails.loader === false) {
     clientsList = clientDetails?.client?.data;
   }
+
   // useEffect(() => {
-  //   try {
-  //     if (clientDetails !== null) {
-  //       changeClient(clientDetails?.client?.data[0]);
-  //       changeProject(clientDetails?.client?.data[0].projects[0]);
-  //     }
-  //     changeClient(
-  //       clientDetails?.client?.data[
-  //         clientDetails.client.data.indexOf(currentClient)
-  //       ]
-  //     );
-  //     changeProject(
-  //       clientDetails?.client?.data[
-  //         clientDetails.client.data.indexOf(currentClient)
-  //       ].projects[currentClient.projects.indexOf(currentProject)]
-  //     );
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
+  // try {
+  // if (clientDetails !== null) {
+  //   changeClient(clientDetails?.client?.data[0]);
+  //   changeProject(clientDetails?.client?.data[0].projects[0]);
+  // }
+  // changeClient(
+  //   clientDetails?.client?.data[
+  //     clientDetails.client.data.indexOf(currentClient)
+  //   ]
+  // );
+  // changeProject(
+  //   clientDetails?.client?.data[
+  //     clientDetails.client.data.indexOf(currentClient)
+  //   ].projects[currentClient.projects.indexOf(currentProject)]
+  // );
+  // } catch (error) {
+  // console.log(error.message);
+  // }
   // }, [clientDetails]);
-  const projectList = [];
   useEffect(() => {
+    let prolist = [];
     if (clientDetails.loader === false) {
       clientDetails?.client?.data.map((client) => {
         client.projects.map((pro) => {
-          projectList.push(client.name + ":" + pro.name);
+          prolist.push(client.name + ":" + pro.name);
         });
+        setProjectList(prolist);
       });
     }
   }, [clientDetails, currentClient, currentProject]);
@@ -106,8 +109,6 @@ export default function Sidebar() {
   //   );
   // }, [checkclientDetails]);
   // change currentclient on search
-  // console.log(currentClient, currentProject);
-  console.log(clientDetails);
   const differentiateFunction = (str) => {
     if (str !== null) {
       return str.split(":");
@@ -135,6 +136,11 @@ export default function Sidebar() {
 
         changeProject(project[0]);
         setSelected((oldSelected) => [`${project[0]._id + client[0]._id}`]);
+        if (client[0] !== undefined) {
+          document
+            .getElementById(client[0]._id + project[0]._id)
+            .scrollIntoView();
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -288,8 +294,8 @@ export default function Sidebar() {
                     {client.projects.map((project) => {
                       return (
                         <TreeItem
+                          id={client._id + project._id}
                           nodeId={(project._id + client._id).toString()}
-                          id={project._id}
                           key={project._id}
                           label={
                             <Typography

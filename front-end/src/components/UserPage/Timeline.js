@@ -89,6 +89,7 @@ const Timeline = ({ activities }) => {
             .map((el) => {
               return (
                 <Box
+                  key={el.length}
                   sx={{
                     width: `${el.length}%`,
                     height: "100%",

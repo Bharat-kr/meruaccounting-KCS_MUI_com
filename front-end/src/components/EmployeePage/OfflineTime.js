@@ -54,7 +54,6 @@ const OfflineTime = ({ date }) => {
       .get("/project", { employeeId: commonData.commonData.user._id })
       .then((res) => {
         setProjects(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -83,7 +82,6 @@ const OfflineTime = ({ date }) => {
   const handleEndChange = (e) => {
     setEndTime(e.target.value);
   };
-  console.log(date.format("DD/MM/YYYY"));
   //caling api
   const addTime = async (e) => {
     e.preventDefault();
@@ -229,7 +227,10 @@ const OfflineTime = ({ date }) => {
             >
               {projects.map((project) => {
                 return (
-                  <MenuItem value={project._id + "-" + project?.client?._id}>
+                  <MenuItem
+                    key={project._id + "-" + project?.client?._id}
+                    value={project._id + "-" + project?.client?._id}
+                  >
                     {project.name}-{project?.client?.name}
                   </MenuItem>
                 );

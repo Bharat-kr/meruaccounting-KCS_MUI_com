@@ -65,7 +65,7 @@ export function ReportsProvider(props) {
   );
 
   const [byClients, setByClients] = React.useState([]);
-  const [byProject, SetByProject] = React.useState([]);
+  const [byProject, setByProject] = React.useState([]);
   const [date, setdate] = React.useState([null, null]);
   const [allOptions, setAllOptions] = React.useState([]);
   const [employeeOptions, setemployeeOptions] = React.useState([]);
@@ -85,7 +85,7 @@ export function ReportsProvider(props) {
     setByClients(cli);
   };
   const byProjectFunc = (pro) => {
-    SetByProject(pro);
+    setByProject(pro);
   };
   const dateFunc = (x) => {
     setdate(x);

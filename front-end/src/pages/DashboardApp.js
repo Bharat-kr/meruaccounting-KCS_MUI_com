@@ -39,8 +39,6 @@ export default function DashboardApp() {
     dispatchAdminAllEmployee,
   } = useContext(employeeContext);
 
-  // console.log(teamsList);
-  // console.log(allEmployees);
   return (
     <Page title="Screen Monitor | Meru Accounting">
       <Container maxWidth="lg">

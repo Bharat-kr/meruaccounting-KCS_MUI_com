@@ -142,7 +142,6 @@ export default function VerticalTabs() {
   React.useEffect(() => {
     getAllEmployeeList(dispatchAllEmployees);
   }, []);
-  console.log(allEmployees.employees);
 
   teamsDetails = getTeams?.getTeam;
 
@@ -166,7 +165,6 @@ export default function VerticalTabs() {
     try {
       deleteTeam(currTeam._id, dispatchDeleteTeam);
       // if(deletedTeam.data.){}
-      console.log(deletedTeam);
       getTeam(dispatchgetTeam);
     } catch (err) {
       console.log(err);
@@ -195,7 +193,6 @@ export default function VerticalTabs() {
       variant: teamCreate.error ? "error" : "success",
     });
   };
-  console.log(currTeam, currMember);
   //Changing Curr Team
   const changeCurrTeam = async (e) => {
     const team = await getTeams.getTeam.filter((team) =>
@@ -257,6 +254,10 @@ export default function VerticalTabs() {
         }
         setCurrMember(member[0]);
         setSelected((oldSelected) => [`${member[0]._id + teams[0]._id}`]);
+
+        if (getTeams.getTeam !== undefined) {
+          document.getElementById(teams._id + member._id).scrollIntoView();
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -278,7 +279,7 @@ export default function VerticalTabs() {
 
   //handle employee select close
   const handleEmplooyeeSelect = (e, value) => {
-    setNewMemberId(value._id);
+    setNewMemberId(value?._id);
   };
 
   return (
@@ -401,6 +402,7 @@ export default function VerticalTabs() {
                     {el.members.map((member) => {
                       return (
                         <TreeItem
+                          id={el._id + member._id}
                           nodeId={member._id.toString() + el._id.toString()}
                           key={member._id + el._id}
                           label={
@@ -450,7 +452,7 @@ export default function VerticalTabs() {
               /> */}
               <Autocomplete
                 id="combo-box-demo"
-                inputRef={addMemberRef}
+                inputref={addMemberRef}
                 options={allEmployees.employees}
                 getOptionLabel={(option) =>
                   getFullName(option.firstName, option.lastName)

@@ -287,10 +287,9 @@ export default function EnhancedTable(props) {
     currentProject,
     currentClient,
   } = useContext(ClientsContext);
-  const { ProjectMember, dispatchaddProjectMember } =
+  const { addedProjectMember, dispatchaddProjectMember, projectMembers } =
     useContext(projectContext);
-  const { reports, dispatchGetReports, byClientsFunc, byProjectFunc } =
-    useContext(reportsContext);
+  const { reports, dispatchGetReports } = useContext(reportsContext);
   const { allEmployees, dispatchAllEmployees } = useContext(CommonContext);
 
   const tableListRef = useRef();
@@ -299,6 +298,24 @@ export default function EnhancedTable(props) {
   const reportsFunction = async (reportOptions) => {
     await getReports(dispatchGetReports, reportOptions);
   };
+  useEffect(async () => {
+    try {
+      const data = currentClient?._id;
+      const clientIndex = clientsList?.findIndex(
+        (i) => i._id === currentClient?._id
+      );
+      const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
+        (i) => i._id === currentProject._id
+      );
+      if (projectIndex && clientIndex !== null) {
+        await changeClient(clientsList[clientIndex]);
+        await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [clientDetails]);
+
   React.useEffect(async () => {
     try {
       const reportOptions = {
@@ -312,19 +329,13 @@ export default function EnhancedTable(props) {
       console.log(error);
     }
   }, [currentProject, currentClient]);
-  useEffect(() => {
-    setProjectMember(reports?.reports);
-    byClientsFunc(reports?.reports[0]?.byClients);
-    byProjectFunc(reports?.reports[0]?.byProjects);
-    console.log(reports.reports);
-  }, [reports]);
   React.useEffect(async () => {
     try {
       let nameList = [];
       currentProject
         ? currentProject.employees.map((emp, index) => {
             let o = {};
-            let exists = projectMember[0]?.byEmployees?.filter(
+            let exists = projectMembers[0]?.byEmployees?.filter(
               (el) => el._id.employee === emp._id
             );
             if (exists && exists.length) {
@@ -350,7 +361,6 @@ export default function EnhancedTable(props) {
           })
         : employeesList.push("");
 
-      console.log(employeesList);
       setRows(employeesList);
       setRowsPerPage(rows.length);
       setEmployeeNameList(nameList);
@@ -358,26 +368,7 @@ export default function EnhancedTable(props) {
     } catch (err) {
       console.log(err);
     }
-  }, [currentClient, currentProject, clientDetails, projectMember]);
-
-  console.log(employeesList);
-  useEffect(async () => {
-    try {
-      const data = currentClient?._id;
-      const clientIndex = clientsList?.findIndex(
-        (i) => i._id === currentClient?._id
-      );
-      const projectIndex = clientsList[clientIndex]?.projects?.findIndex(
-        (i) => i._id === currentProject._id
-      );
-      if (projectIndex && clientIndex !== null) {
-        await changeClient(clientsList[clientIndex]);
-        await changeProject(clientsList[clientIndex]?.projects[projectIndex]);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [clientDetails]);
+  }, [currentClient, currentProject, clientDetails, projectMembers]);
 
   const handleMemberAdded = async (e) => {
     e.preventDefault();
@@ -397,9 +388,9 @@ export default function EnhancedTable(props) {
       console.log(error.message);
     }
     enqueueSnackbar(
-      ProjectMember.error ? ProjectMember.error : "Member added",
+      addedProjectMember.error ? addedProjectMember.error : "Member added",
       {
-        variant: ProjectMember.error ? "info" : "success",
+        variant: addedProjectMember.error ? "info" : "success",
       }
     );
   };
@@ -411,8 +402,6 @@ export default function EnhancedTable(props) {
   const handleSearch = async (e, value) => {
     e.preventDefault();
     try {
-      console.log(e, value);
-      console.log(rows);
       const member = rows?.filter((emp) => (emp.name === value ? emp : ""));
       if (member.length === 0) {
         // eslint-disable-next-line no-useless-return
@@ -474,7 +463,7 @@ export default function EnhancedTable(props) {
 
   //handle employee select close
   const handleEmplooyeeSelect = (e, value) => {
-    setNewMemberId(value._id);
+    setNewMemberId(value?._id);
   };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

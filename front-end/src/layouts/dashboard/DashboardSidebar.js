@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 // material
 import { styled } from "@mui/material/styles";
@@ -16,7 +16,7 @@ import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { getFullName } from "src/_helpers/getFullName";
-import axios from "axios"
+import axios from "axios";
 
 // ----------------------------------------------------------------------
 
@@ -48,10 +48,15 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const { loginC } = useContext(loginContext);
   const { commonData } = useContext(CurrentUserContext);
-  const currentRoleIndex = Role.indexOf(loginC.userData.role);
-  const sidebarConfig = localStorage.loginC
-    ? sidebarConfigfn(currentRoleIndex)
-    : sidebarConfigDefault;
+  const currentRoleIndex = Role.indexOf(
+    JSON.parse(localStorage.getItem("loginC")).userData.role
+  );
+  const [sidebarConfig, setSidebarConfig] = useState(sidebarConfigDefault);
+  useEffect(() => {
+    if (localStorage?.loginC) {
+      setSidebarConfig(sidebarConfigfn(currentRoleIndex));
+    }
+  }, [currentRoleIndex]);
 
   useEffect(() => {
     if (isOpenSidebar) {

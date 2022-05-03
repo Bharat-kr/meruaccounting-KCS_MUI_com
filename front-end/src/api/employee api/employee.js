@@ -16,8 +16,6 @@ export const getEmployeeDetails = async (_id, dispatch) => {
     const { data } = await axios.get(`/employee/${_id}`);
 
     dispatch({ type: EMPLOYEE_DETAILS_SUCCESS, payload: data });
-    console.log(`Employee details `);
-    console.log(data);
   } catch (error) {
     dispatch({
       type: EMPLOYEE_DETAILS_FAILED,
@@ -33,8 +31,6 @@ export const employeeUpdate = async (_id, data, dispatch) => {
     const res = await axios.patch(`/employee/edit/${_id}`, data);
 
     dispatch({ type: EMPLOYEE_UPDATE_SUCCESS, payload: res.data.data });
-    console.log(`Employee updated `);
-    console.log(res);
   } catch (error) {
     dispatch({
       type: EMPLOYEE_UPDATE_FAILED,
@@ -48,12 +44,10 @@ export const employeeUpdate = async (_id, data, dispatch) => {
 
 export const employeesTimeDetails = async (incomingData, dispatch) => {
   try {
-    console.log(incomingData);
     const res = await axios.post(`/teamCommondata`, {
       userIds: incomingData,
     });
     if (res.status === 200) {
-      console.log("commondata success", res.data);
       dispatch({
         type: GET_EMPLOYEEDATA_SUCCESS,
         payload: res.data,

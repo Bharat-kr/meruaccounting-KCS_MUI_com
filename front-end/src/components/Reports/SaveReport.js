@@ -194,7 +194,6 @@ export default function SaveReport(props) {
           },
         })
         .then((res) => {
-          console.log("working?");
           FileSaver.saveAs(
             new Blob([res.data], { type: "application/pdf" }),
             `${name}.pdf`
@@ -421,7 +420,6 @@ export default function SaveReport(props) {
       name,
       options: props.options,
     };
-    console.log(data);
     const savedData = await axios.post("/report/save", data);
     if (checked[0]) {
       navigator.clipboard.writeText(

@@ -91,7 +91,6 @@ export default function Profile() {
         setImg(file);
         setOpen(true);
       } else {
-        console.log("Select a file");
       }
     }
   };
@@ -116,7 +115,6 @@ export default function Profile() {
       //sending image
       let data = new FormData();
       data.append("image", file, file.name);
-      console.log(data);
 
       //uploading image
       await axios
@@ -127,7 +125,6 @@ export default function Profile() {
         })
         .then(async (response) => {
           //handle success
-          console.log(response);
           if (response.status === 200) {
             //updating user
             await employeeUpdate(

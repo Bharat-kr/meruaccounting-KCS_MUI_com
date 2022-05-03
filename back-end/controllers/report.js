@@ -485,7 +485,6 @@ const generateReport = asyncHandler(async (req, res) => {
                     format: "%d/%m/%Y",
                     onNull: new Date(0),
                   },
-                  w,
                 },
                 actCount: 1,
                 internal: 1,

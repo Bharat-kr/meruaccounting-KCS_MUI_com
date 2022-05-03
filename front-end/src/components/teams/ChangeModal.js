@@ -61,15 +61,12 @@ const ChangeModal = ({
   const handleProjectChange = (event) => {
     setNewProject(event.target.value);
   };
-  console.log(currTeam);
-  console.log(currMember);
 
   const changeManager = async () => {
     try {
       const data = {
         role: "manager",
       };
-      console.log(data, newManager);
       //new manager
       await employeeUpdate(newManager, data, dispatchEmployeeUpdate);
       //changing role of the curr person
@@ -88,7 +85,7 @@ const ChangeModal = ({
     enqueueSnackbar(
       updatedMember.error ? updatedMember.error : "Updated Role",
       {
-        variant: updatedMember.error ? "info" : "success",
+        variant: updatedMember.error ? "info" : "primary",
       }
     );
     handleModalClose();
@@ -108,7 +105,7 @@ const ChangeModal = ({
     enqueueSnackbar(
       updatedMember.error ? updatedMember.error : "Updated Role",
       {
-        variant: updatedMember.error ? "info" : "success",
+        variant: updatedMember.error ? "info" : "primary",
       }
     );
     handleModalClose();
@@ -135,7 +132,7 @@ const ChangeModal = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                bgcolor: "primary.lighter",
+                bgcolor: "primary",
                 p: 2,
               }}
             >
@@ -192,7 +189,7 @@ const ChangeModal = ({
             >
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 sx={{
                   mr: 2,
                 }}
@@ -281,7 +278,7 @@ const ChangeModal = ({
             >
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 sx={{
                   mr: 2,
                 }}
@@ -357,17 +354,20 @@ const ChangeModal = ({
               <Box
                 sx={{
                   ml: 2,
-                }}>Select a Project for which you want to make him leader</Box>
+                }}
+              >
+                Select a Project for which you want to make him leader
+              </Box>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   mt: 1,
                 }}
-                >
+              >
                 <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
                   <InputLabel id="demo-simple-select-filled-label">
-                    Project 
+                    Project
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-filled-label"
@@ -402,7 +402,7 @@ const ChangeModal = ({
             >
               <Button
                 variant="contained"
-                color="success"
+                color="primary"
                 sx={{
                   mr: 2,
                 }}
