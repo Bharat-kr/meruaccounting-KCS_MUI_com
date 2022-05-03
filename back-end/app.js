@@ -25,6 +25,7 @@ import forgotRoutes from "./routes/forgot.js";
 import screenshotDeleteRoutes from "./routes/screenshotDeleteTime.js";
 import "./maintenance/emailCron.js";
 import "./maintenance/delSsCron.js";
+import "./maintenance/budgetNotiCron.js";
 
 const __dirname = path.resolve();
 
