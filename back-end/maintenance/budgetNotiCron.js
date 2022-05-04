@@ -32,7 +32,7 @@ schedule.scheduleJob(`0 * * * *`, async () => {
       title: "Budget Hours Exceeded",
       description: `Project hours exceeded for ${pro.name} project`,
       avatar: "if there is any",
-      type: "project",
+      type: "projects",
     };
     pro.employees.forEach((emp) => {
       sendNotification(emp, noti);
