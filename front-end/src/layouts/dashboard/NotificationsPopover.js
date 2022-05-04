@@ -121,16 +121,30 @@ function NotificationItem({ notification, markAsRead, deleteNotification }) {
   const { loginC } = useContext(loginContext);
   const navigate = useNavigate();
   const role = loginC.userData.role;
+  const notificationTypes = [
+    "teams",
+    "projects",
+    "reports",
+    "settings",
+    "clients",
+  ];
+  console.log(notification);
   return (
     <ListItemButton
       disableGutters
       onClick={() => {
         markAsRead(notification._id);
-        if (role === "admin" || role === "manager") {
-          navigate(`/dashboard/${notification.type}`, { replace: true });
-        }
-        if (role === "projectLeader" && notification.type === "projects") {
-          navigate(`/dashboard/${notification.type}`, { replace: true });
+        if (
+          notificationTypes.find((el) => {
+            return el === notification.type;
+          })
+        ) {
+          if (role === "admin" || role === "manager") {
+            navigate(`/dashboard/${notification.type}`, { replace: true });
+          }
+          if (role === "projectLeader" && notification.type === "projects") {
+            navigate(`/dashboard/${notification.type}`, { replace: true });
+          }
         }
       }}
       sx={{
