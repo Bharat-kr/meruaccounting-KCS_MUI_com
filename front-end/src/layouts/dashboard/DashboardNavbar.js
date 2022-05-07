@@ -11,6 +11,7 @@ import { MHidden } from "../../components/@material-extend";
 //
 import AccountPopover from "./AccountPopover";
 import NotificationsPopover from "./NotificationsPopover";
+import DownloadButton from "./DownloadButton";
 
 // ----------------------------------------------------------------------
 
@@ -79,6 +80,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           alignItems="center"
           spacing={{ xs: 0.5, sm: 1.5 }}
         >
+          <DownloadButton />
           <NotificationsPopover />
           <AccountPopover />
         </Stack>
