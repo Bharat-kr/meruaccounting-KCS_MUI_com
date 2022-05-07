@@ -181,7 +181,6 @@ export default function VerticalTabs() {
     try {
       e.preventDefault();
       const res = await createTeam({ name: capitalize(newTeam) }, dispatchTeam);
-      console.log(res);
       if (!res.data) {
         throw new Error(res);
       }

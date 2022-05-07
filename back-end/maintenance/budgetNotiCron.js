@@ -14,29 +14,40 @@ import sgMail from "@sendgrid/mail";
 import Screenshot from "../models/screenshot.js";
 import findRemoveSync from "find-remove";
 
-schedule.scheduleJob(`0 * * * *`, async () => {
+schedule.scheduleJob(`* * * *`, async () => {
   console.log("notifying");
   // get projects
   const projects = await Project.aggregate([
     {
       $match: {
         $expr: {
-          $lte: ["$budgetTime", "$consumeTime"],
+          $lte: ["$budgetTime" * 3600, "$consumeTime"],
         },
       },
     },
   ]);
 
-  projects.forEach((pro) => {
-    const noti = {
-      title: "Budget Hours Exceeded",
-      description: `Project hours exceeded for ${pro.name} project`,
-      avatar: "if there is any",
-      type: "project",
-    };
-    pro.employees.forEach((emp) => {
-      sendNotification(emp, noti);
-    });
+  projects.forEach(async (pro) => {
+    if (!pro.notified) {
+      const noti = {
+        title: "Budget Hours Exceeded",
+        description: `Project hours exceeded for ${pro.name} project`,
+        avatar: "if there is any",
+        type: "project",
+      };
+      pro.employees.forEach((emp) => {
+        sendNotification(emp, noti);
+      });
+      // set project notified to true, back to false when changing the budget hours
+      await Project.updateOne(
+        { _id: pro._id },
+        {
+          $set: {
+            notified: true,
+          },
+        }
+      );
+    }
   });
 });
 
@@ -54,7 +65,6 @@ const sendNotification = asyncHandler(async (emp, noti) => {
       type: noti.type,
     };
     employee.notifications = [notification, ...employee.notifications];
-
     await employee.save();
   } catch (error) {
     throw new Error(error);

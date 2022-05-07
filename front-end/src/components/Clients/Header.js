@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const {
     // currentClient, \
-    clientsList,
+    // clientsList,
     ...others
   } = props;
   // to focus edit name of client
@@ -59,6 +59,7 @@ export default function Header(props) {
     dispatchClientDetails,
     deletedClient,
     clientDetails,
+    clientsList,
   } = useContext(ClientsContext);
   let projectList = [];
   useEffect(async () => {
@@ -83,17 +84,17 @@ export default function Header(props) {
     try {
       if (clientName !== "") {
         const data = [currentClient._id, { name: clientName }];
-        await editClient(data, dispatchEditClient);
+        const res = await editClient(data, dispatchEditClient);
         await getClient(dispatchClientDetails);
-        // enqueueSnackbar("Client edited", { variant: "success" });
+        if (!res.data) {
+          throw new Error(res);
+        }
+        enqueueSnackbar("Client edited", { variant: "success" });
       }
     } catch (err) {
       console.log(err);
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(editClient.error ? editClient.error : "Client edited ", {
-      variant: editClient.error ? "info" : "success",
-    });
   };
 
   const handleDeleteClient = async (e) => {
@@ -229,11 +230,7 @@ export default function Header(props) {
                   color: "green",
                   fontWeight: "bold",
                 }}
-                onClick={() => {
-                  {
-                  }
-                  changeClient(clientsList[clientIndex]);
-                }}
+                onClick={changeClient(clientsList[clientIndex])}
               >
                 Assign Projects
               </RouterLink>
@@ -318,7 +315,7 @@ export default function Header(props) {
                   </RouterLink>
                 </Box>
               ) : (
-                <EnhancedTable clientsList={clientsList} outerref={outerref} />
+                <EnhancedTable outerref={outerref} />
               )}
             </Box>
           </Box>

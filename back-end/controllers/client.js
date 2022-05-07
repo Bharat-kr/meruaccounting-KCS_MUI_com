@@ -6,6 +6,7 @@ import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
 import mongoose from "mongoose";
 import capitalize from "../utils/capitalize.js";
+import { uniqueFinder } from "../utils/uniqueEntry.js";
 
 const ac = new AccessControl(grantsObject);
 
@@ -21,6 +22,10 @@ const createClient = asyncHandler(async (req, res) => {
     try {
       let { name } = req.body;
       name = capitalize(name);
+      const uni = await uniqueFinder(name, Client);
+      if (!uni) {
+        throw new Error(`Client already exists.`);
+      }
       const manager = req.user;
       const client = new Client({ name });
 
@@ -216,6 +221,10 @@ const editClient = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).updateAny("client");
   if (permission.granted) {
     try {
+      const uni = await uniqueFinder(req.body.name, Client);
+      if (!uni) {
+        throw new Error("Client with same name exists.");
+      }
       const client = await Client.findByIdAndUpdate(req.params.id, req.body);
 
       if (!client) {

@@ -13,9 +13,10 @@ import {
 
 export const getEmployeeDetails = async (_id, dispatch) => {
   try {
-    const { data } = await axios.get(`/employee/${_id}`);
+    const res = await axios.get(`/employee/${_id}`);
 
-    dispatch({ type: EMPLOYEE_DETAILS_SUCCESS, payload: data });
+    dispatch({ type: EMPLOYEE_DETAILS_SUCCESS, payload: res.data });
+    return res;
   } catch (error) {
     dispatch({
       type: EMPLOYEE_DETAILS_FAILED,
@@ -24,6 +25,9 @@ export const getEmployeeDetails = async (_id, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 export const employeeUpdate = async (_id, data, dispatch) => {

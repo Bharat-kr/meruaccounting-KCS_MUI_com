@@ -99,38 +99,6 @@ export default function LoginForm() {
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
-  // const handleSubmitAxios = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await axios({
-  //       method: 'post',
-  //       url: 'https://ssmonitor-backend.herokuapp.com/login',
-  //       data: {
-  //         role: 'manager',
-  //         firstName: { ...getFieldProps('firstName') }.value,
-  //         lastName: { ...getFieldProps('lastName') }.value,
-  //         email: { ...getFieldProps('email') }.value,
-  //         password: { ...getFieldProps('password') }.value
-  //         // email: 'rohit12345@gmail.com',
-  //         // password: 'rohit'
-  //       }
-  //     });
-  //     localStorage.setItem('userInfo', JSON.stringify(res.data));
-  //     setRestatus(res.status !== 200 && true);
-  //     if (res.status === 200) {
-  //       navigate('/dashboard', { replace: true });
-  //     }
-  //     setMessage('');
-  //   } catch (error) {
-  //     if (error.response) {
-  //       setMessage(error.response.data.message);
-  //       setRestatus(error.response.status);
-  //       // console.log(error.response.headers);
-  //     }
-
-  //     // console.log(error.response);
-  //   }
-  // };
 
   useEffect(() => {
     if (loginC.error) {

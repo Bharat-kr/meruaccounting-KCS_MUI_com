@@ -64,15 +64,22 @@ export default function Sidebar() {
     newClient,
     clientDetails,
     dispatchClientDetails,
+    clientsList,
+    clientsListFunc,
   } = useContext(ClientsContext);
 
-  let clientsList = [];
   const clientNameList = [];
   useEffect(() => {
     getClient(dispatchClientDetails);
   }, []);
   useEffect(async () => {
     try {
+      if (clientDetails?.loader === false) {
+        clientsListFunc(clientDetails?.client?.data);
+        clientDetails?.client?.data?.map((cli) => {
+          <>{clientNameList.push(cli.name)}</>;
+        });
+      }
       const clientIndex = clientsList?.findIndex(
         (i) => i._id === currentClient?._id
       );
@@ -88,14 +95,8 @@ export default function Sidebar() {
       console.log(err);
     }
   }, [clientDetails]);
-  if (clientDetails?.loader === false) {
-    clientsList = clientDetails?.client?.data;
-    clientDetails?.client?.data?.map((cli) => {
-      <>{clientNameList.push(cli.name)}</>;
-    });
-  }
+
   // labels for search box(autocomplete)
-  // const clientsList = clients.map((client) => client.name);
 
   // change currentclient on search
   const handleSearch = (e, value) => {
@@ -120,46 +121,39 @@ export default function Sidebar() {
     changeClient(client[0]);
   };
 
-  // add client in submit
-  // not working properly , add proper validation Dr. Kamal Singh
   const handleSubmit = async (e) => {
     setLoaderAddClient(true);
     try {
       e.preventDefault();
-      // if (
-      //   clientsList.filter((cli) =>
-      //     cli.name === newClientValue ? true : false
-      //   )
-      // ) {
-      //   setnewClientError(true);
-      //   return;
-      // }
-      // setnewClientError(false);
+
       if (newClientValue !== "") {
-        await addClient(capitalize(newClientValue), dispatchAddClient);
+        const res = await addClient(
+          capitalize(newClientValue),
+          dispatchAddClient
+        );
         await getClient(dispatchClientDetails);
 
         changeClient(() =>
           clientDetails.client.data.filter((cli) =>
-            cli.name === newClientValue ? cli : ""
+            cli.name === capitalize(newClientValue) ? cli : ""
           )
         );
         inputRef.current.value = "";
         setnewClientValue("");
+        if (!res.data) {
+          throw new Error(res);
+        }
       } else {
         setnewClientError(true);
       }
       setLoaderAddClient(false);
-      // enqueueSnackbar("Client added ", { variant: "success" });
+      enqueueSnackbar("Client added ", { variant: "success" });
     } catch (err) {
       console.log(err);
       setLoaderAddClient(false);
 
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(newClient.error ? newClient.error : "Client added", {
-      variant: newClient.error ? "info" : "success",
-    });
   };
 
   return (
@@ -311,7 +305,7 @@ export default function Sidebar() {
           </form>
         </Box>
       </Paper>
-      <Header currentClient={currentClient} clientsList={clientsList} />
+      <Header currentClient={currentClient} />
     </Box>
   );
 }

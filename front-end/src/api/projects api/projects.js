@@ -1,34 +1,20 @@
 import {
   ADD_TEAM_PROJECTS_FAILED,
-  ADD_TEAM_PROJECTS_REQUEST,
   ADD_TEAM_PROJECTS_SUCCESS,
   CREATE_PROJECTS_FAILED,
-  CREATE_PROJECTS_REQUEST,
   CREATE_PROJECTS_SUCCESS,
   DELETE_PROJECTS_FAILED,
-  DELETE_PROJECTS_REQUEST,
   DELETE_PROJECTS_SUCCESS,
   EDIT_PROJECTS_FAILED,
-  EDIT_PROJECTS_REQUEST,
   EDIT_PROJECTS_SUCCESS,
-  GET_PROJECTS_FAILED,
-  GET_PROJECTS_REQUEST,
-  GET_PROJECTS_SUCCESS,
   GET_PROJECT_BYID_SUCCESS,
   GET_PROJECT_BYID_FAILED,
-  GET_PROJECT_BYID_RESET,
   ADD_MEMBER_TOPROJECT_SUCCESS,
   ADD_MEMBER_TOPROJECT_FAILED,
-  ADD_MEMBER_TOPROJECT_RESET,
   ADD_PROJECTLEADER_SUCCESS,
   ADD_PROJECTLEADER_FAILED,
-  ADD_PROJECTLEADER_RESET,
-  EDIT_PROJECTLEADER_SUCCESS,
-  EDIT_PROJECTLEADER_FAILED,
-  EDIT_PROJECTLEADER_RESET,
   REMOVE_MEMBER_FROMRPOJECT_SUCCESS,
   REMOVE_MEMBER_FROMRPOJECT_FAILED,
-  REMOVE_MEMBER_FROMRPOJECT_RESET,
 } from "src/constants/ProjectConstants";
 import axios from "axios";
 
@@ -109,6 +95,7 @@ export const deleteProject = async (incomingData, dispatch) => {
     });
 
     dispatch({ type: DELETE_PROJECTS_SUCCESS, payload: res.data });
+    return res;
   } catch (error) {
     dispatch({
       type: DELETE_PROJECTS_FAILED,
@@ -187,15 +174,19 @@ export const addProjectLeader = async (incomingData, dispatch) => {
 export const removeProjectLeader = async (id, dispatch) => {
   try {
     const res = await axios.patch(`/project/projectLeader/${id}`);
-    // dispatch({ type: ADD_PROJECTLEADER_SUCCESS, payload: res.data });
+    dispatch({ type: ADD_PROJECTLEADER_SUCCESS, payload: res.data });
+    return res;
   } catch (error) {
-    // dispatch({
-    //   type: ADD_PROJECTLEADER_FAILED,
-    //   payload:
-    //     error.response && error.response.data.message
-    //       ? error.response.data.message
-    //       : error.message,
-    // });
+    dispatch({
+      type: ADD_PROJECTLEADER_FAILED,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 
@@ -205,6 +196,7 @@ export const removeProjectMem = async (incomingData, dispatch) => {
       employeeId: incomingData[1],
     });
     dispatch({ type: REMOVE_MEMBER_FROMRPOJECT_SUCCESS, payload: res.data });
+    return res;
   } catch (error) {
     dispatch({
       type: REMOVE_MEMBER_FROMRPOJECT_FAILED,
@@ -213,5 +205,8 @@ export const removeProjectMem = async (incomingData, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };

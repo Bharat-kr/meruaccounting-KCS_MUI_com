@@ -323,17 +323,6 @@ export default function Main(props) {
     </Box>
   ) : (
     <>
-      {/* <Button
-        onClick={() => (
-          <>
-            {setMember()}
-            {console.log(currMember)}{" "}
-          </>
-        )}
-      >
-        click me
-      </Button> */}
-
       {currMember && (
         <Container
           component="div"
