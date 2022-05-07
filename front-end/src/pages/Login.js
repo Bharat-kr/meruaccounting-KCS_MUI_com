@@ -56,7 +56,7 @@ export default function Login() {
             mr: 2,
           }}
         >
-          Download
+          Download App
         </Button>
         Don’t have an account? &nbsp;
         <Link
