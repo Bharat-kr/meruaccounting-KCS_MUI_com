@@ -1,6 +1,7 @@
 import express from "express";
 import { authPass } from "../middleware/authMiddleware.js";
 import {
+  downloadApp,
   dateHours,
   register,
   login,
@@ -25,6 +26,7 @@ router
   .post(register);
 
 router.route("/login").post(login);
+router.route("/download").post(downloadApp);
 
 router.route("/commondata").post(authPass, commondata);
 router.route("/dateHours").post(authPass, dateHours);

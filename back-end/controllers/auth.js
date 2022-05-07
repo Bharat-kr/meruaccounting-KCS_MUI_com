@@ -972,7 +972,28 @@ const dateHours = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Download app
+// @route   GET /download_ia32
+// @access  Public
+const downloadApp = asyncHandler(async (req, res) => {
+  try {
+    res.setHeader("Content-disposition", "attachment; filename=" + filename);
+    //filename is the name which client will see. Don't put full path here.
+
+    res.setHeader("Content-type", "application/x-msdownload"); //for exe file
+
+    var file = fs.createReadStream("./../app/meruSetup.exe");
+    //replace filepath with path of file to send
+
+    file.pipe(res);
+    //send file
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
+  downloadApp,
   login,
   register,
   commondata,
