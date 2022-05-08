@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const projectSchema = new mongoose.Schema(
   {
     name: { type: String, unique: "true" },
+    notified: { type: Boolean, default: false },
     consumeTime: { type: Number, default: 0 },
     budgetTime: { type: Number, default: 0 },
     projectLeader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

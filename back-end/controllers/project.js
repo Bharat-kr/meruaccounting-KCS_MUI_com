@@ -124,6 +124,20 @@ const editProject = asyncHandler(async (req, res) => {
   if (permission.granted) {
     try {
       const projectId = req.params.id;
+      // change notified? on basis of budgetTime.
+      if (req.body.budgetTime) {
+        let pro = await Project.find(projectId);
+        if (req.body.budgetTime * 3600 > pro.consumeTime) {
+          await Project.updateOne(
+            { _id: projectId },
+            {
+              $set: {
+                notified: false,
+              },
+            }
+          );
+        }
+      }
       const project = await Project.findByIdAndUpdate(projectId, req.body);
       if (!project) {
         res.status(404);

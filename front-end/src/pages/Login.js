@@ -1,7 +1,14 @@
 import { Link as RouterLink } from "react-router-dom";
 // material
 import { styled } from "@mui/material/styles";
-import { Card, Stack, Link, Container, Typography } from "@mui/material";
+import {
+  Card,
+  Stack,
+  Link,
+  Container,
+  Typography,
+  Button,
+} from "@mui/material";
 // layouts
 import AuthLayout from "../layouts/AuthLayout";
 // components
@@ -43,6 +50,14 @@ export default function Login() {
   return (
     <RootStyle title="Login">
       <AuthLayout>
+        <Button
+          variant="outlined"
+          sx={{
+            mr: 2,
+          }}
+        >
+          Download App
+        </Button>
         Don’t have an account? &nbsp;
         <Link
           underline="none"
