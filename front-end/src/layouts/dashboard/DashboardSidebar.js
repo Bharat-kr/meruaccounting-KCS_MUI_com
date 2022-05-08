@@ -92,9 +92,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar
-              // src={`https://monitoring-meru.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
               src={`${axios.defaults.baseURL}${commonData?.commonData?.user?.avatar}`}
-              // src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
               alt="photoURL"
             />
             <Box sx={{ ml: 2 }}>

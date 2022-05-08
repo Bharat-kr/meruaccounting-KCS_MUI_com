@@ -134,7 +134,11 @@ export const ClientsContextProvider = (props) => {
   const [clients, setClients] = useState([]);
   const [currentClient, setcurrentClient] = useState("");
   const [currentProject, setcurrentProject] = useState("");
+  const [clientsList, setClientsList] = useState([]);
 
+  const clientsListFunc = (client) => {
+    setClientsList(client);
+  };
   const changeClient = (client) => {
     setcurrentClient(client);
   };
@@ -174,7 +178,8 @@ export const ClientsContextProvider = (props) => {
           dispatchClientProjectDetails,
           editClient,
           dispatchEditClient,
-          // changeProjectmember
+          clientsListFunc,
+          clientsList,
         }}
       >
         {props.children}

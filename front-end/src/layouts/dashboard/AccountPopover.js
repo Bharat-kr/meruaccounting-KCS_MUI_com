@@ -77,8 +77,6 @@ export default function AccountPopover() {
       >
         <Avatar
           src={`${axios.defaults.baseURL}${commonData?.commonData?.user?.avatar}`}
-          // src={`https://monitoring-meru.herokuapp.com/${commonData?.commonData?.user?.avatar}`}
-          // src={`http://localhost:8000/${commonData?.commonData?.user?.avatar}`}
           alt="photoURL"
         />
       </IconButton>

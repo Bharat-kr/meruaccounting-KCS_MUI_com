@@ -168,8 +168,14 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected, selected, employeesList, currentProject, setSeleceted } =
-    props;
+  const {
+    numSelected,
+    selected,
+    employeesList,
+    currentProject,
+    setSeleceted,
+    rows,
+  } = props;
   const { removeProjectMember, dispatchremoveProjectMember } =
     useContext(projectContext);
   const { dispatchClientDetails } = useContext(ClientsContext);
@@ -177,8 +183,9 @@ const EnhancedTableToolbar = (props) => {
   const handleMemberDelete = async () => {
     try {
       const deleteList = [];
+      console.log(rows);
       selected.map((select) => {
-        employeesList.filter((emp) =>
+        rows.filter((emp) =>
           emp.name === select ? deleteList.push(emp.id) : ""
         );
       });
@@ -548,6 +555,7 @@ export default function EnhancedTable(props) {
         numSelected={selected.length}
         selected={selected}
         employeesList={employeesList}
+        rows={rows}
         currentProject={currentProject}
         setSeleceted={setSelected}
       />

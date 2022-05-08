@@ -71,26 +71,6 @@ export default function Sidebar() {
     clientsList = clientDetails?.client?.data;
   }
 
-  // useEffect(() => {
-  // try {
-  // if (clientDetails !== null) {
-  //   changeClient(clientDetails?.client?.data[0]);
-  //   changeProject(clientDetails?.client?.data[0].projects[0]);
-  // }
-  // changeClient(
-  //   clientDetails?.client?.data[
-  //     clientDetails.client.data.indexOf(currentClient)
-  //   ]
-  // );
-  // changeProject(
-  //   clientDetails?.client?.data[
-  //     clientDetails.client.data.indexOf(currentClient)
-  //   ].projects[currentClient.projects.indexOf(currentProject)]
-  // );
-  // } catch (error) {
-  // console.log(error.message);
-  // }
-  // }, [clientDetails]);
   useEffect(() => {
     let prolist = [];
     if (clientDetails.loader === false) {
@@ -102,12 +82,7 @@ export default function Sidebar() {
       });
     }
   }, [clientDetails, currentClient, currentProject]);
-  // useEffect(() => {
-  //   getClientProjects(
-  //     { clientId: currentClient._id },
-  //     dispatchClientProjectDetails
-  //   );
-  // }, [checkclientDetails]);
+
   // change currentclient on search
   const differentiateFunction = (str) => {
     if (str !== null) {
@@ -176,17 +151,24 @@ export default function Sidebar() {
       if (newProjectValue === "" || currentClient === null) {
         setnewClientError(true);
       }
+      let res;
       if (currentClient !== null) {
         const data = {
           name: capitalize(newProjectValue),
           clientId: currentClient._id,
         };
-        await createProject(data, dispatchCreateProject);
+        res = await createProject(data, dispatchCreateProject);
         await getClient(dispatchClientDetails);
       }
       searchRef.current.value = "";
       setLoaderAddProject(false);
-      enqueueSnackbar("Successfully Created Project", { varinat: "success" });
+      if (!res.data) {
+        throw new Error(res);
+      }
+
+      if (res.status !== 500) {
+        enqueueSnackbar("Successfully Created Project", { varinat: "success" });
+      }
     } catch (error) {
       console.log(error);
       if (currentClient === null || "") {

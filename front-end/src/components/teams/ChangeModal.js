@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import {
+  Alert,
   Box,
   Button,
   Divider,
@@ -62,6 +63,24 @@ const ChangeModal = ({
     setNewProject(event.target.value);
   };
 
+  const memberRoleCHnage = async () => {
+    try {
+      const res = await employeeUpdate(
+        currMember?._id,
+        { role: newRole },
+        dispatchEmployeeUpdate
+      );
+      await getTeam(dispatchgetTeam);
+      if (!res.data) {
+        throw new Error(res);
+      }
+      enqueueSnackbar("Role changed", { variant: "success" });
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar(err.message, { variant: "error" });
+    }
+  };
+
   const changeManager = async () => {
     try {
       const data = {
@@ -114,6 +133,7 @@ const ChangeModal = ({
     changeManager();
     changeProjectLeader();
   };
+  console.log(currTeam);
   return (
     <Modal
       open={modal}
@@ -125,7 +145,9 @@ const ChangeModal = ({
       }}
     >
       <Box sx={style}>
-        {prevRole === "manager" && newRole !== "projectLeader" ? (
+        {prevRole === "manager" &&
+        newRole !== "projectLeader" &&
+        currMember?._id === currTeam?.manager?._id ? (
           <>
             <Box
               sx={{
@@ -168,11 +190,13 @@ const ChangeModal = ({
                     onChange={handleChange}
                   >
                     {currTeam?.members.map((member) => {
-                      return (
-                        <MenuItem value={member._id}>
-                          {getFullName(member.firstName, member.lastName)}
-                        </MenuItem>
-                      );
+                      if (member.role === "employee") {
+                        return (
+                          <MenuItem value={member._id}>
+                            {getFullName(member.firstName, member.lastName)}
+                          </MenuItem>
+                        );
+                      }
                     })}
                   </Select>
                 </FormControl>
@@ -206,10 +230,7 @@ const ChangeModal = ({
               </Button>
             </Box>
           </>
-        ) : (
-          ""
-        )}
-        {prevRole !== "manager" && newRole === "projectLeader" ? (
+        ) : prevRole !== "manager" && newRole === "projectLeader" ? (
           <>
             <Box
               sx={{
@@ -221,7 +242,7 @@ const ChangeModal = ({
               }}
             >
               <Typography variant="h4" color="primary">
-                Assign a new Project Leader
+                Assign a project
               </Typography>
               <IconButton>
                 <CloseIcon onClick={handleModalClose} />
@@ -241,30 +262,36 @@ const ChangeModal = ({
                   mt: 1,
                 }}
               >
-                <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
-                  <InputLabel id="demo-simple-select-filled-label">
-                    Project Leader
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-filled-label"
-                    id="demo-simple-select-filled"
-                    value={newProject}
-                    onChange={handleProjectChange}
-                  >
-                    {currMember?.projects.map((project) => {
-                      if (
-                        project.projectLeader === null ||
-                        project.projectLeader === undefined
-                      ) {
-                        return (
-                          <MenuItem value={project._id}>
-                            {project.name}
-                          </MenuItem>
-                        );
-                      }
-                    })}
-                  </Select>
-                </FormControl>
+                {currMember?.projects.length !== 0 ? (
+                  <FormControl variant="filled" sx={{ m: 1 }} fullWidth>
+                    <InputLabel id="demo-simple-select-filled-label">
+                      Projects
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-filled-label"
+                      id="demo-simple-select-filled"
+                      value={newProject}
+                      onChange={handleProjectChange}
+                    >
+                      {currMember?.projects.map((project) => {
+                        if (
+                          project.projectLeader === null ||
+                          project.projectLeader === undefined
+                        ) {
+                          return (
+                            <MenuItem value={project._id}>
+                              {project.name}
+                            </MenuItem>
+                          );
+                        }
+                      })}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <Typography variant="h6" sx={{ color: "inherit" }}>
+                    Add employee to a project first
+                  </Typography>
+                )}
               </Box>
             </Box>
             <Box
@@ -276,16 +303,18 @@ const ChangeModal = ({
                 p: 2,
               }}
             >
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  mr: 2,
-                }}
-                onClick={changeProjectLeader}
-              >
-                Choose a project
-              </Button>
+              {currMember?.projects.length !== 0 && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    mr: 2,
+                  }}
+                  onClick={changeProjectLeader}
+                >
+                  Choose a project
+                </Button>
+              )}
               <Button
                 variant="outlined"
                 color="primary"
@@ -295,11 +324,9 @@ const ChangeModal = ({
               </Button>
             </Box>
           </>
-        ) : (
-          ""
-        )}
-
-        {prevRole === "manager" && newRole === "projectLeader" ? (
+        ) : prevRole === "manager" &&
+          newRole === "projectLeader" &&
+          currMember?._id === currTeam?.manager?._id ? (
           <>
             <Box
               sx={{
@@ -342,11 +369,13 @@ const ChangeModal = ({
                     onChange={handleChange}
                   >
                     {currTeam?.members.map((member) => {
-                      return (
-                        <MenuItem value={member._id}>
-                          {getFullName(member.firstName, member.lastName)}
-                        </MenuItem>
-                      );
+                      if (member.role === "employee") {
+                        return (
+                          <MenuItem value={member._id}>
+                            {getFullName(member.firstName, member.lastName)}
+                          </MenuItem>
+                        );
+                      }
                     })}
                   </Select>
                 </FormControl>
@@ -420,7 +449,17 @@ const ChangeModal = ({
             </Box>
           </>
         ) : (
-          ""
+          <Alert
+            severity="warning"
+            action={
+              <Button color="inherit" size="small" onClick={memberRoleCHnage}>
+                continue
+              </Button>
+            }
+          >
+            {" "}
+            All the data for this role deleted
+          </Alert>
         )}
       </Box>
     </Modal>
