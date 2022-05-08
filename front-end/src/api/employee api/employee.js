@@ -35,6 +35,7 @@ export const employeeUpdate = async (_id, data, dispatch) => {
     const res = await axios.patch(`/employee/edit/${_id}`, data);
 
     dispatch({ type: EMPLOYEE_UPDATE_SUCCESS, payload: res.data.data });
+    return res;
   } catch (error) {
     dispatch({
       type: EMPLOYEE_UPDATE_FAILED,
@@ -43,6 +44,9 @@ export const employeeUpdate = async (_id, data, dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    return error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
   }
 };
 

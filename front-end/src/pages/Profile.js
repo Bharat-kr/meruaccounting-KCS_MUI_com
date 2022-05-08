@@ -77,8 +77,6 @@ export default function Profile() {
       setimageUrl(
         `${axios.defaults.baseURL}${commonData.commonData.user.avatar}`
       );
-      // setimageUrl(`http://localhost:8000/${commonData.commonData.user.avatar}`);
-      // setimageUrl(`https://monitoring-meru.herokuapp.com/${commonData.commonData.user.avatar}`);
     }
   }, [commonData]);
 
