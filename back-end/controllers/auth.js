@@ -993,6 +993,19 @@ const downloadApp = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Change Account Info
+// @route   patch /accountInfo
+// @access  Public
+const updateAccountInfo = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.accountInfo = req.body;
+    user.save();
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 export {
   downloadApp,
   login,
@@ -1002,4 +1015,5 @@ export {
   teamCommondata,
   generateReportByIds,
   roleCheck,
+  updateAccountInfo,
 };
