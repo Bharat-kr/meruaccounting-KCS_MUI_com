@@ -6,12 +6,14 @@ import { downloadApp } from "src/api/auth api/downloadapp";
 const DownloadButton = () => {
   return (
     <Tooltip title="Download App">
-      <IconButton size="large" color="default">
-        <DownloadIcon
-          onClick={async () => {
-            await downloadApp();
-          }}
-        />
+      <IconButton
+        size="large"
+        color="default"
+        onClick={async () => {
+          await downloadApp();
+        }}
+      >
+        <DownloadIcon />
       </IconButton>
     </Tooltip>
   );
