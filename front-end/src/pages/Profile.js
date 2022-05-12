@@ -25,6 +25,7 @@ import { getCommonData } from "src/api/auth api/commondata";
 import axios from "axios";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { employeeContext } from "src/contexts/EmployeeContext";
+import { updateTimeZone } from "src/api/auth api/timeZone";
 
 const style = {
   position: "absolute",
@@ -207,9 +208,19 @@ export default function Profile() {
               <Autocomplete
                 disablePortal
                 id="TimeZone"
-                options={["IST", "UTC", "LST"]}
+                options={["IST", "GMT", "EDT", "PDT"]}
                 sx={{ width: 300, mt: 3 }}
-                defaultValue="IST"
+                defaultValue={
+                  commonData?.commonData?.user?.accountInfo.timeZone
+                }
+                onChange={(e, value) => {
+                  updateTimeZone({ timeZone: value });
+                }}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    updateTimeZone({ timeZone: e.target.value });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField {...params} label="Time-Zone" />
                 )}

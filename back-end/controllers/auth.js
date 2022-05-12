@@ -996,11 +996,14 @@ const downloadApp = asyncHandler(async (req, res) => {
 // @desc    Change Account Info
 // @route   patch /accountInfo
 // @access  Public
-const updateAccountInfo = asyncHandler(async (req, res) => {
+const updateTimeZone = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    user.accountInfo = req.body;
-    user.save();
+    user.accountInfo.timeZone = req.body.timeZone;
+    await user.save();
+    res.status(200).json({
+      status: "Updated Succesfully",
+    });
   } catch (error) {
     throw new Error(error);
   }
@@ -1015,5 +1018,5 @@ export {
   teamCommondata,
   generateReportByIds,
   roleCheck,
-  updateAccountInfo,
+  updateTimeZone,
 };
