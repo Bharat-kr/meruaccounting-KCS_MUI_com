@@ -1002,7 +1002,7 @@ const updateTimeZone = asyncHandler(async (req, res) => {
     user.accountInfo.timeZone = req.body.timeZone;
     await user.save();
     res.status(200).json({
-      status: "Updated Succesfully",
+      message: "Updated Succesfully",
     });
   } catch (error) {
     throw new Error(error);

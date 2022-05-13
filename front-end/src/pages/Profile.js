@@ -26,6 +26,7 @@ import axios from "axios";
 import { employeeUpdate } from "src/api/employee api/employee";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { updateTimeZone } from "src/api/auth api/timeZone";
+import { useSnackbar } from "notistack";
 
 const style = {
   position: "absolute",
@@ -67,6 +68,7 @@ export default function Profile() {
   const [image, setImg] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const avatarEditorRef = useRef();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     getCommonData(dispatchCommonData);
@@ -208,19 +210,28 @@ export default function Profile() {
               <Autocomplete
                 disablePortal
                 id="TimeZone"
-                options={["IST", "GMT", "EDT", "PDT"]}
+                options={["IST", "GMT", "CST", "JST", "MST", "NST"]}
                 sx={{ width: 300, mt: 3 }}
                 defaultValue={
                   commonData?.commonData?.user?.accountInfo.timeZone
                 }
-                onChange={(e, value) => {
-                  updateTimeZone({ timeZone: value });
-                }}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    updateTimeZone({ timeZone: e.target.value });
+                onChange={async (e, value) => {
+                  const res = await updateTimeZone({ timeZone: value });
+                  if (res.status === 200) {
+                    enqueueSnackbar("Time Zone updated", {
+                      variant: "success",
+                    });
+                  } else {
+                    enqueueSnackbar(res.message, {
+                      variant: "error",
+                    });
                   }
                 }}
+                // onKeyDown={(e) => {
+                //   if (e.keyCode === 13) {
+                //     updateTimeZone({ timeZone: e.target.value });
+                //   }
+                // }}
                 renderInput={(params) => (
                   <TextField {...params} label="Time-Zone" />
                 )}

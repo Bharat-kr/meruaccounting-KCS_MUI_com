@@ -1,7 +1,15 @@
-export default function timeC(epoch_time) {
-  let date_obj = new Date(new Number(epoch_time));
-  const hrs = date_obj.getHours();
-  const mins = date_obj.getMinutes();
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export default function timeC(epoch_time, timeZone) {
+  let date_obj = new Date(Number(epoch_time));
+  date_obj = dayjs(date_obj).tz(timeZone);
+
+  const hrs = date_obj.hour();
+  const mins = date_obj.minute();
   let hhmm =
     (hrs < 10 ? "0" + hrs : hrs) + ":" + (mins < 10 ? "0" + mins : mins);
 

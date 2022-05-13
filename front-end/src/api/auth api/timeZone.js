@@ -1,12 +1,10 @@
 import axios from "axios";
 
 export const updateTimeZone = async (data) => {
-  await axios
-    .patch("/timeZone", data)
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  try {
+    const res = await axios.patch("/timeZone", data);
+    return res;
+  } catch (error) {
+    return error;
+  }
 };
