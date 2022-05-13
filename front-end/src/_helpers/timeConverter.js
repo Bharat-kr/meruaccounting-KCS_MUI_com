@@ -6,7 +6,12 @@ dayjs.extend(timezone);
 
 export default function timeC(epoch_time, timeZone) {
   let date_obj = new Date(Number(epoch_time));
-  date_obj = dayjs(date_obj).tz(timeZone);
+  //error handling if no timezone is sent
+  if (timeZone !== undefined && timeZone !== "") {
+    date_obj = dayjs(date_obj).tz(timeZone);
+  } else {
+    date_obj = dayjs(date_obj);
+  }
 
   const hrs = date_obj.hour();
   const mins = date_obj.minute();
