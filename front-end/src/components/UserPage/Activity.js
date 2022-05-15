@@ -33,7 +33,7 @@ export default function Activity({
   performanceData,
   screenShots,
 }) {
-  const { dispatchCommonData } = useContext(CurrentUserContext);
+  const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
   const [selectedSs, setselectedSs] = useState([]);
 
   //state For modal
@@ -80,7 +80,8 @@ export default function Activity({
         }}
       >
         <Typography component="span" sx={{ fontWeight: "bold", ml: 2.5 }}>
-          {timeC(startTime)} -{timeC(endTime)} ||
+          {timeC(startTime, commonData.commonData.user.accountInfo.timeZone)} -
+          {timeC(endTime, commonData.commonData.user.accountInfo.timeZone)} ||
         </Typography>
         <Tooltip
           title={`${Math.ceil(performanceData)}%`}

@@ -9,6 +9,7 @@ import {
   teamCommondata,
   generateReportByIds,
   roleCheck,
+  updateTimeZone,
 } from "../controllers/auth.js";
 import { body } from "express-validator";
 import { generateReport } from "../controllers/report.js";
@@ -33,5 +34,6 @@ router.route("/dateHours").post(authPass, dateHours);
 router.route("/teamCommondata").post(authPass, teamCommondata);
 router.route("/generateReport").post(generateReportByIds);
 router.route("/roleCheck").post(authPass, roleCheck);
+router.route("/timeZone").patch(authPass, updateTimeZone);
 
 export default router;

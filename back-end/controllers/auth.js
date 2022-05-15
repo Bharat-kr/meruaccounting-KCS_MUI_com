@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import Activity from "../models/activity.js";
 import generateToken from "../utils/generateToken.js";
 import asyncHandler from "express-async-handler";
+import fs from "fs";
 
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
@@ -977,16 +978,32 @@ const dateHours = asyncHandler(async (req, res) => {
 // @access  Public
 const downloadApp = asyncHandler(async (req, res) => {
   try {
-    res.setHeader("Content-disposition", "attachment; filename=" + filename);
+    res.setHeader("Content-disposition", "attachment; filename=" + "Meru.exe");
     //filename is the name which client will see. Don't put full path here.
 
     res.setHeader("Content-type", "application/x-msdownload"); //for exe file
 
-    var file = fs.createReadStream("./../app/meruSetup.exe");
+    var file = fs.createReadStream("./app/meruSetup.exe");
     //replace filepath with path of file to send
 
     file.pipe(res);
     //send file
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// @desc    Change Account Info
+// @route   patch /accountInfo
+// @access  Public
+const updateTimeZone = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.accountInfo.timeZone = req.body.timeZone;
+    await user.save();
+    res.status(200).json({
+      message: "Updated Succesfully",
+    });
   } catch (error) {
     throw new Error(error);
   }
@@ -1001,4 +1018,5 @@ export {
   teamCommondata,
   generateReportByIds,
   roleCheck,
+  updateTimeZone,
 };

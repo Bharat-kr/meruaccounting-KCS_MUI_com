@@ -27,6 +27,7 @@ import { deleteSs, deleteAct } from "../../api/employee api/employeePage";
 // helpers
 import timeC from "../../_helpers/timeConverter";
 import SplitActivity from "./SplitActivity";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
 export default function Activity({
   date,
@@ -39,6 +40,7 @@ export default function Activity({
   screenShots,
 }) {
   const { dispatchCommonData } = useContext(EmployeePageContext);
+  const { commonData } = useContext(CurrentUserContext);
   const [selectedSs, setselectedSs] = useState([]);
   const { id } = useParams();
 
@@ -86,7 +88,8 @@ export default function Activity({
         }}
       >
         <Typography component="span" sx={{ fontWeight: "bold", ml: 2.5 }}>
-          {timeC(startTime)} -{timeC(endTime)} ||
+          {timeC(startTime, commonData.commonData.user.accountInfo.timeZone)} -
+          {timeC(endTime, commonData.commonData.user.accountInfo.timeZone)} ||
         </Typography>
         <Tooltip
           title={`${Math.ceil(performanceData)}%`}
