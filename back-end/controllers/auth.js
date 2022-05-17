@@ -983,6 +983,14 @@ const downloadApp = asyncHandler(async (req, res) => {
 
     res.setHeader("Content-type", "application/x-msdownload"); //for exe file
 
+    //checking for the file status if its there or not
+    fs.stat("./app/meruSetup.exe", (error, stats) => {
+      if (error) {
+        res.status(404).json({
+          message: "file not Found",
+        });
+      }
+    });
     var file = fs.createReadStream("./app/meruSetup.exe");
     //replace filepath with path of file to send
 
