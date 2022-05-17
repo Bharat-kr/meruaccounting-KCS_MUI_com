@@ -254,7 +254,7 @@ const SplitActivity = ({
                 id="filled-hidden-label-small"
                 defaultValue={timeC(
                   startTime,
-                  commonData.commonData.user.accountInfo.timeZone
+                  commonData.commonData.user?.accountInfo?.timeZone
                 )}
                 variant="filled"
                 onChange={handleStartChange}
@@ -269,7 +269,7 @@ const SplitActivity = ({
                 id="filled-hidden-label-small"
                 defaultValue={timeC(
                   endTime,
-                  commonData.commonData.user.accountInfo.timeZone
+                  commonData.commonData.user?.accountInfo?.timeZone
                 )}
                 onChange={handleEndChange}
                 variant="filled"
@@ -408,7 +408,7 @@ const SplitActivity = ({
                 id="filled-hidden-label-small"
                 defaultValue={timeC(
                   startTime,
-                  commonData.commonData.user.accountInfo.timeZone
+                  commonData.commonData.user?.accountInfo?.timeZone
                 )}
                 variant="filled"
                 disabled
@@ -435,7 +435,7 @@ const SplitActivity = ({
                 id="filled-hidden-label-small"
                 defaultValue={timeC(
                   endTime,
-                  commonData.commonData.user.accountInfo.timeZone
+                  commonData.commonData.user?.accountInfo?.timeZone
                 )}
                 disabled
                 variant="filled"
