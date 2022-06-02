@@ -120,7 +120,7 @@ function Row(props) {
                       <Tooltip
                         title={`${timeC(
                           ss?.activityAt,
-                          commonData.commonData.user.accountInfo.timeZone
+                          commonData.commonData.user?.accountInfo?.timeZone
                         )}, ${Math.ceil(ss?.performanceData)}%`}
                         placement="top"
                         followCursor
@@ -152,7 +152,7 @@ function Row(props) {
                             ss?.performanceData
                           )}%, Taken at ${timeC(
                             ss?.activityAt,
-                            commonData.commonData.user.accountInfo.timeZone
+                            commonData.commonData.user?.accountInfo?.timeZone
                           )}`}
                         </Typography>
                       </CardContent>

@@ -5,6 +5,7 @@ export const downloadApp = async () => {
   await axios
     .post("/download")
     .then((res) => {
+      console.log(res)
       FileSaver.saveAs(
         new Blob([res.data], { type: "application/x-msdownload" }),
         "MeruScreenshotMonitor.exe"
