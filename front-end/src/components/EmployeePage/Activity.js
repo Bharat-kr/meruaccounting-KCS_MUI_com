@@ -88,8 +88,9 @@ export default function Activity({
         }}
       >
         <Typography component="span" sx={{ fontWeight: "bold", ml: 2.5 }}>
-          {timeC(startTime, commonData.commonData.user.accountInfo.timeZone)} -
-          {timeC(endTime, commonData.commonData.user.accountInfo.timeZone)} ||
+          {timeC(startTime, commonData.commonData.user?.accountInfo?.timeZone)}{" "}
+          -{timeC(endTime, commonData.commonData.user?.accountInfo?.timeZone)}{" "}
+          ||
         </Typography>
         <Tooltip
           title={`${Math.ceil(performanceData)}%`}

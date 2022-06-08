@@ -133,7 +133,7 @@ function Row(props) {
                       <Tooltip
                         title={`${timeC(
                           ss?.activityAt,
-                          commonData.commonData.user.accountInfo.timeZone
+                          commonData.commonData.user?.accountInfo?.timeZone
                         )}, ${Math.ceil(ss?.performanceData)}%`}
                         placement="top"
                         followCursor
@@ -165,7 +165,7 @@ function Row(props) {
                             ss?.performanceData
                           )}%, Taken at ${timeC(
                             ss?.activityAt,
-                            commonData.commonData.user.accountInfo.timeZone
+                            commonData.commonData.user?.accountInfo?.timeZone
                           )}`}
                         </Typography>
                       </CardContent>
@@ -222,10 +222,10 @@ export default function ByD(props) {
         To: timeCC(emp.endtime),
         Duration: `${timeC(
           emp.startTime,
-          commonData.commonData?.user?.accountInfo?.timeZone
+          commonData.commonData.user?.accountInfo?.timeZone
         )}-${timeC(
           emp.endTime,
-          commonData.commonData?.user?.accountInfo?.timeZone
+          commonData.commonData.user?.accountInfo?.timeZone
         )}`,
         Activity: (act / 1).toFixed(2),
         Money: (
