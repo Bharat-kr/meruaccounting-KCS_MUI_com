@@ -39,11 +39,13 @@ import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
 import { loginContext } from "src/contexts/LoginContext";
 import { Role } from "../../_helpers/role";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 
 function Row(props) {
   const { row, options, download } = props;
   const [open, setOpen] = React.useState(false);
   const { loginC } = React.useContext(loginContext);
+  const { commonData } = React.useContext(CurrentUserContext);
 
   return (
     <React.Fragment>
@@ -129,9 +131,10 @@ function Row(props) {
                       </Tooltip>
 
                       <Tooltip
-                        title={`${timeC(ss?.activityAt)}, ${Math.ceil(
-                          ss?.performanceData
-                        )}%`}
+                        title={`${timeC(
+                          ss?.activityAt,
+                          commonData.commonData.user?.accountInfo?.timeZone
+                        )}, ${Math.ceil(ss?.performanceData)}%`}
                         placement="top"
                         followCursor
                       >
@@ -160,7 +163,10 @@ function Row(props) {
                         >
                           {`${Math.ceil(
                             ss?.performanceData
-                          )}%, Taken at ${timeC(ss?.activityAt)}`}
+                          )}%, Taken at ${timeC(
+                            ss?.activityAt,
+                            commonData.commonData.user?.accountInfo?.timeZone
+                          )}`}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -201,6 +207,8 @@ export default function ByD(props) {
   const [rowData, setRowData] = React.useState([]);
   const { savedReports } = React.useContext(reportsContext);
   const { loginC } = React.useContext(loginContext);
+  const { commonData } = React.useContext(CurrentUserContext);
+
   React.useEffect(() => {
     let arr = [];
     savedReports.reports[0]?.byD?.map((emp) => {
@@ -212,7 +220,13 @@ export default function ByD(props) {
         Project: `${emp?.project?.name ? emp.project.name : "Deleted project"}`,
         From: timeCC(emp.startTime),
         To: timeCC(emp.endtime),
-        Duration: `${timeC(emp.startTime)}-${timeC(emp.endTime)}`,
+        Duration: `${timeC(
+          emp.startTime,
+          commonData.commonData.user?.accountInfo?.timeZone
+        )}-${timeC(
+          emp.endTime,
+          commonData.commonData.user?.accountInfo?.timeZone
+        )}`,
         Activity: (act / 1).toFixed(2),
         Money: (
           ((emp.endTime - emp.startTime) / (1000 * 60 * 60)) *

@@ -84,7 +84,6 @@ export default function VerticalTabs() {
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
   };
-
   // const handleExpandClick = () => {
   //   setExpanded((oldExpanded) =>
   //     oldExpanded.length === 0 ? ["1", "5", "6", "7"] : []
@@ -147,7 +146,6 @@ export default function VerticalTabs() {
 
   //Click Handler for Tree Items0
   const handleClick = (e) => {
-    // console.log(e.target.id);
     const team = getTeams.getTeam.filter((team) =>
       team.name === e.target.dataset.client ? team : ""
     );
@@ -161,17 +159,20 @@ export default function VerticalTabs() {
     // console.log("member", member[0]);
   };
   // Deleting team
-  const handleTeamDelete = () => {
+  const handleTeamDelete = async () => {
     try {
-      deleteTeam(currTeam._id, dispatchDeleteTeam);
-      // if(deletedTeam.data.){}
+      const res = await deleteTeam(currTeam._id, dispatchDeleteTeam);
+      if (!res.data) {
+        throw new Error(res);
+      }
+      if (res.status !== 500) {
+        enqueueSnackbar("Team deleted", { variant: "success" });
+      }
       getTeam(dispatchgetTeam);
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(deletedTeam.error ? deletedTeam.error : "Team deleted", {
-      variant: deletedTeam.error ? "info" : "success",
-    });
   };
 
   //Creating New Team
@@ -179,19 +180,21 @@ export default function VerticalTabs() {
     setLoaderAddTeam(true);
     try {
       e.preventDefault();
-      await createTeam({ name: capitalize(newTeam) }, dispatchTeam);
+      const res = await createTeam({ name: capitalize(newTeam) }, dispatchTeam);
+      if (!res.data) {
+        throw new Error(res);
+      }
       await getTeam(dispatchgetTeam);
       setLoaderAddTeam(false);
       newTeamRef.current.value = "";
-      // enqueueSnackbar("Team created", { variant: "success" });
+      if (res.status !== 500) {
+        enqueueSnackbar("Team created", { variant: "success" });
+      }
     } catch (err) {
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
       setLoaderAddTeam(false);
       console.log(err);
     }
-    enqueueSnackbar(teamCreate.error ? teamCreate.error : "Team Created", {
-      variant: teamCreate.error ? "error" : "success",
-    });
   };
   //Changing Curr Team
   const changeCurrTeam = async (e) => {
@@ -208,23 +211,28 @@ export default function VerticalTabs() {
     setLoaderAddMember(true);
     try {
       e.preventDefault();
-      await updateMember(
+      if (currTeamToUpdate === undefined) {
+        throw new Error("No team Selected");
+      }
+
+      const res = await updateMember(
         { teamId: currTeamToUpdate._id, employeeId: newMemberId },
         dispatchUpdateMember
       );
+      if (!res.data) {
+        throw new Error(res);
+      }
       await getTeam(dispatchgetTeam);
       setLoaderAddMember(false);
-      addMemberRef.current.value = "";
-      // enqueueSnackbar("Member added", { variant: "success" });
+      if (res.status !== 500) {
+        enqueueSnackbar("Member Added", { variant: "success" });
+      }
+      // addMemberRef.current.value = "";
     } catch (err) {
       console.log(err);
       setLoaderAddMember(false);
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(
-      updatedMember.error ? updatedMember.error : "Member added",
-      { variant: updatedMember.error ? "error" : "success" }
-    );
   };
 
   //diffrentiate the listValue
@@ -441,15 +449,6 @@ export default function VerticalTabs() {
               autoComplete="off"
               style={{ width: "100%" }}
             >
-              {/* <TextField
-                inputRef={addMemberRef}
-                onChange={(e) => setNewMemberMail(e.target.value)}
-                required
-                fullWidth
-                label="Add new Member"
-                // error={newClientError}
-                sx={{}}
-              /> */}
               <Autocomplete
                 id="combo-box-demo"
                 inputref={addMemberRef}
@@ -519,39 +518,43 @@ export default function VerticalTabs() {
                   alignItem: "center",
                 }}
               >
-                <Box
-                  sx={{
-                    width: "10rem",
-                    display: "flex",
-                    alignSelf: "center",
-                    alignContent: "center",
-                    alignItems: "center",
-                    alignItem: "center",
-                    justifyContent: "center",
-                    borderRadius: "34px",
-                    backgroundColor: "#45546a",
-                  }}
-                >
-                  <Typography
+                {currTeam !== undefined || null ? (
+                  <Box
                     sx={{
-                      // pl: 1,
-                      color: "white",
+                      width: "10rem",
+                      display: "flex",
+                      alignSelf: "center",
+                      alignContent: "center",
+                      alignItems: "center",
                       alignItem: "center",
-                      textAlign: "center",
+                      justifyContent: "center",
+                      borderRadius: "34px",
+                      backgroundColor: "#45546a",
                     }}
                   >
-                    Delete Team
-                  </Typography>
-                  <DeleteIcon
-                    sx={{
-                      pl: 0.5,
-                      // fontSize: "1.3rem",
-                      display: "flex",
-                      alignContent: "center",
-                      color: "white",
-                    }}
-                  />
-                </Box>
+                    <Typography
+                      sx={{
+                        // pl: 1,
+                        color: "white",
+                        alignItem: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      Delete Team
+                    </Typography>
+                    <DeleteIcon
+                      sx={{
+                        pl: 0.5,
+                        // fontSize: "1.3rem",
+                        display: "flex",
+                        alignContent: "center",
+                        color: "white",
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  ""
+                )}
               </Box>
             )}
           </Box>

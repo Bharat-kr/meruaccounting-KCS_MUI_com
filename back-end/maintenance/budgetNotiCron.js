@@ -14,7 +14,7 @@ import sgMail from "@sendgrid/mail";
 import Screenshot from "../models/screenshot.js";
 import findRemoveSync from "find-remove";
 
-schedule.scheduleJob(`* * * * *`, async () => {
+schedule.scheduleJob(`* * * *`, async () => {
   console.log("notifying");
   // get projects
   const projects = await Project.aggregate([

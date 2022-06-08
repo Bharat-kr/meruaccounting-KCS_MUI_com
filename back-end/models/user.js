@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
       ip: { type: String },
       countryName: { type: String, default: "India" },
       // add time zone as in mongo aggregation
+      timeZone: { type: String, default: "IST" },
     },
     projects: [
       {

@@ -213,8 +213,6 @@ export default function Header(props) {
       await addProjectLeader(data, dispatchaddProjectLeader);
       const employee = memberList.filter((emp) => (emp === value ? emp : ""));
       setProjectLeader(employee);
-
-      // enqueueSnackbar("Project Leader changed", { variant: "success" });
     } catch (error) {
       console.log(error);
       // enqueueSnackbar(error.message, { variant: "warning" });
@@ -504,27 +502,30 @@ export default function Header(props) {
                         <InputLabel id="demo-simple-select-filled-label">
                           Select employee
                         </InputLabel>
-                       {memberList !== []  ? <Select
-                          labelId="demo-simple-select-filled-label"
-                          id="demo-simple-select-filled"
-                          value={ProjectLeader}
-                          onChange={handleSearch}
-                        >
-                          {memberList.map((member) => {
-                            return (
-                              <MenuItem value={member._id}>{member}</MenuItem>
-                            );
-                          })}
-                        </Select>: <Box>
-                          
-                          <Typography>
-                          No employees in this project 
-                          </Typography>
-                          <Typography>
-                            Project leader role can only be assigned to employees. 
-                          </Typography>
+                        {memberList.length !== [] ? (
+                          <Select
+                            labelId="demo-simple-select-filled-label"
+                            id="..demo-simple-select-filled"
+                            value={ProjectLeader}
+                            onChange={handleSearch}
+                          >
+                            {memberList.map((member) => {
+                              return (
+                                <MenuItem value={member._id}>{member}</MenuItem>
+                              );
+                            })}
+                          </Select>
+                        ) : (
+                          <Box>
+                            <Typography>
+                              No employees in this project
+                            </Typography>
+                            <Typography>
+                              Project leader role can only be assigned to
+                              employees.
+                            </Typography>
                           </Box>
-                          }
+                        )}
                       </FormControl>
                     </Box>
                   </Box>

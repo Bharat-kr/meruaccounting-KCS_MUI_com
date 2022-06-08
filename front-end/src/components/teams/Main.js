@@ -17,6 +17,7 @@ import {
   TextField,
   Autocomplete,
   Button,
+  Alert,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,7 +30,11 @@ import EdiText from "react-editext";
 import { convertString } from "../../contexts/UserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
-import { getTeam, removeTeamMember } from "src/api/teams api/teams";
+import {
+  getTeam,
+  removeTeamMember,
+  updateMember,
+} from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
@@ -125,7 +130,9 @@ export default function Main(props) {
   const updateRole = async (e) => {
     try {
       if (loginC.userData.role === "manager" || "projectLeader")
-        alert("Changing Role will delete all data for the role");
+        <Alert severity="warning">
+          "Changing Role will delete all data for the role");
+        </Alert>;
 
       const data = {
         role: e.target.value,
@@ -175,20 +182,25 @@ export default function Main(props) {
 
   const handleRoleChange = async (e, value) => {
     setNewRole(value);
-    if (prevRole === "manager" || newRole === "projectLeader") {
-      handleModalOpen();
-    } else if (prevRole === "projectLeader") {
-      let project = currMember.projects.filter((project) => {
-        return project.projectLeader === currMember._id;
-      });
-      if (project.length > 0) {
-        //make the project leader of that project to null
-        await removeProjectLeader(project[0]._id);
-      }
-      await updateRole(e);
-    } else {
-      await updateRole(e);
-    }
+    // if (prevRole === "manager") {
+    //   handleModalOpen();
+    // }
+    // if (newRole === "projectLeader") {
+    //   handleModalOpen();
+    // }
+    // if (prevRole === "projectLeader") {
+    //   let project = currMember.projects.filter((project) => {
+    //     return project.projectLeader === currMember._id;
+    //   });
+    //   if (project.length > 0) {
+    //     //make the project leader of that project to null
+    //     await removeProjectLeader(project[0]._id);
+    //   }
+    //   await updateRole(e);
+    // } else {
+    //   await updateRole(e);
+    // }
+    handleModalOpen();
   };
   //Changing status of an employee
   const updateStatus = async (value) => {
@@ -218,19 +230,19 @@ export default function Main(props) {
         employeeId: currMember._id,
         teamId: currTeam._id,
       };
-      await removeTeamMember(data, dispatchRemoveMember);
+      const res = await removeTeamMember(data, dispatchRemoveMember);
       await getTeam(dispatchgetTeam);
+      if (!res.data) {
+        throw new Error(res);
+      }
+      if (res.status !== 500) {
+        enqueueSnackbar("Member removed", { variant: "success" });
+      }
       // enqueueSnackbar("Member removed", { variant: "success" });
     } catch (err) {
       console.log(err);
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(
-      removeMember.error ? removeMember.error : "Deleted Member",
-      {
-        variant: removeMember.error ? "info" : "success",
-      }
-    );
   };
 
   //Removing employee from a project
@@ -240,19 +252,18 @@ export default function Main(props) {
         id: currMember._id,
         projectId: value,
       };
-      await removeProjectMember(data, dispatchremoveProjectMember);
+      const res = await removeProjectMember(data, dispatchremoveProjectMember);
       await getTeam(dispatchgetTeam);
-      // enqueueSnackbar("Project removed", { variant: "success" });
+      if (!res.data) {
+        throw new Error(res);
+      }
+      if (res.status !== 500) {
+        enqueueSnackbar("", { variant: "success" });
+      }
     } catch (err) {
-      // enqueueSnackbar(err.message, { variant: "info" });
+      enqueueSnackbar(err.message, { variant: "info" });
       console.log(err);
     }
-    enqueueSnackbar(
-      removeProjectMember.error ? removeProjectMember.error : "Project removed",
-      {
-        variant: removeProjectMember.error ? "info" : "success",
-      }
-    );
   };
 
   //Searching a project
@@ -320,17 +331,6 @@ export default function Main(props) {
     </Box>
   ) : (
     <>
-      {/* <Button
-        onClick={() => (
-          <>
-            {setMember()}
-            {console.log(currMember)}{" "}
-          </>
-        )}
-      >
-        click me
-      </Button> */}
-
       {currMember && (
         <Container
           component="div"

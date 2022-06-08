@@ -252,7 +252,10 @@ const SplitActivity = ({
               <TextField
                 hiddenLabel
                 id="filled-hidden-label-small"
-                defaultValue={timeC(startTime)}
+                defaultValue={timeC(
+                  startTime,
+                  commonData.commonData.user?.accountInfo?.timeZone
+                )}
                 variant="filled"
                 onChange={handleStartChange}
                 size="small"
@@ -264,7 +267,10 @@ const SplitActivity = ({
               <TextField
                 hiddenLabel
                 id="filled-hidden-label-small"
-                defaultValue={timeC(endTime)}
+                defaultValue={timeC(
+                  endTime,
+                  commonData.commonData.user?.accountInfo?.timeZone
+                )}
                 onChange={handleEndChange}
                 variant="filled"
                 size="small"
@@ -400,7 +406,10 @@ const SplitActivity = ({
               <TextField
                 hiddenLabel
                 id="filled-hidden-label-small"
-                defaultValue={timeC(startTime)}
+                defaultValue={timeC(
+                  startTime,
+                  commonData.commonData.user?.accountInfo?.timeZone
+                )}
                 variant="filled"
                 disabled
                 size="small"
@@ -424,7 +433,10 @@ const SplitActivity = ({
               <TextField
                 hiddenLabel
                 id="filled-hidden-label-small"
-                defaultValue={timeC(endTime)}
+                defaultValue={timeC(
+                  endTime,
+                  commonData.commonData.user?.accountInfo?.timeZone
+                )}
                 disabled
                 variant="filled"
                 size="small"

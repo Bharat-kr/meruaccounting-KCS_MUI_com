@@ -38,11 +38,13 @@ import timeC from "src/_helpers/timeConverter";
 import { timeCC } from "src/_helpers/timeConverter";
 import ImageIcon from "@mui/icons-material/Image";
 import { CsvBuilder } from "filefy";
+import { CurrentUserContext } from "src/contexts/CurrentUserContext";
 //...
 
 function Row(props) {
   const { row, options } = props;
   const [open, setOpen] = React.useState(false);
+  const { commonData } = React.useContext(CurrentUserContext);
 
   return (
     <React.Fragment>
@@ -116,9 +118,10 @@ function Row(props) {
                       </Tooltip>
 
                       <Tooltip
-                        title={`${timeC(ss?.activityAt)}, ${Math.ceil(
-                          ss?.performanceData
-                        )}%`}
+                        title={`${timeC(
+                          ss?.activityAt,
+                          commonData.commonData.user?.accountInfo?.timeZone
+                        )}, ${Math.ceil(ss?.performanceData)}%`}
                         placement="top"
                         followCursor
                       >
@@ -147,7 +150,10 @@ function Row(props) {
                         >
                           {`${Math.ceil(
                             ss?.performanceData
-                          )}%, Taken at ${timeC(ss?.activityAt)}`}
+                          )}%, Taken at ${timeC(
+                            ss?.activityAt,
+                            commonData.commonData.user?.accountInfo?.timeZone
+                          )}`}
                         </Typography>
                       </CardContent>
                     </Card>

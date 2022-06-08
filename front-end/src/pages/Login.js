@@ -1,7 +1,14 @@
 import { Link as RouterLink } from "react-router-dom";
 // material
 import { styled } from "@mui/material/styles";
-import { Card, Stack, Link, Container, Typography } from "@mui/material";
+import {
+  Card,
+  Stack,
+  Link,
+  Container,
+  Typography,
+  Button,
+} from "@mui/material";
 // layouts
 import AuthLayout from "../layouts/AuthLayout";
 // components
@@ -9,6 +16,7 @@ import Page from "../components/Page";
 import { MHidden } from "../components/@material-extend";
 import { LoginForm } from "../components/authentication/login";
 import AuthSocial from "../components/authentication/AuthSocial";
+import { downloadApp } from "src/api/auth api/downloadapp";
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +51,17 @@ export default function Login() {
   return (
     <RootStyle title="Login">
       <AuthLayout>
+        <Button
+          variant="outlined"
+          sx={{
+            mr: 2,
+          }}
+          onClick={async () => {
+            await downloadApp();
+          }}
+        >
+          Download App
+        </Button>
         Don’t have an account? &nbsp;
         <Link
           underline="none"

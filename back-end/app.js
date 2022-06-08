@@ -73,7 +73,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 //PORT
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 app.listen(
   PORT,
   console.log(

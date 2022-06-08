@@ -18,12 +18,13 @@ import {
 export const teamContext = React.createContext();
 
 const teamCreateReducer = (state, action) => {
+  console.log(state, action);
   switch (action.type) {
     case TEAM_CREATE_SUCCESS:
       return {
         loader: false,
         teamCreate: action.payload,
-        error:null,
+        error: null,
       };
     case TEAM_CREATE_FAILED:
       return {
@@ -34,7 +35,7 @@ const teamCreateReducer = (state, action) => {
       return {
         teamCreate: {},
         loader: false,
-        error:null,
+        error: null,
       };
     default:
       return state;
@@ -66,7 +67,7 @@ const updateMemberReducer = (state, action) => {
       return {
         loader: false,
         updatedMember: action.payload,
-        error:null
+        error: null,
       };
     case UPDATE_MEMBER_FAILED:
       return {
@@ -86,7 +87,7 @@ const removeMemberReducer = (state, action) => {
       return {
         loader: false,
         removeMember: action.payload,
-        error:null
+        error: null,
       };
     case REMOVE_MEMBER_FAILED:
       return {
@@ -129,7 +130,7 @@ export function TeamsProvider(props) {
   });
   const [updatedMember, dispatchUpdateMember] = useReducer(
     updateMemberReducer,
-    { updatedMember: { loader: true } }
+    { updatedMember: { loader: false } }
   );
   const [removeMember, dispatchRemoveMember] = useReducer(removeMemberReducer, {
     removeMember: { loader: true },

@@ -186,6 +186,7 @@ const EnhancedTableToolbar = (props) => {
         pro.name === select ? deleteList.push(pro.id) : ""
       );
     });
+    console.log(deleteList, projectsList);
 
     for (let i = 0; i < deleteList.length; i++) {
       await deleteProject(deleteList[i], dispatchremoveProjectMember);
@@ -280,7 +281,6 @@ export default function EnhancedTable(props) {
   const {
     // currentProject,
     //  currentClient,
-    clientsList,
     outerref,
   } = props;
   const [order, setOrder] = React.useState("asc");
@@ -292,6 +292,7 @@ export default function EnhancedTable(props) {
   const [rows, setRows] = useState([]);
   const [proList, setProList] = useState([]);
   const [projectNameList, setProjectNameList] = useState([]);
+  const [projectsList, setProjectsList] = useState([]);
 
   const {
     clientDetails,
@@ -299,12 +300,12 @@ export default function EnhancedTable(props) {
     changeClient,
     currentProject,
     currentClient,
+    clientsList,
   } = useContext(ClientsContext);
 
   const { reports, dispatchGetReports } = useContext(reportsContext);
 
   const tableListRef = useRef();
-  const projectsList = [];
   const clientIndex = clientsList?.findIndex(
     (i) => i._id === currentClient?._id
   );
@@ -354,8 +355,12 @@ export default function EnhancedTable(props) {
   React.useEffect(async () => {
     try {
       let nameList = [];
+      let prolist = [];
+      console.log(currentClient);
+      console.log(proList);
       currentClient
         ? currentClient.projects.map((pro) => {
+            console.log(pro);
             let o = {};
             let exists = proList[0]?.byProjects?.filter(
               (el) => el._id._id === pro._id
@@ -379,7 +384,7 @@ export default function EnhancedTable(props) {
                 totalHours: `0 hr`,
               };
             }
-            projectsList.push(o);
+            prolist.push(o);
 
             nameList.push(`${pro.name}`);
           })
@@ -387,33 +392,13 @@ export default function EnhancedTable(props) {
 
       setRows(projectsList);
       setProjectNameList(nameList);
+      setProjectsList(prolist);
       setRowsPerPage(rows.length);
       setSelected([]);
     } catch (err) {
       console.log(err);
     }
   }, [currentClient, clientDetails, proList]);
-
-  // React.useEffect(() => {
-  //   try {
-  //     currentClient?.projects?.map((pro) => {
-  //       rowPush.push(
-  //         createData(
-  //           `${pro.name}`,
-  //           pro.consumeTime,
-  //           pro.budgetTime,
-  //           pro.employees.length,
-  //           pro._id
-  //         )
-  //       );
-  //     });
-  //     setRows(rowPush);
-  //     setRowsPerPage(rows.length);
-  //     setSelected([]);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [currentClient, currentProject, clientDetails]);
 
   const handleSearch = async (e, value) => {
     e.preventDefault();
