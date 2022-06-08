@@ -43,6 +43,7 @@ import { settingsValueToString } from "src/_helpers/settingsValuetoString";
 import {
   addProjectLeader,
   removeProjectLeader,
+  removeProjectMem,
   removeProjectMember,
 } from "src/api/projects api/projects";
 import { useSnackbar } from "notistack";
@@ -249,10 +250,11 @@ export default function Main(props) {
   const removeProject = async (value) => {
     try {
       const data = {
-        id: currMember._id,
         projectId: value,
+        employeeId: currMember._id,
       };
-      const res = await removeProjectMember(data, dispatchremoveProjectMember);
+      console.log(currMember._id, value);
+      const res = await removeProjectMem(data, dispatchremoveProjectMember);
       await getTeam(dispatchgetTeam);
       if (!res.data) {
         throw new Error(res);

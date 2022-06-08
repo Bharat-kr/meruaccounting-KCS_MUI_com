@@ -102,7 +102,7 @@ export default function Activity({
           </Box>
         </Tooltip>
         <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
-          || {project === null ? `Project was deleted, OOF :")` : project.name}
+          || {project === null ? `Project was deleted` : project.name}
         </Typography>
         <IconButton
           sx={{ float: "right", color: "primary.dark" }}
@@ -189,8 +189,7 @@ export default function Activity({
               sx={{ m: 2, width: "100%" }}
               variant="string"
             >
-              <AlertTitle>No Screenshots</AlertTitle>
-              Evidence was deleted — <strong>{`OOF :")`}</strong>
+              <AlertTitle>No Screenshots available</AlertTitle>
             </Alert>
           )}
         </Box>

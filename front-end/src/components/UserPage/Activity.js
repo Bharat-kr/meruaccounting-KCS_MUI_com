@@ -94,7 +94,7 @@ export default function Activity({
           </Box>
         </Tooltip>
         <Typography component="span" sx={{ m: 0, fontWeight: "bold" }}>
-          || {project === null ? `Project was deleted, OOF :")` : project.name}
+          || {project === null ? `Project was deleted` : project.name}
         </Typography>
         <IconButton
           sx={{ float: "right", color: "primary.dark" }}
