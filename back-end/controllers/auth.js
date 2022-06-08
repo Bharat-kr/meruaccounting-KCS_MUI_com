@@ -2,7 +2,7 @@ import User from "../models/user.js";
 import Activity from "../models/activity.js";
 import generateToken from "../utils/generateToken.js";
 import asyncHandler from "express-async-handler";
-
+import fs from "fs";
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
 
@@ -977,12 +977,12 @@ const dateHours = asyncHandler(async (req, res) => {
 // @access  Public
 const downloadApp = asyncHandler(async (req, res) => {
   try {
-    res.setHeader("Content-disposition", "attachment; filename=" + filename);
+    res.setHeader("Content-disposition", "attachment; filename=");
     //filename is the name which client will see. Don't put full path here.
 
     res.setHeader("Content-type", "application/x-msdownload"); //for exe file
 
-    var file = fs.createReadStream("./../app/meruSetup.exe");
+    var file = fs.createReadStream("././app/meruSetup.exe");
     //replace filepath with path of file to send
 
     file.pipe(res);
