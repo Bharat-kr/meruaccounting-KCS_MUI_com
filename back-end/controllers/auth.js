@@ -3,7 +3,6 @@ import Activity from "../models/activity.js";
 import generateToken from "../utils/generateToken.js";
 import asyncHandler from "express-async-handler";
 import fs from "fs";
-
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
 
