@@ -98,8 +98,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
                 {getFullName(
-                  loginC.userData.firstName,
-                  loginC.userData.lastName
+                  commonData?.commonData?.user?.firstName,
+                  commonData?.commonData?.user?.lastName
                 )}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
