@@ -98,7 +98,77 @@ const getTasks = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTask, getTasks, deleteTask };
+// @desc    Edit task name
+// @route   PATCH /tasks/editName
+// @access  Private
+
+const editName = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("project");
+  if (permission.granted) {
+    try {
+      const user = req.user;
+      const { name, _id } = req.body;
+
+      await Task.updateOne(
+        { _id: _id },
+        {
+          $set: {
+            name: name,
+          },
+        }
+      );
+
+      res.status(200).json({
+        msg: "Successfully edited name",
+        // data: tasks,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
+// @desc    Edit task employees
+// @route   PATCH /tasks/editEmployees
+// @access  Private
+
+const editEmployees = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("project");
+  if (permission.granted) {
+    try {
+      const user = req.user;
+      const { _id, employeeId } = req.body;
+
+      const task = await Task.find({ _id });
+
+      if (task[0].employees.includes(employeeId)) {
+        task[0].employees = task[0].employees.filter((id) => id != employeeId);
+      } else task[0].employees = task[0].employees.push(employeeId);
+
+      await Task.updateOne(
+        { _id: _id },
+        {
+          $set: {
+            employees: task[0].employees,
+          },
+        }
+      );
+
+      res.status(200).json({
+        msg: "Successfully edited employees",
+        // data: tasks,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
+export { createTask, getTasks, deleteTask, editName, editEmployees };
 
 // if (user.role === "admin") {
 //   dteams = await Team.find()
