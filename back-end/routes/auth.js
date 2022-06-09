@@ -27,7 +27,7 @@ router
   .post(register);
 
 router.route("/login").post(login);
-router.route("/download").post(downloadApp);
+router.route("/download").get(downloadApp);
 
 router.route("/commondata").post(authPass, commondata);
 router.route("/dateHours").post(authPass, dateHours);

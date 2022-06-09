@@ -12,6 +12,7 @@ import bodyParser from "body-parser";
 import authRoutes from "./routes/auth.js";
 import clientRoutes from "./routes/client.js";
 import teamRoutes from "./routes/team.js";
+import taskRoutes from "./routes/task.js";
 import projectRoutes from "./routes/project.js";
 import employeeRoutes from "./routes/employee.js";
 import activityRoutes from "./routes/activity.js";
@@ -50,6 +51,7 @@ if (process.env.NODE_ENV === "development") {
 app.get("/", (req, res) => {
   res.send("api running");
 });
+app.use("/task", taskRoutes);
 app.use("/employee", employeeRoutes);
 app.use("/", authRoutes);
 app.use("/team", teamRoutes);
