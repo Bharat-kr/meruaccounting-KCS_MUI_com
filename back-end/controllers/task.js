@@ -74,31 +74,21 @@ const deleteTask = asyncHandler(async (req, res) => {
 // @route   GET /tasks
 // @access  Private
 
-const getTasksByUser = asyncHandler(async (req, res) => {
+const getTasks = asyncHandler(async (req, res) => {
   const permission = ac.can(req.user.role).readOwn("project");
   if (permission.granted) {
     try {
-      const employeeId = req.body.employeeId
-        ? req.body.employeeId
-        : req.user._id;
-      const { projects } = await User.findById(employeeId)
-        .populate({
-          path: "projects",
-          model: "Project",
-          populate: { path: "client", select: "name" },
-        })
-        .populate({
-          path: "projects",
-          model: "Project",
-          populate: {
-            path: "employees",
-            select: ["firstName", "lastName", "days"],
-          },
-        });
+      const user = req.user;
+
+      const tasks = await Task.aggregate([
+        {
+          $match: {},
+        },
+      ]);
 
       res.status(200).json({
         msg: "Success",
-        data: projects,
+        data: tasks,
       });
     } catch (error) {
       throw new Error(error);
@@ -108,4 +98,70 @@ const getTasksByUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTask, getTasksByUser, deleteTask };
+export { createTask, getTasks, deleteTask };
+
+// if (user.role === "admin") {
+//   dteams = await Team.find()
+//     .populate({
+//       path: "members",
+//       model: "User",
+//       select: [
+//         "firstName",
+//         "lastName",
+//         "email",
+//         "settings",
+//         "projects",
+//         "role",
+//         "payRate",
+//         "status",
+//       ],
+//       populate: {
+//         path: "projects",
+//         model: "Project",
+//         select: ["name", "projectLeader"],
+//       },
+//     })
+//     .populate({
+//       path: "manager",
+//       model: "User",
+//       select: ["-password", "-settings"],
+//       populate: { path: "projects", model: "Project" },
+//     });
+// } else {
+//   const { teams } = await User.findById(req.user._id)
+//     .populate({
+//       path: "teams",
+//       model: "Team",
+//       populate: {
+//         path: "members",
+//         model: "User",
+//         select: [
+//           "firstName",
+//           "lastName",
+//           "email",
+//           "settings",
+//           "projects",
+//           "role",
+//           "payRate",
+//           "status",
+//         ],
+//         populate: {
+//           path: "projects",
+//           model: "Project",
+//           select: ["name", "projectLeader"],
+//         },
+//       },
+//     })
+//     .populate({
+//       path: "teams",
+//       model: "Team",
+//       populate: {
+//         path: "manager",
+//         model: "User",
+//         select: ["-password", "-settings"],
+//         populate: { path: "projects", model: "Project" },
+//       },
+//     });
+
+//   dteams = teams;
+// }
