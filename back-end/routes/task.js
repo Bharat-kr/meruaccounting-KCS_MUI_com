@@ -1,12 +1,12 @@
 import express from "express";
 import { authPass } from "../middleware/authMiddleware.js";
-import { createTask, deleteTask } from "../controllers/task.js";
+import { createTask, deleteTask, getTasks } from "../controllers/task.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  //   .get(authPass, getTask)
+  .get(authPass, getTasks)
   .post(authPass, createTask)
   .delete(authPass, deleteTask);
 
