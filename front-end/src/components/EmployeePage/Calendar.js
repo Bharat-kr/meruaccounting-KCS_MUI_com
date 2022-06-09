@@ -252,7 +252,9 @@ export default class Calendar extends React.Component {
               style={{
                 height: "100%",
                 width: `${
-                  (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100
+                  (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100 >= 100
+                    ? 100
+                    : (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100
                 }%`,
                 backgroundColor: "#007B55",
               }}

@@ -46,7 +46,6 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const { loginC } = useContext(loginContext);
   const { commonData } = useContext(CurrentUserContext);
   const currentRoleIndex = Role.indexOf(
     JSON.parse(localStorage.getItem("loginC")).userData.role
