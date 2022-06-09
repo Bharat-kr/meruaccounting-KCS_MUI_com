@@ -207,7 +207,6 @@ const SplitActivity = ({
     }
     handleClose();
   };
-
   return (
     <>
       <Modal
