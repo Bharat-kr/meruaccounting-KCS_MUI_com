@@ -41,6 +41,7 @@ import { getTeam } from "./api/teams api/teams";
 import { Role } from "./_helpers/role";
 import { getReports } from "./api/reports api/reports";
 import Reset from "./pages/Reset";
+import TaskAssignment from "./pages/TaskAssignment";
 
 // ----------------------------------------------------------------------
 
@@ -211,6 +212,11 @@ export default function Router() {
         {
           path: "employeepage/:id",
           element: <PrivateRoute component={EmployeePage} roles={3} />,
+        },
+        // till manager
+        {
+          path: "tasks",
+          element: <PrivateRoute component={TaskAssignment} roles={2} />,
         },
       ],
     },

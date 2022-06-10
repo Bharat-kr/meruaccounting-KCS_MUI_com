@@ -16,6 +16,7 @@ import { UserContextProvider } from "./contexts/UserContext";
 import EmployeePageContextProvider from "./contexts/EmployeePageContext";
 import { ReportsProvider } from "./contexts/ReportsContext";
 import { CommonContextProvider } from "./contexts/CommonContext";
+import { TasksProvider } from "./contexts/tasksContext";
 // ----------------------------------------------------------------------
 
 export default function App() {
@@ -34,7 +35,9 @@ export default function App() {
                     <ProjectsContextProvider>
                       <EmployeePageContextProvider>
                         <TeamsProvider>
-                          <Router />
+                          <TasksProvider>
+                            <Router />
+                          </TasksProvider>
                         </TeamsProvider>
                       </EmployeePageContextProvider>
                     </ProjectsContextProvider>
