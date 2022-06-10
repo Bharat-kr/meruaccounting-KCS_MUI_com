@@ -1,16 +1,23 @@
 import express from "express";
 import { authPass } from "../middleware/authMiddleware.js";
-import { createTask, deleteTask } from "../controllers/task.js";
+import {
+  createTask,
+  deleteTask,
+  getTasks,
+  editName,
+  editEmployees,
+} from "../controllers/task.js";
 
 const router = express.Router();
 
 router
   .route("/")
-  //   .get(authPass, getTask)
+  .get(authPass, getTasks)
   .post(authPass, createTask)
   .delete(authPass, deleteTask);
 
-// router.route("/addMember/:id").post(authPass, addMember);
+router.route("/editName").patch(authPass, editName);
+router.route("/editEmployees").patch(authPass, editEmployees);
 
 // router.route("/removeMember/:id").patch(authPass, removeMember);
 
