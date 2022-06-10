@@ -182,7 +182,7 @@ export default function SaveReport(props) {
       };
       const savedData = await axios.post("/report/save", data2);
       window.open(
-        `http://localhost:3000/downloadReportPdf/${savedData.data.data.url}`,
+        `${window.location.origin}/downloadReportPdf/${savedData.data.data.url}`,
         // `https://monitor-meruaccounting-bf9db.web.app/downloadReportPdf/${savedData.data.data.url}`,
         "_blank"
       );
@@ -423,7 +423,7 @@ export default function SaveReport(props) {
     const savedData = await axios.post("/report/save", data);
     if (checked[0]) {
       navigator.clipboard.writeText(
-        `http://localhost:3000/reports/sharedReports/${url}`
+        `${window.location.origin}/reports/sharedReports/${url}`
         // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${url}`
       );
       enqueueSnackbar("link copied", { variant: "success" });
@@ -627,7 +627,7 @@ export default function SaveReport(props) {
                 disabled={!checked[0]}
                 fullWidth
                 label="Sharing link"
-                defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                defaultValue={`${window.location.origin}/reports/sharedReports/${url}`}
                 // defaultValue={`https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${url}`}
                 InputProps={{
                   readOnly: true,

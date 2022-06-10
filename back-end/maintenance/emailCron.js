@@ -990,8 +990,8 @@ const mail = (uniquePdf, email) => {
   let attachment = fs.readFileSync(pathToAttachment).toString("base64");
 
   const msg = {
-    to: "it.meru02@gmail.com",
-    from: "it.meru02@gmail.com",
+    // to: "it.meru02@gmail.com",
+    // from: "it.meru02@gmail.com",
     subject: "Sending with SendGrid is Fun",
     text: "and easy to do anywhere, even with Node.js",
     attachments: [

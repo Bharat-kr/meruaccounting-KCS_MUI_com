@@ -234,7 +234,7 @@ function Row(props) {
             }}
             onClick={() => {
               window.open(
-                `http://localhost:3000/reports/sharedReports/${row.url}`,
+                `${window.location.origin}/reports/sharedReports/${row.url}`,
                 // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`,
                 "_blank"
               );
@@ -242,13 +242,13 @@ function Row(props) {
             variant="body2"
           >
             {/* {`https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`} */}
-            {`http://localhost:3000/reports/sharedReports/${row.url}`}
+            {`${window.location.origin}/reports/sharedReports/${row.url}`}
           </Typography>
           <ContentCopyIcon
             sx={{ fontSize: "medium" }}
             onClick={() => {
               navigator.clipboard.writeText(
-                `http://localhost:3000/reports/sharedReports/${row.url}`
+                `${window.location.origin}/reports/sharedReports/${row.url}`
                 // `https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${row.url}`
               );
               enqueueSnackbar("Link copied", { variant: "success" });
@@ -315,7 +315,7 @@ function Row(props) {
                   disabled={!checked[0]}
                   fullWidth
                   label="Sharing link"
-                  defaultValue={`http://localhost:3000/reports/sharedReports/${url}`}
+                  defaultValue={`${window.location.origin}/reports/sharedReports/${url}`}
                   // defaultValue={`https://monitor-meruaccounting-bf9db.web.app/reports/sharedReports/${url}`}
                   InputProps={{
                     readOnly: true,
