@@ -621,7 +621,7 @@ export default function SettingsMain(props) {
         if (res.status === 200) {
           getTeam(dispatchgetTeam);
           if (data !== null)
-            enqueueSnackbar("Employee edited", { variant: "success" });
+            enqueueSnackbar("Employee Settings edited", { variant: "success" });
           else enqueueSnackbar("Enter number", { variant: "info" });
         }
       })

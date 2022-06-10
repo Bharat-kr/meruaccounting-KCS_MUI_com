@@ -140,7 +140,7 @@ export default function Header(props) {
     inputRef.current.focus();
   };
   const test = useRef(false);
-  if (clientsList !== []) {
+  if (clientsList.length !== 0) {
     clientIndex = clientsList?.findIndex((i) => i._id === currentClient?._id);
     projectIndex = clientsList[clientIndex]?.projects?.findIndex(
       (i) => i?._id === currentProject?._id
