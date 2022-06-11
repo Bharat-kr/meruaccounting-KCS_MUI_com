@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CssBaseline, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-// components
-import TaskMain from "src/components/taskAssignment.js/taskMain";
-import TaskSidebar from "src/components/taskAssignment.js/taskSidebar";
+// components\
 import PageHeader from "../components/PageHeader";
+import TaskSidebar from "src/components/tasks/TaskSidebar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,11 +25,15 @@ export default function TaskAssignment() {
   return (
     <Box
       component="div"
-      sx={{ width: "95%", margin: "auto", maxHeight: "70vh", height: "70vh" }}
+      sx={{
+        width: "95%",
+        margin: "auto",
+        maxHeight: "70vh",
+        height: "70vh",
+      }}
     >
       <CssBaseline />
       <PageHeader title="Tasks" />
-
       <div className={classes.root}>
         <TaskSidebar />
       </div>
