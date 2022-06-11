@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import { CssBaseline, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-// components
-import { TaskSidebar } from "../components/tasks/TaskSidebar";
+// components\
 import PageHeader from "../components/PageHeader";
+import TaskSidebar from "src/components/tasks/TaskSidebar";
 
 const useStyles = makeStyles((theme) => ({
   root: {

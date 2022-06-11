@@ -17,6 +17,7 @@ import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import UserSettings from "./pages/UserSettings";
 import UserPage from "./pages/UserPage";
+import TaskAssignment from "./pages/TaskAssignment.js";
 import EmployeePage from "./pages/EmployeePage";
 import { PrivateRoute } from "./components/privatroutes";
 import { employeeContext } from "./contexts/EmployeeContext";
@@ -206,6 +207,11 @@ export default function Router() {
         {
           path: "userpage",
           element: <PrivateRoute component={UserPage} roles={4} />,
+        },
+        // all
+        {
+          path: "tasks",
+          element: <PrivateRoute component={TaskAssignment} roles={4} />,
         },
         // till teamLeader
         {
