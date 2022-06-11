@@ -5,6 +5,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import "./calendar.css";
 import { Tooltip } from "@mui/material";
+import dayjs from "dayjs";
 export default class Calendar extends React.Component {
   weekdayshort = moment.weekdaysShort();
 
@@ -252,7 +253,9 @@ export default class Calendar extends React.Component {
               style={{
                 height: "100%",
                 width: `${
-                  (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100
+                  (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100 >= 100
+                    ? 100
+                    : (this.getHours(d).dailyHours / (60 * 60 * 5)) * 100
                 }%`,
                 backgroundColor: "#007B55",
               }}

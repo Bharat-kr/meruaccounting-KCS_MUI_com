@@ -170,7 +170,7 @@ const splitActivity = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     // console.log(user);
 
-    let today = dayjs().format("DD/MM/YYYY");
+    let today = dayjs(intitialActivityTime).format("DD/MM/YYYY");
 
     // console.log("Date of activity1", today);
     let found = false;
@@ -198,7 +198,7 @@ const splitActivity = asyncHandler(async (req, res) => {
   if (activity2) {
     const user = await User.findById(req.user._id);
 
-    let today = dayjs().format("DD/MM/YYYY");
+    let today = dayjs(intitialActivityTime).format("DD/MM/YYYY");
 
     let found = false;
     for (let i = 0; i < user.days.length; i++) {

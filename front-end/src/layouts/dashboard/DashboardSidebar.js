@@ -46,7 +46,6 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const { loginC } = useContext(loginContext);
   const { commonData } = useContext(CurrentUserContext);
   const currentRoleIndex = Role.indexOf(
     JSON.parse(localStorage.getItem("loginC")).userData.role
@@ -98,8 +97,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
                 {getFullName(
-                  loginC.userData.firstName,
-                  loginC.userData.lastName
+                  commonData?.commonData?.user?.firstName,
+                  commonData?.commonData?.user?.lastName
                 )}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
