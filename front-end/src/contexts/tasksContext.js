@@ -10,9 +10,22 @@ import {
   TASK_MEMBERDEL_SUCCESS,
   GET_TASK_SUCCESS,
   GET_TASK_FAILED,
+  GET_TASK_DETAILS_FAILED,
+  GET_TASK_DETAILS_SUCCESS,
 } from "../constants/TasksConstants";
 
 export const TasksContext = createContext();
+
+const tasksListState = {
+  loader: true,
+  tasks: [],
+  error: false,
+};
+const taskDetailsState = {
+  loader: true,
+  taskDetails: {},
+  error: false,
+};
 
 const getTasksReducer = (state, action) => {
   switch (action.type) {
@@ -24,6 +37,25 @@ const getTasksReducer = (state, action) => {
         error: false,
       };
     case GET_TASK_FAILED:
+      return {
+        ...state,
+        loader: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+const getTaskDetailsReducer = (state, action) => {
+  switch (action.type) {
+    case GET_TASK_DETAILS_SUCCESS:
+      return {
+        ...state,
+        loader: false,
+        tasks: action.payload,
+        error: false,
+      };
+    case GET_TASK_DETAILS_FAILED:
       return {
         ...state,
         loader: false,
@@ -99,11 +131,11 @@ const deleteTaskMemReducer = (state, action) => {
 };
 
 export function TasksProvider(props) {
-  const [tasks, dispatchGetTask] = useReducer(getTasksReducer, {
-    loader: true,
-    tasks: [],
-    error: false,
-  });
+  const [tasks, dispatchGetTask] = useReducer(getTasksReducer, tasksListState);
+  const [taskDetails, dispatchGetTaskDetails] = useReducer(
+    getTaskDetailsReducer,
+    taskDetailsState
+  );
 
   const [createTask, dispatchCreateTask] = useReducer(taskCreateReducer, {
     loader: true,
@@ -138,6 +170,8 @@ export function TasksProvider(props) {
           dispatchAddTaskMember,
           deleteTaskMember,
           dispatchDeleteTaskMember,
+          taskDetails,
+          dispatchGetTaskDetails,
         }}
       >
         {props.children}

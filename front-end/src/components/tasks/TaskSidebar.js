@@ -18,7 +18,7 @@ import { lowerCase } from "src/_helpers/LowerCase";
 import TaskMain from "./TaskMain";
 
 // apis and contexts
-import { getTasks } from "src/api/task api/tasks.js";
+import { getTaskDetails, getTasks } from "src/api/task api/tasks.js";
 import { TasksContext } from "src/contexts/tasksContext";
 
 //----------------------------------------------------------------------------------------------
@@ -48,8 +48,8 @@ export default function TaskSidebar() {
   const clientref = useRef("");
   const { enqueueSnackbar } = useSnackbar();
 
-  const { tasks } = useContext(TasksContext);
-  console.log(tasks);
+  const { tasks, dispatchGetTask, taskDetails, dispatchGetTaskDetails } =
+    useContext(TasksContext);
 
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
@@ -160,6 +160,7 @@ export default function TaskSidebar() {
                   nodeId={task._id}
                   onClick={(e) => {
                     console.log(task._id);
+                    getTaskDetails(dispatchGetTaskDetails, { _id: task._id });
                   }}
                   className={classes.treeItem}
                   label={

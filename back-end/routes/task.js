@@ -6,6 +6,7 @@ import {
   getTasks,
   editName,
   editEmployees,
+  getTaskDetails,
 } from "../controllers/task.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router
 
 router.route("/editName").patch(authPass, editName);
 router.route("/editEmployees").patch(authPass, editEmployees);
+router.route("/details").post(authPass, getTaskDetails);
 
 // router.route("/removeMember/:id").patch(authPass, removeMember);
 
