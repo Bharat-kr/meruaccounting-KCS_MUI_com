@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
+import mongoose from "mongoose";
 
 const ac = new AccessControl(grantsObject);
 
@@ -168,7 +169,81 @@ const editEmployees = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTask, getTasks, deleteTask, editName, editEmployees };
+// @desc    Get task details
+// @route   Post /tasks/details
+// @access  Private
+
+const getTaskDetails = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("project");
+  if (permission.granted) {
+    try {
+      const user = req.user;
+      const { _id } = req.body;
+      console.log(_id);
+
+      const allEmployees = await User.aggregate([
+        {
+          $match: {},
+        },
+        {
+          $group: {
+            _id: null,
+            allEmployees: {
+              $addToSet: "$_id",
+            },
+          },
+        },
+      ]);
+
+      const task = await Task.aggregate([
+        {
+          $match: {
+            _id: mongoose.Types.ObjectId(_id),
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "employees",
+            foreignField: "_id",
+            as: "employees",
+          },
+        },
+        {
+          $project: {
+            "employees._id": 1,
+            "employees.firstName": 1,
+            "employees.lastName": 1,
+            name: 1,
+            createdAt: 1,
+            createdBy: 1,
+            updatedAt: 1,
+          },
+        },
+      ]);
+
+      task[0].allEmployees = allEmployees[0].allEmployees;
+
+      res.status(200).json({
+        msg: "Successfully fetched task details",
+        data: task[0],
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
+export {
+  createTask,
+  getTasks,
+  deleteTask,
+  editName,
+  editEmployees,
+  getTaskDetails,
+};
 
 // if (user.role === "admin") {
 //   dteams = await Team.find()

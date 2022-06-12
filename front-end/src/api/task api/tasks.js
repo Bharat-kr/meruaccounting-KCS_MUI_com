@@ -11,6 +11,8 @@ import {
   TASK_MEMBERDEL_FAILED,
   GET_TASK_SUCCESS,
   GET_TASK_FAILED,
+  GET_TASK_DETAILS_SUCCESS,
+  GET_TASK_DETAILS_FAILED,
 } from "../../constants/TasksConstants";
 
 const config = {
@@ -29,6 +31,28 @@ export const getTasks = async (dispatch) => {
   } catch (e) {
     dispatch({
       type: GET_TASK_FAILED,
+      payload:
+        e.response && e.response.data.message
+          ? e.response.data.message
+          : e.message,
+    });
+    return e.response && e.response.data.message
+      ? e.response.data.message
+      : e.message;
+  }
+};
+
+export const getTaskDetails = async (dispatch, options) => {
+  try {
+    const res = await axios.post(`/task/details`, options);
+    dispatch({
+      type: GET_TASK_DETAILS_SUCCESS,
+      payload: res.data.data,
+    });
+    console.table(res.data.data);
+  } catch (e) {
+    dispatch({
+      type: GET_TASK_DETAILS_FAILED,
       payload:
         e.response && e.response.data.message
           ? e.response.data.message
