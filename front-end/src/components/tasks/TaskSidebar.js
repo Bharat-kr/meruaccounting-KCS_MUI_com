@@ -97,7 +97,7 @@ export default function TaskSidebar() {
           />
         </Box>
 
-        {false && (
+        {tasks.loader && (
           <Box
             sx={{
               display: "flex",
@@ -111,7 +111,7 @@ export default function TaskSidebar() {
         )}
 
         {/* clients list flex container */}
-        {true && (
+        {!tasks.loader && (
           <Box
             ref={sidebarref}
             component="div"
@@ -160,7 +160,7 @@ export default function TaskSidebar() {
                   nodeId={task._id}
                   onClick={(e) => {
                     console.log(task._id);
-                    getTaskDetails(dispatchGetTaskDetails, { _id: task._id });
+                    getTaskDetails(dispatchGetTaskDetails, task);
                   }}
                   className={classes.treeItem}
                   label={

@@ -52,7 +52,7 @@ const getTaskDetailsReducer = (state, action) => {
       return {
         ...state,
         loader: false,
-        tasks: action.payload,
+        taskDetails: action.payload,
         error: false,
       };
     case GET_TASK_DETAILS_FAILED:
