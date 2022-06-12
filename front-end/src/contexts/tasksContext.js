@@ -1,5 +1,4 @@
-import React from "react";
-import { useReducer } from "react";
+import React, { useReducer, createContext } from "react";
 
 import {
   TASK_CREATE_SUCCESS,
@@ -9,22 +8,24 @@ import {
   TASK_MEMBERADD_SUCCESS,
   TASK_MEMBERADD_FAILED,
   TASK_MEMBERDEL_SUCCESS,
-  TASK_MEMBERDEL_FAILED,
   GET_TASK_SUCCESS,
   GET_TASK_FAILED,
 } from "../constants/TasksConstants";
 
-export const tasksContext = React.createContext();
+export const TasksContext = createContext();
 
 const getTasksReducer = (state, action) => {
   switch (action.type) {
     case GET_TASK_SUCCESS:
       return {
+        ...state,
         loader: false,
-        Task: action.payload,
+        tasks: action.payload,
+        error: false,
       };
     case GET_TASK_FAILED:
       return {
+        ...state,
         loader: false,
         error: action.payload,
       };
@@ -98,9 +99,10 @@ const deleteTaskMemReducer = (state, action) => {
 };
 
 export function TasksProvider(props) {
-  const [getTasks, dispatchGetTask] = useReducer(getTasksReducer, {
+  const [tasks, dispatchGetTask] = useReducer(getTasksReducer, {
     loader: true,
-    getTasks: [],
+    tasks: [],
+    error: false,
   });
 
   const [createTask, dispatchCreateTask] = useReducer(taskCreateReducer, {
@@ -123,19 +125,23 @@ export function TasksProvider(props) {
   );
 
   return (
-    <tasksContext.Provider
-      value={{
-        getTasks,
-        dispatchGetTask,
-        createTask,
-        dispatchCreateTask,
-        deleteTask,
-        dispatchDeleteTask,
-        addTaskMember,
-        dispatchAddTaskMember,
-        deleteTaskMember,
-        dispatchDeleteTaskMember,
-      }}
-    ></tasksContext.Provider>
+    <div>
+      <TasksContext.Provider
+        value={{
+          tasks,
+          dispatchGetTask,
+          createTask,
+          dispatchCreateTask,
+          deleteTask,
+          dispatchDeleteTask,
+          addTaskMember,
+          dispatchAddTaskMember,
+          deleteTaskMember,
+          dispatchDeleteTaskMember,
+        }}
+      >
+        {props.children}
+      </TasksContext.Provider>
+    </div>
   );
 }
