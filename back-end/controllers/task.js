@@ -186,11 +186,10 @@ const getTaskDetails = asyncHandler(async (req, res) => {
           $match: {},
         },
         {
-          $group: {
-            _id: null,
-            allEmployees: {
-              $addToSet: "$_id",
-            },
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
           },
         },
       ]);
@@ -201,28 +200,9 @@ const getTaskDetails = asyncHandler(async (req, res) => {
             _id: mongoose.Types.ObjectId(_id),
           },
         },
-        {
-          $lookup: {
-            from: "users",
-            localField: "employees",
-            foreignField: "_id",
-            as: "employees",
-          },
-        },
-        {
-          $project: {
-            "employees._id": 1,
-            "employees.firstName": 1,
-            "employees.lastName": 1,
-            name: 1,
-            createdAt: 1,
-            createdBy: 1,
-            updatedAt: 1,
-          },
-        },
       ]);
 
-      task[0].allEmployees = allEmployees[0].allEmployees;
+      task[0].allEmployees = allEmployees;
 
       res.status(200).json({
         msg: "Successfully fetched task details",
