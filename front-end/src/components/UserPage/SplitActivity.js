@@ -55,7 +55,11 @@ const SplitActivity = ({
   const [deleteActivity, setDeleteActivity] = React.useState(false);
   const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
   const { enqueueSnackbar } = useSnackbar();
+  const [actProject, setActProject] = React.useState(project);
+
   const handleChange = (event) => {
+    const val = event.target.value;
+    setActProject(val.split("-")[0]);
     setProjectSelected(event.target.value);
   };
   const [splitModal, setSplitModal] = useState(false);
@@ -73,8 +77,13 @@ const SplitActivity = ({
   }, []);
 
   const handleSplitOpen = () => {
-    handleClose();
-    setSplitModal(true);
+    console.log(projectSelected);
+    if (actProject === null || undefined) {
+      enqueueSnackbar("Select a project", { variant: "info" });
+    } else {
+      handleClose();
+      setSplitModal(true);
+    }
   };
   const handleSplitClose = () => {
     setSplitModal(false);
@@ -112,7 +121,7 @@ const SplitActivity = ({
     let data = {
       activityId: act._id,
       clientId: act.client,
-      projectId: project._id,
+      projectId: actProject,
       task: act.task,
       splitTime: splitValue,
       performanceData: act.performanceData,
@@ -129,6 +138,10 @@ const SplitActivity = ({
       })
       .catch((err) => enqueueSnackbar(err.message, { variant: "error" }));
     handleSplitClose();
+    project === undefined &&
+      enqueueSnackbar("Project not selected for this activity", {
+        variant: "info",
+      });
   };
 
   //handling splittime change
@@ -191,7 +204,7 @@ const SplitActivity = ({
       await axios
         .patch(`/activity/${act._id}`, data)
         .then((res) => {
-          enqueueSnackbar("Time Edited", {
+          enqueueSnackbar("Saved changes", {
             variant: "success",
           });
         })
