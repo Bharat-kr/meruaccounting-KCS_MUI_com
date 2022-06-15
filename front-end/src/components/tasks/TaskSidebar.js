@@ -20,6 +20,7 @@ import TaskMain from "./TaskMain";
 // apis and contexts
 import { getTaskDetails, getTasks } from "src/api/task api/tasks.js";
 import { TasksContext } from "src/contexts/tasksContext";
+import axios from "axios";
 
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -38,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TaskSidebar() {
   const classes = useStyles();
-  const [newClientValue, setnewClientValue] = useState();
-  const [newClientError, setnewClientError] = useState(false);
-  const [loaderAddClient, setLoaderAddClient] = useState(false);
+  const [newTaskValue, setnewTaskValue] = useState();
+  const [newTaskError, setnewTaskError] = useState(false);
+  const [loaderAddTask, setLoaderAddTask] = useState(false);
   const [selected, setSelected] = React.useState([]);
   const inputRef = useRef("");
   const autocomRef = useRef("");
@@ -48,11 +49,23 @@ export default function TaskSidebar() {
   const clientref = useRef("");
   const { enqueueSnackbar } = useSnackbar();
 
-  const { tasks, dispatchGetTask, taskDetails, dispatchGetTaskDetails } =
+  const { tasks, dispatchGetTask, dispatchGetTaskDetails } =
     useContext(TasksContext);
 
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
+  };
+
+  const handleSearch = (e, value) => {
+    let index = e.target.dataset.optionIndex;
+    const task = tasks.tasks[index];
+
+    setSelected((oldSelected) => [`${task?._id}`]);
+    console.log(task);
+    if (task !== undefined) {
+      document.getElementById(task?._id).scrollIntoView();
+      getTaskDetails(dispatchGetTaskDetails, task);
+    }
   };
 
   return (
@@ -85,7 +98,7 @@ export default function TaskSidebar() {
         >
           <Autocomplete
             disablePortal
-            // onChange={(e) => handleSearch(e)}
+            onChange={(e, value) => handleSearch(e, value)}
             id="combo-box-demo"
             options={tasks.tasks.map((task) => {
               return task.name;
@@ -137,7 +150,7 @@ export default function TaskSidebar() {
               onNodeSelect={handleSelect}
             >
               <TreeItem
-                ref={clientref}
+                // ref={clientref}
                 // onClick={handleClick}
                 nodeId={"noTask"}
                 className={classes.treeItem}
@@ -194,7 +207,30 @@ export default function TaskSidebar() {
           }}
         >
           <form
-            // onSubmit={handleSubmit}
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setLoaderAddTask(true);
+              await axios
+                .post("/task", {
+                  name: newTaskValue,
+                })
+                .then((res) => {
+                  enqueueSnackbar(res.data.msg, {
+                    variant: "success",
+                  });
+                  setLoaderAddTask(false);
+                  setnewTaskValue("");
+                  getTasks(dispatchGetTask);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  setLoaderAddTask(false);
+                  setnewTaskError(err.messaage);
+                  enqueueSnackbar(err.message, {
+                    variant: "info",
+                  });
+                });
+            }}
             noValidate
             autoComplete="off"
             style={{ width: "100%" }}
@@ -202,15 +238,15 @@ export default function TaskSidebar() {
             <TextField
               sx={{ width: "100%" }}
               inputRef={inputRef}
-              onChange={(e) => setnewClientValue(e.target.value)}
+              onChange={(e) => setnewTaskValue(e.target.value)}
               required
               label="Add new Task"
-              error={newClientError}
+              error={newTaskError}
             />
             <LoadingButton
               fullWidth
               type="submit"
-              loading={loaderAddClient}
+              loading={loaderAddTask}
               loadingPosition="end"
               variant="contained"
               sx={{ mt: 1 }}
