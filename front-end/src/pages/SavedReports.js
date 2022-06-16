@@ -1,7 +1,7 @@
 import * as React from "react";
 // material
 import { styled } from "@mui/material/styles";
-import { Box, Button, Typography, Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 // components
 import Page from "../components/Page";
 import { useParams } from "react-router-dom";

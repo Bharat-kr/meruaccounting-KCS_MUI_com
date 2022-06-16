@@ -233,13 +233,13 @@ export default function Router() {
       children: [
         {
           path: "login",
-          element: !token ? <Login /> : <Navigate to="/dashboard/app" />,
+          element: !token ? <Login /> : <Navigate to="/dashboard/userpage" />,
         },
         // { path: 'login', element: <Login /> },
         // { path: 'register', element: <Register /> },
         {
           path: "register",
-          element: !token ? <Register /> : <Navigate to="/dashboard/app" />,
+          element: !token ? <Register /> : <Navigate to="/login" />,
         },
         { path: "404", element: <NotFound /> },
         { path: "/", element: <Navigate to="/login" /> },

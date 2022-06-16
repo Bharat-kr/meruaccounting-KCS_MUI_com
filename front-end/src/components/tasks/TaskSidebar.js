@@ -16,7 +16,10 @@ import { LoadingButton } from "@mui/lab";
 import { capitalize } from "../../_helpers/Capitailze";
 import { lowerCase } from "src/_helpers/LowerCase";
 import TaskMain from "./TaskMain";
-import { tasksContext } from "src/contexts/tasksContext";
+
+// apis and contexts
+import { getTaskDetails, getTasks } from "src/api/task api/tasks.js";
+import { TasksContext } from "src/contexts/tasksContext";
 
 //----------------------------------------------------------------------------------------------
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +48,8 @@ export default function TaskSidebar() {
   const clientref = useRef("");
   const { enqueueSnackbar } = useSnackbar();
 
-//   const { getTasks } = useContext(tasksContext);
+  const { tasks, dispatchGetTask, taskDetails, dispatchGetTaskDetails } =
+    useContext(TasksContext);
 
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
@@ -83,7 +87,9 @@ export default function TaskSidebar() {
             disablePortal
             // onChange={(e) => handleSearch(e)}
             id="combo-box-demo"
-            // options={clientNameList}
+            options={tasks.tasks.map((task) => {
+              return task.name;
+            })}
             sx={{ width: 300, m: 0.5 }}
             renderInput={(params) => (
               <TextField {...params} label="Search Tasks" />
@@ -91,7 +97,7 @@ export default function TaskSidebar() {
           />
         </Box>
 
-        {false && (
+        {tasks.loader && (
           <Box
             sx={{
               display: "flex",
@@ -105,7 +111,7 @@ export default function TaskSidebar() {
         )}
 
         {/* clients list flex container */}
-        {true && (
+        {!tasks.loader && (
           <Box
             ref={sidebarref}
             component="div"
@@ -138,7 +144,7 @@ export default function TaskSidebar() {
                 label={
                   <Typography
                     sx={{
-                      color: "#637381",
+                      color: "black",
                       fontSize: "1.5rem",
                       fontWeight: "700",
                     }}
@@ -147,12 +153,15 @@ export default function TaskSidebar() {
                   </Typography>
                 }
               ></TreeItem>
-              {/* {clientsList?.map((client) => (
+              {tasks.tasks?.map((task) => (
                 <TreeItem
-                  id={client._id}
-                  ref={clientref}
-                  onClick={handleClick}
-                  nodeId={client._id}
+                  id={task._id}
+                  // ref={clientref}
+                  nodeId={task._id}
+                  onClick={(e) => {
+                    console.log(task._id);
+                    getTaskDetails(dispatchGetTaskDetails, task);
+                  }}
                   className={classes.treeItem}
                   label={
                     // <Typography className={classes.treeItem} variant="h6">
@@ -164,14 +173,14 @@ export default function TaskSidebar() {
                         fontSize: "1.5rem",
                         fontWeight: "700",
                       }}
-                      data-client={client.name}
+                      data-task={task.name}
                     >
-                      {client.name}
+                      {task.name}
                     </Typography>
                   }
                   // hello
                 ></TreeItem>
-              ))} */}
+              ))}
             </TreeView>
           </Box>
         )}

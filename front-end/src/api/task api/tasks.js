@@ -11,7 +11,9 @@ import {
   TASK_MEMBERDEL_FAILED,
   GET_TASK_SUCCESS,
   GET_TASK_FAILED,
-} from "../constants/TasksConstants";
+  GET_TASK_DETAILS_SUCCESS,
+  GET_TASK_DETAILS_FAILED,
+} from "../../constants/TasksConstants";
 
 const config = {
   headers: {
@@ -21,21 +23,64 @@ const config = {
 
 export const getTasks = async (dispatch) => {
   try {
-    const res = await axios.post(`/tasks`, config);
+    const res = await axios.get(`/task`);
     dispatch({
       type: GET_TASK_SUCCESS,
       payload: res.data.data,
     });
   } catch (e) {
     dispatch({
-      type: GET_CLIENTPRO_FAILED,
+      type: GET_TASK_FAILED,
       payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+        e.response && e.response.data.message
+          ? e.response.data.message
+          : e.message,
     });
-    return error.response && error.response.data.message
-      ? error.response.data.message
-      : error.message;
+    return e.response && e.response.data.message
+      ? e.response.data.message
+      : e.message;
+  }
+};
+
+export const getTaskDetails = async (dispatch, options) => {
+  try {
+    const res = await axios.post(`/task/details`, options);
+    dispatch({
+      type: GET_TASK_DETAILS_SUCCESS,
+      payload: res.data.data,
+    });
+    console.table(res.data.data);
+  } catch (e) {
+    dispatch({
+      type: GET_TASK_DETAILS_FAILED,
+      payload:
+        e.response && e.response.data.message
+          ? e.response.data.message
+          : e.message,
+    });
+    return e.response && e.response.data.message
+      ? e.response.data.message
+      : e.message;
+  }
+};
+export const addTaskMember = async (dispatch, options) => {
+  try {
+    const res = await axios.patch(`/task/editEmployees`, options);
+    dispatch({
+      type: TASK_MEMBERADD_SUCCESS,
+      payload: res.data.data,
+    });
+    console.table(res.data.data);
+  } catch (e) {
+    dispatch({
+      type: TASK_MEMBERADD_FAILED,
+      payload:
+        e.response && e.response.data.message
+          ? e.response.data.message
+          : e.message,
+    });
+    return e.response && e.response.data.message
+      ? e.response.data.message
+      : e.message;
   }
 };

@@ -1,14 +1,28 @@
-import React, { useState, useRef } from "react";
-import { IconButton, Paper, Typography } from "@mui/material";
+import React, { useState, useRef, useContext } from "react";
+import {
+  Autocomplete,
+  IconButton,
+  Paper,
+  Link,
+  TextField,
+  Typography,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
-import { Link as RouterLink } from "react-router-dom";
+// import { Link, Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 import { useSnackbar } from "notistack";
 import Confirmation from "../Confirmation";
 import EnhancedTable from "./Members";
+import { TasksContext } from "src/contexts/tasksContext";
+import dayjs from "dayjs";
+import { Container } from "react-bootstrap";
+import { getFullName } from "src/_helpers/getFullName";
+import { addTaskMember } from "src/api/task api/tasks";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -32,13 +46,42 @@ export default function TaskMain(props) {
   const inputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
 
+  const { taskDetails, dispatchAddTaskMember } = useContext(TasksContext);
+
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
 
   const classes = useStyles();
 
-  return false ? (
+  const Labelconfig = function () {
+    return (
+      <>
+        {taskDetails.taskDetails.allEmployees.map((employee) => (
+          <FormControlLabel
+            id={`${employee._id}`}
+            sx={{ display: "block", pt: 1, fontWeight: 10 }}
+            onChange={() => {
+              addTaskMember(dispatchAddTaskMember, {
+                _id: taskDetails.taskDetails._id,
+                employeeId: employee._id,
+              });
+            }}
+            control={
+              <Switch
+                defaultChecked={taskDetails.taskDetails.employees.includes(
+                  employee._id
+                )}
+              />
+            }
+            label={`${getFullName(employee.firstName, employee.lastName)}`}
+          />
+        ))}
+      </>
+    );
+  };
+
+  return taskDetails.loader ? (
     <Box
       component="div"
       sx={{
@@ -90,7 +133,7 @@ export default function TaskMain(props) {
           sx={{
             zIndex: 1,
             overflow: "visible",
-            height: "100%",
+            // height: "100%",
             position: "relative",
             display: "grid",
             gridTemplateRows: "30% 70%",
@@ -101,10 +144,10 @@ export default function TaskMain(props) {
               <form onSubmit={() => {}} style={{ display: "inline" }}>
                 <input
                   ref={inputRef}
-                  //   onChange={(e) => setClientName(e.target.value)}
+                    // onChange={(e) => setClientName(e.target.value)}
                   type="text"
                   className={classes.input}
-                  //   value={clientName}
+                  value={taskDetails.taskDetails.name}
                 />
               </form>
               <div
@@ -116,30 +159,17 @@ export default function TaskMain(props) {
                   <EditIcon onClick={handleEditClick} />
                 </IconButton>
                 <IconButton>
-                  {/* <DeleteIcon onClick={handleOpen} /> */}
+                  <DeleteIcon onClick={() => {}} />
                 </IconButton>
               </div>
             </h1>
-            <Typography sx={{}} variant="subtitle1">
-              <RouterLink
-                to="/dashboard/projects"
-                style={{
-                  textDecoration: "none",
-                  color: "green",
-                  fontWeight: "bold",
-                }}
-                // onClick={changeClient(clientsList[clientIndex])}
-              >
-                Assign Employees
-              </RouterLink>
-            </Typography>
             <Box
               component="div"
               sx={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
-                mb: 5,
+                // mb: 5,
                 pb: 2,
               }}
             >
@@ -151,7 +181,10 @@ export default function TaskMain(props) {
                   // alignItems: "center",
                 }}
               >
-                <Typography variant="h5">Created on :</Typography>
+                <Typography variant="h5">
+                  Created on :
+                  {dayjs(taskDetails.taskDetails.createdAt).format("DD/MM/YY")}
+                </Typography>
                 <Typography
                   sx={{
                     display: "flex",
@@ -170,12 +203,14 @@ export default function TaskMain(props) {
                   // alignItems: "center",
                 }}
               >
-                <Typography variant="h6">Created By : name</Typography>
+                <Typography variant="h6">
+                  Created By : {taskDetails.taskDetails.createdBy}
+                </Typography>
                 <Typography variant="body1"></Typography>
               </Box>
             </Box>
           </Box>
-          <Box sx={{ mt: 4 }}>
+          <Box sx={{}}>
             <Box
               component="div"
               sx={{
@@ -186,30 +221,38 @@ export default function TaskMain(props) {
                 m: 1,
               }}
             >
-              {false ? (
-                <Box>
-                  <Typography variant="h5">
-                    No one is assigned this task
-                  </Typography>
-                  <RouterLink
-                    to="/dashboard/projects"
-                    style={{
-                      textDecoration: "none",
-                      color: "green",
-                      fontWeight: "bold",
-                    }}
-                    onClick={() => {
-                      {
-                        // changeClient(clientsList[clientIndex]);
-                      }
-                    }}
-                  >
-                    Add Project
-                  </RouterLink>
+              <Box sx={{ pt: 2, width: "100%" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Typography variant="h5">Employees</Typography>
+                  <Autocomplete
+                    id="combo-box-demo"
+                    options={taskDetails.taskDetails.allEmployees}
+                    getOptionLabel={(option) =>
+                      getFullName(option.firstName, option.lastName)
+                    }
+                    sx={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Employee" />
+                    )}
+                    onChange={() => {}}
+                  />
                 </Box>
-              ) : (
-                <EnhancedTable outerref={outerref} />
-              )}
+                <Link sx={{ pl: 1, color: "#229A16" }} onClick={() => {}}>
+                  Add all
+                </Link>
+                <Link sx={{ pl: 1, color: "#FF4842" }} onClick={() => {}}>
+                  Remove all
+                </Link>
+                <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
+              </Box>
             </Box>
           </Box>
         </Paper>

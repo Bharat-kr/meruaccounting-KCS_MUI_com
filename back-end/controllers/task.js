@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
+import mongoose from "mongoose";
 
 const ac = new AccessControl(grantsObject);
 
@@ -50,9 +51,7 @@ const deleteTask = asyncHandler(async (req, res) => {
     // get id from request
     const { _id } = req.body;
     try {
-      console.log(_id);
       const task = await Task.findById({ _id });
-      console.log(task);
       if (!task) throw new Error("Error deleting task");
 
       // delete task
@@ -168,7 +167,61 @@ const editEmployees = asyncHandler(async (req, res) => {
   }
 });
 
-export { createTask, getTasks, deleteTask, editName, editEmployees };
+// @desc    Get task details
+// @route   Post /tasks/details
+// @access  Private
+
+const getTaskDetails = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("project");
+  if (permission.granted) {
+    try {
+      const user = req.user;
+      const { _id } = req.body;
+      console.log(_id);
+
+      const allEmployees = await User.aggregate([
+        {
+          $match: {},
+        },
+        {
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+          },
+        },
+      ]);
+
+      const task = await Task.aggregate([
+        {
+          $match: {
+            _id: mongoose.Types.ObjectId(_id),
+          },
+        },
+      ]);
+
+      task[0].allEmployees = allEmployees;
+
+      res.status(200).json({
+        msg: "Successfully fetched task details",
+        data: task[0],
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
+export {
+  createTask,
+  getTasks,
+  deleteTask,
+  editName,
+  editEmployees,
+  getTaskDetails,
+};
 
 // if (user.role === "admin") {
 //   dteams = await Team.find()
