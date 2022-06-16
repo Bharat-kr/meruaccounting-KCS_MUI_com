@@ -59,7 +59,6 @@ const getClient = asyncHandler(async (req, res) => {
 
   if (permission.granted) {
     try {
-      console.log(req.body);
       const user = await User.findById(req.user._id);
       let client;
       if (user.role !== "admin") {
@@ -115,7 +114,6 @@ const getClient = asyncHandler(async (req, res) => {
             },
           },
         ]);
-        console.log(clientsList);
         let clientsArr = clientsList[0] ? clientsList[0].clients : [];
         client = await Client.find({
           _id: { $in: clientsArr },
