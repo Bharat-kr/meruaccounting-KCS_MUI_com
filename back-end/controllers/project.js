@@ -344,7 +344,6 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
         throw new Error(`Not found project ${projectId}`);
       }
       const newEmployee = await User.findOne({ email: employeeMail });
-      console.log(newEmployee);
       if (!newEmployee) {
         res.status(404);
         throw new Error(`Not found employee ${employeeMail}`);
@@ -371,11 +370,11 @@ const assignProjectLeader = asyncHandler(async (req, res) => {
       }
 
       newEmployee.projects.forEach((id) => {
-        if (id.equals(project._id)) {
+        if (id.equals(projectId)) {
           alreadyProjectAdded = true;
         }
       });
-      if (!alreadyProjectAdded) {
+      if (alreadyProjectAdded) {
         if (newEmployee.role === "employee") {
           newEmployee.role = "projectLeader";
         }

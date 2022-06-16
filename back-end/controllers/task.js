@@ -51,9 +51,7 @@ const deleteTask = asyncHandler(async (req, res) => {
     // get id from request
     const { _id } = req.body;
     try {
-      console.log(_id);
       const task = await Task.findById({ _id });
-      console.log(task);
       if (!task) throw new Error("Error deleting task");
 
       // delete task
