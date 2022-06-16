@@ -22,6 +22,7 @@ import { deleteSs, deleteAct } from "../../api/auth api/commondata";
 // helpers
 import timeC, { timeCC } from "../../_helpers/timeConverter";
 import SplitActivity from "./SplitActivity";
+import { useSnackbar } from "notistack";
 
 export default function Activity({
   date,
@@ -35,6 +36,8 @@ export default function Activity({
 }) {
   const { commonData, dispatchCommonData } = useContext(CurrentUserContext);
   const [selectedSs, setselectedSs] = useState([]);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   //state For modal
   const [open, setOpen] = React.useState(false);
@@ -188,15 +191,17 @@ export default function Activity({
           )}
         </Box>
       </Box>
-      <SplitActivity
-        date={date}
-        open={open}
-        act={act}
-        handleClose={handleClose}
-        startTime={startTime}
-        endTime={endTime}
-        project={project}
-      />
+      {
+        <SplitActivity
+          date={date}
+          open={open}
+          act={act}
+          handleClose={handleClose}
+          startTime={startTime}
+          endTime={endTime}
+          project={project}
+        />
+      }
     </section>
   );
 }

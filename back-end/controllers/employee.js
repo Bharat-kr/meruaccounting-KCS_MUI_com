@@ -324,7 +324,6 @@ const editEmployee = asyncHandler(async (req, res) => {
     const filteredBody = permission.filter(req.body);
     try {
       const user = await User.findByIdAndUpdate(employeeId, filteredBody);
-      console.log(user);
       user.save();
       res.json({
         message: "User Updated",
