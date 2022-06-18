@@ -30,7 +30,7 @@ const createTask = asyncHandler(async (req, res) => {
       await task.save();
 
       res.status(201).json({
-        status: "Successfully Created Task",
+        msg: "Successfully Created Task",
         data: task,
       });
     } catch (error) {
@@ -60,6 +60,7 @@ const deleteTask = asyncHandler(async (req, res) => {
       res.status(201).json({
         status: "Successfully Deleted Task",
         data: task,
+        msg:"Successfully deleted!"
       });
     } catch (error) {
       throw new Error(error);
