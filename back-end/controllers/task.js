@@ -60,7 +60,7 @@ const deleteTask = asyncHandler(async (req, res) => {
       res.status(201).json({
         status: "Successfully Deleted Task",
         data: task,
-        msg:"Successfully deleted!"
+        msg: "Successfully deleted!",
       });
     } catch (error) {
       throw new Error(error);
@@ -168,6 +168,62 @@ const editEmployees = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Edit task employees
+// @route   PATCH /tasks/editAllEmployees
+// @access  Private
+
+const editAllEmployees = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("project");
+  if (permission.granted) {
+    try {
+      const user = req.user;
+      const { _id, val } = req.body;
+
+      const task = await Task.find({ _id });
+      const allEmployees = await User.aggregate([
+        {
+          $match: {},
+        },
+        {
+          $project: {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+          },
+        },
+      ]);
+
+      if (val === "addAll") {
+        for (let index = 0; index < allEmployees.length; index++) {
+          if (!task[0].employees.includes(allEmployees[index]._id)) {
+            task[0].employees = task[0].employees.push(allEmployees[index]._id);
+          }
+        }
+      }
+      if (val === "removeAll") {
+        task[0].employees = [];
+      }
+
+      await Task.updateOne(
+        { _id: _id },
+        {
+          $set: {
+            employees: task[0].employees,
+          },
+        }
+      );
+
+      res.status(200).json({
+        msg: "Successfully edited employees",
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
+
 // @desc    Get task details
 // @route   Post /tasks/details
 // @access  Private
@@ -222,6 +278,7 @@ export {
   editName,
   editEmployees,
   getTaskDetails,
+  editAllEmployees
 };
 
 // if (user.role === "admin") {
