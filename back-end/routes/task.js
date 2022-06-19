@@ -6,6 +6,7 @@ import {
   getTasks,
   editName,
   editEmployees,
+  editAllEmployees,
   getTaskDetails,
 } from "../controllers/task.js";
 
@@ -19,6 +20,7 @@ router
 
 router.route("/editName").patch(authPass, editName);
 router.route("/editEmployees").patch(authPass, editEmployees);
+router.route("/editAllEmployees").patch(authPass, editAllEmployees);
 router.route("/details").post(authPass, getTaskDetails);
 
 // router.route("/removeMember/:id").patch(authPass, removeMember);

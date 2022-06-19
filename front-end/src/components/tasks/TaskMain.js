@@ -22,7 +22,13 @@ import { TasksContext } from "src/contexts/tasksContext";
 import dayjs from "dayjs";
 import { Container } from "react-bootstrap";
 import { getFullName } from "src/_helpers/getFullName";
-import { addTaskMember } from "src/api/task api/tasks";
+import {
+  addTaskMember,
+  getTasks,
+  getTaskDetails,
+} from "src/api/task api/tasks";
+
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -46,7 +52,12 @@ export default function TaskMain(props) {
   const inputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { taskDetails, dispatchAddTaskMember } = useContext(TasksContext);
+  const {
+    taskDetails,
+    dispatchGetTaskDetails,
+    dispatchGetTask,
+    dispatchAddTaskMember,
+  } = useContext(TasksContext);
 
   const handleEditClick = (e) => {
     inputRef.current.focus();
@@ -61,11 +72,23 @@ export default function TaskMain(props) {
           <FormControlLabel
             id={`${employee._id}`}
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            onChange={() => {
-              addTaskMember(dispatchAddTaskMember, {
-                _id: taskDetails.taskDetails._id,
-                employeeId: employee._id,
-              });
+            onChange={async () => {
+              const res = await axios
+                .patch(`/task/editEmployees`, {
+                  _id: taskDetails.taskDetails._id,
+                  employeeId: employee._id,
+                })
+                .then((res) => {
+                  enqueueSnackbar(res.data.msg, {
+                    variant: "success",
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  enqueueSnackbar(err.message, {
+                    variant: "info",
+                  });
+                });
             }}
             control={
               <Switch
@@ -144,7 +167,7 @@ export default function TaskMain(props) {
               <form onSubmit={() => {}} style={{ display: "inline" }}>
                 <input
                   ref={inputRef}
-                    // onChange={(e) => setClientName(e.target.value)}
+                  // onChange={(e) => setClientName(e.target.value)}
                   type="text"
                   className={classes.input}
                   value={taskDetails.taskDetails.name}
@@ -245,13 +268,61 @@ export default function TaskMain(props) {
                     onChange={() => {}}
                   />
                 </Box>
-                <Link sx={{ pl: 1, color: "#229A16" }} onClick={() => {}}>
+                <Link
+                  sx={{ pl: 1, color: "success.darker" }}
+                  // onClick={async () => {
+                  //   const res = await axios
+                  //     .patch(`/task/editAllEmployees`, {
+                  //       _id: taskDetails.taskDetails._id,
+                  //       employeeIds: taskDetails.taskDetails.allEmployees,
+                  //     })
+                  //     .then((res) => {
+                  //       enqueueSnackbar(res.data.msg, {
+                  //         variant: "success",
+                  //       });
+                  //       getTaskDetails(dispatchGetTaskDetails, {
+                  //         _id: taskDetails.taskDetails._id,
+                  //       });
+                  //     })
+                  //     .catch((err) => {
+                  //       console.log(err);
+                  //       enqueueSnackbar(err.message, {
+                  //         variant: "info",
+                  //       });
+                  //     });
+                  // }}
+                >
                   Add all
                 </Link>
-                <Link sx={{ pl: 1, color: "#FF4842" }} onClick={() => {}}>
+                <Link
+                  sx={{ pl: 1, color: "error.darker" }}
+                  // onClick={async () => {
+                  //   const res = await axios
+                  //     .patch(`/task/editAllEmployees`, {
+                  //       _id: taskDetails.taskDetails._id,
+                  //       employeeIds: null,
+                  //     })
+                  //     .then((res) => {
+                  //       enqueueSnackbar(res.data.msg, {
+                  //         variant: "success",
+                  //       });
+                  //       getTaskDetails(dispatchGetTaskDetails, {
+                  //         _id: taskDetails.taskDetails._id,
+                  //       });
+                  //     })
+                  //     .catch((err) => {
+                  //       console.log(err);
+                  //       enqueueSnackbar(err.message, {
+                  //         variant: "info",
+                  //       });
+                  //     });
+                  // }}
+                >
                   Remove all
                 </Link>
-                <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
+                <Container sx={{ display: "block" }}>
+                  <Labelconfig></Labelconfig>
+                </Container>
               </Box>
             </Box>
           </Box>
