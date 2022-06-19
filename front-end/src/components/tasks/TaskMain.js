@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import {
   Autocomplete,
   IconButton,
@@ -13,16 +13,14 @@ import { makeStyles } from "@mui/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/system";
-// import { Link, Link as RouterLink } from "react-router-dom";
-import moment from "moment";
 import { useSnackbar } from "notistack";
-import Confirmation from "../Confirmation";
-import EnhancedTable from "./Members";
 import { TasksContext } from "src/contexts/tasksContext";
 import dayjs from "dayjs";
 import { Container } from "react-bootstrap";
 import { getFullName } from "src/_helpers/getFullName";
-import { addTaskMember } from "src/api/task api/tasks";
+import { getTaskDetails, getTasks } from "src/api/task api/tasks";
+import axios from "axios";
+import Confirmation from "../Confirmation";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -42,17 +40,32 @@ export default function TaskMain(props) {
   const { ...others } = props;
   // to focus edit name of client
 
+  const [taskName, setTaskName] = useState("");
+  const [ConfirmModal, setConfirmModal] = useState(false);
   const outerref = useRef();
   const inputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { taskDetails, dispatchAddTaskMember } = useContext(TasksContext);
+  const { tasks, taskDetails, dispatchGetTask, dispatchGetTaskDetails } =
+    useContext(TasksContext);
 
   const handleEditClick = (e) => {
     inputRef.current.focus();
   };
 
   const classes = useStyles();
+
+  useEffect(() => {
+    setTaskName(taskDetails.taskDetails.name);
+  }, [taskDetails]);
+
+  const handleChange = (e, value) => {
+    console.log(value);
+    if (value) {
+      const id = value._id;
+      document.getElementById(id).scrollIntoView();
+    }
+  };
 
   const Labelconfig = function () {
     return (
@@ -61,11 +74,23 @@ export default function TaskMain(props) {
           <FormControlLabel
             id={`${employee._id}`}
             sx={{ display: "block", pt: 1, fontWeight: 10 }}
-            onChange={() => {
-              addTaskMember(dispatchAddTaskMember, {
-                _id: taskDetails.taskDetails._id,
-                employeeId: employee._id,
-              });
+            onChange={async () => {
+              await axios
+                .patch(`/task/editEmployees`, {
+                  _id: taskDetails.taskDetails._id,
+                  employeeId: employee._id,
+                })
+                .then((res) => {
+                  enqueueSnackbar(res.data.msg, {
+                    variant: "success",
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  enqueueSnackbar(err.message, {
+                    variant: "info",
+                  });
+                });
             }}
             control={
               <Switch
@@ -132,22 +157,41 @@ export default function TaskMain(props) {
           elevation={3}
           sx={{
             zIndex: 1,
-            overflow: "visible",
-            // height: "100%",
+            p: 1,
             position: "relative",
-            display: "grid",
-            gridTemplateRows: "30% 70%",
           }}
         >
           <Box sx={{ m: 1 }}>
             <h1 style={{ backgroundColor: "#fff" }}>
-              <form onSubmit={() => {}} style={{ display: "inline" }}>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  await axios
+                    .patch("/task/editName", {
+                      _id: taskDetails.taskDetails._id,
+                      name: taskName,
+                    })
+                    .then((res) => {
+                      enqueueSnackbar(res.data.msg, {
+                        variant: "success",
+                      });
+                      getTasks(dispatchGetTask);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      enqueueSnackbar(err.message, {
+                        variant: "info",
+                      });
+                    });
+                }}
+                style={{ display: "inline" }}
+              >
                 <input
                   ref={inputRef}
-                    // onChange={(e) => setClientName(e.target.value)}
+                  onChange={(e) => setTaskName(e.target.value)}
                   type="text"
                   className={classes.input}
-                  value={taskDetails.taskDetails.name}
+                  value={taskName}
                 />
               </form>
               <div
@@ -159,7 +203,11 @@ export default function TaskMain(props) {
                   <EditIcon onClick={handleEditClick} />
                 </IconButton>
                 <IconButton>
-                  <DeleteIcon onClick={() => {}} />
+                  <DeleteIcon
+                    onClick={() => {
+                      setConfirmModal(true);
+                    }}
+                  />
                 </IconButton>
               </div>
             </h1>
@@ -242,7 +290,7 @@ export default function TaskMain(props) {
                     renderInput={(params) => (
                       <TextField {...params} label="Employee" />
                     )}
-                    onChange={() => {}}
+                    onChange={handleChange}
                   />
                 </Box>
                 <Link sx={{ pl: 1, color: "#229A16" }} onClick={() => {}}>
@@ -251,12 +299,44 @@ export default function TaskMain(props) {
                 <Link sx={{ pl: 1, color: "#FF4842" }} onClick={() => {}}>
                   Remove all
                 </Link>
-                <Container sx={{ display: "block" }}>{Labelconfig()}</Container>
+                <Container sx={{ display: "block" }}>
+                  <Labelconfig />
+                </Container>
               </Box>
             </Box>
           </Box>
         </Paper>
       </Box>
+      <Confirmation
+        open={ConfirmModal}
+        handleClose={() => {
+          setConfirmModal(false);
+        }}
+        onConfirm={async () => {
+          await axios
+            .delete("/task", {
+              data: {
+                _id: taskDetails.taskDetails._id,
+              },
+            })
+            .then((res) => {
+              enqueueSnackbar(res.data.msg, {
+                variant: "success",
+              });
+              getTasks(dispatchGetTask);
+            })
+            .catch((err) => {
+              console.log(err);
+              enqueueSnackbar(err.message, {
+                variant: "info",
+              });
+            });
+        }}
+        detail={{
+          type: "Task",
+          name: taskDetails?.taskDetails?.name,
+        }}
+      />
     </>
   );
 }
