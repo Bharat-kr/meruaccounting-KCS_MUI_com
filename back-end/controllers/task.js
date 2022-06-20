@@ -141,10 +141,10 @@ const editAllEmployees = asyncHandler(async (req, res) => {
     try {
       const user = req.user;
       const { _id, employeeIds } = req.body;
-
+      console.log(employeeIds);
       // const task = await Task.find({ _id });
 
-      if (employeeIds === null) {
+      if (!employeeIds) {
         await Task.updateOne(
           { _id: _id },
           {
@@ -153,7 +153,6 @@ const editAllEmployees = asyncHandler(async (req, res) => {
             },
           }
         );
-        return;
       } else {
         const emps = employeeIds.map((emp) => {
           return emp._id;

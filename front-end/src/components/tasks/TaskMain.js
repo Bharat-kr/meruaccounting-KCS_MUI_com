@@ -252,6 +252,7 @@ export default function TaskMain(props) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     width: "100%",
+                    overflow: "auto",
                   }}
                 >
                   <Typography variant="h5">Employees</Typography>
@@ -269,60 +270,61 @@ export default function TaskMain(props) {
                   />
                 </Box>
                 <Link
-                  sx={{ pl: 1, color: "success.darker" }}
-                  // onClick={async () => {
-                  //   const res = await axios
-                  //     .patch(`/task/editAllEmployees`, {
-                  //       _id: taskDetails.taskDetails._id,
-                  //       employeeIds: taskDetails.taskDetails.allEmployees,
-                  //     })
-                  //     .then((res) => {
-                  //       enqueueSnackbar(res.data.msg, {
-                  //         variant: "success",
-                  //       });
-                  //       getTaskDetails(dispatchGetTaskDetails, {
-                  //         _id: taskDetails.taskDetails._id,
-                  //       });
-                  //     })
-                  //     .catch((err) => {
-                  //       console.log(err);
-                  //       enqueueSnackbar(err.message, {
-                  //         variant: "info",
-                  //       });
-                  //     });
-                  // }}
+                  sx={{ pl: 1, color: "success.darker", cursor: "pointer" }}
+                  onClick={async () => {
+                    const res = await axios
+                      .patch(`/task/editAllEmployees`, {
+                        _id: taskDetails.taskDetails._id,
+                        employeeIds: taskDetails.taskDetails.allEmployees,
+                      })
+                      .then((res) => {
+                        enqueueSnackbar(res.data.msg, {
+                          variant: "success",
+                        });
+                        getTaskDetails(dispatchGetTaskDetails, {
+                          _id: taskDetails.taskDetails._id,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                        enqueueSnackbar(err.message, {
+                          variant: "info",
+                        });
+                      });
+                  }}
                 >
                   Add all
                 </Link>
                 <Link
-                  sx={{ pl: 1, color: "error.darker" }}
-                  // onClick={async () => {
-                  //   const res = await axios
-                  //     .patch(`/task/editAllEmployees`, {
-                  //       _id: taskDetails.taskDetails._id,
-                  //       employeeIds: null,
-                  //     })
-                  //     .then((res) => {
-                  //       enqueueSnackbar(res.data.msg, {
-                  //         variant: "success",
-                  //       });
-                  //       getTaskDetails(dispatchGetTaskDetails, {
-                  //         _id: taskDetails.taskDetails._id,
-                  //       });
-                  //     })
-                  //     .catch((err) => {
-                  //       console.log(err);
-                  //       enqueueSnackbar(err.message, {
-                  //         variant: "info",
-                  //       });
-                  //     });
-                  // }}
+                  sx={{ pl: 1, color: "error.darker", cursor: "pointer" }}
+                  onClick={async () => {
+                    console.log();
+                    const res = await axios
+                      .patch(`/task/editAllEmployees`, {
+                        _id: taskDetails.taskDetails._id,
+                        employeeIds: false,
+                      })
+                      .then((res) => {
+                        enqueueSnackbar(res.data.msg, {
+                          variant: "success",
+                        });
+                        getTaskDetails(dispatchGetTaskDetails, {
+                          _id: taskDetails.taskDetails._id,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                        enqueueSnackbar(err.message, {
+                          variant: "info",
+                        });
+                      });
+                  }}
                 >
                   Remove all
                 </Link>
-                <Container sx={{ display: "block" }}>
-                  <Labelconfig></Labelconfig>
-                </Container>
+                <Box sx={{ display: "block", overflow: "scroll" }}>
+                  <Labelconfig style={{ overflow: "auto" }}></Labelconfig>
+                </Box>
               </Box>
             </Box>
           </Box>
