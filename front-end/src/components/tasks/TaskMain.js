@@ -277,6 +277,7 @@ export default function TaskMain(props) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     width: "100%",
+                    overflow: "auto",
                   }}
                 >
                   <Typography variant="h5">Employees</Typography>
@@ -294,13 +295,14 @@ export default function TaskMain(props) {
                   />
                 </Box>
                 <Link
-                  sx={{ pl: 1, color: "#229A16" }}
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    await axios
+
+                  sx={{ pl: 1, color: "success.darker", cursor: "pointer" }}
+                  onClick={async () => {
+                    const res = await axios
                       .patch(`/task/editAllEmployees`, {
                         _id: taskDetails.taskDetails._id,
-                        val: "addAll",
+                        employeeIds: taskDetails.taskDetails.allEmployees,
+
                       })
                       .then((res) => {
                         enqueueSnackbar(res.data.msg, {
@@ -321,12 +323,14 @@ export default function TaskMain(props) {
                   Add all
                 </Link>
                 <Link
-                  sx={{ pl: 1, color: "#FF4842" }}
+
+                  sx={{ pl: 1, color: "error.darker", cursor: "pointer" }}
                   onClick={async () => {
-                    await axios
+                    console.log();
+                    const res = await axios
                       .patch(`/task/editAllEmployees`, {
                         _id: taskDetails.taskDetails._id,
-                        val: "removeAll",
+                        employeeIds: false,
                       })
                       .then((res) => {
                         enqueueSnackbar(res.data.msg, {
