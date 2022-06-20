@@ -10,7 +10,7 @@ export const loginApi = (data, dispatch) => {
         localStorage.setItem("ud", JSON.stringify(res.data.user));
         dispatch({ type: "SET_USER_DATA", data: res.data.user });
         // window.history.pushState('', 'Dashboard', '/dashboard/userpage');
-        window.location.href = "/dashboard/userpage";
+        window.location.reload();
         // window.location.replace('/dashboard/userpage');
       } else {
         dispatch({ type: "LOGIN_ERR" });

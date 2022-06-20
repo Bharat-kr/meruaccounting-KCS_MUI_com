@@ -63,24 +63,3 @@ export const getTaskDetails = async (dispatch, options) => {
       : e.message;
   }
 };
-export const addTaskMember = async (dispatch, options) => {
-  try {
-    const res = await axios.patch(`/task/editEmployees`, options);
-    dispatch({
-      type: TASK_MEMBERADD_SUCCESS,
-      payload: res.data.data,
-    });
-    console.table(res.data.data);
-  } catch (e) {
-    dispatch({
-      type: TASK_MEMBERADD_FAILED,
-      payload:
-        e.response && e.response.data.message
-          ? e.response.data.message
-          : e.message,
-    });
-    return e.response && e.response.data.message
-      ? e.response.data.message
-      : e.message;
-  }
-};

@@ -27,7 +27,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
       await sgMail
         .send(msg)
         .then((response) => {
-          console.log(response[0].statusCode);
           statusCode = response[0].statusCode;
         })
         .catch((err) => {

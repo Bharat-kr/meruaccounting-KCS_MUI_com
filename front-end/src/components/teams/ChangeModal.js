@@ -114,19 +114,20 @@ const ChangeModal = ({
     try {
       //new projectLeader
       const data = [newProject, currMember.email];
-      await addProjectLeader(data, dispatchaddProjectLeader);
-
+      const res = await addProjectLeader(data, dispatchaddProjectLeader);
+      console.log(res);
       //updating project
+      if (!res.data) {
+        throw new Error(res);
+      }
+      enqueueSnackbar(res.error ? res.error : "Updated Role", {
+        variant: res.error ? "info" : "primary",
+      });
       await getTeam(dispatchgetTeam);
     } catch (err) {
       console.log(err);
+      enqueueSnackbar(err.message, { variant: "info" });
     }
-    enqueueSnackbar(
-      updatedMember.error ? updatedMember.error : "Updated Role",
-      {
-        variant: updatedMember.error ? "info" : "primary",
-      }
-    );
     handleModalClose();
   };
   const changeManagerToProjectLeader = async () => {
@@ -305,6 +306,7 @@ const ChangeModal = ({
             >
               {currMember?.projects.length !== 0 && (
                 <Button
+                  disabled={newProject === ""}
                   variant="contained"
                   color="primary"
                   sx={{
