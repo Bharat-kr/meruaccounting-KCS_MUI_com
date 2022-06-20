@@ -75,7 +75,7 @@ export default function AdminContainer(props) {
     <>
       <CssBaseline />
       <Paper elevation={3} sx={{ width: "100%" }}>
-        <Box sx={{ height: "100vh", width: "100%" }}>
+        <Box sx={{ width: "100%" }}>
           <Grid item xs={12} sm={12} md={12}>
             <Container
               style={{

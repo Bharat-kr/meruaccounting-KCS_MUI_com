@@ -464,7 +464,7 @@ export default function EnhancedTable(props) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", overflow:"auto" }}>
       <Paper
         // elevation={3}
         sx={{
@@ -473,6 +473,7 @@ export default function EnhancedTable(props) {
           flexDirection: "row",
           justifyContent: "space-between",
           width: "auto",
+          overflow:"auto"
         }}
       >
         <AutoComplete

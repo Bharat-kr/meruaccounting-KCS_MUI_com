@@ -146,8 +146,7 @@ export default function Header(props) {
       sx={{
         width: "70%",
         flexGrow: "1",
-        overflowX: "hidden",
-        overflowY: "auto",
+        overflow: "auto",
         // margin: "10px 10px 10px 10px",
       }}
     >
@@ -160,7 +159,7 @@ export default function Header(props) {
           justifyContent: "center",
           alignItems: "center",
           // ml: 2,
-          overflow: "visible",
+          overflow: "auto",
           height: "100%",
         }}
       >
@@ -181,8 +180,7 @@ export default function Header(props) {
         sx={{
           width: "70%",
           flexGrow: "1",
-          overflowX: "hidden",
-          overflowY: "auto",
+          overflow: "auto",
           m: 1,
         }}
       >

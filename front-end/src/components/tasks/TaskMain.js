@@ -295,12 +295,14 @@ export default function TaskMain(props) {
                   />
                 </Box>
                 <Link
+
                   sx={{ pl: 1, color: "success.darker", cursor: "pointer" }}
                   onClick={async () => {
                     const res = await axios
                       .patch(`/task/editAllEmployees`, {
                         _id: taskDetails.taskDetails._id,
                         employeeIds: taskDetails.taskDetails.allEmployees,
+
                       })
                       .then((res) => {
                         enqueueSnackbar(res.data.msg, {
@@ -321,6 +323,7 @@ export default function TaskMain(props) {
                   Add all
                 </Link>
                 <Link
+
                   sx={{ pl: 1, color: "error.darker", cursor: "pointer" }}
                   onClick={async () => {
                     console.log();
