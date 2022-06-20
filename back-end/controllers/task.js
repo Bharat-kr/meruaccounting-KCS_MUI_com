@@ -5,6 +5,7 @@ import asyncHandler from "express-async-handler";
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
 import mongoose from "mongoose";
+import capitalize from "../utils/capitalize.js";
 
 const ac = new AccessControl(grantsObject);
 
@@ -17,7 +18,8 @@ const createTask = asyncHandler(async (req, res) => {
   if (permission.granted) {
     // get user and name from request
     const user = req.user;
-    const { name } = req.body;
+    let { name } = req.body;
+    name = capitalize(name);
     try {
       const task = new Task({ name });
       if (!task) throw new Error("Error creating new task");
@@ -113,7 +115,7 @@ const editName = asyncHandler(async (req, res) => {
         { _id: _id },
         {
           $set: {
-            name: name,
+            name: capitalize(name),
           },
         }
       );
