@@ -60,7 +60,6 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
       for (var i = 0; i < userArr.length; i++) {
         const userId = userArr[i];
         const employee = await User.findById(userId);
-        // console.log("This is userId:", userId, " This is employee:", employee);
         if (!employee) {
           res.status(404);
           throw new Error(`Employee not found `);
@@ -73,12 +72,8 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
           const dayObj = dayArr[j];
           let today = dayjs().format("DD/MM/YYYY").toString();
           // let today = dayjs().format("DD/MM/YYYY");
-          // console.log("Today:", today);
           if (dayObj.date == today) {
-            // console.log("Inside If");
             todayHours = dayObj.dailyHours;
-
-            // console.log("todayHours", todayHours);
 
             yesterday = dayArr[j - 1];
             yesterdayHours = yesterday.dailyHours;
@@ -86,13 +81,10 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
             // tomorrow = dayArr[j + 1];
             // tomorrowHours = tomorrow.dailyHours;
           }
-
-          // console.log("Aggregated", user);
         }
         let today = dayjs().format("DD/MM/YYYY").toString();
         let thisMonth = dayjs().month();
         let thisYear = dayjs().year();
-        // console.log("This Month", thisMonth);
         const firstDate = dayjs()
           .date(1)
           .month(thisMonth)
@@ -104,17 +96,12 @@ const getEmployeeDetails = asyncHandler(async (req, res) => {
           .year(thisYear)
           .format("DD/MM/YYYY");
 
-        // console.log("This is Day:", dayObj);
-
-        // console.log("First And Loss", firstDate, lastDate);
         dayjs.extend(weekday);
 
         // when Sunday is the first day of the week
 
         const weekStart = dayjs().weekday(-7).format("DD/MM/YYYY");
         const weekEnd = dayjs().weekday(7).format("DD/MM/YYYY"); // next Sunday
-
-        // console.log("Week Start And WekkEnd", weekStart, weekEnd);
 
         const totalMonth = await User.aggregate([
           {

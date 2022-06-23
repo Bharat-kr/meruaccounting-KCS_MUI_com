@@ -17,7 +17,7 @@ import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import UserSettings from "./pages/UserSettings";
 import UserPage from "./pages/UserPage";
-import TaskAssignment from "./pages/TaskAssignment.js";
+
 import EmployeePage from "./pages/EmployeePage";
 import { PrivateRoute } from "./components/privatroutes";
 import { employeeContext } from "./contexts/EmployeeContext";
@@ -102,14 +102,17 @@ export default function Router() {
       projectsFunc(res.data.projectsClientsOptions[0].projects);
       clientsOptionsFunc(res.data.projectsClientsOptions[0].clients);
       clientsFunc(res.data.projectsClientsOptions[0].clients);
-      const empArr = Array.from(
-        res.data.employeesOptions[0].members,
-        function mapFn(mem, index) {
-          return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
-        }
-      );
-      employeesOptionsFunc(empArr);
-      employeesFunc(empArr);
+
+      if (res.data.employeeOptions) {
+        const empArr = Array.from(
+          res.data.employeesOptions[0].members,
+          function mapFn(mem, index) {
+            return { _id: mem._id, name: `${mem.firstName} ${mem.lastName}` };
+          }
+        );
+        employeesOptionsFunc(empArr);
+        employeesFunc(empArr);
+      }
     });
   };
   React.useEffect(() => {
