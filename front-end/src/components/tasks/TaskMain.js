@@ -38,16 +38,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function TaskMain(props) {
   const { ...others } = props;
-  // to focus edit name of client
+  const { tasks, taskDetails, dispatchGetTask, dispatchGetTaskDetails } =
+    useContext(TasksContext);
 
-  const [taskName, setTaskName] = useState("");
+  // to focus edit name of client
+  const [taskName, setTaskName] = useState(taskDetails?.taskDetails?.name);
   const [ConfirmModal, setConfirmModal] = useState(false);
   const outerref = useRef();
   const inputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
-
-  const { tasks, taskDetails, dispatchGetTask, dispatchGetTaskDetails } =
-    useContext(TasksContext);
 
   const handleEditClick = (e) => {
     inputRef.current.focus();
@@ -83,6 +82,9 @@ export default function TaskMain(props) {
                 .then((res) => {
                   enqueueSnackbar(res.data.msg, {
                     variant: "success",
+                  });
+                  getTaskDetails(dispatchGetTaskDetails, {
+                    _id: taskDetails.taskDetails._id,
                   });
                 })
                 .catch((err) => {
@@ -176,6 +178,9 @@ export default function TaskMain(props) {
                         variant: "success",
                       });
                       getTasks(dispatchGetTask);
+                      getTaskDetails(dispatchGetTaskDetails, {
+                        _id: taskDetails.taskDetails._id,
+                      });
                     })
                     .catch((err) => {
                       console.log(err);
@@ -277,6 +282,7 @@ export default function TaskMain(props) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     width: "100%",
+                    overflow: "auto",
                   }}
                 >
                   <Typography variant="h5">Employees</Typography>
@@ -293,10 +299,57 @@ export default function TaskMain(props) {
                     onChange={handleChange}
                   />
                 </Box>
-                <Link sx={{ pl: 1, color: "#229A16" }} onClick={() => {}}>
+                <Link
+                  sx={{ pl: 1, color: "success.darker", cursor: "pointer" }}
+                  onClick={async () => {
+                    const res = await axios
+                      .patch(`/task/editAllEmployees`, {
+                        _id: taskDetails.taskDetails._id,
+                        employeeIds: taskDetails.taskDetails.allEmployees,
+                      })
+                      .then((res) => {
+                        enqueueSnackbar(res.data.msg, {
+                          variant: "success",
+                        });
+                        getTaskDetails(dispatchGetTaskDetails, {
+                          _id: taskDetails.taskDetails._id,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                        enqueueSnackbar(err.message, {
+                          variant: "info",
+                        });
+                      });
+                  }}
+                >
                   Add all
                 </Link>
-                <Link sx={{ pl: 1, color: "#FF4842" }} onClick={() => {}}>
+                <Link
+                  sx={{ pl: 1, color: "error.darker", cursor: "pointer" }}
+                  onClick={async () => {
+                    console.log();
+                    const res = await axios
+                      .patch(`/task/editAllEmployees`, {
+                        _id: taskDetails.taskDetails._id,
+                        employeeIds: false,
+                      })
+                      .then((res) => {
+                        enqueueSnackbar(res.data.msg, {
+                          variant: "success",
+                        });
+                        getTaskDetails(dispatchGetTaskDetails, {
+                          _id: taskDetails.taskDetails._id,
+                        });
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                        enqueueSnackbar(err.message, {
+                          variant: "info",
+                        });
+                      });
+                  }}
+                >
                   Remove all
                 </Link>
                 <Container sx={{ display: "block" }}>

@@ -5,6 +5,7 @@ import asyncHandler from "express-async-handler";
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
 import mongoose from "mongoose";
+import capitalize from "../utils/capitalize.js";
 
 const ac = new AccessControl(grantsObject);
 
@@ -17,7 +18,8 @@ const createTask = asyncHandler(async (req, res) => {
   if (permission.granted) {
     // get user and name from request
     const user = req.user;
-    const { name } = req.body;
+    let { name } = req.body;
+    name = capitalize(name);
     try {
       const task = new Task({ name });
       if (!task) throw new Error("Error creating new task");
@@ -60,7 +62,7 @@ const deleteTask = asyncHandler(async (req, res) => {
       res.status(201).json({
         status: "Successfully Deleted Task",
         data: task,
-        msg:"Successfully deleted!"
+        msg: "Successfully deleted!",
       });
     } catch (error) {
       throw new Error(error);
@@ -113,7 +115,7 @@ const editName = asyncHandler(async (req, res) => {
         { _id: _id },
         {
           $set: {
-            name: name,
+            name: capitalize(name),
           },
         }
       );
@@ -130,6 +132,54 @@ const editName = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Edit task all employees
+// @route   PATCH /tasks/editAllEmployees
+// @access  Private
+
+const editAllEmployees = asyncHandler(async (req, res) => {
+  const permission = ac.can(req.user.role).readOwn("project");
+  if (permission.granted) {
+    try {
+      const user = req.user;
+      const { _id, employeeIds } = req.body;
+      console.log(employeeIds);
+      // const task = await Task.find({ _id });
+
+      if (!employeeIds) {
+        await Task.updateOne(
+          { _id: _id },
+          {
+            $set: {
+              employees: [],
+            },
+          }
+        );
+      } else {
+        const emps = employeeIds.map((emp) => {
+          return emp._id;
+        });
+
+        await Task.updateOne(
+          { _id: _id },
+          {
+            $set: {
+              employees: emps,
+            },
+          }
+        );
+      }
+
+      res.status(200).json({
+        msg: "Successfully edited employees",
+        // data: tasks,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    res.status(403).end("UnAuthorized");
+  }
+});
 // @desc    Edit task employees
 // @route   PATCH /tasks/editEmployees
 // @access  Private
@@ -222,6 +272,7 @@ export {
   editName,
   editEmployees,
   getTaskDetails,
+  editAllEmployees,
 };
 
 // if (user.role === "admin") {
