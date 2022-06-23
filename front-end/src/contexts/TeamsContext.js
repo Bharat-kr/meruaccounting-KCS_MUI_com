@@ -18,7 +18,6 @@ import {
 export const teamContext = React.createContext();
 
 const teamCreateReducer = (state, action) => {
-  console.log(state, action);
   switch (action.type) {
     case TEAM_CREATE_SUCCESS:
       return {

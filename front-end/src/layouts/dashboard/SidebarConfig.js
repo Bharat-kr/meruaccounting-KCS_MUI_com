@@ -54,6 +54,11 @@ export const sidebarConfigfn = function (currentRoleIndex) {
         path: "/dashboard/projects",
         icon: <Description />,
       },
+      {
+        title: "Tasks",
+        path: "/dashboard/tasks",
+        icon: <FormatListNumberedIcon />,
+      },
     ];
   return sidebarConfig;
 };

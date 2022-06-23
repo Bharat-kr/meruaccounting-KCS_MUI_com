@@ -411,6 +411,9 @@ const teamCommondata = asyncHandler(async (req, res) => {
           },
         },
       ]);
+      if (!arr[0].members) {
+        throw new Error("No member in team");
+      }
       const userIds = arr[0].members;
       const act = await User.aggregate([
         {
@@ -626,7 +629,6 @@ import mongoose from "mongoose";
 const generateReportByIds = asyncHandler(async (req, res) => {
   try {
     let { clientIds, projectIds, userIds, dateOne, dateTwo } = req.body;
-    // console.log(req.body);
     const employeeDetails = [];
 
     if (!projectIds) {

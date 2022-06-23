@@ -19,7 +19,6 @@ const ac = new AccessControl(grantsObject);
 // @access  Private
 
 const getAllEmployee = asyncHandler(async (req, res) => {
-  // console.log(req.user);
   const permission = ac.can(req.user.role).readOwn("members");
   if (permission.granted) {
     try {
@@ -213,7 +212,6 @@ const adminCommondata = asyncHandler(async (req, res) => {
 // @access  Private
 
 const changeCurrency = asyncHandler(async (req, res) => {
-  // console.log(req.user);
   const permission = ac.can(req.user.role).readOwn("members");
   const newValue = req.body.currency;
   if (!newValue) {
@@ -224,7 +222,6 @@ const changeCurrency = asyncHandler(async (req, res) => {
   if (permission.granted) {
     try {
       const users = await User.find();
-      console.log(users);
 
       for (let index = 0; index < users.length; index++) {
         const user = users[index];
