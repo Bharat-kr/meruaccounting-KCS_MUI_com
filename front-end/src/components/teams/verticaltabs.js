@@ -160,6 +160,7 @@ export default function VerticalTabs() {
   };
   // Deleting team
   const handleTeamDelete = async () => {
+    // e.preventDefault();
     try {
       const res = await deleteTeam(currTeam._id, dispatchDeleteTeam);
       if (!res.data) {
@@ -169,6 +170,7 @@ export default function VerticalTabs() {
         enqueueSnackbar("Team deleted", { variant: "success" });
       }
       getTeam(dispatchgetTeam);
+      handleClose();
     } catch (err) {
       console.log(err);
       enqueueSnackbar(err.message, { variant: "info" });
@@ -513,48 +515,42 @@ export default function VerticalTabs() {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  // justifyContent: "center",
                   alignContent: "center",
                   alignItem: "center",
+                  cursor: "pointer",
                 }}
               >
-                {currTeam !== undefined || null ? (
-                  <Box
+                <Box
+                  sx={{
+                    width: "10rem",
+                    display: "flex",
+                    alignSelf: "center",
+                    alignContent: "center",
+                    alignItems: "center",
+                    alignItem: "center",
+                    justifyContent: "center",
+                    borderRadius: "34px",
+                    backgroundColor: "#45546a",
+                  }}
+                >
+                  <Typography
                     sx={{
-                      width: "10rem",
-                      display: "flex",
-                      alignSelf: "center",
-                      alignContent: "center",
-                      alignItems: "center",
+                      color: "white",
                       alignItem: "center",
-                      justifyContent: "center",
-                      borderRadius: "34px",
-                      backgroundColor: "#45546a",
+                      textAlign: "center",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        // pl: 1,
-                        color: "white",
-                        alignItem: "center",
-                        textAlign: "center",
-                      }}
-                    >
-                      Delete Team
-                    </Typography>
-                    <DeleteIcon
-                      sx={{
-                        pl: 0.5,
-                        // fontSize: "1.3rem",
-                        display: "flex",
-                        alignContent: "center",
-                        color: "white",
-                      }}
-                    />
-                  </Box>
-                ) : (
-                  ""
-                )}
+                    Delete Team
+                  </Typography>
+                  <DeleteIcon
+                    sx={{
+                      pl: 0.5,
+                      display: "flex",
+                      alignContent: "center",
+                      color: "white",
+                    }}
+                  />
+                </Box>
               </Box>
             )}
           </Box>
