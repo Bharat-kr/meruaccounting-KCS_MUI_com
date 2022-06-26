@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 // layouts
@@ -40,7 +40,6 @@ import SavedReports from "./pages/SavedReports";
 import DownloadReport from "./pages/DownloadReport";
 import { getTeam } from "./api/teams api/teams";
 import { Role } from "./_helpers/role";
-import { getReports } from "./api/reports api/reports";
 import Reset from "./pages/Reset";
 import TaskAssignment from "./pages/TaskAssignment";
 
@@ -51,13 +50,11 @@ export default function Router() {
   const { dispatchgetTeam, commonData } = useContext(teamContext);
   const {
     dispatchTeamCommonData,
-    projectMemberData,
     dispatchProjectMemberData,
     dispatchCommonData,
   } = useContext(CurrentUserContext);
   const {
     date,
-    reports,
     allOptionsFunc,
     employeeOptions,
     employeesOptionsFunc,
@@ -73,11 +70,9 @@ export default function Router() {
     clientsFunc,
     group,
     disableStateFunc,
-    byProjectFunc,
-    byClientsFunc,
   } = React.useContext(reportsContext);
 
-  const { clientDetails, dispatchClientDetails } = useContext(ClientsContext);
+  const { dispatchClientDetails } = useContext(ClientsContext);
   const { loginC } = useContext(loginContext);
   const { dispatchAdminAllEmployee } = useContext(employeeContext);
 

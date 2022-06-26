@@ -50,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
 export default function VerticalTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  // const { clients, changeClient } = useContext(ClientsContext);
-  // const { User } = useContext(UserContext);
   const {
     dispatchgetTeam,
     getTeams,

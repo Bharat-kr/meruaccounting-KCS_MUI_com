@@ -7,7 +7,6 @@ import Box from "@mui/material/Box";
 import DatePicker from "./DatePicker";
 import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
-import axios from "axios";
 // components
 import Graphs from "./Graphs";
 import SelectEmployees from "./SelectEmployees";
@@ -20,8 +19,6 @@ import SavedR from "./SavedR";
 // contexts and apis
 
 import { loginContext } from "../../contexts/LoginContext";
-import { teamContext } from "../../contexts/TeamsContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
@@ -68,13 +65,8 @@ function a11yProps(index) {
 export default function Main() {
   const { enqueueSnackbar } = useSnackbar();
   const [value, setValue] = React.useState(0);
-  //
   const [timeRange, setTimeRange] = React.useState("Custom");
-  //
-  const { getTeams } = React.useContext(teamContext);
-  //
-  const { clientDetails } = React.useContext(ClientsContext);
-  //
+
   const {
     reports,
     dispatchGetReports,

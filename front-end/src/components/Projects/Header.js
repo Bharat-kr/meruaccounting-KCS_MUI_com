@@ -2,7 +2,6 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import {
   Paper,
   Typography,
-  TextField,
   Link,
   IconButton,
   Modal,
@@ -29,16 +28,12 @@ import {
 } from "../../api/projects api/projects";
 import EnhancedTable from "../Projects/ProjectMemers";
 import { Link as RouterLink } from "react-router-dom";
-import moment from "moment";
 import { useSnackbar } from "notistack";
-import { useLayoutEffect } from "react";
 import { Role } from "../../_helpers/role";
 import { loginContext } from "../../contexts/LoginContext";
 import { reportsContext } from "../../contexts/ReportsContext";
 import Confirmation from "../Confirmation";
-import Autocomplete from "@mui/material/Autocomplete";
-import Searchbar from "src/layouts/dashboard/Searchbar";
-import { getFullName } from "src/_helpers/getFullName";
+
 
 //---------------------------------------------------------------
 
@@ -92,12 +87,10 @@ export default function Header(props) {
 
   const { loginC } = useContext(loginContext);
   const {
-    clients,
     currentClient,
     currentProject,
     changeClient,
     changeProject,
-    updateClient,
     clientDetails,
     dispatchClientDetails,
   } = useContext(ClientsContext);
@@ -111,7 +104,7 @@ export default function Header(props) {
     editProjectLeader,
   } = useContext(projectContext);
 
-  const { reports, byClients, byProject } = useContext(reportsContext);
+  const { byClients, byProject } = useContext(reportsContext);
 
   const [ProjectLeader, setProjectLeader] = useState("");
   const [projectName, setprojectName] = useState("");
@@ -122,7 +115,6 @@ export default function Header(props) {
   const [membersData, setMembersData] = useState([]);
 
   const outerref = useRef();
-  const proInputRef = useRef();
   const { enqueueSnackbar } = useSnackbar();
 
   // modal values

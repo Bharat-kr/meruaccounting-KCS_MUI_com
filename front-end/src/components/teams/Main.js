@@ -16,7 +16,6 @@ import {
   Switch,
   TextField,
   Autocomplete,
-  Button,
   Alert,
 } from "@mui/material";
 import PauseIcon from "@mui/icons-material/Pause";
@@ -30,22 +29,13 @@ import EdiText from "react-editext";
 import { convertString } from "../../contexts/UserContext";
 import { getFullName } from "src/_helpers/getFullName";
 import { employeeUpdate } from "src/api/employee api/employee";
-import {
-  getTeam,
-  removeTeamMember,
-  updateMember,
-} from "src/api/teams api/teams";
+import { getTeam, removeTeamMember } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { projectContext } from "src/contexts/ProjectsContext";
 import { teamContext } from "src/contexts/TeamsContext";
 import { UserContext } from "../../contexts/UserContext";
 import { settingsValueToString } from "src/_helpers/settingsValuetoString";
-import {
-  addProjectLeader,
-  removeProjectLeader,
-  removeProjectMem,
-  removeProjectMember,
-} from "src/api/projects api/projects";
+import { removeProjectMem } from "src/api/projects api/projects";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
@@ -69,21 +59,13 @@ export default function Main(props) {
     ...other
   } = props;
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
-  const {
-    dispatchRemoveMember,
-    dispatchgetTeam,
-    removeMember,
-    updatedMember,
-    getTeams,
-  } = useContext(teamContext);
+  const { dispatchRemoveMember, dispatchgetTeam, updatedMember, getTeams } =
+    useContext(teamContext);
   const { loginC } = useContext(loginContext);
 
   const { changeTab } = useContext(UserContext);
-  const {
-    dispatchremoveProjectMember,
-    removeProjectMember,
-    dispatchaddProjectLeader,
-  } = useContext(projectContext);
+  const { dispatchremoveProjectMember, removeProjectMember } =
+    useContext(projectContext);
   const [Checked, setChecked] = useState();
   const { enqueueSnackbar } = useSnackbar();
 

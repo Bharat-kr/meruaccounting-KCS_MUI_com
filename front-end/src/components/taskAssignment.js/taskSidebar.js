@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TaskSidebar() {
   const classes = useStyles();
-  // const { } = useContext(ClientsContext);
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);

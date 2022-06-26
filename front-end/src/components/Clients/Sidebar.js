@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Sidebar() {
   const classes = useStyles();
-  // const { } = useContext(ClientsContext);
   // state variable for input box to pass in as the new client value.
   const [newClientValue, setnewClientValue] = useState();
   const [newClientError, setnewClientError] = useState(false);
@@ -61,31 +60,26 @@ export default function Sidebar() {
   // contexts
 
   const {
-    clients,
     currentClient,
     changeClient,
     dispatchAddClient,
-    // addClient,
-    client,
-    newClient,
     clientDetails,
     dispatchClientDetails,
     clientsList,
     clientsListFunc,
   } = useContext(ClientsContext);
 
-  const clientNameList = [];
+  // const clientNameList = [];
   useEffect(() => {
     getClient(dispatchClientDetails);
   }, []);
   useEffect(async () => {
     try {
-      console.log(clientDetails);
       if (clientDetails?.loader === false) {
         clientsListFunc(clientDetails?.client?.data);
-        clientDetails?.client?.data?.map((cli) => {
-          <>{clientNameList.push(cli.name)}</>;
-        });
+        // clientDetails?.client?.data?.map((cli) => {
+        //   <>{clientNameList.push(cli.name)}</>;
+        // });
       }
       const clientIndex = clientsList?.findIndex(
         (i) => i._id === currentClient?._id
