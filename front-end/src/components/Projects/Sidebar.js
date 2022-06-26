@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import React, { useContext, useEffect, useState, useRef } from "react";
-import { Paper, Typography, Button, CircularProgress } from "@mui/material";
+import { Paper, Typography, CircularProgress } from "@mui/material";
 import { LoadingButton, TreeItem, TreeView } from "@mui/lab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -13,9 +13,7 @@ import SearchBar from "../SearchBar";
 import { getClient } from "../../api/clients api/clients";
 import { createProject } from "../../api/projects api/projects";
 import Header from "./Header";
-import Snackbars from "../../_helpers/snackBar";
 import { capitalize } from "../../_helpers/Capitailze";
-import { lowerCase } from "../../_helpers/LowerCase";
 import { useSnackbar } from "notistack";
 import { loginContext } from "../../contexts/LoginContext";
 import { Role } from "../../_helpers/role";
@@ -35,21 +33,16 @@ export default function Sidebar() {
   // contexts
   const { loginC } = useContext(loginContext);
   const {
-    clients,
     currentClient,
     changeClient,
-    addClient,
     currentProject,
     changeProject,
-    client,
     clientDetails,
     dispatchClientDetails,
-    clientProjectDetails,
-    dispatchClientProjectDetails,
   } = useContext(ClientsContext);
   // const [currentClient, changeClient] = useState("");
   // const [currentProject, changeProject] = useState("");
-  const { dispatchCreateProject, createdProject } = useContext(projectContext);
+  const { dispatchCreateProject } = useContext(projectContext);
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);

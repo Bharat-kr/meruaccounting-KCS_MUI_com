@@ -1,8 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { alpha } from "@mui/material/styles";
-import { Box, TextField, Button, Autocomplete } from "@mui/material";
+import { Box, TextField, Autocomplete } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -296,7 +295,7 @@ export default function EnhancedTable(props) {
   } = useContext(ClientsContext);
   const { addedProjectMember, dispatchaddProjectMember, projectMembers } =
     useContext(projectContext);
-  const { reports, dispatchGetReports } = useContext(reportsContext);
+  const { dispatchGetReports } = useContext(reportsContext);
   const { allEmployees, dispatchAllEmployees } = useContext(CommonContext);
 
   const tableListRef = useRef();

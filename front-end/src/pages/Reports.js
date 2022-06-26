@@ -4,24 +4,8 @@ import { Divider, Container, Paper } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Main from "../components/Reports/Main";
 import PageHeader from "../components/PageHeader";
-//contexts and apis
-import { teamContext } from "../contexts/TeamsContext";
-import { ClientsContext } from "../contexts/ClientsContext";
-import { getTeam } from "../api/teams api/teams";
-import { getClient } from "../api/clients api/clients";
 
 export default function SimpleContainer() {
-  const { dispatchgetTeam } = React.useContext(teamContext);
-  const { clientDetails, dispatchClientDetails } =
-    React.useContext(ClientsContext);
-
-  // React.useEffect(() => {
-  //   getTeam(dispatchgetTeam);
-  // }, []);
-
-  // React.useEffect(() => {
-  //   getClient(dispatchClientDetails);
-  // }, []);
   return (
     <>
       <CssBaseline />

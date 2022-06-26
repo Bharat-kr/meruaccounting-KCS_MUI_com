@@ -18,7 +18,6 @@ import { employeeUpdate } from "src/api/employee api/employee";
 import { getTeam, updateTeam } from "src/api/teams api/teams";
 import { employeeContext } from "src/contexts/EmployeeContext";
 import { teamContext } from "src/contexts/TeamsContext";
-import { loginContext } from "src/contexts/LoginContext";
 import { useSnackbar } from "notistack";
 import { projectContext } from "src/contexts/ProjectsContext";
 import { addProjectLeader } from "src/api/projects api/projects";
@@ -51,7 +50,6 @@ const ChangeModal = ({
   const { dispatchEmployeeUpdate } = useContext(employeeContext);
   const { dispatchgetTeam, updatedMember } = useContext(teamContext);
   const { dispatchaddProjectLeader } = useContext(projectContext);
-  const { loginC } = useContext(loginContext);
   const [newManager, setNewManager] = React.useState("");
   const [newProject, setNewProject] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();

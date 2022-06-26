@@ -1,30 +1,16 @@
 import * as React from "react";
-import PropTypes from "prop-types";
-import { Tabs } from "@mui/material";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import DatePicker from "./DatePicker";
-import Button from "@mui/material/Button";
-import SendIcon from "@mui/icons-material/Send";
 // components
 import Graphs from "./Graphs";
-import SelectEmployees from "./SelectEmployees";
-import SelectProjects from "./SelectProjects";
-import SelectClients from "./SelectClients";
-import SaveReport from "./SaveReport";
 
 // contexts and apis
-import { teamContext } from "../../contexts/TeamsContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
-import { getReports } from "../../api/reports api/reports";
 import ByEp from "./ByEp";
 import ByPr from "./ByPr";
 import ByCl from "./ByCL";
 import ByD from "./ByDetailed";
 import ByAppUrl from "./ByApp&Url";
-import GridExample from "../../components/SavedReports/ByEp";
 import { lastIndexOf } from "lodash";
 
 // function TabPanel(props) {
@@ -63,21 +49,10 @@ import { lastIndexOf } from "lodash";
 //////////////////////////panelllllll
 export default function Main() {
   // tab panels value
-  const [value, setValue] = React.useState(0);
-  //
-  const { getTeams } = React.useContext(teamContext);
-  //
-  const { clientDetails } = React.useContext(ClientsContext);
-  //
-  const { reports, savedReports, dispatchGetReports } =
-    React.useContext(reportsContext);
+  const { savedReports } = React.useContext(reportsContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState(null);
   const [options, setOptions] = React.useState([]);
-  const [employees, setemployees] = React.useState([]);
-  const [projects, setprojects] = React.useState([]);
-  const [clients, setclients] = React.useState([]);
 
   React.useEffect(() => {
     setOptions(savedReports?.data[0]);

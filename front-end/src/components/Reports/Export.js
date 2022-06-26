@@ -15,10 +15,7 @@ import SelectClients from "./SelectClients";
 import SaveReport from "./SaveReport";
 
 // contexts and apis
-import { teamContext } from "../../contexts/TeamsContext";
-import { ClientsContext } from "../../contexts/ClientsContext";
 import { reportsContext } from "../../contexts/ReportsContext";
-import { getReports } from "../../api/reports api/reports";
 import ByEp from "../SavedReports/ByEp";
 import ByPr from "../SavedReports/ByPr";
 import ByCl from "../SavedReports/ByCL";
@@ -29,33 +26,15 @@ import ProjectsCharts from "../SavedReports/ProjectsCharts";
 import ClientsCharts from "../SavedReports/ClientsCharts";
 import EmployeesCharts from "../SavedReports/EmployeesCharts";
 import AppsCharts from "../SavedReports/AppsCharts";
-import GridExample from "../../components/SavedReports/ByEp";
 import { lastIndexOf } from "lodash";
 import secondsToHms from "../../_helpers/secondsToHms";
 
-import jsPDF from "jspdf";
-import pdfMake from "pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import htmlToPdfmake from "html-to-pdfmake";
-import { Preview, print } from "react-html2pdf";
-
 export default function ExportPdf() {
-  // tab panels value
-  const [value, setValue] = React.useState(0);
-  //
-  const { getTeams } = React.useContext(teamContext);
-  //
-  const { clientDetails } = React.useContext(ClientsContext);
-  //
-  const { reports, savedReports, dispatchGetReports } =
-    React.useContext(reportsContext);
+  const { savedReports } = React.useContext(reportsContext);
 
   // variable for date, employees, and projects
-  const [date, setdate] = React.useState(null);
   const [options, setOptions] = React.useState([]);
-  const [employees, setemployees] = React.useState([]);
-  const [projects, setprojects] = React.useState([]);
-  const [clients, setclients] = React.useState([]);
+
   const [totalPRate, settotalPRate] = React.useState(null);
   const [totalPData, settotalPData] = React.useState(null);
   const [totalHours, settotalHours] = React.useState(null);

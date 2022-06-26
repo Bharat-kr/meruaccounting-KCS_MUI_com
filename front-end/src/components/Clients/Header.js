@@ -37,7 +37,6 @@ export default function Header(props) {
     ...others
   } = props;
   // to focus edit name of client
-  // const {getClient,dispatchClientDetails}=useContext(ClientsContext)
   // getClient(dispatchClientDetails);
   const [clientName, setClientName] = useState("");
   const outerref = useRef();
@@ -53,8 +52,6 @@ export default function Header(props) {
     currentClient,
     changeClient,
     dispatchDeleteClient,
-    clientProjectDetails,
-    dispatchClientProjectDetails,
     dispatchEditClient,
     dispatchClientDetails,
     deletedClient,
