@@ -338,7 +338,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     const teamId = req.params.id;
     try {
       // console.log(req.body);
-      const team = await Team.findByIdAndRemove(teamId);
+      const team = await Team.findByIdAndDelete(teamId);
       if (!team) throw new Error("No team found", teamId);
 
       const teamMembers = team.members;
@@ -351,10 +351,8 @@ const deleteTeam = asyncHandler(async (req, res) => {
         );
       }
 
-      manager.teams.forEach((team, index) => {
-        if (team.equals(team._id)) {
-          manager.teams.splice(index, 1);
-        }
+      manager.teams.filter((team) => {
+        return team !== teamId;
       });
 
       await manager.save();
@@ -363,10 +361,8 @@ const deleteTeam = asyncHandler(async (req, res) => {
         const id = teamMembers[i].toHexString();
         const employee = await User.findById(id);
 
-        employee.teams.forEach((team, index) => {
-          if (team.equals(team._id)) {
-            employee.teams.splice(index, 1);
-          }
+        employee.teams.filter((team) => {
+          return team !== teamId;
         });
         await employee.save();
       }
