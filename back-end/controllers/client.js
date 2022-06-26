@@ -4,7 +4,6 @@ import asyncHandler from "express-async-handler";
 import User from "../models/user.js";
 import { AccessControl } from "accesscontrol";
 import { grantsObject } from "../utils/permissions.js";
-import mongoose from "mongoose";
 import capitalize from "../utils/capitalize.js";
 import { uniqueFinder } from "../utils/uniqueEntry.js";
 

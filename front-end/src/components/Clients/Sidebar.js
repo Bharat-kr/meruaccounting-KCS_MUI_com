@@ -11,11 +11,17 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import TreeView from "@mui/lab/TreeView";
 import TreeItem from "@mui/lab/TreeItem";
+import { LoadingButton } from "@mui/lab";
+import { useSnackbar } from "notistack";
+
+// components
+import Header from "./Header";
+
+// apis and contexts
 import { ClientsContext } from "../../contexts/ClientsContext";
 import { addClient, getClient } from "../../api/clients api/clients";
-import Header from "./Header";
-import { useSnackbar } from "notistack";
-import { LoadingButton } from "@mui/lab";
+
+// helpers
 import { capitalize } from "../../_helpers/Capitailze";
 import { lowerCase } from "src/_helpers/LowerCase";
 
@@ -74,6 +80,7 @@ export default function Sidebar() {
   }, []);
   useEffect(async () => {
     try {
+      console.log(clientDetails);
       if (clientDetails?.loader === false) {
         clientsListFunc(clientDetails?.client?.data);
         clientDetails?.client?.data?.map((cli) => {
@@ -194,7 +201,9 @@ export default function Sidebar() {
             disablePortal
             onChange={(e) => handleSearch(e)}
             id="combo-box-demo"
-            options={clientNameList}
+            options={clientDetails?.client?.data?.map((client) => {
+              return client.name;
+            })}
             sx={{ width: 300, m: 0.5 }}
             renderInput={(params) => (
               <TextField {...params} label="Search Client" />
