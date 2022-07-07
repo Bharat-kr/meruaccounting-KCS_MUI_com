@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   Typography,
@@ -20,7 +20,7 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { deleteSs, deleteAct } from "../../api/auth api/commondata";
 
 // helpers
-import timeC, { timeCC } from "../../_helpers/timeConverter";
+import timeC from "../../_helpers/timeConverter";
 import SplitActivity from "./SplitActivity";
 import { useSnackbar } from "notistack";
 
