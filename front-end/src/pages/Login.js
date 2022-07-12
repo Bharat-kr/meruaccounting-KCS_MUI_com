@@ -56,9 +56,12 @@ export default function Login() {
           sx={{
             mr: 2,
           }}
-          onClick={async () => {
-            await downloadApp();
-          }}
+          href={
+            "https://meru-screenshots.s3.ap-south-1.amazonaws.com/app/meru-accounting-ssm+Setup+0.0.1.exe"
+          }
+          // onClick={async () => {
+          //   // await downloadApp();
+          // }}
         >
           Download App
         </Button>
