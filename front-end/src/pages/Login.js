@@ -92,7 +92,7 @@ export default function Login() {
               Enter your details below.
             </Typography>
           </Stack>
-          <AuthSocial />
+          {/* <AuthSocial /> */}
 
           <LoginForm />
 
