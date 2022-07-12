@@ -1,43 +1,49 @@
 import path from "path";
 import express from "express";
 import multer from "multer";
+import AWS from "aws-sdk";
+import asyncHandler from "express-async-handler";
+import fs from "fs";
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-
-//TODO: file filter not working..
-
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb("Images only!");
+function makeid(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
+  return result;
 }
 
-const upload = multer({
-  storage,
-  // fileFilter: function (req, file, cb) {
-  //   checkFileType(file, cb);
-  // },
+const upload = asyncHandler(async (req, res) => {
+  try {
+    const s3 = new AWS.S3({
+      accessKeyId: process.env.S3_ACCESS_KEY,
+      secretAccessKey: process.env.S3_SECRET_KEY,
+    });
+    const fileName = makeid(10) + "-" + new Date().getTime() + ".png";
+
+    const params = {
+      Bucket: "meru-screenshots",
+      Key: `images/${fileName}`,
+      Body: req.file.buffer,
+      ACL: "public-read-write",
+    };
+
+    const data = await s3.upload(params).promise();
+
+    res.json({
+      status: "Succesfully Uploaded image to s3",
+      data: { location: data.Location },
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 });
 
-router.post("/", upload.single("image"), (req, res) => {
-  res.json({ filename: req.file.filename, path: req.file.path });
-});
+router.post("/", multer().single("image"), upload);
+// router.route("/").post(upload);
 
 export default router;
