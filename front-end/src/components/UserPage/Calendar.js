@@ -229,6 +229,11 @@ export default class Calendar extends React.Component {
             onClick={(e) => {
               this.onDayClick(e, d);
             }}
+            style={{
+              borderWidth: "0 1px 0 1px",
+              borderStyle: "solid",
+              borderColor: "#C4CDD5",
+            }}
           >
             <span>{d}</span>
           </td>
