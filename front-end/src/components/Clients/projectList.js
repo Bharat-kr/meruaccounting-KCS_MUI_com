@@ -287,7 +287,7 @@ export default function EnhancedTable(props) {
   const [orderBy, setOrderBy] = React.useState("projectHours");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  // const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [rows, setRows] = useState([]);
   const [proList, setProList] = useState([]);
@@ -454,9 +454,9 @@ export default function EnhancedTable(props) {
 
     setSelected(newSelected);
   };
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
+  // const handleChangeDense = (event) => {
+  //   setDense(event.target.checked);
+  // };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -464,7 +464,7 @@ export default function EnhancedTable(props) {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", overflow:"auto" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", overflow: "auto" }}>
       <Paper
         // elevation={3}
         sx={{
@@ -473,7 +473,7 @@ export default function EnhancedTable(props) {
           flexDirection: "row",
           justifyContent: "space-between",
           width: "auto",
-          overflow:"auto"
+          overflow: "auto",
         }}
       >
         <AutoComplete
@@ -511,7 +511,7 @@ export default function EnhancedTable(props) {
             <Table
               // sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
-              size={dense ? "small" : "medium"}
+              size={"medium"}
             >
               <EnhancedTableHead
                 numSelected={selected.length}
@@ -565,7 +565,7 @@ export default function EnhancedTable(props) {
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
-                      height: (dense ? 33 : 53) * emptyRows,
+                      height: 53 * emptyRows,
                     }}
                   >
                     <TableCell colSpan={6} />
@@ -575,10 +575,10 @@ export default function EnhancedTable(props) {
             </Table>
           </TableContainer>
         </Paper>
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<Switch checked={dense} onChange={handleChangeDense} />}
           label="Dense padding"
-        />
+        /> */}
       </Box>
     </Box>
   );
