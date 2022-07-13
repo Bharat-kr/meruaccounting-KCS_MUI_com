@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import React, { lazy, Suspense, useContext } from "react";
 import { Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import Activity from "./Activity";
-
 // contexts
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+const Activity = lazy(() => import("./Activity.js"));
 export default function ScreenShots({ activities, date }) {
   const { commonData } = useContext(CurrentUserContext);
 
@@ -30,18 +29,37 @@ export default function ScreenShots({ activities, date }) {
         activities.map((act) => {
           // dont render if there are not screenshots
           return (
-            <Activity
-              key={act}
-              date={date}
-              project={act.project}
-              act={act}
-              isAccepted={act.isAccepted}
-              startTime={act.startTime}
-              endTime={act.endTime}
-              performanceData={act.performanceData}
-              proId={act.project}
-              screenShots={act.screenshots}
-            ></Activity>
+            <Suspense
+              fallback={
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <CircularProgress
+                    sx={{
+                      m: 2,
+                    }}
+                  />
+                </Box>
+              }
+            >
+              <Activity
+                key={act}
+                date={date}
+                project={act.project}
+                act={act}
+                isAccepted={act.isAccepted}
+                startTime={act.startTime}
+                endTime={act.endTime}
+                performanceData={act.performanceData}
+                proId={act.project}
+                screenShots={act.screenshots}
+              ></Activity>
+            </Suspense>
           );
         })
       ) : (
