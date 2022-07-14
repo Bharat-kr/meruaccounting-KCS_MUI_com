@@ -248,7 +248,7 @@ export default function Header(props) {
                   // alignItems: "center",
                 }}
               >
-                <Typography variant="h5">
+                <Typography variant="h6">
                   Created on : {createdOn ? createdOn : ""}
                 </Typography>
                 <Typography

@@ -234,7 +234,7 @@ export default function TaskMain(props) {
                   // alignItems: "center",
                 }}
               >
-                <Typography variant="h5">
+                <Typography variant="h6">
                   Created on :
                   {dayjs(taskDetails.taskDetails.createdAt).format("DD/MM/YY")}
                 </Typography>
